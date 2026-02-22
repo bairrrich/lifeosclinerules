@@ -132,7 +132,7 @@ export default function ItemsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-2">
             {filteredItems.map((item) => {
               const TypeIcon = getTypeIcon(item.type)
               return (

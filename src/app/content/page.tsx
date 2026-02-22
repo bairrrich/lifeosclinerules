@@ -116,7 +116,7 @@ export default function ContentPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-2">
             {filteredContent.map((content) => {
               const TypeIcon = getTypeIcon(content.type)
               return (

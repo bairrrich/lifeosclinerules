@@ -130,7 +130,7 @@ export default function LogsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-2">
             {filteredLogs.map((log) => {
               const TypeIcon = getTypeIcon(log.type)
               return (

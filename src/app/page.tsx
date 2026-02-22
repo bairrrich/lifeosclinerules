@@ -168,7 +168,7 @@ export default function HomePage() {
         </div>
 
         {/* Navigation Cards */}
-        <div className="space-y-4">
+        <div className="flex flex-col gap-2">
           {sections.map((section) => (
             <Link key={section.href} href={section.href}>
               <Card className="hover:bg-accent transition-colors">
