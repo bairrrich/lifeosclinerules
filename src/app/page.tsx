@@ -76,6 +76,18 @@ const sections = [
   },
 ]
 
+const typeLabels: Record<string, string> = {
+  food: "🍽️ Питание",
+  workout: "💪 Тренировка",
+  finance: "💰 Финансы",
+}
+
+const typeColors: Record<string, string> = {
+  food: "bg-orange-500/10 text-orange-600 border-orange-200",
+  workout: "bg-blue-500/10 text-blue-600 border-blue-200",
+  finance: "bg-green-500/10 text-green-600 border-green-200",
+}
+
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [stats, setStats] = useState({
@@ -84,6 +96,7 @@ export default function HomePage() {
     content: 0,
     todayLogs: 0,
   })
+  const [recentLogs, setRecentLogs] = useState<Log[]>([])
 
   useEffect(() => {
     async function loadData() {
@@ -99,12 +112,19 @@ export default function HomePage() {
         const today = new Date().toISOString().split("T")[0]
         const todayLogs = logs.filter((log) => log.date.startsWith(today))
         
+        // Сортируем по дате и берём последние 5 записей
+        const sortedLogs = [...logs].sort((a, b) => 
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+        const recent = sortedLogs.slice(0, 5)
+        
         setStats({
           logs: logs.length,
           items: items.length,
           content: content.length,
           todayLogs: todayLogs.length,
         })
+        setRecentLogs(recent)
       } catch (error) {
         console.error("Failed to load data:", error)
       } finally {
@@ -189,7 +209,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* Recent Activity Placeholder */}
+        {/* Recent Activity */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Последняя активность</h2>
           {isLoading ? (
@@ -205,11 +225,37 @@ export default function HomePage() {
               </CardContent>
             </Card>
           ) : (
-            <Card>
-              <CardContent className="p-4 text-center text-muted-foreground">
-                Последние записи появятся здесь
-              </CardContent>
-            </Card>
+            <div className="flex flex-col gap-2">
+              {recentLogs.map((log) => (
+                <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
+                  <Card className="hover:bg-accent transition-colors">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl border ${typeColors[log.type] || 'bg-muted'}`}>
+                        <span className="text-lg">
+                          {log.type === 'food' ? '🍽️' : log.type === 'workout' ? '💪' : '💰'}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium truncate">{log.title}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {typeLabels[log.type] || log.type} • {new Date(log.date).toLocaleDateString('ru-RU', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                      {log.value !== undefined && (
+                        <div className="text-sm font-medium">
+                          {log.type === 'finance' ? `${log.value.toLocaleString()} ₽` : log.value}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           )}
         </div>
       </div>

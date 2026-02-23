@@ -1,5 +1,5 @@
 import { db } from "./index"
-import type { Log, Item, Content, Category, Tag } from "@/types"
+import type { Log, Item, Content, Category, Tag, Account } from "@/types"
 import { LogType, FinanceType, ItemType, ContentType, BookStatus } from "@/types"
 
 function randomDate(daysAgo: number = 30): string {
@@ -51,7 +51,25 @@ async function seedTags() {
   await db.tags.bulkAdd(tags)
 }
 
-async function seedLogs(categories: Category[]) {
+async function seedAccounts(): Promise<Account[]> {
+  // Check if accounts already exist
+  const existingAccounts = await db.accounts.count()
+  if (existingAccounts > 0) {
+    return db.accounts.toArray()
+  }
+
+  const accounts: Account[] = [
+    { id: uuid(), name: "Наличные", type: "cash", balance: 15000, currency: "RUB", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: uuid(), name: "Сбербанк", type: "card", balance: 125000, currency: "RUB", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: uuid(), name: "Тинькофф", type: "card", balance: 45000, currency: "RUB", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: uuid(), name: "Вклад 8%", type: "deposit", balance: 500000, currency: "RUB", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: uuid(), name: "Брокерский счёт", type: "investment", balance: 250000, currency: "RUB", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  ]
+  await db.accounts.bulkAdd(accounts)
+  return accounts
+}
+
+async function seedLogs(categories: Category[], accounts: Account[]) {
   const logs: Log[] = []
   const foodCats = categories.filter(c => c.type === LogType.FOOD)
   const workoutCats = categories.filter(c => c.type === LogType.WORKOUT)
@@ -111,19 +129,23 @@ async function seedLogs(categories: Category[]) {
     })
   }
 
-  // Finance logs
-  const transactions = [
-    { title: "Зарплата", value: 80000, type: "income" as const, cat: "Зарплата" },
-    { title: "Продукты на неделю", value: 5000, type: "expense" as const, cat: "Продукты" },
-    { title: "Метро", value: 2000, type: "expense" as const, cat: "Транспорт" },
-    { title: "Кафе", value: 1500, type: "expense" as const, cat: "Продукты" },
-    { title: "Такси", value: 800, type: "expense" as const, cat: "Транспорт" },
-    { title: "Премия", value: 15000, type: "income" as const, cat: "Зарплата" },
+  // Finance logs with accounts
+  const cashAccount = accounts.find(a => a.name === "Наличные")!
+  const sberAccount = accounts.find(a => a.name === "Сбербанк")!
+  const tinkoffAccount = accounts.find(a => a.name === "Тинькофф")!
+  const depositAccount = accounts.find(a => a.name === "Вклад 8%")!
+  const investmentAccount = accounts.find(a => a.name === "Брокерский счёт")!
+
+  // Income transactions
+  const incomeTransactions = [
+    { title: "Зарплата", value: 80000, account: sberAccount, category: "Зарплата", subcategory: "Основная" },
+    { title: "Премия", value: 15000, account: sberAccount, category: "Зарплата", subcategory: "Премия" },
+    { title: "Фриланс проект", value: 25000, account: tinkoffAccount, category: "Фриланс", subcategory: "Разработка" },
+    { title: "Дивиденды", value: 5000, account: investmentAccount, category: "Инвестиции", subcategory: "Дивиденды" },
   ]
 
-  for (let i = 0; i < 25; i++) {
-    const t = transactions[Math.floor(Math.random() * transactions.length)]
-    const cat = financeCats.find(c => c.name === t.cat) || financeCats[0]
+  for (const t of incomeTransactions) {
+    const cat = financeCats.find(c => c.name === t.category) || financeCats[0]
     logs.push({
       id: uuid(),
       type: LogType.FINANCE,
@@ -131,7 +153,72 @@ async function seedLogs(categories: Category[]) {
       title: t.title,
       category_id: cat.id,
       value: t.value,
-      metadata: { finance_type: t.type as FinanceType },
+      metadata: { 
+        finance_type: FinanceType.INCOME, 
+        account_id: t.account.id,
+        category: t.category,
+        subcategory: t.subcategory,
+      },
+      tags: [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+  }
+
+  // Expense transactions
+  const expenseTransactions = [
+    { title: "Продукты → Молочные", value: 2500, account: sberAccount, category: "Продукты", subcategory: "Молочные" },
+    { title: "Продукты → Мясо", value: 3500, account: sberAccount, category: "Продукты", subcategory: "Мясо" },
+    { title: "Транспорт → Такси", value: 800, account: tinkoffAccount, category: "Транспорт", subcategory: "Такси" },
+    { title: "Транспорт → Метро", value: 2000, account: cashAccount, category: "Транспорт", subcategory: "Общественный" },
+    { title: "Развлечения → Кафе", value: 1500, account: tinkoffAccount, category: "Развлечения", subcategory: "Кафе/Рестораны" },
+    { title: "Здоровье → Аптека", value: 1200, account: sberAccount, category: "Здоровье", subcategory: "Аптека" },
+    { title: "Связь → Мобильная", value: 500, account: tinkoffAccount, category: "Связь", subcategory: "Мобильная" },
+    { title: "Образование → Курсы", value: 5000, account: sberAccount, category: "Образование", subcategory: "Курсы" },
+  ]
+
+  for (let i = 0; i < 30; i++) {
+    const t = expenseTransactions[Math.floor(Math.random() * expenseTransactions.length)]
+    const cat = financeCats.find(c => c.name === t.category) || financeCats[0]
+    logs.push({
+      id: uuid(),
+      type: LogType.FINANCE,
+      date: randomDate(30),
+      title: t.title,
+      category_id: cat.id,
+      value: t.value,
+      metadata: { 
+        finance_type: FinanceType.EXPENSE, 
+        account_id: t.account.id,
+        category: t.category,
+        subcategory: t.subcategory,
+      },
+      tags: [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+  }
+
+  // Transfer transactions
+  const transferTransactions = [
+    { title: "Перевод на вклад", value: 20000, from: sberAccount, to: depositAccount },
+    { title: "Снятие наличных", value: 10000, from: sberAccount, to: cashAccount },
+    { title: "Пополнение Тинькофф", value: 5000, from: sberAccount, to: tinkoffAccount },
+    { title: "Инвестиции", value: 15000, from: sberAccount, to: investmentAccount },
+  ]
+
+  for (const t of transferTransactions) {
+    logs.push({
+      id: uuid(),
+      type: LogType.FINANCE,
+      date: randomDate(30),
+      title: t.title,
+      value: t.value,
+      metadata: { 
+        finance_type: FinanceType.TRANSFER, 
+        account_id: t.from.id,
+        target_account_id: t.to.id,
+      },
       tags: [],
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -223,6 +310,20 @@ export async function cleanupDuplicateCategories() {
   return duplicates.length
 }
 
+export async function clearDatabase() {
+  console.log("Clearing database...")
+  await Promise.all([
+    db.logs.clear(),
+    db.items.clear(),
+    db.content.clear(),
+    db.categories.clear(),
+    db.tags.clear(),
+    db.accounts.clear(),
+  ])
+  console.log("Database cleared!")
+  return true
+}
+
 export async function seedDatabase() {
   // Check if already seeded
   const existingLogs = await db.logs.count()
@@ -236,10 +337,16 @@ export async function seedDatabase() {
   // Use existing categories or create new ones
   const categories = await getOrCreateCategories()
   await seedTags()
-  await seedLogs(categories)
+  const accounts = await seedAccounts()
+  await seedLogs(categories, accounts)
   await seedItems()
   await seedContent()
 
   console.log("Database seeded successfully!")
   return true
+}
+
+export async function reseedDatabase() {
+  await clearDatabase()
+  return await seedDatabase()
 }

@@ -90,6 +90,11 @@ export interface WorkoutMetadata {
 export interface FinanceMetadata {
   account_id?: UUID
   finance_type: FinanceType
+  target_account_id?: UUID
+  category?: string
+  subcategory?: string
+  item?: string
+  supplier?: string
 }
 
 // Полные типы логов
@@ -203,9 +208,11 @@ export interface Unit extends BaseEntity {
 
 export interface Account extends BaseEntity {
   name: string
-  type: 'cash' | 'card' | 'bank' | 'crypto'
+  type: 'cash' | 'card' | 'bank' | 'crypto' | 'investment' | 'deposit'
   balance: number
   currency: string
+  icon?: string
+  color?: string
 }
 
 export interface Exercise extends BaseEntity {

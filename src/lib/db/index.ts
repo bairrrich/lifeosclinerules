@@ -206,7 +206,7 @@ export async function initializeDatabase(): Promise<void> {
         { id: generateId(), type: LogType.FOOD as LogType, name: 'Перекус', icon: 'cookie', created_at: now, updated_at: now },
         { id: generateId(), type: LogType.WORKOUT as LogType, name: 'Силовая', icon: 'dumbbell', created_at: now, updated_at: now },
         { id: generateId(), type: LogType.WORKOUT as LogType, name: 'Кардио', icon: 'heart', created_at: now, updated_at: now },
-        { id: generateId(), type: LogType.WORKOUT as LogType, name: 'Растяжка', icon: 'stretch', created_at: now, updated_at: now },
+        { id: generateId(), type: LogType.WORKOUT as LogType, name: 'Йога', icon: 'stretch', created_at: now, updated_at: now },
         { id: generateId(), type: LogType.FINANCE as LogType, name: 'Зарплата', icon: 'wallet', created_at: now, updated_at: now },
         { id: generateId(), type: LogType.FINANCE as LogType, name: 'Продукты', icon: 'shopping-cart', created_at: now, updated_at: now },
         { id: generateId(), type: LogType.FINANCE as LogType, name: 'Транспорт', icon: 'car', created_at: now, updated_at: now },
@@ -224,12 +224,6 @@ export async function initializeDatabase(): Promise<void> {
         { id: generateId(), name: 'Час', abbreviation: 'ч', type: 'time', created_at: now, updated_at: now },
         { id: generateId(), name: 'Рубль', abbreviation: '₽', type: 'money', created_at: now, updated_at: now },
       ])
-      
-      // Счета
-      await db.accounts.bulkAdd([
-        { id: generateId(), name: 'Наличные', type: 'cash', balance: 0, currency: 'RUB', created_at: now, updated_at: now },
-        { id: generateId(), name: 'Основная карта', type: 'card', balance: 0, currency: 'RUB', created_at: now, updated_at: now },
-      ])
     }
     
     console.log('Database initialized successfully')
@@ -237,3 +231,6 @@ export async function initializeDatabase(): Promise<void> {
     console.error('Failed to initialize database:', error)
   }
 }
+
+// Re-export seed functions
+export { seedDatabase, clearDatabase, reseedDatabase } from './seed'
