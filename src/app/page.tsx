@@ -6,11 +6,8 @@ import {
   Utensils,
   Dumbbell,
   Wallet,
-  Pill,
   BookOpen,
   ChefHat,
-  TrendingUp,
-  Plus,
   Timer,
   DollarSign,
 } from "lucide-react"
@@ -55,38 +52,6 @@ const quickActions = [
     icon: ChefHat,
     color: "text-rose-500",
     bgColor: "bg-rose-500/10",
-  },
-]
-
-// Navigation cards data
-const sections = [
-  {
-    href: "/logs",
-    title: "Учёт",
-    description: "Питание, тренировки, финансы",
-    icon: TrendingUp,
-    color: "text-primary",
-  },
-  {
-    href: "/items",
-    title: "Каталог",
-    description: "Витамины, лекарства, травы, продукты",
-    icon: Pill,
-    color: "text-purple-500",
-  },
-  {
-    href: "/books",
-    title: "Книги",
-    description: "Библиотека и чтение",
-    icon: BookOpen,
-    color: "text-amber-500",
-  },
-  {
-    href: "/recipes",
-    title: "Рецепты",
-    description: "Кулинарная книга",
-    icon: ChefHat,
-    color: "text-rose-500",
   },
 ]
 
@@ -152,17 +117,12 @@ export default function HomePage() {
         let todayExpenses = 0
         
         todayLogs.forEach((log) => {
-          // @ts-expect-error - metadata имеет разные типы для разных log.type
           if (log.type === "food" && log.metadata?.calories) {
-            // @ts-expect-error - metadata имеет разные типы для разных log.type
             todayCalories += log.metadata.calories
           }
-          // @ts-expect-error - metadata имеет разные типы для разных log.type
           if (log.type === "workout" && log.metadata?.duration) {
-            // @ts-expect-error - metadata имеет разные типы для разных log.type
             todayWorkoutMinutes += log.metadata.duration
           }
-          // @ts-expect-error - metadata имеет разные типы для разных log.type
           if (log.type === "finance" && log.value && log.metadata?.finance_type !== "income") {
             todayExpenses += log.value
           }
@@ -252,27 +212,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Navigation Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {sections.map((section) => (
-            <Link key={section.href} href={section.href}>
-              <Card className="hover:bg-accent transition-colors h-full">
-                <CardContent className="p-4 flex flex-col items-center gap-2 text-center">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-muted`}>
-                    <section.icon className={`h-6 w-6 ${section.color}`} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{section.title}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {section.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-
         {/* Database Stats */}
         <div className="grid grid-cols-4 gap-2">
           <div className="p-3 rounded-xl bg-muted text-center">
@@ -313,11 +252,9 @@ export default function HomePage() {
               {recentLogs.map((log) => {
                 const TypeIcon = getTypeIcon(log.type)
                 // Определяем цвет для финансов по типу транзакции
-                let colorKey = log.type
-                // @ts-expect-error - metadata имеет разные типы
+                let colorKey: string = log.type
                 if (log.type === "finance" && log.metadata?.finance_type === "income") {
                   colorKey = "finance_income"
-                // @ts-expect-error - metadata имеет разные типы
                 } else if (log.type === "finance" && log.metadata?.finance_type === "expense") {
                   colorKey = "finance_expense"
                 }

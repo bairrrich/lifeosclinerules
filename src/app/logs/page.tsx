@@ -155,11 +155,9 @@ export default function LogsPage() {
             {filteredLogs.map((log) => {
               const TypeIcon = getTypeIcon(log.type)
               // Определяем цвет для финансов по типу транзакции
-              let colorKey = log.type
-              // @ts-expect-error - metadata имеет разные типы
+              let colorKey: string = log.type
               if (log.type === "finance" && log.metadata?.finance_type === "income") {
                 colorKey = "finance_income"
-              // @ts-expect-error - metadata имеет разные типы
               } else if (log.type === "finance" && log.metadata?.finance_type === "expense") {
                 colorKey = "finance_expense"
               }

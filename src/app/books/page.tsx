@@ -92,6 +92,7 @@ export default function BooksPage() {
     reading: books.filter((b) => b.userBook?.status === "reading").length,
     completed: books.filter((b) => b.userBook?.status === "completed").length,
     planned: books.filter((b) => b.userBook?.status === "planned").length,
+    paused: books.filter((b) => b.userBook?.status === "paused").length,
   }
 
   const formatDate = (dateString: string) => {
@@ -106,7 +107,7 @@ export default function BooksPage() {
     <AppLayout title="Книги">
       <div className="container mx-auto px-4 py-6 space-y-4">
         {/* Статистика */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-5 gap-2">
           <Card className="p-3 text-center">
             <div className="text-2xl font-bold">{stats.total}</div>
             <div className="text-xs text-muted-foreground">Всего</div>
@@ -122,6 +123,10 @@ export default function BooksPage() {
           <Card className="p-3 text-center">
             <div className="text-2xl font-bold text-gray-500">{stats.planned}</div>
             <div className="text-xs text-muted-foreground">В планах</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-yellow-500">{stats.paused}</div>
+            <div className="text-xs text-muted-foreground">Пауза</div>
           </Card>
         </div>
 

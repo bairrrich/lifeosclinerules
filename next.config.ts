@@ -2,13 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  // Отключаем кэширование для dev-режима
-  experimental: {
-    // Отключаем кэш турбопака
-    turbotrace: {
-      logLevel: "error",
-    },
-  },
   // Отключаем статическую генерацию для динамических страниц
   output: "standalone",
   // Принудительно отключаем кэширование
