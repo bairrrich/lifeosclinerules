@@ -1,6 +1,7 @@
 "use client"
 
-import { Menu } from "lucide-react"
+import Link from "next/link"
+import { Menu, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface HeaderProps {
@@ -29,8 +30,14 @@ export function Header({ title = "Life OS", showMenu = false, onMenuClick }: Hea
             <h1 className="text-lg font-semibold">{title}</h1>
           </div>
 
-          {/* Right section - empty for alignment */}
+          {/* Right section - settings icon */}
           <div className="flex items-center gap-2 w-24 justify-end">
+            <Link href="/settings">
+              <Button variant="ghost" size="icon">
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Настройки</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

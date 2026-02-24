@@ -81,10 +81,126 @@ export interface FoodMetadata {
   carbs?: number
 }
 
+// ============================================
+// Типы тренировок
+// ============================================
+
+export type WorkoutType = 'strength' | 'cardio' | 'yoga'
+
+// Силовые тренировки - подкатегории
+export type StrengthSubcategory = 
+  // По анатомическому принципу
+  | 'chest' // Грудь
+  | 'back' // Спина
+  | 'legs' // Ноги
+  | 'shoulders' // Плечи
+  | 'arms' // Руки
+  | 'core' // Пресс (Кор)
+  // По типу оборудования
+  | 'free_weights' // Свободные веса
+  | 'machines' // Тренажеры
+  | 'bodyweight' // С собственным весом
+  | 'functional' // Функциональный тренинг
+
+// Кардио - подкатегории
+export type CardioSubcategory = 
+  // По типу активности
+  | 'running' // Бег
+  | 'walking' // Ходьба
+  | 'cycling' // Велосипед
+  | 'rowing' // Гребля
+  | 'jumping' // Прыжки
+  // По интенсивности
+  | 'liss' // LISS
+  | 'hiit' // HIIT
+  | 'tabata' // Табата
+
+// Йога - подкатегории
+export type YogaSubcategory = 
+  // По стилям
+  | 'hatha' // Хатха-йога
+  | 'vinyasa' // Виньяса-йога
+  | 'ashtanga' // Аштанга-йога
+  | 'kundalini' // Кундалини-йога
+  | 'iyengar' // Айенгар-йога
+  // По целям
+  | 'stretching' // Стретчинг / Гибкость
+  | 'power' // Силовая йога
+  | 'relax' // Релакс / Восстановление
+  | 'breathing' // Дыхание и медитация
+  // По уровню
+  | 'beginner' // Для начинающих
+  | 'intermediate' // Для продолжающих
+  | 'advanced' // Для опытных
+
+// Цели тренировок
+export type WorkoutGoal = 
+  | 'mass' // Набор массы
+  | 'relief' // Рельеф
+  | 'strength' // Сила
+  | 'endurance' // Выносливость
+  | 'flexibility' // Гибкость
+  | 'relaxation' // Расслабление
+  | 'balance' // Баланс
+  | 'fat_loss' // Сжигание жира
+  | 'recovery' // Восстановление
+
+// Метрики для силовой тренировки
+export interface StrengthMetrics {
+  exercises_count?: number // Количество упражнений
+  sets_count?: number // Количество подходов
+  reps_count?: number // Количество повторов
+  total_weight?: number // Общий вес (кг)
+}
+
+// Метрики для кардио тренировки
+export interface CardioMetrics {
+  distance?: number // Дистанция (км)
+  average_speed?: number // Средняя скорость (км/ч)
+  average_pace?: string // Средний темп (мин/км)
+  rounds?: number // Количество раундов (для HIIT/Tabata)
+}
+
+// Метрики для йоги
+export interface YogaMetrics {
+  level?: 'beginner' | 'intermediate' | 'advanced' // Уровень
+  focus?: 'flexibility' | 'strength' | 'relaxation' | 'meditation' | 'breathing' // Фокус
+}
+
+// Объединённые метаданные тренировки
 export interface WorkoutMetadata {
-  duration?: number
+  // Общие поля
+  duration?: number // Длительность в минутах
   intensity?: 'low' | 'medium' | 'high'
   exercise_id?: UUID
+  
+  // Подкатегория в зависимости от типа тренировки
+  subcategory?: StrengthSubcategory | CardioSubcategory | YogaSubcategory
+  
+  // Дополнительные параметры
+  equipment?: string | string[] // Инвентарь (одно или несколько)
+  goal?: WorkoutGoal // Цель тренировки
+  calories_burned?: number // Сожженные калории
+  
+  // Пульс (общее для кардио и силовых)
+  heart_rate_avg?: number // Средний пульс
+  heart_rate_max?: number // Максимальный пульс
+  
+  // Специфические метрики для силовой
+  exercises_count?: number
+  sets_count?: number
+  reps_count?: number
+  total_weight?: number
+  
+  // Специфические метрики для кардио
+  distance?: number // Дистанция (км)
+  average_speed?: number // Средняя скорость
+  average_pace?: string // Средний темп
+  rounds?: number // Количество раундов
+  
+  // Специфические метрики для йоги
+  level?: 'beginner' | 'intermediate' | 'advanced'
+  focus?: 'flexibility' | 'strength' | 'relaxation' | 'meditation' | 'breathing'
 }
 
 export interface FinanceMetadata {

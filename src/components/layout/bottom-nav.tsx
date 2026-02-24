@@ -7,7 +7,7 @@ import {
   ClipboardList,
   Package,
   BookOpen,
-  Settings,
+  BarChart3,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -33,9 +33,9 @@ const navItems = [
     icon: BookOpen,
   },
   {
-    href: "/settings",
-    label: "Настройки",
-    icon: Settings,
+    href: "/analytics",
+    label: "Аналитика",
+    icon: BarChart3,
   },
 ]
 

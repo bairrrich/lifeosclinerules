@@ -12,16 +12,26 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { NativeSelect } from "@/components/ui/native-select"
-import { db, getEntityById, updateEntity, getCategoriesByType } from "@/lib/db"
-import type { LogType, Category, FoodMetadata, WorkoutMetadata, FinanceMetadata, FinanceType } from "@/types"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { db, getEntityById, updateEntity, getCategoriesByType, initializeDatabase } from "@/lib/db"
+import { 
+  FoodForm, 
+  WorkoutForm, 
+  FinanceForm, 
+  categoryColors, 
+  financeTypeColors, 
+  typeLabels,
+  foodCategoryOrder,
+  workoutCategoryOrder,
+  getSubcategoryLabel,
+} from "@/components/logs"
+import type { LogType, Category, FoodMetadata, WorkoutMetadata, FinanceMetadata, FinanceType, Account, Log, StrengthSubcategory, CardioSubcategory, YogaSubcategory, WorkoutGoal } from "@/types"
 
 // Form schemas
 const baseLogSchema = z.object({
   date: z.string().min(1, "Выберите дату"),
   time: z.string().min(1, "Выберите время"),
-  title: z.string().min(1, "Введите название"),
+  title: z.string().optional(),
   category_id: z.string().optional(),
   quantity: z.number().optional(),
   unit: z.string().optional(),
@@ -31,6 +41,7 @@ const baseLogSchema = z.object({
 })
 
 const foodSchema = baseLogSchema.extend({
+  title: z.string().min(1, "Введите название"),
   calories: z.number().optional(),
   protein: z.number().optional(),
   fat: z.number().optional(),
@@ -38,6 +49,7 @@ const foodSchema = baseLogSchema.extend({
 })
 
 const workoutSchema = baseLogSchema.extend({
+  title: z.string().min(1, "Введите название"),
   duration: z.number().optional(),
   intensity: z.enum(["low", "medium", "high"]).optional(),
 })
@@ -49,37 +61,6 @@ const financeSchema = baseLogSchema.extend({
 
 type FormData = z.infer<typeof foodSchema> | z.infer<typeof workoutSchema> | z.infer<typeof financeSchema>
 
-const typeLabels: Record<LogType, string> = {
-  food: "Питание",
-  workout: "Тренировка",
-  finance: "Финансы",
-}
-
-// Цвета для категорий (только активные имеют фон)
-const categoryColors: Record<string, string> = {
-  // Питание
-  "Завтрак": "data-[state=active]:bg-orange-500 data-[state=active]:text-white",
-  "Обед": "data-[state=active]:bg-green-500 data-[state=active]:text-white",
-  "Ужин": "data-[state=active]:bg-purple-500 data-[state=active]:text-white",
-  "Перекус": "data-[state=active]:bg-cyan-500 data-[state=active]:text-white",
-  // Тренировки
-  "Силовая": "data-[state=active]:bg-red-500 data-[state=active]:text-white",
-  "Кардио": "data-[state=active]:bg-blue-500 data-[state=active]:text-white",
-  "Йога": "data-[state=active]:bg-emerald-500 data-[state=active]:text-white",
-}
-
-// Цвета для типов финансов
-const financeTypeColors: Record<string, string> = {
-  "income": "data-[state=active]:bg-green-500 data-[state=active]:text-white",
-  "expense": "data-[state=active]:bg-red-500 data-[state=active]:text-white",
-  "transfer": "data-[state=active]:bg-yellow-500 data-[state=active]:text-white",
-}
-
-// Порядок категорий для питания
-const foodCategoryOrder = ["Завтрак", "Обед", "Ужин", "Перекус"]
-// Порядок категорий для тренировок
-const workoutCategoryOrder = ["Силовая", "Кардио", "Йога"]
-
 export default function EditLogPage() {
   const router = useRouter()
   const params = useParams()
@@ -87,16 +68,44 @@ export default function EditLogPage() {
   const id = params.id as string
 
   const [categories, setCategories] = useState<Category[]>([])
+  const [accounts, setAccounts] = useState<Account[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("")
   const [financeType, setFinanceType] = useState<string>("expense")
+  const [selectedAccountId, setSelectedAccountId] = useState<string>("")
+  const [targetAccountId, setTargetAccountId] = useState<string>("")
+  
+  // Состояния для зависимых списков финансов
+  const [financeCategory, setFinanceCategory] = useState("")
+  const [financeSubcategory, setFinanceSubcategory] = useState("")
+  const [financeItem, setFinanceItem] = useState("")
+  const [financeSupplier, setFinanceSupplier] = useState("")
+  
+  // Состояния для тренировок
+  const [workoutSubcategory, setWorkoutSubcategory] = useState<string>("")
+  const [workoutEquipment, setWorkoutEquipment] = useState<string>("")
+  const [workoutGoal, setWorkoutGoal] = useState<string>("")
+  const [caloriesBurned, setCaloriesBurned] = useState<number | undefined>()
+  const [distance, setDistance] = useState<number | undefined>()
+  const [heartRateAvg, setHeartRateAvg] = useState<number | undefined>()
+  const [heartRateMax, setHeartRateMax] = useState<number | undefined>()
+  const [exercisesCount, setExercisesCount] = useState<number | undefined>()
+  const [setsCount, setSetsCount] = useState<number | undefined>()
+  const [repsCount, setRepsCount] = useState<number | undefined>()
+  const [totalWeight, setTotalWeight] = useState<number | undefined>()
+  const [averageSpeed, setAverageSpeed] = useState<number | undefined>()
+  const [averagePace, setAveragePace] = useState<string>("")
+  const [rounds, setRounds] = useState<number | undefined>()
+  const [yogaLevel, setYogaLevel] = useState<string>("")
+  const [yogaFocus, setYogaFocus] = useState<string>("")
 
   const {
     register,
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(
@@ -106,27 +115,38 @@ export default function EditLogPage() {
     ),
   })
 
+  // Получаем текущую категорию тренировки
+  const selectedWorkoutCategory = categories.find(c => c.id === selectedCategoryId)?.name || ""
+
   useEffect(() => {
     async function loadData() {
       try {
-        const [log, cats] = await Promise.all([
-          getEntityById(db.logs, id),
+        await initializeDatabase()
+        
+        const [log, cats, accs] = await Promise.all([
+          getEntityById(db.logs, id) as Promise<Log | undefined>,
           getCategoriesByType(type),
+          db.accounts.toArray(),
         ])
 
         // Сортируем категории в нужном порядке
         let sortedCats = cats
         if (type === "food") {
-          sortedCats = foodCategoryOrder
+          const orderCats = foodCategoryOrder
             .map(name => cats.find(c => c.name === name))
             .filter(Boolean) as Category[]
+          const remainingCats = cats.filter(c => !foodCategoryOrder.includes(c.name))
+          sortedCats = [...orderCats, ...remainingCats]
         } else if (type === "workout") {
-          sortedCats = workoutCategoryOrder
+          const orderCats = workoutCategoryOrder
             .map(name => cats.find(c => c.name === name))
             .filter(Boolean) as Category[]
+          const remainingCats = cats.filter(c => !workoutCategoryOrder.includes(c.name))
+          sortedCats = [...orderCats, ...remainingCats]
         }
 
         setCategories(sortedCats)
+        setAccounts(accs)
 
         if (log) {
           // Парсим дату и время из ISO-строки
@@ -138,10 +158,6 @@ export default function EditLogPage() {
           // Устанавливаем начальные значения для Tabs
           if (log.category_id) {
             setSelectedCategoryId(log.category_id)
-          }
-          if (type === "finance" && log.metadata) {
-            const m = log.metadata as FinanceMetadata
-            setFinanceType(m.finance_type)
           }
           
           const baseData: Record<string, unknown> = {
@@ -166,12 +182,40 @@ export default function EditLogPage() {
             })
           } else if (log.metadata && type === "workout") {
             const m = log.metadata as WorkoutMetadata
+            
+            // Устанавливаем все специфические поля
+            setWorkoutSubcategory(m.subcategory || "")
+            setWorkoutEquipment(Array.isArray(m.equipment) ? m.equipment[0] : m.equipment || "")
+            setWorkoutGoal(m.goal || "")
+            setCaloriesBurned(m.calories_burned)
+            setDistance(m.distance)
+            setHeartRateAvg(m.heart_rate_avg)
+            setHeartRateMax(m.heart_rate_max)
+            setExercisesCount(m.exercises_count)
+            setSetsCount(m.sets_count)
+            setRepsCount(m.reps_count)
+            setTotalWeight(m.total_weight)
+            setAverageSpeed(m.average_speed)
+            setAveragePace(m.average_pace || "")
+            setRounds(m.rounds)
+            setYogaLevel(m.level || "")
+            setYogaFocus(m.focus || "")
+            
             Object.assign(baseData, {
               duration: m.duration,
               intensity: m.intensity,
             })
           } else if (log.metadata && type === "finance") {
             const m = log.metadata as FinanceMetadata
+            const extra = m as unknown as Record<string, string>
+            
+            setFinanceType(m.finance_type)
+            setFinanceCategory(extra.category || "")
+            setFinanceSubcategory(extra.subcategory || "")
+            setFinanceItem(extra.item || "")
+            setFinanceSupplier(extra.supplier || "")
+            setSelectedAccountId(m.account_id || "")
+            setTargetAccountId(extra.target_account_id || "")
             Object.assign(baseData, {
               finance_type: m.finance_type,
               account_id: m.account_id,
@@ -192,12 +236,29 @@ export default function EditLogPage() {
   const onSubmit = async (data: FormData) => {
     setIsSaving(true)
     try {
-      // Объединяем дату и время в ISO-строку
       const dateTime = `${data.date}T${data.time}:00`
+      
+      // Формируем title
+      let title = data.title || ""
+      if (type === "finance") {
+        const parts = [financeCategory, financeSubcategory, financeItem].filter(Boolean)
+        if (parts.length > 0) {
+          title = parts.join(" → ")
+        } else {
+          title = "Финансовая операция"
+        }
+      } else if (type === "workout") {
+        const subcategoryLabel = getSubcategoryLabel(selectedWorkoutCategory, workoutSubcategory)
+        if (subcategoryLabel) {
+          title = `${selectedWorkoutCategory} (${subcategoryLabel})`
+        } else {
+          title = selectedWorkoutCategory
+        }
+      }
       
       const baseData = {
         date: dateTime,
-        title: data.title,
+        title: title,
         category_id: data.category_id || undefined,
         quantity: data.quantity,
         unit: data.unit,
@@ -221,13 +282,34 @@ export default function EditLogPage() {
         metadata = {
           duration: workoutData.duration,
           intensity: workoutData.intensity,
+          subcategory: workoutSubcategory as StrengthSubcategory | CardioSubcategory | YogaSubcategory | undefined,
+          equipment: workoutEquipment || undefined,
+          goal: workoutGoal as WorkoutGoal | undefined,
+          calories_burned: caloriesBurned,
+          distance: distance,
+          heart_rate_avg: heartRateAvg,
+          heart_rate_max: heartRateMax,
+          exercises_count: exercisesCount,
+          sets_count: setsCount,
+          reps_count: repsCount,
+          total_weight: totalWeight,
+          average_speed: averageSpeed,
+          average_pace: averagePace || undefined,
+          rounds: rounds,
+          level: yogaLevel as 'beginner' | 'intermediate' | 'advanced' | undefined,
+          focus: yogaFocus as 'flexibility' | 'strength' | 'relaxation' | 'meditation' | 'breathing' | undefined,
         }
       } else if (type === "finance") {
         const financeData = data as z.infer<typeof financeSchema>
         metadata = {
           finance_type: financeData.finance_type as FinanceType,
           account_id: financeData.account_id,
-        }
+          category: financeCategory,
+          subcategory: financeSubcategory,
+          item: financeItem,
+          supplier: financeSupplier,
+          target_account_id: financeType === "transfer" ? targetAccountId : undefined,
+        } as FinanceMetadata & { category?: string; subcategory?: string; item?: string; supplier?: string; target_account_id?: string }
       }
 
       await updateEntity(db.logs, id, {
@@ -264,35 +346,23 @@ export default function EditLogPage() {
           {/* Basic Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Основное</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Дата и время на первой строке */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date">Дата *</Label>
+              <div className="flex items-center justify-between">
+                <CardTitle>Основное</CardTitle>
+                <div className="flex items-center gap-2">
                   <Input
-                    id="date"
                     type="date"
+                    className="w-auto"
                     {...register("date")}
                   />
-                  {errors.date && (
-                    <p className="text-sm text-destructive">{errors.date.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="time">Время *</Label>
                   <Input
-                    id="time"
                     type="time"
+                    className="w-auto"
                     {...register("time")}
                   />
-                  {errors.time && (
-                    <p className="text-sm text-destructive">{errors.time.message}</p>
-                  )}
                 </div>
               </div>
-
+            </CardHeader>
+            <CardContent className="space-y-4">
               {/* Tabs для категорий питания и тренировок */}
               {(type === "food" || type === "workout") && categories.length > 0 && (
                 <div className="space-y-2">
@@ -302,6 +372,12 @@ export default function EditLogPage() {
                     onValueChange={(value) => {
                       setSelectedCategoryId(value)
                       setValue("category_id", value)
+                      // Сбрасываем подкатегорию при смене типа тренировки
+                      if (type === "workout") {
+                        setWorkoutSubcategory("")
+                        setWorkoutEquipment("")
+                        setWorkoutGoal("")
+                      }
                     }}
                   >
                     <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}>
@@ -328,6 +404,11 @@ export default function EditLogPage() {
                     onValueChange={(value) => {
                       setFinanceType(value)
                       setValue("finance_type", value as "income" | "expense" | "transfer")
+                      setFinanceCategory("")
+                      setFinanceSubcategory("")
+                      setFinanceItem("")
+                      setFinanceSupplier("")
+                      setTargetAccountId("")
                     }}
                   >
                     <TabsList className="grid grid-cols-3">
@@ -339,150 +420,84 @@ export default function EditLogPage() {
                 </div>
               )}
 
-              {/* Select для категорий финансов (подкатегории) */}
-              {type === "finance" && categories.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Категория</Label>
-                  <NativeSelect
-                    onChange={(e) => setValue("category_id", e.target.value)}
-                  >
-                    <option value="">Выберите категорию</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                </div>
+              {/* Food Form */}
+              {type === "food" && (
+                <FoodForm
+                  register={register as Parameters<typeof FoodForm>[0]['register']}
+                  watch={watch as Parameters<typeof FoodForm>[0]['watch']}
+                  setValue={setValue as Parameters<typeof FoodForm>[0]['setValue']}
+                  errors={errors as Record<string, { message?: string }>}
+                />
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="title">Название *</Label>
-                <Input
-                  id="title"
-                  placeholder="Введите название"
-                  {...register("title")}
+              {/* Finance Form */}
+              {type === "finance" && (
+                <FinanceForm
+                  register={register as Parameters<typeof FinanceForm>[0]['register']}
+                  watch={watch as Parameters<typeof FinanceForm>[0]['watch']}
+                  setValue={setValue as Parameters<typeof FinanceForm>[0]['setValue']}
+                  errors={errors as Record<string, { message?: string }>}
+                  accounts={accounts}
+                  financeType={financeType}
+                  setFinanceType={setFinanceType}
+                  selectedAccountId={selectedAccountId}
+                  setSelectedAccountId={setSelectedAccountId}
+                  targetAccountId={targetAccountId}
+                  setTargetAccountId={setTargetAccountId}
+                  financeCategory={financeCategory}
+                  setFinanceCategory={setFinanceCategory}
+                  financeSubcategory={financeSubcategory}
+                  setFinanceSubcategory={setFinanceSubcategory}
+                  financeItem={financeItem}
+                  setFinanceItem={setFinanceItem}
+                  financeSupplier={financeSupplier}
+                  setFinanceSupplier={setFinanceSupplier}
                 />
-                {errors.title && (
-                  <p className="text-sm text-destructive">{errors.title.message}</p>
-                )}
-              </div>
+              )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="quantity">Количество</Label>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    step="0.01"
-                    {...register("quantity", { valueAsNumber: true })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="unit">Единица</Label>
-                  <Input
-                    id="unit"
-                    placeholder="г, шт, мл"
-                    {...register("unit")}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="value">Значение</Label>
-                <Input
-                  id="value"
-                  type="number"
-                  step="0.01"
-                  placeholder={type === "finance" ? "Сумма" : "Значение"}
-                  {...register("value", { valueAsNumber: true })}
+              {/* Workout Form */}
+              {type === "workout" && (
+                <WorkoutForm
+                  register={register as Parameters<typeof WorkoutForm>[0]['register']}
+                  watch={watch as Parameters<typeof WorkoutForm>[0]['watch']}
+                  setValue={setValue as Parameters<typeof WorkoutForm>[0]['setValue']}
+                  selectedCategory={selectedWorkoutCategory}
+                  workoutSubcategory={workoutSubcategory}
+                  setWorkoutSubcategory={setWorkoutSubcategory}
+                  workoutEquipment={workoutEquipment}
+                  setWorkoutEquipment={setWorkoutEquipment}
+                  workoutGoal={workoutGoal}
+                  setWorkoutGoal={setWorkoutGoal}
+                  caloriesBurned={caloriesBurned}
+                  setCaloriesBurned={setCaloriesBurned}
+                  distance={distance}
+                  setDistance={setDistance}
+                  heartRateAvg={heartRateAvg}
+                  setHeartRateAvg={setHeartRateAvg}
+                  heartRateMax={heartRateMax}
+                  setHeartRateMax={setHeartRateMax}
+                  exercisesCount={exercisesCount}
+                  setExercisesCount={setExercisesCount}
+                  setsCount={setsCount}
+                  setSetsCount={setSetsCount}
+                  repsCount={repsCount}
+                  setRepsCount={setRepsCount}
+                  totalWeight={totalWeight}
+                  setTotalWeight={setTotalWeight}
+                  averageSpeed={averageSpeed}
+                  setAverageSpeed={setAverageSpeed}
+                  averagePace={averagePace}
+                  setAveragePace={setAveragePace}
+                  rounds={rounds}
+                  setRounds={setRounds}
+                  yogaLevel={yogaLevel}
+                  setYogaLevel={setYogaLevel}
+                  yogaFocus={yogaFocus}
+                  setYogaFocus={setYogaFocus}
                 />
-              </div>
+              )}
             </CardContent>
           </Card>
-
-          {/* Type-specific fields */}
-          {type === "food" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Пищевая ценность</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="calories">Калории</Label>
-                    <Input
-                      id="calories"
-                      type="number"
-                      {...register("calories", { valueAsNumber: true })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="protein">Белки (г)</Label>
-                    <Input
-                      id="protein"
-                      type="number"
-                      step="0.1"
-                      {...register("protein", { valueAsNumber: true })}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fat">Жиры (г)</Label>
-                    <Input
-                      id="fat"
-                      type="number"
-                      step="0.1"
-                      {...register("fat", { valueAsNumber: true })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="carbs">Углеводы (г)</Label>
-                    <Input
-                      id="carbs"
-                      type="number"
-                      step="0.1"
-                      {...register("carbs", { valueAsNumber: true })}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {type === "workout" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Параметры тренировки</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="duration">Длительность (мин)</Label>
-                    <Input
-                      id="duration"
-                      type="number"
-                      {...register("duration", { valueAsNumber: true })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Интенсивность</Label>
-                    <NativeSelect
-                      onChange={(e) =>
-                        setValue("intensity", e.target.value as "low" | "medium" | "high")
-                      }
-                    >
-                      <option value="">Выберите</option>
-                      <option value="low">Низкая</option>
-                      <option value="medium">Средняя</option>
-                      <option value="high">Высокая</option>
-                    </NativeSelect>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
 
           {/* Notes */}
           <Card>
