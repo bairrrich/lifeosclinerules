@@ -11,13 +11,13 @@ import {
   ChefHat,
   TrendingUp,
   Plus,
+  Timer,
+  DollarSign,
 } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase } from "@/lib/db"
-import type { Log, Item, Content } from "@/types"
+import type { Log } from "@/types"
 
 // Quick action cards data
 const quickActions = [
@@ -43,11 +43,18 @@ const quickActions = [
     bgColor: "bg-green-500/10",
   },
   {
-    href: "/items/vitamins/new",
-    label: "Витамины",
-    icon: Pill,
-    color: "text-purple-500",
-    bgColor: "bg-purple-500/10",
+    href: "/books/new",
+    label: "Книга",
+    icon: BookOpen,
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+  },
+  {
+    href: "/recipes/new",
+    label: "Рецепт",
+    icon: ChefHat,
+    color: "text-rose-500",
+    bgColor: "bg-rose-500/10",
   },
 ]
 
@@ -55,24 +62,31 @@ const quickActions = [
 const sections = [
   {
     href: "/logs",
-    title: "Учет",
+    title: "Учёт",
     description: "Питание, тренировки, финансы",
     icon: TrendingUp,
-    stats: ["food", "workout", "finance"],
+    color: "text-primary",
   },
   {
     href: "/items",
     title: "Каталог",
-    description: "Витамины, лекарства, травы",
+    description: "Витамины, лекарства, травы, продукты",
     icon: Pill,
-    stats: ["vitamin", "medicine", "herb"],
+    color: "text-purple-500",
   },
   {
-    href: "/content",
-    title: "Контент",
-    description: "Книги и рецепты",
+    href: "/books",
+    title: "Книги",
+    description: "Библиотека и чтение",
     icon: BookOpen,
-    stats: ["book", "recipe"],
+    color: "text-amber-500",
+  },
+  {
+    href: "/recipes",
+    title: "Рецепты",
+    description: "Кулинарная книга",
+    icon: ChefHat,
+    color: "text-rose-500",
   },
 ]
 
@@ -93,8 +107,12 @@ export default function HomePage() {
   const [stats, setStats] = useState({
     logs: 0,
     items: 0,
-    content: 0,
+    books: 0,
+    recipes: 0,
     todayLogs: 0,
+    todayCalories: 0,
+    todayWorkoutMinutes: 0,
+    todayExpenses: 0,
   })
   const [recentLogs, setRecentLogs] = useState<Log[]>([])
 
@@ -103,14 +121,37 @@ export default function HomePage() {
       try {
         await initializeDatabase()
         
-        const [logs, items, content] = await Promise.all([
+        const [logs, items, books, recipes] = await Promise.all([
           db.logs.toArray(),
           db.items.toArray(),
-          db.content.toArray(),
+          db.books.count(),
+          db.content.where("type").equals("recipe").count(),
         ])
         
         const today = new Date().toISOString().split("T")[0]
         const todayLogs = logs.filter((log) => log.date.startsWith(today))
+        
+        // Подсчитываем статистику за сегодня
+        let todayCalories = 0
+        let todayWorkoutMinutes = 0
+        let todayExpenses = 0
+        
+        todayLogs.forEach((log) => {
+          // @ts-expect-error - metadata имеет разные типы для разных log.type
+          if (log.type === "food" && log.metadata?.calories) {
+            // @ts-expect-error - metadata имеет разные типы для разных log.type
+            todayCalories += log.metadata.calories
+          }
+          // @ts-expect-error - metadata имеет разные типы для разных log.type
+          if (log.type === "workout" && log.metadata?.duration) {
+            // @ts-expect-error - metadata имеет разные типы для разных log.type
+            todayWorkoutMinutes += log.metadata.duration
+          }
+          // @ts-expect-error - metadata имеет разные типы для разных log.type
+          if (log.type === "finance" && log.value && log.metadata?.finance_type !== "income") {
+            todayExpenses += log.value
+          }
+        })
         
         // Сортируем по дате и берём последние 5 записей
         const sortedLogs = [...logs].sort((a, b) => 
@@ -121,8 +162,12 @@ export default function HomePage() {
         setStats({
           logs: logs.length,
           items: items.length,
-          content: content.length,
+          books: books,
+          recipes: recipes,
           todayLogs: todayLogs.length,
+          todayCalories,
+          todayWorkoutMinutes,
+          todayExpenses,
         })
         setRecentLogs(recent)
       } catch (error) {
@@ -138,38 +183,43 @@ export default function HomePage() {
   return (
     <AppLayout title="Life OS">
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Today Stats */}
+        <div className="grid grid-cols-3 gap-3">
           <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">{stats.todayLogs}</div>
-              <div className="text-sm text-muted-foreground">Сегодня</div>
+            <CardContent className="p-3 text-center">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <Utensils className="h-4 w-4 text-orange-500" />
+                <span className="text-xs text-muted-foreground">Ккал</span>
+              </div>
+              <div className="text-xl font-bold">{stats.todayCalories || "-"}</div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">{stats.logs}</div>
-              <div className="text-sm text-muted-foreground">Записей</div>
+            <CardContent className="p-3 text-center">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <Timer className="h-4 w-4 text-blue-500" />
+                <span className="text-xs text-muted-foreground">Мин</span>
+              </div>
+              <div className="text-xl font-bold">{stats.todayWorkoutMinutes || "-"}</div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">{stats.items}</div>
-              <div className="text-sm text-muted-foreground">Каталог</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">{stats.content}</div>
-              <div className="text-sm text-muted-foreground">Контент</div>
+            <CardContent className="p-3 text-center">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <DollarSign className="h-4 w-4 text-green-500" />
+                <span className="text-xs text-muted-foreground">Расход</span>
+              </div>
+              <div className="text-xl font-bold">
+                {stats.todayExpenses ? `${stats.todayExpenses.toLocaleString()}₽` : "-"}
+              </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Быстрые действия</h2>
-          <div className="grid grid-cols-4 gap-3">
+          <h2 className="text-lg font-semibold mb-3">Быстрые действия</h2>
+          <div className="flex justify-center gap-3 flex-wrap">
             {quickActions.map((action) => (
               <Link
                 key={action.href}
@@ -177,9 +227,9 @@ export default function HomePage() {
                 className="flex flex-col items-center gap-2"
               >
                 <div
-                  className={`flex h-14 w-14 items-center justify-center rounded-2xl ${action.bgColor}`}
+                  className={`flex h-12 w-12 items-center justify-center rounded-2xl ${action.bgColor}`}
                 >
-                  <action.icon className={`h-6 w-6 ${action.color}`} />
+                  <action.icon className={`h-5 w-5 ${action.color}`} />
                 </div>
                 <span className="text-xs font-medium">{action.label}</span>
               </Link>
@@ -188,30 +238,49 @@ export default function HomePage() {
         </div>
 
         {/* Navigation Cards */}
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {sections.map((section) => (
             <Link key={section.href} href={section.href}>
-              <Card className="hover:bg-accent transition-colors">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-                    <section.icon className="h-6 w-6 text-primary" />
+              <Card className="hover:bg-accent transition-colors h-full">
+                <CardContent className="p-4 flex flex-col items-center gap-2 text-center">
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-muted`}>
+                    <section.icon className={`h-6 w-6 ${section.color}`} />
                   </div>
-                  <div className="flex-1">
+                  <div>
                     <h3 className="font-semibold">{section.title}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {section.description}
                     </p>
                   </div>
-                  <Plus className="h-5 w-5 text-muted-foreground" />
                 </CardContent>
               </Card>
             </Link>
           ))}
         </div>
 
+        {/* Database Stats */}
+        <div className="grid grid-cols-4 gap-2">
+          <div className="p-3 rounded-xl bg-muted text-center">
+            <div className="text-lg font-bold">{stats.logs}</div>
+            <div className="text-xs text-muted-foreground">Записей</div>
+          </div>
+          <div className="p-3 rounded-xl bg-muted text-center">
+            <div className="text-lg font-bold">{stats.items}</div>
+            <div className="text-xs text-muted-foreground">Каталог</div>
+          </div>
+          <div className="p-3 rounded-xl bg-muted text-center">
+            <div className="text-lg font-bold">{stats.books}</div>
+            <div className="text-xs text-muted-foreground">Книг</div>
+          </div>
+          <div className="p-3 rounded-xl bg-muted text-center">
+            <div className="text-lg font-bold">{stats.recipes}</div>
+            <div className="text-xs text-muted-foreground">Рецептов</div>
+          </div>
+        </div>
+
         {/* Recent Activity */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Последняя активность</h2>
+          <h2 className="text-lg font-semibold mb-3">Последняя активность</h2>
           {isLoading ? (
             <Card>
               <CardContent className="p-4 text-center text-muted-foreground">
@@ -221,7 +290,7 @@ export default function HomePage() {
           ) : stats.logs === 0 ? (
             <Card>
               <CardContent className="p-4 text-center text-muted-foreground">
-                Нет записей. Начните вести учет!
+                Нет записей. Начните вести учёт!
               </CardContent>
             </Card>
           ) : (
@@ -229,15 +298,15 @@ export default function HomePage() {
               {recentLogs.map((log) => (
                 <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
                   <Card className="hover:bg-accent transition-colors">
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl border ${typeColors[log.type] || 'bg-muted'}`}>
-                        <span className="text-lg">
+                    <CardContent className="p-3 flex items-center gap-3">
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl border ${typeColors[log.type] || 'bg-muted'}`}>
+                        <span className="text-base">
                           {log.type === 'food' ? '🍽️' : log.type === 'workout' ? '💪' : '💰'}
                         </span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium truncate">{log.title}</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="font-medium text-sm truncate">{log.title}</h3>
+                        <p className="text-xs text-muted-foreground">
                           {typeLabels[log.type] || log.type} • {new Date(log.date).toLocaleDateString('ru-RU', {
                             day: 'numeric',
                             month: 'short',

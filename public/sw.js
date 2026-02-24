@@ -1,39 +1,26 @@
-// Life OS Service Worker
-const CACHE_NAME = 'life-os-v1'
-const STATIC_ASSETS = [
-  '/',
-  '/logs',
-  '/items',
-  '/content',
-  '/analytics',
-  '/manifest.json',
-]
+// Life OS Service Worker - Network First Strategy
+const CACHE_NAME = 'life-os-v2'
 
-// Установка Service Worker
+// Установка Service Worker - кэшируем только статику
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS)
-    })
-  )
+  // Пропускаем кэширование при установке
   self.skipWaiting()
 })
 
-// Активация Service Worker
+// Активация Service Worker - очищаем весь старый кэш
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
+      // Удаляем ВСЕ кэши, включая старые версии
       return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
+        cacheNames.map((name) => caches.delete(name))
       )
     })
   )
   self.clients.claim()
 })
 
-// Обработка запросов (Network First для API, Cache First для статики)
+// Обработка запросов - всегда Network First
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
@@ -43,19 +30,28 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Для навигационных запросов возвращаем index.html
+  // Для навигационных запросов (HTML страниц) - всегда сеть
   if (request.mode === 'navigate') {
     event.respondWith(
-      caches.match('/').then((cachedResponse) => {
-        return cachedResponse || fetch(request)
-      }).catch(() => {
-        return caches.match('/')
-      })
+      fetch(request)
+        .then((response) => {
+          return response
+        })
+        .catch(() => {
+          // Только при офлайне возвращаем закэшированный index.html
+          return caches.match('/')
+        })
     )
     return
   }
 
-  // Для статических ресурсов - Cache First
+  // Для API запросов - только сеть, без кэширования
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(request))
+    return
+  }
+
+  // Для статических ресурсов (JS, CSS, изображения) - Network First
   if (
     request.destination === 'style' ||
     request.destination === 'script' ||
@@ -63,8 +59,8 @@ self.addEventListener('fetch', (event) => {
     request.destination === 'font'
   ) {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        return cachedResponse || fetch(request).then((response) => {
+      fetch(request)
+        .then((response) => {
           if (response.status === 200) {
             const responseClone = response.clone()
             caches.open(CACHE_NAME).then((cache) => {
@@ -73,25 +69,13 @@ self.addEventListener('fetch', (event) => {
           }
           return response
         })
-      })
+        .catch(() => {
+          return caches.match(request)
+        })
     )
     return
   }
 
-  // Для остальных запросов - Network First
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        if (response.status === 200) {
-          const responseClone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone)
-          })
-        }
-        return response
-      })
-      .catch(() => {
-        return caches.match(request)
-      })
-  )
+  // Для всех остальных запросов - только сеть
+  event.respondWith(fetch(request))
 })
