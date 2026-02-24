@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { format, subDays, eachDayOfInterval } from "date-fns"
 import { ru } from "date-fns/locale"
 import { Utensils, Dumbbell, Wallet, TrendingUp, TrendingDown } from "lucide-react"
@@ -67,18 +67,17 @@ export default function AnalyticsPage() {
     loadData()
   }, [])
 
-  // Получаем даты для выбранного периода
-  const getDaysInRange = () => {
+  // Мемоизированные данные для выбранного периода
+  const daysInRange = useMemo(() => {
     const days = parseInt(dateRange)
     const end = new Date()
     const start = subDays(end, days - 1)
     return eachDayOfInterval({ start, end })
-  }
+  }, [dateRange])
 
-  // Данные для графика калорий по дням
-  const getCaloriesByDay = () => {
-    const days = getDaysInRange()
-    return days.map((day) => {
+  // Мемоизированные данные для графика калорий
+  const caloriesData = useMemo(() => {
+    return daysInRange.map((day) => {
       const dayStr = format(day, "yyyy-MM-dd")
       const dayLogs = foodLogs.filter((log) => log.date.startsWith(dayStr))
       const totalCalories = dayLogs.reduce((sum, log) => {
@@ -90,12 +89,11 @@ export default function AnalyticsPage() {
         calories: totalCalories,
       }
     })
-  }
+  }, [daysInRange, foodLogs])
 
-  // Данные для графика БЖУ по дням
-  const getMacrosByDay = () => {
-    const days = getDaysInRange()
-    return days.map((day) => {
+  // Мемоизированные данные для БЖУ
+  const macrosData = useMemo(() => {
+    return daysInRange.map((day) => {
       const dayStr = format(day, "yyyy-MM-dd")
       const dayLogs = foodLogs.filter((log) => log.date.startsWith(dayStr))
       const totals = dayLogs.reduce(
@@ -114,12 +112,11 @@ export default function AnalyticsPage() {
         ...totals,
       }
     })
-  }
+  }, [daysInRange, foodLogs])
 
-  // Данные для графика тренировок
-  const getWorkoutStats = () => {
-    const days = getDaysInRange()
-    return days.map((day) => {
+  // Мемоизированные данные для тренировок
+  const workoutData = useMemo(() => {
+    return daysInRange.map((day) => {
       const dayStr = format(day, "yyyy-MM-dd")
       const dayLogs = workoutLogs.filter((log) => log.date.startsWith(dayStr))
       const totalDuration = dayLogs.reduce((sum, log) => {
@@ -132,12 +129,11 @@ export default function AnalyticsPage() {
         count: dayLogs.length,
       }
     })
-  }
+  }, [daysInRange, workoutLogs])
 
-  // Данные для графика финансов
-  const getFinanceByDay = () => {
-    const days = getDaysInRange()
-    return days.map((day) => {
+  // Мемоизированные данные для финансов
+  const financeData = useMemo(() => {
+    return daysInRange.map((day) => {
       const dayStr = format(day, "yyyy-MM-dd")
       const dayLogs = financeLogs.filter((log) => log.date.startsWith(dayStr))
       const totals = dayLogs.reduce(
@@ -159,12 +155,11 @@ export default function AnalyticsPage() {
         expense: totals.expense,
       }
     })
-  }
+  }, [daysInRange, financeLogs])
 
-  // Общая статистика
-  const getTotalStats = () => {
-    const days = getDaysInRange()
-    const startDate = format(days[0], "yyyy-MM-dd")
+  // Мемоизированная общая статистика
+  const stats = useMemo(() => {
+    const startDate = format(daysInRange[0], "yyyy-MM-dd")
 
     const periodFoodLogs = foodLogs.filter((log) => log.date >= startDate)
     const periodWorkoutLogs = workoutLogs.filter((log) => log.date >= startDate)
@@ -198,10 +193,10 @@ export default function AnalyticsPage() {
       expense: totalExpense,
       balance: totalIncome - totalExpense,
     }
-  }
+  }, [daysInRange, foodLogs, workoutLogs, financeLogs])
 
-  // Распределение по категориям питания
-  const getFoodByCategory = () => {
+  // Мемоизированные данные по категориям
+  const categoryData = useMemo(() => {
     const categoryTotals: Record<string, number> = {}
     foodLogs.forEach((log) => {
       const category = log.title || "Другое"
@@ -212,9 +207,7 @@ export default function AnalyticsPage() {
       .map(([name, value]) => ({ name, value: Math.round(value) }))
       .sort((a, b) => b.value - a.value)
       .slice(0, 6)
-  }
-
-  const stats = getTotalStats()
+  }, [foodLogs])
 
   if (isLoading) {
     return (
@@ -320,7 +313,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={getCaloriesByDay()}>
+                    <AreaChart data={caloriesData}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis dataKey="date" className="text-xs" />
                       <YAxis className="text-xs" />
@@ -353,7 +346,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={getMacrosByDay()}>
+                    <LineChart data={macrosData}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis dataKey="date" className="text-xs" />
                       <YAxis className="text-xs" />
@@ -404,7 +397,7 @@ export default function AnalyticsPage() {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={getFoodByCategory()}
+                        data={categoryData}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
@@ -412,7 +405,7 @@ export default function AnalyticsPage() {
                         paddingAngle={5}
                         dataKey="value"
                       >
-                        {getFoodByCategory().map((entry, index) => (
+                        {categoryData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                         ))}
                       </Pie>
@@ -427,7 +420,7 @@ export default function AnalyticsPage() {
                   </ResponsiveContainer>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-4 justify-center">
-                  {getFoodByCategory().map((entry, index) => (
+                  {categoryData.map((entry, index) => (
                     <div key={entry.name} className="flex items-center gap-1 text-sm">
                       <div
                         className="w-3 h-3 rounded-full"
@@ -451,7 +444,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={getWorkoutStats()}>
+                    <BarChart data={workoutData}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis dataKey="date" className="text-xs" />
                       <YAxis className="text-xs" />
@@ -460,6 +453,10 @@ export default function AnalyticsPage() {
                           backgroundColor: "hsl(var(--card))",
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
+                          color: "hsl(var(--foreground))",
+                        }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
                         }}
                       />
                       <Bar dataKey="duration" fill={COLORS.workout} name="Минуты" radius={[4, 4, 0, 0]} />
@@ -477,7 +474,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={getWorkoutStats()}>
+                    <BarChart data={workoutData}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis dataKey="date" className="text-xs" />
                       <YAxis className="text-xs" />
@@ -486,6 +483,10 @@ export default function AnalyticsPage() {
                           backgroundColor: "hsl(var(--card))",
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
+                          color: "hsl(var(--foreground))",
+                        }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
                         }}
                       />
                       <Bar dataKey="count" fill="#10b981" name="Тренировки" radius={[4, 4, 0, 0]} />
@@ -506,7 +507,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={getFinanceByDay()}>
+                    <AreaChart data={financeData}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis dataKey="date" className="text-xs" />
                       <YAxis className="text-xs" />

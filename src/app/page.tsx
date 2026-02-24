@@ -101,15 +101,19 @@ export default function HomePage() {
       try {
         await initializeDatabase()
         
-        const [logs, items, books, recipes] = await Promise.all([
-          db.logs.toArray(),
-          db.items.toArray(),
+        const today = new Date().toISOString().split("T")[0]
+        
+        // Оптимизированные запросы с использованием индексов
+        const [logsCount, itemsCount, books, recipes, todayLogs, recentLogs] = await Promise.all([
+          db.logs.count(),
+          db.items.count(),
           db.books.count(),
           db.content.where("type").equals("recipe").count(),
+          // Используем индекс date для фильтрации по сегодня
+          db.logs.where("date").startsWith(today).toArray(),
+          // Используем orderBy + reverse вместо сортировки на клиенте
+          db.logs.orderBy("date").reverse().limit(5).toArray(),
         ])
-        
-        const today = new Date().toISOString().split("T")[0]
-        const todayLogs = logs.filter((log) => log.date.startsWith(today))
         
         // Подсчитываем статистику за сегодня
         let todayCalories = 0
@@ -128,15 +132,9 @@ export default function HomePage() {
           }
         })
         
-        // Сортируем по дате и берём последние 5 записей
-        const sortedLogs = [...logs].sort((a, b) => 
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
-        const recent = sortedLogs.slice(0, 5)
-        
         setStats({
-          logs: logs.length,
-          items: items.length,
+          logs: logsCount,
+          items: itemsCount,
           books: books,
           recipes: recipes,
           todayLogs: todayLogs.length,
@@ -144,7 +142,7 @@ export default function HomePage() {
           todayWorkoutMinutes,
           todayExpenses,
         })
-        setRecentLogs(recent)
+        setRecentLogs(recentLogs)
       } catch (error) {
         console.error("Failed to load data:", error)
       } finally {

@@ -39,7 +39,7 @@ export function PWAProvider() {
     // Обработка события beforeinstallprompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
-      setDeferredPrompt(e)
+      setDeferredPrompt(e as BeforeInstallPromptEvent)
       
       // Показываем промпт только если не было отказов ранее
       const dismissed = localStorage.getItem("pwa-install-dismissed")
