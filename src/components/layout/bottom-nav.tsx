@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Package,
   BookOpen,
+  ChefHat,
   BarChart3,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -28,9 +29,14 @@ const navItems = [
     icon: Package,
   },
   {
-    href: "/content",
-    label: "Контент",
+    href: "/books",
+    label: "Книги",
     icon: BookOpen,
+  },
+  {
+    href: "/recipes",
+    label: "Рецепты",
+    icon: ChefHat,
   },
   {
     href: "/analytics",

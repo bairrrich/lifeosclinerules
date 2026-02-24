@@ -12,6 +12,16 @@ import type {
   RecipeIngredient,
   RecipeIngredientItem,
   RecipeStep,
+  // Книги
+  Book,
+  UserBook,
+  Author,
+  BookAuthor,
+  Series,
+  Genre,
+  BookGenre,
+  BookQuote,
+  BookReview,
 } from '@/types'
 import { LogType, ItemType, ContentType } from '@/types'
 
@@ -34,11 +44,22 @@ class LifeOSDatabase extends Dexie {
   recipeIngredients!: EntityTable<RecipeIngredient, 'id'>
   recipeIngredientItems!: EntityTable<RecipeIngredientItem, 'id'>
   recipeSteps!: EntityTable<RecipeStep, 'id'>
+  
+  // Таблицы для книг
+  books!: EntityTable<Book, 'id'>
+  userBooks!: EntityTable<UserBook, 'id'>
+  authors!: EntityTable<Author, 'id'>
+  bookAuthors!: EntityTable<BookAuthor, 'id'>
+  series!: EntityTable<Series, 'id'>
+  genres!: EntityTable<Genre, 'id'>
+  bookGenres!: EntityTable<BookGenre, 'id'>
+  bookQuotes!: EntityTable<BookQuote, 'id'>
+  bookReviews!: EntityTable<BookReview, 'id'>
 
   constructor() {
     super('LifeOSDB')
     
-    this.version(2).stores({
+    this.version(4).stores({
       // Основные таблицы
       logs: 'id, type, date, title, category_id, created_at, updated_at',
       items: 'id, type, name, category, created_at, updated_at',
@@ -55,6 +76,17 @@ class LifeOSDatabase extends Dexie {
       recipeIngredients: 'id, name, category, subcategory',
       recipeIngredientItems: 'id, recipe_id, ingredient_id, order',
       recipeSteps: 'id, recipe_id, order',
+      
+      // Книги
+      books: 'id, title, isbn13, published_year, language, format, series_id, created_at, updated_at',
+      userBooks: 'id, book_id, status, rating, started_at, finished_at, created_at, updated_at',
+      authors: 'id, name, created_at, updated_at',
+      bookAuthors: 'id, book_id, author_id, role, order',
+      series: 'id, name, created_at, updated_at',
+      genres: 'id, name, parent_id, created_at, updated_at',
+      bookGenres: 'id, book_id, genre_id',
+      bookQuotes: 'id, user_book_id, created_at, updated_at',
+      bookReviews: 'id, user_book_id, created_at, updated_at',
       
       // Синхронизация
       syncQueue: 'id, table_name, record_id, action, synced',

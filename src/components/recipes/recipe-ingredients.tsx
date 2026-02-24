@@ -10,21 +10,21 @@ import type { RecipeIngredientItem } from "@/types"
 
 // Часто используемые единицы измерения
 const commonUnits = [
-  { value: "г", label: "грамм" },
-  { value: "кг", label: "килограмм" },
-  { value: "мл", label: "миллилитр" },
-  { value: "л", label: "литр" },
-  { value: "шт", label: "штука" },
-  { value: "ст.л.", label: "столовая ложка" },
-  { value: "ч.л.", label: "чайная ложка" },
-  { value: "стакан", label: "стакан" },
-  { value: "зубч.", label: "зубчик" },
-  { value: "по вкусу", label: "по вкусу" },
-  { value: "щепотка", label: "щепотка" },
-  { value: "мл", label: "мл (бар)" },
-  { value: "oz", label: "унция" },
-  { value: "dash", label: "деш" },
-  { value: "drop", label: "капля" },
+  { id: "g", value: "г", label: "грамм" },
+  { id: "kg", value: "кг", label: "килограмм" },
+  { id: "ml", value: "мл", label: "миллилитр" },
+  { id: "l", value: "л", label: "литр" },
+  { id: "pcs", value: "шт", label: "штука" },
+  { id: "tbsp", value: "ст.л.", label: "столовая ложка" },
+  { id: "tsp", value: "ч.л.", label: "чайная ложка" },
+  { id: "cup", value: "стакан", label: "стакан" },
+  { id: "clove", value: "зубч.", label: "зубчик" },
+  { id: "taste", value: "по вкусу", label: "по вкусу" },
+  { id: "pinch", value: "щепотка", label: "щепотка" },
+  { id: "ml-bar", value: "мл", label: "мл (бар)" },
+  { id: "oz", value: "oz", label: "унция" },
+  { id: "dash", value: "dash", label: "деш" },
+  { id: "drop", value: "drop", label: "капля" },
 ]
 
 export interface IngredientItem extends Omit<RecipeIngredientItem, 'id' | 'recipe_id' | 'created_at' | 'updated_at'> {
@@ -118,7 +118,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                       }}
                     >
                       {commonUnits.map((u) => (
-                        <option key={u.value} value={u.value}>
+                        <option key={u.id} value={u.value}>
                           {u.value}
                         </option>
                       ))}

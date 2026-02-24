@@ -2,6 +2,151 @@
 // Базовые типы
 // ============================================
 
+// ============================================
+// Книги — Перечисления
+// ============================================
+
+export type BookFormat = 'paperback' | 'hardcover' | 'ebook' | 'audiobook'
+
+export type ReadingStatus = 
+  | 'planned' 
+  | 'reading' 
+  | 'completed' 
+  | 'paused' 
+  | 'dropped'
+
+export type AuthorRole = 'author' | 'translator' | 'editor' | 'illustrator'
+
+// ============================================
+// Книги — Метаданные (объективная информация)
+// ============================================
+
+export interface Book extends BaseEntity {
+  title: string
+  subtitle?: string
+  description?: string
+  isbn10?: string
+  isbn13?: string
+  published_year?: number
+  original_publication_year?: number
+  publisher?: string
+  language: string
+  page_count?: number
+  format: BookFormat
+  cover_image_url?: string
+  series_id?: UUID
+  series_number?: number
+  
+  // Внешние ID
+  goodreads_id?: string
+  google_books_id?: string
+  
+  // Вычисляемые поля
+  rating_avg?: number
+  rating_count?: number
+  
+  // Связи (не хранятся в таблице, заполняются при запросе)
+  authors?: BookAuthorWithDetails[]
+  genres?: Genre[]
+  tags?: string[]
+}
+
+// ============================================
+// Книги — Пользовательские данные
+// ============================================
+
+export interface UserBook extends BaseEntity {
+  book_id: UUID
+  status: ReadingStatus
+  rating?: number // 1-5
+  progress_pages?: number
+  progress_percent?: number
+  started_at?: ISODate
+  finished_at?: ISODate
+  personal_notes?: string
+  is_owned?: boolean
+  owned_format?: BookFormat
+  location?: string
+  reread_count?: number
+}
+
+// ============================================
+// Автор
+// ============================================
+
+export interface Author extends BaseEntity {
+  name: string
+  name_original?: string
+  birth_year?: number
+  death_year?: number
+  bio?: string
+  photo_url?: string
+  goodreads_author_id?: string
+}
+
+// ============================================
+// Связь Книга-Автор
+// ============================================
+
+export interface BookAuthor extends BaseEntity {
+  book_id: UUID
+  author_id: UUID
+  role: AuthorRole
+  order: number
+}
+
+// Расширенная связь с деталями автора
+export interface BookAuthorWithDetails extends BookAuthor {
+  author?: Author
+}
+
+// ============================================
+// Серия книг
+// ============================================
+
+export interface Series extends BaseEntity {
+  name: string
+  description?: string
+  total_books?: number
+}
+
+// ============================================
+// Жанры
+// ============================================
+
+export interface Genre extends BaseEntity {
+  name: string
+  parent_id?: UUID
+  description?: string
+}
+
+export interface BookGenre extends BaseEntity {
+  book_id: UUID
+  genre_id: UUID
+}
+
+// ============================================
+// Цитаты из книги
+// ============================================
+
+export interface BookQuote extends BaseEntity {
+  user_book_id: UUID
+  text: string
+  page?: number
+  location?: string
+}
+
+// ============================================
+// Рецензия на книгу
+// ============================================
+
+export interface BookReview extends BaseEntity {
+  user_book_id: UUID
+  title?: string
+  text: string
+}
+
+
 export type UUID = string
 export type ISODate = string
 export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue }
@@ -278,6 +423,12 @@ export interface BaseItem extends BaseEntity, Taggable, Notable {
   composition?: string
   storage?: string
   expiration?: ISODate
+  // Пищевая ценность (для продуктов)
+  calories?: number
+  protein?: number
+  fat?: number
+  carbs?: number
+  serving_size?: number // размер порции в граммах
 }
 
 export type Item = BaseItem

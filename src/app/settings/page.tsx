@@ -25,6 +25,7 @@ const accountTypes = [
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [stats, setStats] = useState({
     logs: 0,
     items: 0,
@@ -40,6 +41,7 @@ export default function SettingsPage() {
   })
 
   useEffect(() => {
+    setMounted(true)
     loadStats()
     loadAccounts()
   }, [])
@@ -210,7 +212,7 @@ export default function SettingsPage() {
                   <Label>Тема</Label>
                   <div className="flex gap-2">
                     <Button
-                      variant={theme === "light" ? "default" : "outline"}
+                      variant={mounted && theme === "light" ? "default" : "outline"}
                       size="sm"
                       onClick={() => setTheme("light")}
                     >
@@ -218,7 +220,7 @@ export default function SettingsPage() {
                       Светлая
                     </Button>
                     <Button
-                      variant={theme === "dark" ? "default" : "outline"}
+                      variant={mounted && theme === "dark" ? "default" : "outline"}
                       size="sm"
                       onClick={() => setTheme("dark")}
                     >
@@ -226,7 +228,7 @@ export default function SettingsPage() {
                       Темная
                     </Button>
                     <Button
-                      variant={theme === "system" ? "default" : "outline"}
+                      variant={mounted && theme === "system" ? "default" : "outline"}
                       size="sm"
                       onClick={() => setTheme("system")}
                     >

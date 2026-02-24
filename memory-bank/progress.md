@@ -16,18 +16,21 @@
 - [x] React Compiler включен
 
 ### ✅ База данных
-- [x] Dexie схема определена
+- [x] Dexie схема (version 3)
 - [x] CRUD операции (generic)
 - [x] Индексы для быстрого поиска
 - [x] Seed данные для категорий
 - [x] Инициализация при первом запуске
+- [x] Таблицы для книг (books, userBooks, authors, bookAuthors, series, genres, bookGenres, bookQuotes, bookReviews)
+- [x] Таблицы для рецептов (recipeIngredients, recipeIngredientItems, recipeSteps)
 
 ### ✅ Типы данных
 - [x] Базовые типы (UUID, ISODate, JSONValue)
-- [x] Enums (LogType, ItemType, ContentType)
+- [x] Enums (LogType, ItemType, ContentType, RecipeType)
 - [x] Интерфейсы для Logs (Food, Workout, Finance)
 - [x] Интерфейсы для Items (витамины, лекарства и т.д.)
-- [x] Интерфейсы для Content (Book, Recipe)
+- [x] Интерфейсы для книг (Book, UserBook, Author, Series, Genre, BookQuote, BookReview)
+- [x] Интерфейсы для рецептов (RecipeContentExtended, RecipeIngredientItem, RecipeStep)
 - [x] Справочники (Category, Tag, Unit, Account, Exercise)
 
 ### ✅ State Management
@@ -65,10 +68,15 @@
 - [x] Items: страницы создания
 - [x] Items: детальные страницы
 - [x] Items: редактирование
-- [x] Content: списки по типам
-- [x] Content: страницы создания
-- [x] Content: детальные страницы
-- [x] Content: редактирование
+- [x] Books: список с фильтрами по статусу
+- [x] Books: создание
+- [x] Books: детальная страница (просмотр)
+- [x] Books: редактирование
+- [x] Recipes: список с фильтрами по типу
+- [x] Recipes: создание
+- [x] Recipes: детальная страница (просмотр)
+- [x] Recipes: редактирование
+- [x] Content: перенаправление на /books
 - [x] Settings (заглушка)
 
 ## Что предстоит построить

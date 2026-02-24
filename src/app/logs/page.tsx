@@ -8,21 +8,23 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AddDialog } from "@/components/shared/add-dialog"
 import { db, initializeDatabase } from "@/lib/db"
-import type { Log, LogType } from "@/types"
+import { LogType } from "@/types"
+import type { Log } from "@/types"
 
-const logTypes = [
-  { type: "food" as LogType, label: "Питание", icon: Utensils, color: "bg-orange-500/10 text-orange-500" },
-  { type: "workout" as LogType, label: "Тренировки", icon: Dumbbell, color: "bg-blue-500/10 text-blue-500" },
-  { type: "finance" as LogType, label: "Финансы", icon: Wallet, color: "bg-green-500/10 text-green-500" },
+const logTypes: { type: LogType; label: string; icon: LucideIcon }[] = [
+  { type: LogType.FOOD, label: "Питание", icon: Utensils },
+  { type: LogType.WORKOUT, label: "Тренировки", icon: Dumbbell },
+  { type: LogType.FINANCE, label: "Финансы", icon: Wallet },
 ]
 
 export default function LogsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [logs, setLogs] = useState<Log[]>([])
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeType, setActiveType] = useState<LogType | null>(null)
+  const [activeType, setActiveType] = useState<LogType | "all">("all")
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function LogsPage() {
 
   const filteredLogs = logs.filter((log) => {
     const matchesSearch = log.title.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesType = activeType === null || log.type === activeType
+    const matchesType = activeType === "all" || log.type === activeType
     return matchesSearch && matchesType
   })
 
@@ -78,30 +80,55 @@ export default function LogsPage() {
     })
   }
 
+  // Статистика
+  const stats = {
+    total: logs.length,
+    food: logs.filter((l) => l.type === LogType.FOOD).length,
+    workout: logs.filter((l) => l.type === LogType.WORKOUT).length,
+    finance: logs.filter((l) => l.type === LogType.FINANCE).length,
+  }
+
   return (
     <AppLayout title="Учет">
       <div className="container mx-auto px-4 py-6 space-y-4">
-        {/* Type Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          <Button
-            variant={activeType === null ? "default" : "outline"}
-            size="sm"
-            onClick={() => setActiveType(null)}
-          >
-            Все
-          </Button>
-          {logTypes.map((lt) => (
-            <Button
-              key={lt.type}
-              variant={activeType === lt.type ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveType(lt.type)}
-            >
-              <lt.icon className="h-4 w-4 mr-2" />
-              {lt.label}
-            </Button>
-          ))}
+        {/* Статистика */}
+        <div className="grid grid-cols-4 gap-2">
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <div className="text-xs text-muted-foreground">Всего</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-orange-500">{stats.food}</div>
+            <div className="text-xs text-muted-foreground">Питание</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-blue-500">{stats.workout}</div>
+            <div className="text-xs text-muted-foreground">Тренировки</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-green-500">{stats.finance}</div>
+            <div className="text-xs text-muted-foreground">Финансы</div>
+          </Card>
         </div>
+
+        {/* Type Filters */}
+        <Tabs
+          value={activeType}
+          onValueChange={(value) => setActiveType(value as LogType | "all")}
+        >
+          <TabsList className="grid grid-cols-4 w-full h-auto">
+            <TabsTrigger value="all" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+              Все
+            </TabsTrigger>
+            {logTypes.map((lt) => (
+              <TabsTrigger key={lt.type} value={lt.type} className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+                <lt.icon className="h-4 w-4 sm:mr-1" />
+                <span className="hidden sm:inline">{lt.label}</span>
+                <span className="sm:hidden text-[10px]">{lt.label.slice(0, 4)}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
         {/* Search */}
         <div className="relative">

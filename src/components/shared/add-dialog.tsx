@@ -18,12 +18,13 @@ import {
   Package,
   BookOpen,
   ChefHat,
+  Coffee,
+  Martini,
 } from "lucide-react"
 
 // Types for different categories
 type LogType = "food" | "workout" | "finance"
 type ItemType = "vitamin" | "medicine" | "herb" | "cosmetic" | "product"
-type ContentType = "book" | "recipe"
 
 // Options for logs
 const logOptions = [
@@ -41,13 +42,19 @@ const itemOptions = [
   { type: "product" as ItemType, label: "Продукты", icon: Package, color: "bg-yellow-500/10 text-yellow-500" },
 ]
 
-// Options for content
-const contentOptions = [
-  { type: "book" as ContentType, label: "Книга", icon: BookOpen, color: "bg-blue-500/10 text-blue-500" },
-  { type: "recipe" as ContentType, label: "Рецепт", icon: ChefHat, color: "bg-amber-500/10 text-amber-500" },
+// Options for books
+const bookOptions = [
+  { type: "book", label: "Книга", icon: BookOpen, color: "bg-blue-500/10 text-blue-500", route: "/books/new" },
 ]
 
-type CategoryType = "logs" | "items" | "content"
+// Options for recipes
+const recipeOptions = [
+  { type: "food", label: "Блюдо", icon: ChefHat, color: "bg-orange-500/10 text-orange-500", route: "/recipes/new?type=food" },
+  { type: "drink", label: "Напиток", icon: Coffee, color: "bg-blue-500/10 text-blue-500", route: "/recipes/new?type=drink" },
+  { type: "cocktail", label: "Коктейль", icon: Martini, color: "bg-purple-500/10 text-purple-500", route: "/recipes/new?type=cocktail" },
+]
+
+type CategoryType = "logs" | "items" | "books" | "recipes"
 
 interface AddDialogProps {
   open: boolean
@@ -58,22 +65,52 @@ interface AddDialogProps {
 export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
   const router = useRouter()
 
-  const options = category === "logs" 
-    ? logOptions 
-    : category === "items" 
-      ? itemOptions 
-      : contentOptions
+  const getOptions = () => {
+    switch (category) {
+      case "logs":
+        return logOptions
+      case "items":
+        return itemOptions
+      case "books":
+        return bookOptions
+      case "recipes":
+        return recipeOptions
+      default:
+        return []
+    }
+  }
 
-  const title = category === "logs" 
-    ? "Добавить запись" 
-    : category === "items" 
-      ? "Добавить в каталог" 
-      : "Добавить контент"
+  const getTitle = () => {
+    switch (category) {
+      case "logs":
+        return "Добавить запись"
+      case "items":
+        return "Добавить в каталог"
+      case "books":
+        return "Добавить книгу"
+      case "recipes":
+        return "Добавить рецепт"
+      default:
+        return "Добавить"
+    }
+  }
 
   const handleSelect = (type: string) => {
     onOpenChange(false)
-    router.push(`/${category}/${type}/new`)
+    
+    if (category === "logs") {
+      router.push(`/logs/${type}/new`)
+    } else if (category === "items") {
+      router.push(`/items/${type}/new`)
+    } else if (category === "books") {
+      router.push("/books/new")
+    } else if (category === "recipes") {
+      router.push("/recipes/new")
+    }
   }
+
+  const options = getOptions()
+  const title = getTitle()
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={false}>
@@ -81,7 +118,7 @@ export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-3 mt-2">
+        <div className={category === "recipes" ? "grid grid-cols-3 gap-3 mt-2" : "grid grid-cols-2 gap-3 mt-2"}>
           {options.map((option) => (
             <Card
               key={option.type}
@@ -90,7 +127,7 @@ export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
             >
               <CardContent className="p-4 flex flex-col items-center gap-2">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${option.color}`}>
-                  <option.icon className="h-6 w-6" />
+                  {"icon" in option && <option.icon className="h-6 w-6" />}
                 </div>
                 <span className="font-medium text-sm">{option.label}</span>
               </CardContent>

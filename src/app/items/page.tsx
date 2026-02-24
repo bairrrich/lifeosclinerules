@@ -8,23 +8,25 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AddDialog } from "@/components/shared/add-dialog"
 import { db, initializeDatabase } from "@/lib/db"
-import type { Item, ItemType } from "@/types"
+import { ItemType } from "@/types"
+import type { Item } from "@/types"
 
-const itemTypes = [
-  { type: "vitamin" as ItemType, label: "Витамины", icon: Pill, color: "bg-purple-500/10 text-purple-500" },
-  { type: "medicine" as ItemType, label: "Лекарства", icon: Pill, color: "bg-red-500/10 text-red-500" },
-  { type: "herb" as ItemType, label: "Травы", icon: Leaf, color: "bg-green-500/10 text-green-500" },
-  { type: "cosmetic" as ItemType, label: "Косметика", icon: Sparkles, color: "bg-pink-500/10 text-pink-500" },
-  { type: "product" as ItemType, label: "Продукты", icon: Package, color: "bg-yellow-500/10 text-yellow-500" },
+const itemTypes: { type: ItemType; label: string; icon: LucideIcon }[] = [
+  { type: ItemType.VITAMIN, label: "Витамины", icon: Pill },
+  { type: ItemType.MEDICINE, label: "Лекарства", icon: Pill },
+  { type: ItemType.HERB, label: "Травы", icon: Leaf },
+  { type: ItemType.COSMETIC, label: "Косметика", icon: Sparkles },
+  { type: ItemType.PRODUCT, label: "Продукты", icon: Package },
 ]
 
 export default function ItemsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [items, setItems] = useState<Item[]>([])
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeType, setActiveType] = useState<ItemType | null>(null)
+  const [activeType, setActiveType] = useState<ItemType | "all">("all")
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   useEffect(() => {
@@ -44,7 +46,7 @@ export default function ItemsPage() {
 
   const filteredItems = items.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesType = activeType === null || item.type === activeType
+    const matchesType = activeType === "all" || item.type === activeType
     return matchesSearch && matchesType
   })
 
@@ -80,30 +82,66 @@ export default function ItemsPage() {
     }
   }
 
+  // Статистика
+  const stats = {
+    total: items.length,
+    vitamin: items.filter((i) => i.type === ItemType.VITAMIN).length,
+    medicine: items.filter((i) => i.type === ItemType.MEDICINE).length,
+    herb: items.filter((i) => i.type === ItemType.HERB).length,
+    cosmetic: items.filter((i) => i.type === ItemType.COSMETIC).length,
+    product: items.filter((i) => i.type === ItemType.PRODUCT).length,
+  }
+
   return (
     <AppLayout title="Каталог">
       <div className="container mx-auto px-4 py-6 space-y-4">
-        {/* Type Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          <Button
-            variant={activeType === null ? "default" : "outline"}
-            size="sm"
-            onClick={() => setActiveType(null)}
-          >
-            Все
-          </Button>
-          {itemTypes.map((it) => (
-            <Button
-              key={it.type}
-              variant={activeType === it.type ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveType(it.type)}
-            >
-              <it.icon className="h-4 w-4 mr-2" />
-              {it.label}
-            </Button>
-          ))}
+        {/* Статистика */}
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <div className="text-xs text-muted-foreground">Всего</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-purple-500">{stats.vitamin}</div>
+            <div className="text-xs text-muted-foreground">Витамины</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-red-500">{stats.medicine}</div>
+            <div className="text-xs text-muted-foreground">Лекарства</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-green-500">{stats.herb}</div>
+            <div className="text-xs text-muted-foreground">Травы</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-pink-500">{stats.cosmetic}</div>
+            <div className="text-xs text-muted-foreground">Косметика</div>
+          </Card>
+          <Card className="p-3 text-center">
+            <div className="text-2xl font-bold text-yellow-500">{stats.product}</div>
+            <div className="text-xs text-muted-foreground">Продукты</div>
+          </Card>
         </div>
+
+        {/* Type Filters */}
+        <Tabs
+          value={activeType}
+          onValueChange={(value) => setActiveType(value as ItemType | "all")}
+        >
+          <TabsList className="grid grid-cols-6 w-full h-auto">
+            <TabsTrigger value="all" className="text-xs sm:text-sm px-1 sm:px-3 py-2">
+              <span className="hidden sm:inline">Все</span>
+              <span className="sm:hidden">Все</span>
+            </TabsTrigger>
+            {itemTypes.map((it) => (
+              <TabsTrigger key={it.type} value={it.type} className="text-xs sm:text-sm px-1 sm:px-3 py-2">
+                <it.icon className="h-4 w-4 sm:mr-1" />
+                <span className="hidden sm:inline">{it.label}</span>
+                <span className="sm:hidden text-[10px]">{it.label.slice(0, 4)}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
         {/* Search */}
         <div className="relative">
