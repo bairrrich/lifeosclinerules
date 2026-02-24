@@ -91,15 +91,30 @@ const sections = [
 ]
 
 const typeLabels: Record<string, string> = {
-  food: "🍽️ Питание",
-  workout: "💪 Тренировка",
-  finance: "💰 Финансы",
+  food: "Питание",
+  workout: "Тренировка",
+  finance: "Финансы",
 }
 
 const typeColors: Record<string, string> = {
-  food: "bg-orange-500/10 text-orange-600 border-orange-200",
-  workout: "bg-blue-500/10 text-blue-600 border-blue-200",
-  finance: "bg-green-500/10 text-green-600 border-green-200",
+  food: "bg-orange-500/10 text-orange-600",
+  workout: "bg-blue-500/10 text-blue-600",
+  finance: "bg-green-500/10 text-green-600",
+  finance_income: "bg-emerald-500/10 text-emerald-600",
+  finance_expense: "bg-red-500/10 text-red-600",
+}
+
+const getTypeIcon = (type: string) => {
+  switch (type) {
+    case "food":
+      return Utensils
+    case "workout":
+      return Dumbbell
+    case "finance":
+      return Wallet
+    default:
+      return Utensils
+  }
 }
 
 export default function HomePage() {
@@ -295,35 +310,45 @@ export default function HomePage() {
             </Card>
           ) : (
             <div className="flex flex-col gap-2">
-              {recentLogs.map((log) => (
-                <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
-                  <Card className="hover:bg-accent transition-colors">
-                    <CardContent className="p-3 flex items-center gap-3">
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl border ${typeColors[log.type] || 'bg-muted'}`}>
-                        <span className="text-base">
-                          {log.type === 'food' ? '🍽️' : log.type === 'workout' ? '💪' : '💰'}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-sm truncate">{log.title}</h3>
-                        <p className="text-xs text-muted-foreground">
-                          {typeLabels[log.type] || log.type} • {new Date(log.date).toLocaleDateString('ru-RU', {
-                            day: 'numeric',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </p>
-                      </div>
-                      {log.value !== undefined && (
-                        <div className="text-sm font-medium">
-                          {log.type === 'finance' ? `${log.value.toLocaleString()} ₽` : log.value}
+              {recentLogs.map((log) => {
+                const TypeIcon = getTypeIcon(log.type)
+                // Определяем цвет для финансов по типу транзакции
+                let colorKey = log.type
+                // @ts-expect-error - metadata имеет разные типы
+                if (log.type === "finance" && log.metadata?.finance_type === "income") {
+                  colorKey = "finance_income"
+                // @ts-expect-error - metadata имеет разные типы
+                } else if (log.type === "finance" && log.metadata?.finance_type === "expense") {
+                  colorKey = "finance_expense"
+                }
+                return (
+                  <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
+                    <Card className="hover:bg-accent transition-colors">
+                      <CardContent className="p-3 flex items-center gap-3">
+                        <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || 'bg-muted'}`}>
+                          <TypeIcon className="h-4 w-4" />
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-sm truncate">{log.title}</h3>
+                          <p className="text-xs text-muted-foreground">
+                            {typeLabels[log.type] || log.type} • {new Date(log.date).toLocaleDateString('ru-RU', {
+                              day: 'numeric',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                        </div>
+                        {log.value !== undefined && (
+                          <div className="text-sm font-medium">
+                            {log.type === 'finance' ? `${log.value.toLocaleString()} ₽` : log.value}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>
