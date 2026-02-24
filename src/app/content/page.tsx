@@ -2,19 +2,26 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { BookOpen, ChefHat, Plus, Search, Star, LucideIcon } from "lucide-react"
+import { BookOpen, ChefHat, Plus, Search, Star, Clock, Flame, Wine, Coffee, Martini, LucideIcon } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import { AddDialog } from "@/components/shared/add-dialog"
 import { db, initializeDatabase } from "@/lib/db"
-import type { Content, ContentType } from "@/types"
+import type { Content, ContentType, RecipeType } from "@/types"
 
 const contentTypes = [
   { type: "book" as ContentType, label: "Книги", icon: BookOpen, color: "bg-blue-500/10 text-blue-500" },
   { type: "recipe" as ContentType, label: "Рецепты", icon: ChefHat, color: "bg-amber-500/10 text-amber-500" },
 ]
+
+const recipeTypeConfig: Record<string, { label: string; icon: LucideIcon; color: string }> = {
+  food: { label: "Еда", icon: ChefHat, color: "bg-orange-500/10 text-orange-500" },
+  drink: { label: "Напиток", icon: Coffee, color: "bg-blue-500/10 text-blue-500" },
+  cocktail: { label: "Коктейль", icon: Martini, color: "bg-purple-500/10 text-purple-500" },
+}
 
 export default function ContentPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -62,6 +69,12 @@ export default function ContentPage() {
       case "recipe":
         return "bg-amber-500/10 text-amber-500"
     }
+  }
+
+  // Получить тип рецепта для отображения
+  const getRecipeType = (content: Content): string | null => {
+    if (content.type !== "recipe") return null
+    return (content as { recipe_type?: RecipeType }).recipe_type || "food"
   }
 
   return (
@@ -119,27 +132,79 @@ export default function ContentPage() {
           <div className="flex flex-col gap-2">
             {filteredContent.map((content) => {
               const TypeIcon = getTypeIcon(content.type)
+              const recipeType = getRecipeType(content)
+              const recipeConfig = recipeType ? recipeTypeConfig[recipeType] : null
+              
+              // Получаем данные рецепта
+              const recipeData = content.type === "recipe" ? content as { 
+                calories?: number
+                total_time_min?: number
+                difficulty?: string
+              } : null
+              
               return (
                 <Link key={content.id} href={`/content/${content.type}/${content.id}`}>
                   <Card className="hover:bg-accent transition-colors">
-                    <CardContent className="p-4 flex items-center gap-3">
-                      <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl ${getTypeColor(content.type)}`}
-                      >
-                        <TypeIcon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium truncate">{content.title}</h3>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {content.description || "Без описания"}
-                        </p>
-                      </div>
-                      {content.rating !== undefined && (
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                          <span className="text-sm">{content.rating}</span>
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        {/* Иконка */}
+                        <div
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+                            recipeConfig ? recipeConfig.color : getTypeColor(content.type)
+                          }`}
+                        >
+                          {recipeConfig ? (
+                            <recipeConfig.icon className="h-5 w-5" />
+                          ) : (
+                            <TypeIcon className="h-5 w-5" />
+                          )}
                         </div>
-                      )}
+                        
+                        {/* Контент */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1">
+                              <h3 className="font-medium truncate">{content.title}</h3>
+                              {content.description && (
+                                <p className="text-sm text-muted-foreground truncate">
+                                  {content.description}
+                                </p>
+                              )}
+                            </div>
+                            {content.rating !== undefined && (
+                              <div className="flex items-center gap-1 text-muted-foreground shrink-0">
+                                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                <span className="text-sm">{content.rating}</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Метаданные рецепта */}
+                          {recipeData && (
+                            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                              {recipeData.total_time_min && (
+                                <div className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  <span>{recipeData.total_time_min} мин</span>
+                                </div>
+                              )}
+                              {recipeData.calories && (
+                                <div className="flex items-center gap-1">
+                                  <Flame className="h-3 w-3" />
+                                  <span>{recipeData.calories} ккал</span>
+                                </div>
+                              )}
+                              {recipeData.difficulty && (
+                                <Badge variant="secondary" className="text-xs px-2 py-0 h-5">
+                                  {recipeData.difficulty === "easy" ? "Легко" : 
+                                   recipeData.difficulty === "medium" ? "Средне" : 
+                                   recipeData.difficulty === "hard" ? "Сложно" : "Профи"}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>

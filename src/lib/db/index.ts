@@ -110,7 +110,8 @@ export async function createEntity<T extends { id: string; updated_at: string }>
 export async function updateEntity<T extends { id: string; updated_at: string }>(
   table: EntityTable<T, 'id'>,
   id: string,
-  data: Partial<Omit<T, 'id' | 'created_at'>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
 ): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (table as any).update(id, {
