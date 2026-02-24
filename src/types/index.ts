@@ -29,6 +29,35 @@ export enum ContentType {
   RECIPE = 'recipe',
 }
 
+// Типы рецептов
+export enum RecipeType {
+  FOOD = 'food',       // Еда (блюда)
+  DRINK = 'drink',     // Напитки безалкогольные
+  COCKTAIL = 'cocktail' // Коктейли
+}
+
+// Тип блюда (для еды)
+export type CourseType = 
+  | 'breakfast' | 'lunch' | 'dinner' 
+  | 'soup' | 'salad' | 'dessert' | 'snack' | 'sauce' | 'appetizer'
+
+// Метод приготовления еды
+export type CookingMethod = 
+  | 'bake' | 'fry' | 'boil' | 'steam' | 'grill' | 'raw' | 'stew' | 'roast'
+
+// Метод для коктейлей
+export type CocktailMethod = 
+  | 'shaken' | 'stirred' | 'blended' | 'built' | 'muddled' | 'layered'
+
+// Сложность
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'pro'
+
+// Категория ингредиента
+export type IngredientCategory = 
+  | 'vegetable' | 'fruit' | 'meat' | 'poultry' | 'seafood' | 'dairy' 
+  | 'grain' | 'pasta' | 'spice' | 'alcohol' | 'liqueur' | 'liquid' 
+  | 'sweetener' | 'herb' | 'nut' | 'seed' | 'oil' | 'sauce' | 'other'
+
 export enum FinanceType {
   INCOME = 'income',
   EXPENSE = 'expense',
@@ -293,12 +322,14 @@ export interface BookContent extends BaseContent {
   metadata?: BookMetadata
 }
 
+// Старый упрощённый тип (для обратной совместимости)
 export interface RecipeContent extends BaseContent {
   type: ContentType.RECIPE
   metadata?: RecipeMetadata
 }
 
-export type Content = BookContent | RecipeContent
+// Используем расширенный тип как основной для контента
+export type Content = BookContent | RecipeContentExtended
 
 // ============================================
 // Справочники
@@ -351,3 +382,125 @@ export interface SyncQueueItem extends BaseEntity {
   data: JSONValue
   synced: boolean
 }
+
+// ============================================
+// Расширенные типы для рецептов
+// ============================================
+
+// Справочник ингредиентов
+export interface RecipeIngredient extends BaseEntity {
+  name: string
+  name_en?: string
+  category: IngredientCategory
+  subcategory?: string
+  is_alcoholic?: boolean
+  default_unit?: string
+  calories_per_100?: number
+  density?: number // для пересчёта объём ↔ масса
+}
+
+// Связка рецепт-ингредиент
+export interface RecipeIngredientItem extends BaseEntity {
+  recipe_id: UUID
+  ingredient_id?: UUID // ссылка на справочник (опционально)
+  ingredient_name: string // название (для быстрого доступа или кастомного)
+  amount: number
+  unit: string
+  optional?: boolean
+  note?: string // "свежий", "мелко нарезать"
+  order?: number
+  substitute?: string // альтернатива
+}
+
+// Шаг приготовления
+export interface RecipeStep extends BaseEntity {
+  recipe_id: UUID
+  order: number
+  text: string
+  image?: string
+  timer_min?: number // "варить 10 минут"
+}
+
+// Типы бокалов для коктейлей
+export type GlassType = 
+  | 'highball' | 'lowball' | 'martini' | 'coupe' 
+  | 'margarita' | 'hurricane' | 'shot' | 'wine'
+  | 'champagne' | 'mug' | 'collins' | 'rocks'
+
+// Тип льда
+export type IceType = 'cubed' | 'crushed' | 'sphere' | 'none'
+
+// Температура подачи
+export type ServingTemperature = 'hot' | 'warm' | 'room' | 'cold' | 'iced'
+
+// Метаданные для еды
+export interface FoodRecipeMetadata {
+  course_type?: CourseType
+  cuisine?: string // "Итальянская", "Японская"
+  cooking_method?: CookingMethod[]
+  dietary?: string[] // ["vegan", "gluten-free", "keto"]
+  serving_temperature?: ServingTemperature
+  spicy_level?: 0 | 1 | 2 | 3 // 0 = не острое
+}
+
+// Метаданные для напитков
+export interface DrinkRecipeMetadata {
+  drink_type?: 'tea' | 'coffee' | 'smoothie' | 'juice' | 'lemonade' | 'milkshake' | 'compote' | 'cocoa'
+  base?: string // "вода", "молоко", "сок"
+  is_carbonated?: boolean
+  serving_temperature?: ServingTemperature
+  caffeine_mg?: number
+  volume_ml?: number
+}
+
+// Метаданные для коктейлей
+export interface CocktailRecipeMetadata {
+  is_alcoholic: boolean
+  alcohol_percent?: number
+  base_spirit?: string // "водка", "джин", "ром", "текила", "виски"
+  cocktail_method?: CocktailMethod
+  glass_type?: GlassType
+  ice_type?: IceType
+  garnish?: string[]
+  color?: string
+  iba_category?: string // IBA Official Cocktails category
+  tools?: string[] // ["шейкер", "джиггер", "мадлер"]
+}
+
+// Полный интерфейс рецепта
+export interface RecipeContentExtended extends BaseContent {
+  type: ContentType.RECIPE
+  recipe_type: RecipeType
+  metadata?: RecipeMetadata // для обратной совместимости
+  
+  // Время
+  prep_time_min?: number
+  cook_time_min?: number
+  total_time_min?: number
+  
+  // Порции
+  servings?: number
+  serving_unit?: string // "порции", "шт", "литр"
+  
+  difficulty?: Difficulty
+  
+  // КБЖУ
+  calories?: number
+  protein?: number
+  fat?: number
+  carbs?: number
+  sugar?: number
+  fiber?: number
+  
+  // Специфичные данные по типу
+  food_metadata?: FoodRecipeMetadata
+  drink_metadata?: DrinkRecipeMetadata
+  cocktail_metadata?: CocktailRecipeMetadata
+  
+  // Связи (не хранятся в metadata, а в отдельных таблицах)
+  ingredients?: RecipeIngredientItem[]
+  steps?: RecipeStep[]
+}
+
+// Объединённый тип контента
+export type ContentExtended = BookContent | RecipeContentExtended

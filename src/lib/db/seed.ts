@@ -1,6 +1,6 @@
 import { db } from "./index"
-import type { Log, Item, Content, Category, Tag, Account } from "@/types"
-import { LogType, FinanceType, ItemType, ContentType, BookStatus } from "@/types"
+import type { Log, Item, Content, Category, Tag, Account, RecipeContentExtended } from "@/types"
+import { LogType, FinanceType, ItemType, ContentType, BookStatus, RecipeType } from "@/types"
 
 function randomDate(daysAgo: number = 30): string {
   const now = new Date()
@@ -253,12 +253,16 @@ async function seedContent() {
     { id: uuid(), type: ContentType.BOOK, title: "Атомные привычки", description: "Как приобрести полезные привычки", rating: 5, body: "Отличная книга о формировании привычек. Автор рассказывает о маленьких изменениях, которые приводят к большим результатам.", metadata: { author: "Джеймс Клир", year: 2018, pages: 320, status: BookStatus.DONE }, tags: ["полезно", "важно"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { id: uuid(), type: ContentType.BOOK, title: "Психология денег", description: "Отношения с деньгами", rating: 4, body: "Интересные истории о психологии финансовых решений.", metadata: { author: "Морган Хоузел", year: 2020, pages: 256, status: BookStatus.READING }, tags: ["полезно"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { id: uuid(), type: ContentType.BOOK, title: "Думай медленно... решай быстро", description: "О принятии решений", rating: 5, body: "", metadata: { author: "Даниэль Канеман", year: 2011, pages: 656, status: BookStatus.PLANNED }, tags: [], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { id: uuid(), type: ContentType.RECIPE, title: "Борщ украинский", description: "Классический рецепт", rating: 5, body: "1. Сварить бульон\n2. Добавить свеклу\n3. Добавить капусту\n4. Варить до готовности\n5. Подавать со сметаной", metadata: { cook_time: 120, calories: 250, protein: 15, fat: 10, carbs: 25, ingredients: [{ name: "Свекла", amount: 2, unit: "шт" }, { name: "Капуста", amount: 300, unit: "г" }, { name: "Мясо", amount: 500, unit: "г" }, { name: "Картофель", amount: 3, unit: "шт" }] }, tags: ["вкусно"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { id: uuid(), type: ContentType.RECIPE, title: "Паста Карбонара", description: "Итальянская классика", rating: 5, body: "1. Отварить пасту\n2. Обжарить бекон\n3. Смешать яйца с сыром\n4. Соединить всё", metadata: { cook_time: 30, calories: 450, protein: 18, fat: 20, carbs: 45, ingredients: [{ name: "Спагетти", amount: 400, unit: "г" }, { name: "Бекон", amount: 200, unit: "г" }, { name: "Яйца", amount: 3, unit: "шт" }, { name: "Пармезан", amount: 100, unit: "г" }] }, tags: ["вкусно", "быстро"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { id: uuid(), type: ContentType.RECIPE, title: "Овсянка с ягодами", description: "Полезный завтрак", rating: 4, body: "1. Сварить овсянку\n2. Добавить ягоды\n3. Добавить мёд", metadata: { cook_time: 15, calories: 300, protein: 10, fat: 5, carbs: 50, ingredients: [{ name: "Овсянка", amount: 100, unit: "г" }, { name: "Ягоды", amount: 50, unit: "г" }, { name: "Мёд", amount: 1, unit: "ст.л." }] }, tags: ["полезно", "быстро"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
   ]
-  await db.content.bulkAdd(contents)
-  return contents
+  
+  const recipes: RecipeContentExtended[] = [
+    { id: uuid(), type: ContentType.RECIPE, recipe_type: RecipeType.FOOD, title: "Борщ украинский", description: "Классический рецепт", rating: 5, body: "1. Сварить бульон\n2. Добавить свеклу\n3. Добавить капусту\n4. Варить до готовности\n5. Подавать со сметаной", cook_time_min: 120, total_time_min: 120, calories: 250, protein: 15, fat: 10, carbs: 25, tags: ["вкусно"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: uuid(), type: ContentType.RECIPE, recipe_type: RecipeType.FOOD, title: "Паста Карбонара", description: "Итальянская классика", rating: 5, body: "1. Отварить пасту\n2. Обжарить бекон\n3. Смешать яйца с сыром\n4. Соединить всё", cook_time_min: 30, total_time_min: 30, calories: 450, protein: 18, fat: 20, carbs: 45, tags: ["вкусно", "быстро"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: uuid(), type: ContentType.RECIPE, recipe_type: RecipeType.FOOD, title: "Овсянка с ягодами", description: "Полезный завтрак", rating: 4, body: "1. Сварить овсянку\n2. Добавить ягоды\n3. Добавить мёд", cook_time_min: 15, total_time_min: 15, calories: 300, protein: 10, fat: 5, carbs: 50, tags: ["полезно", "быстро"], created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  ]
+  
+  await db.content.bulkAdd([...contents, ...recipes] as Content[])
+  return [...contents, ...recipes] as Content[]
 }
 
 export async function cleanupDuplicateCategories() {

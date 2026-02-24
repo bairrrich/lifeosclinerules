@@ -9,6 +9,9 @@ import type {
   Account,
   Exercise,
   SyncQueueItem,
+  RecipeIngredient,
+  RecipeIngredientItem,
+  RecipeStep,
 } from '@/types'
 import { LogType, ItemType, ContentType } from '@/types'
 
@@ -26,11 +29,16 @@ class LifeOSDatabase extends Dexie {
   accounts!: EntityTable<Account, 'id'>
   exercises!: EntityTable<Exercise, 'id'>
   syncQueue!: EntityTable<SyncQueueItem, 'id'>
+  
+  // Таблицы для рецептов
+  recipeIngredients!: EntityTable<RecipeIngredient, 'id'>
+  recipeIngredientItems!: EntityTable<RecipeIngredientItem, 'id'>
+  recipeSteps!: EntityTable<RecipeStep, 'id'>
 
   constructor() {
     super('LifeOSDB')
     
-    this.version(1).stores({
+    this.version(2).stores({
       // Основные таблицы
       logs: 'id, type, date, title, category_id, created_at, updated_at',
       items: 'id, type, name, category, created_at, updated_at',
@@ -42,6 +50,11 @@ class LifeOSDatabase extends Dexie {
       units: 'id, type',
       accounts: 'id, type',
       exercises: 'id, category',
+      
+      // Рецепты
+      recipeIngredients: 'id, name, category, subcategory',
+      recipeIngredientItems: 'id, recipe_id, ingredient_id, order',
+      recipeSteps: 'id, recipe_id, order',
       
       // Синхронизация
       syncQueue: 'id, table_name, record_id, action, synced',
@@ -82,7 +95,8 @@ export function createBaseEntity(): { id: string; created_at: string; updated_at
 
 export async function createEntity<T extends { id: string; updated_at: string }>(
   table: EntityTable<T, 'id'>,
-  data: Omit<T, 'id' | 'created_at' | 'updated_at'>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
 ): Promise<string> {
   const entity = {
     ...data,
