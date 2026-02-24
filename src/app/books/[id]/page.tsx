@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { 
   ArrowLeft, Pencil, Trash2, Star, User, Calendar, 
   FileText, BookOpen, Quote, MapPin, Clock, Tag
@@ -22,7 +23,7 @@ import {
 } from "@/components/ui/dialog"
 import { db, initializeDatabase } from "@/lib/db"
 import { statusColors, statusLabels, formatLabels } from "@/components/books"
-import type { Book, UserBook, Author, BookAuthor, BookQuote, BookGenre, Genre } from "@/types"
+import type { Book, UserBook, Author, BookQuote, Genre } from "@/types"
 
 interface BookDetails extends Book {
   userBook?: UserBook
@@ -165,9 +166,11 @@ export default function BookDetailPage() {
               {/* Обложка */}
               <div className="flex h-32 w-24 shrink-0 items-center justify-center rounded bg-muted overflow-hidden">
                 {book.cover_image_url ? (
-                  <img
+                  <Image
                     src={book.cover_image_url}
                     alt={book.title}
+                    width={96}
+                    height={144}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -425,7 +428,7 @@ export default function BookDetailPage() {
             <DialogHeader>
               <DialogTitle>Удалить книгу?</DialogTitle>
               <DialogDescription>
-                Это действие нельзя отменить. "{book.title}" будет удалено навсегда.
+                Это действие нельзя отменить. &laquo;{book.title}&raquo; будет удалено навсегда.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

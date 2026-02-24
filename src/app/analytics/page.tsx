@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { format, subDays, startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns"
+import { format, subDays, eachDayOfInterval } from "date-fns"
 import { ru } from "date-fns/locale"
-import { Utensils, Dumbbell, Wallet, TrendingUp, TrendingDown, Calendar } from "lucide-react"
+import { Utensils, Dumbbell, Wallet, TrendingUp, TrendingDown } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { 
-  BookOpen, Plus, Search, Star, User, Calendar, 
-  FileText, BookMarked, TrendingUp
+  BookOpen, Plus, Search, Star, Calendar, 
+  FileText, TrendingUp
 } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"

@@ -5,10 +5,23 @@ import { Download, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
+// Тип для события beforeinstallprompt
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
+}
+
+// Проверка, установлено ли приложение
+const getIsInstalledInitial = () => {
+  if (typeof window === "undefined") return false
+  return window.matchMedia("(display-mode: standalone)").matches
+}
+
 export function PWAProvider() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
-  const [isInstalled, setIsInstalled] = useState(false)
+  // Инициализируем состояние сразу, чтобы избежать setState в effect
+  const [isInstalled, setIsInstalled] = useState(getIsInstalledInitial)
 
   useEffect(() => {
     // Регистрация Service Worker
@@ -21,11 +34,6 @@ export function PWAProvider() {
         .catch((error) => {
           console.log("SW registration failed:", error)
         })
-    }
-
-    // Проверка, установлено ли приложение
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setIsInstalled(true)
     }
 
     // Обработка события beforeinstallprompt

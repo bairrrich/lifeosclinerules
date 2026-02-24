@@ -532,7 +532,7 @@ export default function ContentDetailPage() {
             <DialogHeader>
               <DialogTitle>Удалить {type === "book" ? "книгу" : "рецепт"}?</DialogTitle>
               <DialogDescription>
-                Это действие нельзя отменить. "{content.title}" будет удалено навсегда.
+                Это действие нельзя отменить. &laquo;{content.title}&raquo; будет удалено навсегда.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

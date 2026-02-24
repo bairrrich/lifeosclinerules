@@ -40,12 +40,6 @@ export default function SettingsPage() {
     currency: "RUB",
   })
 
-  useEffect(() => {
-    setMounted(true)
-    loadStats()
-    loadAccounts()
-  }, [])
-
   const loadStats = async () => {
     const [logs, items, content] = await Promise.all([
       db.logs.count(),
@@ -59,6 +53,16 @@ export default function SettingsPage() {
     const accs = await db.accounts.toArray()
     setAccounts(accs)
   }
+
+  useEffect(() => {
+    // Откладываем все setState на следующий тик
+    const init = async () => {
+      setMounted(true)
+      await loadStats()
+      await loadAccounts()
+    }
+    init()
+  }, [])
 
   const handleCreateAccount = async () => {
     if (!newAccount.name.trim()) return

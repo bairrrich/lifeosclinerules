@@ -1,10 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { Plus, X, ChevronDown } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import type { RecipeIngredientItem } from "@/types"
 
@@ -75,7 +73,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
       <CardContent className="space-y-3">
         {ingredients.length === 0 ? (
           <div className="text-center py-4 text-muted-foreground text-sm">
-            Нет ингредиентов. Нажмите "Добавить" для создания.
+            Нет ингредиентов. Нажмите &laquo;Добавить&raquo; для создания.
           </div>
         ) : (
           ingredients.map((ingredient, index) => (

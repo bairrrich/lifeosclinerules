@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, X, GripVertical, Clock } from "lucide-react"
+import { Plus, X, Clock } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -74,7 +74,7 @@ export function RecipeSteps({ steps, onChange }: RecipeStepsProps) {
       <CardContent className="space-y-3">
         {steps.length === 0 ? (
           <div className="text-center py-4 text-muted-foreground text-sm">
-            Нет шагов. Нажмите "Добавить шаг" для создания.
+            Нет шагов. Нажмите &laquo;Добавить шаг&raquo; для создания.
           </div>
         ) : (
           steps.map((step, index) => (

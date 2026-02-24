@@ -286,7 +286,7 @@ export default function ItemDetailPage() {
             <DialogHeader>
               <DialogTitle>Удалить элемент?</DialogTitle>
               <DialogDescription>
-                Это действие нельзя отменить. "{item.name}" будет удалено навсегда.
+                Это действие нельзя отменить. &laquo;{item.name}&raquo; будет удалено навсегда.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

@@ -664,7 +664,7 @@ export default function LogDetailPage() {
             <DialogHeader>
               <DialogTitle>Удалить запись?</DialogTitle>
               <DialogDescription>
-                Это действие нельзя отменить. Запись "{log.title}" будет удалена навсегда.
+                Это действие нельзя отменить. Запись &laquo;{log.title}&raquo; будет удалена навсегда.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

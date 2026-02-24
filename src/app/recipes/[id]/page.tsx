@@ -367,7 +367,7 @@ export default function RecipeDetailPage() {
             <DialogHeader>
               <DialogTitle>Удалить рецепт?</DialogTitle>
               <DialogDescription>
-                Это действие нельзя отменить. "{recipe.title}" будет удалено навсегда.
+                Это действие нельзя отменить. &laquo;{recipe.title}&raquo; будет удалено навсегда.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
