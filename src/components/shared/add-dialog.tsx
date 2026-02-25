@@ -13,6 +13,7 @@ import {
   Dumbbell,
   Wallet,
   Pill,
+  Bandage,
   Leaf,
   Sparkles,
   Package,
@@ -36,7 +37,7 @@ const logOptions = [
 // Options for items
 const itemOptions = [
   { type: "vitamin" as ItemType, label: "Витамины", icon: Pill, color: "bg-purple-500/10 text-purple-500" },
-  { type: "medicine" as ItemType, label: "Лекарства", icon: Pill, color: "bg-red-500/10 text-red-500" },
+  { type: "medicine" as ItemType, label: "Лекарства", icon: Bandage, color: "bg-red-500/10 text-red-500" },
   { type: "herb" as ItemType, label: "Травы", icon: Leaf, color: "bg-green-500/10 text-green-500" },
   { type: "cosmetic" as ItemType, label: "Косметика", icon: Sparkles, color: "bg-pink-500/10 text-pink-500" },
   { type: "product" as ItemType, label: "Продукты", icon: Package, color: "bg-yellow-500/10 text-yellow-500" },

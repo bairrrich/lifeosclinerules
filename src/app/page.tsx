@@ -10,9 +10,16 @@ import {
   ChefHat,
   Timer,
   DollarSign,
+  Droplet,
+  Moon,
+  Smile,
+  Scale,
+  Target,
+  Flame,
 } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
+import { StatCardSkeleton, ListSkeleton } from "@/components/ui/skeleton"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Log } from "@/types"
 
@@ -52,6 +59,52 @@ const quickActions = [
     icon: ChefHat,
     color: "text-rose-500",
     bgColor: "bg-rose-500/10",
+  },
+]
+
+// Tracker links
+const trackerLinks = [
+  {
+    href: "/water",
+    label: "Вода",
+    icon: Droplet,
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+  },
+  {
+    href: "/sleep",
+    label: "Сон",
+    icon: Moon,
+    color: "text-indigo-500",
+    bgColor: "bg-indigo-500/10",
+  },
+  {
+    href: "/mood",
+    label: "Настроение",
+    icon: Smile,
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-500/10",
+  },
+  {
+    href: "/body",
+    label: "Измерения",
+    icon: Scale,
+    color: "text-purple-500",
+    bgColor: "bg-purple-500/10",
+  },
+  {
+    href: "/habits",
+    label: "Привычки",
+    icon: Flame,
+    color: "text-orange-500",
+    bgColor: "bg-orange-500/10",
+  },
+  {
+    href: "/goals",
+    label: "Цели",
+    icon: Target,
+    color: "text-green-500",
+    bgColor: "bg-green-500/10",
   },
 ]
 
@@ -158,35 +211,45 @@ export default function HomePage() {
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Today Stats */}
         <div className="grid grid-cols-3 gap-3">
-          <Card>
-            <CardContent className="p-3 text-center">
-              <div className="flex items-center justify-center gap-1 mb-1">
-                <Utensils className="h-4 w-4 text-orange-500" />
-                <span className="text-xs text-muted-foreground">Ккал</span>
-              </div>
-              <div className="text-xl font-bold">{stats.todayCalories || "-"}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-3 text-center">
-              <div className="flex items-center justify-center gap-1 mb-1">
-                <Timer className="h-4 w-4 text-blue-500" />
-                <span className="text-xs text-muted-foreground">Мин</span>
-              </div>
-              <div className="text-xl font-bold">{stats.todayWorkoutMinutes || "-"}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-3 text-center">
-              <div className="flex items-center justify-center gap-1 mb-1">
-                <DollarSign className="h-4 w-4 text-green-500" />
-                <span className="text-xs text-muted-foreground">Расход</span>
-              </div>
-              <div className="text-xl font-bold">
-                {stats.todayExpenses ? `${stats.todayExpenses.toLocaleString()}₽` : "-"}
-              </div>
-            </CardContent>
-          </Card>
+          {isLoading ? (
+            <>
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+            </>
+          ) : (
+            <>
+              <Card>
+                <CardContent className="p-3 text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Utensils className="h-4 w-4 text-orange-500" />
+                    <span className="text-xs text-muted-foreground">Ккал</span>
+                  </div>
+                  <div className="text-xl font-bold">{stats.todayCalories || "-"}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-3 text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Timer className="h-4 w-4 text-blue-500" />
+                    <span className="text-xs text-muted-foreground">Мин</span>
+                  </div>
+                  <div className="text-xl font-bold">{stats.todayWorkoutMinutes || "-"}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-3 text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <DollarSign className="h-4 w-4 text-green-500" />
+                    <span className="text-xs text-muted-foreground">Расход</span>
+                  </div>
+                  <div className="text-xl font-bold">
+                    {stats.todayExpenses ? `${stats.todayExpenses.toLocaleString()}₽` : "-"}
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </div>
 
         {/* Quick Actions */}
@@ -212,21 +275,51 @@ export default function HomePage() {
 
         {/* Database Stats */}
         <div className="grid grid-cols-4 gap-2">
-          <div className="p-3 rounded-xl bg-muted text-center">
-            <div className="text-lg font-bold">{stats.logs}</div>
-            <div className="text-xs text-muted-foreground">Записей</div>
-          </div>
-          <div className="p-3 rounded-xl bg-muted text-center">
-            <div className="text-lg font-bold">{stats.items}</div>
-            <div className="text-xs text-muted-foreground">Каталог</div>
-          </div>
-          <div className="p-3 rounded-xl bg-muted text-center">
-            <div className="text-lg font-bold">{stats.books}</div>
-            <div className="text-xs text-muted-foreground">Книг</div>
-          </div>
-          <div className="p-3 rounded-xl bg-muted text-center">
-            <div className="text-lg font-bold">{stats.recipes}</div>
-            <div className="text-xs text-muted-foreground">Рецептов</div>
+          {isLoading ? (
+            <>
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+            </>
+          ) : (
+            <>
+              <div className="p-3 rounded-xl bg-muted text-center">
+                <div className="text-lg font-bold">{stats.logs}</div>
+                <div className="text-xs text-muted-foreground">Записей</div>
+              </div>
+              <div className="p-3 rounded-xl bg-muted text-center">
+                <div className="text-lg font-bold">{stats.items}</div>
+                <div className="text-xs text-muted-foreground">Каталог</div>
+              </div>
+              <div className="p-3 rounded-xl bg-muted text-center">
+                <div className="text-lg font-bold">{stats.books}</div>
+                <div className="text-xs text-muted-foreground">Книг</div>
+              </div>
+              <div className="p-3 rounded-xl bg-muted text-center">
+                <div className="text-lg font-bold">{stats.recipes}</div>
+                <div className="text-xs text-muted-foreground">Рецептов</div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Trackers */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Трекеры</h2>
+          <div className="grid grid-cols-3 gap-2">
+            {trackerLinks.map((tracker) => (
+              <Link
+                key={tracker.href}
+                href={tracker.href}
+                className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted hover:bg-accent transition-colors"
+              >
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${tracker.bgColor}`}>
+                  <tracker.icon className={`h-5 w-5 ${tracker.color}`} />
+                </div>
+                <span className="text-xs font-medium">{tracker.label}</span>
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -234,11 +327,7 @@ export default function HomePage() {
         <div>
           <h2 className="text-lg font-semibold mb-3">Последняя активность</h2>
           {isLoading ? (
-            <Card>
-              <CardContent className="p-4 text-center text-muted-foreground">
-                Загрузка...
-              </CardContent>
-            </Card>
+            <ListSkeleton count={3} />
           ) : stats.logs === 0 ? (
             <Card>
               <CardContent className="p-4 text-center text-muted-foreground">

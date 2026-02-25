@@ -22,6 +22,17 @@ import type {
   BookGenre,
   BookQuote,
   BookReview,
+  // Новые типы
+  Goal,
+  Habit,
+  HabitLog,
+  Streak,
+  SleepLog,
+  WaterLog,
+  MoodLog,
+  BodyMeasurement,
+  Reminder,
+  Template,
 } from '@/types'
 import { LogType, ItemType, ContentType } from '@/types'
 
@@ -55,11 +66,27 @@ class LifeOSDatabase extends Dexie {
   bookGenres!: EntityTable<BookGenre, 'id'>
   bookQuotes!: EntityTable<BookQuote, 'id'>
   bookReviews!: EntityTable<BookReview, 'id'>
+  
+  // Новые таблицы - цели и привычки
+  goals!: EntityTable<Goal, 'id'>
+  habits!: EntityTable<Habit, 'id'>
+  habitLogs!: EntityTable<HabitLog, 'id'>
+  streaks!: EntityTable<Streak, 'id'>
+  
+  // Новые таблицы - трекеры
+  sleepLogs!: EntityTable<SleepLog, 'id'>
+  waterLogs!: EntityTable<WaterLog, 'id'>
+  moodLogs!: EntityTable<MoodLog, 'id'>
+  bodyMeasurements!: EntityTable<BodyMeasurement, 'id'>
+  
+  // Новые таблицы - напоминания и шаблоны
+  reminders!: EntityTable<Reminder, 'id'>
+  templates!: EntityTable<Template, 'id'>
 
   constructor() {
     super('LifeOSDB')
     
-    this.version(4).stores({
+    this.version(5).stores({
       // Основные таблицы
       logs: 'id, type, date, title, category_id, created_at, updated_at',
       items: 'id, type, name, category, created_at, updated_at',
@@ -86,7 +113,23 @@ class LifeOSDatabase extends Dexie {
       genres: 'id, name, parent_id, created_at, updated_at',
       bookGenres: 'id, book_id, genre_id',
       bookQuotes: 'id, user_book_id, created_at, updated_at',
-      bookReviews: 'id, user_book_id, created_at, updated_at',
+      bookReviews: 'id, userअBook_id, created_at, updated_at',
+      
+      // Цели и привычки
+      goals: 'id, type, period, is_active, start_date, end_date',
+      habits: 'id, name, frequency, is_active',
+      habitLogs: 'id, habit_id, date, completed',
+      streaks: 'id, habit_id, current_streak, longest_streak',
+      
+      // Трекеры
+      sleepLogs: 'id, date, quality, created_at, updated_at',
+      waterLogs: 'id, date, amount_ml, type',
+      moodLogs: 'id, date, mood, energy, stress',
+      bodyMeasurements: 'id, date, type, value',
+      
+      // Напоминания и шаблоны
+      reminders: 'id, type, time, days, is_active, related_id',
+      templates: 'id, name, type, is_favorite',
       
       // Синхронизация
       syncQueue: 'id, table_name, record_id, action, synced',
@@ -233,6 +276,72 @@ export async function searchContent(query: string): Promise<Content[]> {
 }
 
 // ============================================
+// Streak Helpers
+// ============================================
+
+export async function updateStreak(habitId: string, completed: boolean): Promise<void> {
+  const today = new Date().toISOString().split('T')[0]
+  
+  const existingStreak = await db.streaks.where('habit_id').equals(habitId).first()
+  
+  if (!existingStreak) {
+    // Создаём новый streak
+    await db.streaks.add({
+      id: generateId(),
+      habit_id: habitId,
+      current_streak: completed ? 1 : 0,
+      longest_streak: completed ? 1 : 0,
+      last_completed_date: completed ? today : undefined,
+      created_at: getTimestamp(),
+      updated_at: getTimestamp(),
+    })
+    return
+  }
+  
+  if (completed) {
+    const lastDate = existingStreak.last_completed_date
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+    
+    let newCurrentStreak = 1
+    if (lastDate === yesterday || lastDate === today) {
+      newCurrentStreak = existingStreak.current_streak + (lastDate === today ? 0 : 1)
+    }
+    
+    await db.streaks.update(existingStreak.id, {
+      current_streak: newCurrentStreak,
+      longest_streak: Math.max(existingStreak.longest_streak, newCurrentStreak),
+      last_completed_date: today,
+      updated_at: getTimestamp(),
+    })
+  } else {
+    await db.streaks.update(existingStreak.id, {
+      current_streak: 0,
+      updated_at: getTimestamp(),
+    })
+  }
+}
+
+// ============================================
+// Goal Progress Helpers
+// ============================================
+
+export async function updateGoalProgress(goalId: string, value: number): Promise<void> {
+  const goal = await db.goals.get(goalId)
+  if (!goal) return
+  
+  const newValue = (goal.current_value || 0) + value
+  await db.goals.update(goalId, {
+    current_value: newValue,
+    updated_at: getTimestamp(),
+  })
+}
+
+export async function getGoalProgress(goal: Goal): Promise<number> {
+  if (!goal.current_value || !goal.target_value) return 0
+  return Math.min(100, (goal.current_value / goal.target_value) * 100)
+}
+
+// ============================================
 // Database Initialization
 // ============================================
 
@@ -270,6 +379,14 @@ export async function initializeDatabase(): Promise<void> {
         { id: generateId(), name: 'Минута', abbreviation: 'мин', type: 'time', created_at: now, updated_at: now },
         { id: generateId(), name: 'Час', abbreviation: 'ч', type: 'time', created_at: now, updated_at: now },
         { id: generateId(), name: 'Рубль', abbreviation: '₽', type: 'money', created_at: now, updated_at: now },
+      ])
+      
+      // Базовые цели (с current_value для корректной работы)
+      await db.goals.bulkAdd([
+        { id: generateId(), type: 'calories', name: 'Калории в день', target_value: 2000, current_value: 0, period: 'daily', start_date: now.split('T')[0], is_active: true, unit: 'ккал', created_at: now, updated_at: now },
+        { id: generateId(), type: 'water', name: 'Вода в день', target_value: 2000, current_value: 0, period: 'daily', start_date: now.split('T')[0], is_active: true, unit: 'мл', created_at: now, updated_at: now },
+        { id: generateId(), type: 'workout', name: 'Тренировки в неделю', target_value: 3, current_value: 0, period: 'weekly', start_date: now.split('T')[0], is_active: true, unit: 'шт', created_at: now, updated_at: now },
+        { id: generateId(), type: 'sleep', name: 'Сон в день', target_value: 480, current_value: 0, period: 'daily', start_date: now.split('T')[0], is_active: true, unit: 'мин', created_at: now, updated_at: now },
       ])
     }
     

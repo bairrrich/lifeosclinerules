@@ -655,3 +655,148 @@ export interface RecipeContentExtended extends BaseContent {
 
 // Объединённый тип контента
 export type ContentExtended = BookContent | RecipeContentExtended
+
+// ============================================
+// Цели и прогресс
+// ============================================
+
+export type GoalType = 'calories' | 'workout' | 'water' | 'sleep' | 'steps' | 'weight' | 'finance'
+
+export type GoalPeriod = 'daily' | 'weekly' | 'monthly'
+
+export interface Goal extends BaseEntity {
+  type: GoalType
+  name: string
+  target_value: number
+  current_value?: number
+  period: GoalPeriod
+  start_date: ISODate
+  end_date?: ISODate
+  is_active: boolean
+  icon?: string
+  color?: string
+  unit?: string
+}
+
+// ============================================
+// Привычки и серии (Streaks)
+// ============================================
+
+export interface Habit extends BaseEntity {
+  name: string
+  icon?: string
+  color?: string
+  frequency: 'daily' | 'weekly' | 'custom'
+  custom_days?: number[] // 0-6 для дней недели
+  reminder_time?: string // "08:00"
+  is_active: boolean
+  start_date: ISODate // Дата начала привычки
+  end_date?: ISODate // Дата окончания (опционально)
+}
+
+export interface HabitLog extends BaseEntity {
+  habit_id: UUID
+  date: ISODate
+  completed: boolean
+  note?: string
+}
+
+export interface Streak extends BaseEntity {
+  habit_id: UUID
+  current_streak: number
+  longest_streak: number
+  last_completed_date?: ISODate
+}
+
+// ============================================
+// Трекер сна
+// ============================================
+
+export interface SleepLog extends BaseEntity {
+  date: ISODate
+  start_time: string // "23:00"
+  end_time: string // "07:00"
+  duration_min: number // вычисляемое
+  quality: 1 | 2 | 3 | 4 | 5 // 1 = плохо, 5 = отлично
+  deep_sleep_min?: number
+  rem_sleep_min?: number
+  awake_min?: number
+  notes?: string
+  factors?: string[] // ["caffeine", "exercise", "stress", "alcohol"]
+}
+
+// ============================================
+// Трекер воды
+// ============================================
+
+export interface WaterLog extends BaseEntity {
+  date: ISODate
+  amount_ml: number
+  time?: string // "08:30"
+  type?: 'water' | 'tea' | 'coffee' | 'other'
+  note?: string
+}
+
+// ============================================
+// Трекер настроения
+// ============================================
+
+export type MoodType = 'great' | 'good' | 'okay' | 'bad' | 'terrible'
+
+export interface MoodLog extends BaseEntity {
+  date: ISODate
+  mood: MoodType
+  energy: 1 | 2 | 3 | 4 | 5
+  stress: 1 | 2 | 3 | 4 | 5 // 1 = низкий, 5 = высокий
+  activities?: string[] // ["work", "exercise", "social", "hobby"]
+  notes?: string
+  factors?: string[] // ["sleep", "weather", "health", "work"]
+}
+
+// ============================================
+// Измерения тела
+// ============================================
+
+export type BodyMeasurementType = 
+  | 'weight' | 'height' | 'bmi'
+  | 'chest' | 'waist' | 'hips' | 'neck'
+  | 'biceps' | 'forearm' | 'thigh' | 'calf'
+  | 'body_fat' | 'muscle_mass'
+
+export interface BodyMeasurement extends BaseEntity {
+  date: ISODate
+  type: BodyMeasurementType
+  value: number
+  unit: string // "kg", "cm", "%"
+  notes?: string
+}
+
+// ============================================
+// Напоминания
+// ============================================
+
+export type ReminderType = 'habit' | 'medicine' | 'water' | 'workout' | 'custom'
+
+export interface Reminder extends BaseEntity {
+  type: ReminderType
+  title: string
+  message?: string
+  time: string // "08:00"
+  days: number[] // 0-6 для дней недели
+  is_active: boolean
+  related_id?: UUID // связь с привычкой/лекарством
+  sound?: boolean
+  vibration?: boolean
+}
+
+// ============================================
+// Шаблоны записей
+// ============================================
+
+export interface Template extends BaseEntity {
+  name: string
+  type: LogType | 'water' | 'sleep' | 'mood'
+  data: JSONValue // сериализованные данные записи
+  is_favorite?: boolean
+  use_count?: number
+}
