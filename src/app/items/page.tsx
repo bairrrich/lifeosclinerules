@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Pill, Leaf, Sparkles, Package, Plus, Search, LucideIcon } from "lucide-react"
+import { Pill, Bandage, Leaf, Sparkles, Package, Plus, Search, LucideIcon } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,7 +16,7 @@ import type { Item } from "@/types"
 
 const itemTypes: { type: ItemType; label: string; icon: LucideIcon }[] = [
   { type: ItemType.VITAMIN, label: "Витамины", icon: Pill },
-  { type: ItemType.MEDICINE, label: "Лекарства", icon: Pill },
+  { type: ItemType.MEDICINE, label: "Лекарства", icon: Bandage },
   { type: ItemType.HERB, label: "Травы", icon: Leaf },
   { type: ItemType.COSMETIC, label: "Косметика", icon: Sparkles },
   { type: ItemType.PRODUCT, label: "Продукты", icon: Package },
@@ -55,7 +55,7 @@ export default function ItemsPage() {
       case "vitamin":
         return Pill
       case "medicine":
-        return Pill
+        return Bandage
       case "herb":
         return Leaf
       case "cosmetic":

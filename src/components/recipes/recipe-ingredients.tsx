@@ -4,26 +4,8 @@ import { Plus, X, ChevronDown } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useUnits } from "@/hooks/use-units"
 import type { RecipeIngredientItem } from "@/types"
-
-// Часто используемые единицы измерения
-const commonUnits = [
-  { id: "g", value: "г", label: "грамм" },
-  { id: "kg", value: "кг", label: "килограмм" },
-  { id: "ml", value: "мл", label: "миллилитр" },
-  { id: "l", value: "л", label: "литр" },
-  { id: "pcs", value: "шт", label: "штука" },
-  { id: "tbsp", value: "ст.л.", label: "столовая ложка" },
-  { id: "tsp", value: "ч.л.", label: "чайная ложка" },
-  { id: "cup", value: "стакан", label: "стакан" },
-  { id: "clove", value: "зубч.", label: "зубчик" },
-  { id: "taste", value: "по вкусу", label: "по вкусу" },
-  { id: "pinch", value: "щепотка", label: "щепотка" },
-  { id: "ml-bar", value: "мл", label: "мл (бар)" },
-  { id: "oz", value: "oz", label: "унция" },
-  { id: "dash", value: "dash", label: "деш" },
-  { id: "drop", value: "drop", label: "капля" },
-]
 
 export interface IngredientItem extends Omit<RecipeIngredientItem, 'id' | 'recipe_id' | 'created_at' | 'updated_at'> {
   id?: string
@@ -36,6 +18,8 @@ interface RecipeIngredientsProps {
 }
 
 export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsProps) {
+  const { units, isLoading, unitOptions } = useUnits()
+
   const addIngredient = () => {
     const newIngredient: IngredientItem = {
       id: `temp-${Date.now()}`,
@@ -58,6 +42,11 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
     updated[index] = { ...updated[index], [field]: value }
     onChange(updated)
   }
+
+  // Фильтруем единицы для рецептов (вес, объём, штуки)
+  const recipeUnitOptions = unitOptions.filter(
+    u => u.type === "weight" || u.type === "volume" || u.type === "count"
+  )
 
   return (
     <Card>
@@ -115,11 +104,29 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                         appearance: 'none',
                       }}
                     >
-                      {commonUnits.map((u) => (
-                        <option key={u.id} value={u.value}>
-                          {u.value}
-                        </option>
-                      ))}
+                      {isLoading ? (
+                        <option value={ingredient.unit}>{ingredient.unit}</option>
+                      ) : recipeUnitOptions.length > 0 ? (
+                        recipeUnitOptions.map((u) => (
+                          <option key={u.value} value={u.value}>
+                            {u.abbreviation}
+                          </option>
+                        ))
+                      ) : (
+                        // Fallback если БД пуста
+                        <>
+                          <option value="г">г</option>
+                          <option value="кг">кг</option>
+                          <option value="мл">мл</option>
+                          <option value="л">л</option>
+                          <option value="шт">шт</option>
+                          <option value="ст.л.">ст.л.</option>
+                          <option value="ч.л.">ч.л.</option>
+                          <option value="стакан">стакан</option>
+                          <option value="по вкусу">по вкусу</option>
+                          <option value="щепотка">щепотка</option>
+                        </>
+                      )}
                     </select>
                     <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
                   </div>

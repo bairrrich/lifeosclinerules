@@ -6,6 +6,7 @@ import type {
   Category, 
   Tag, 
   Account,
+  Unit,
   RecipeContentExtended,
   Book,
   UserBook,
@@ -203,6 +204,46 @@ async function seedTags(): Promise<void> {
     { id: uuid(), name: "любимое", created_at: now, updated_at: now },
   ]
   await db.tags.bulkAdd(tags)
+}
+
+async function seedUnits(): Promise<void> {
+  const existingUnits = await db.units.count()
+  if (existingUnits > 0) return
+
+  const now = getTimestamp()
+  const units: Unit[] = [
+    // Вес
+    { id: "g", name: "грамм", abbreviation: "г", type: "weight", created_at: now, updated_at: now },
+    { id: "kg", name: "килограмм", abbreviation: "кг", type: "weight", created_at: now, updated_at: now },
+    { id: "mg", name: "миллиграмм", abbreviation: "мг", type: "weight", created_at: now, updated_at: now },
+    
+    // Объём
+    { id: "ml", name: "миллилитр", abbreviation: "мл", type: "volume", created_at: now, updated_at: now },
+    { id: "l", name: "литр", abbreviation: "л", type: "volume", created_at: now, updated_at: now },
+    { id: "tsp", name: "чайная ложка", abbreviation: "ч.л.", type: "volume", created_at: now, updated_at: now },
+    { id: "tbsp", name: "столовая ложка", abbreviation: "ст.л.", type: "volume", created_at: now, updated_at: now },
+    { id: "cup", name: "стакан", abbreviation: "стакан", type: "volume", created_at: now, updated_at: now },
+    { id: "oz", name: "унция", abbreviation: "oz", type: "volume", created_at: now, updated_at: now },
+    { id: "drop", name: "капля", abbreviation: "капля", type: "volume", created_at: now, updated_at: now },
+    { id: "dash", name: "деш", abbreviation: "dash", type: "volume", created_at: now, updated_at: now },
+    
+    // Штуки
+    { id: "pcs", name: "штука", abbreviation: "шт", type: "count", created_at: now, updated_at: now },
+    { id: "clove", name: "зубчик", abbreviation: "зубч.", type: "count", created_at: now, updated_at: now },
+    { id: "pinch", name: "щепотка", abbreviation: "щепотка", type: "count", created_at: now, updated_at: now },
+    { id: "taste", name: "по вкусу", abbreviation: "по вкусу", type: "count", created_at: now, updated_at: now },
+    
+    // Время
+    { id: "min", name: "минута", abbreviation: "мин", type: "time", created_at: now, updated_at: now },
+    { id: "hour", name: "час", abbreviation: "ч", type: "time", created_at: now, updated_at: now },
+    
+    // Деньги
+    { id: "rub", name: "рубль", abbreviation: "₽", type: "money", created_at: now, updated_at: now },
+    { id: "usd", name: "доллар", abbreviation: "$", type: "money", created_at: now, updated_at: now },
+    { id: "eur", name: "евро", abbreviation: "€", type: "money", created_at: now, updated_at: now },
+  ]
+  
+  await db.units.bulkAdd(units)
 }
 
 async function seedAccounts(): Promise<Account[]> {
@@ -1367,6 +1408,7 @@ export async function clearDatabase() {
     db.categories.clear(),
     db.tags.clear(),
     db.accounts.clear(),
+    db.units.clear(),
     db.books.clear(),
     db.userBooks.clear(),
     db.authors.clear(),
@@ -1394,6 +1436,7 @@ export async function seedDatabase() {
   
   const categories = await seedCategories()
   await seedTags()
+  await seedUnits()
   const accounts = await seedAccounts()
   await seedLogs(categories, accounts)
   await seedItems()
