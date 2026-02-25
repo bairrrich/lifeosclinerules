@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save, Bell } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -103,6 +103,21 @@ export default function NewLogPage() {
   const [rounds, setRounds] = useState<number | undefined>()
   const [yogaLevel, setYogaLevel] = useState<string>("")
   const [yogaFocus, setYogaFocus] = useState<string>("")
+
+  // Состояния для напоминания
+  const [createReminder, setCreateReminder] = useState(false)
+  const [reminderTime, setReminderTime] = useState("09:00")
+  const [reminderDays, setReminderDays] = useState<number[]>([1, 2, 3, 4, 5]) // По будням по умолчанию
+  
+  const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
+
+  function toggleReminderDay(day: number) {
+    setReminderDays(prev => 
+      prev.includes(day) 
+        ? prev.filter(d => d !== day) 
+        : [...prev, day].sort()
+    )
+  }
 
   const {
     register,
@@ -273,10 +288,35 @@ export default function NewLogPage() {
         } as FinanceMetadata & { category?: string; subcategory?: string; item?: string; supplier?: string; target_account_id?: string }
       }
 
-      await createEntity(db.logs, {
+      const logId = await createEntity(db.logs, {
         ...baseData,
         metadata,
       })
+
+      // Создаём напоминание если нужно
+      if (createReminder && (type === "food" || type === "workout")) {
+        const reminderTitle = type === "food" 
+          ? `Приём пищи: ${title}`
+          : `Тренировка: ${title}`
+        
+        await createEntity(db.reminders, {
+          type: type as "food" | "workout",
+          title: reminderTitle,
+          message: `Напоминание о ${type === "food" ? "приёме пищи" : "тренировке"}`,
+          time: reminderTime,
+          days: reminderDays,
+          priority: "medium",
+          is_active: true,
+          sound: true,
+          vibration: true,
+          persistent: false,
+          related_id: logId,
+          related_type: "log",
+          streak: 0,
+          longest_streak: 0,
+          total_completed: 0,
+        })
+      }
 
       // Обновляем балансы аккаунтов
       if (type === "finance" && data.value) {
@@ -510,6 +550,64 @@ export default function NewLogPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Reminder Section - only for food and workout */}
+          {(type === "food" || type === "workout") && (
+            <Card className="border-dashed">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Bell className="h-4 w-4" />
+                    Напоминание
+                  </CardTitle>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={createReminder}
+                      onChange={(e) => setCreateReminder(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm">Создать</span>
+                  </label>
+                </div>
+              </CardHeader>
+              {createReminder && (
+                <CardContent className="space-y-4 pt-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Время напоминания</Label>
+                      <input
+                        type="time"
+                        className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                        value={reminderTime}
+                        onChange={(e) => setReminderTime(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Дни</Label>
+                      <div className="flex gap-1 flex-wrap">
+                        {dayNames.map((day, i) => (
+                          <Button
+                            key={i}
+                            type="button"
+                            variant={reminderDays.includes(i) ? "default" : "outline"}
+                            size="sm"
+                            className="px-2 h-8"
+                            onClick={() => toggleReminderDay(i)}
+                          >
+                            {day}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Напоминание появится на странице напоминаний
+                  </p>
+                </CardContent>
+              )}
+            </Card>
+          )}
 
           {/* Actions */}
           <div className="flex gap-4">

@@ -276,7 +276,6 @@ export default function SleepPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={() => openEditDialog(log)}
                     >
                       <Settings className="h-4 w-4" />
@@ -455,14 +454,16 @@ export default function SleepPage() {
                 Продолжительность: {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={updateSleepLog}>Сохранить</Button>
+            <DialogFooter className="flex justify-between">
               <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={updateSleepLog}>Сохранить</Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Smile, Meh, Frown, Plus, Battery, Brain, Trash2, Settings } from "lucide-react"
+import { Smile, Meh, Frown, Plus, Battery, Brain, Trash2, Settings, Droplet, Moon, Dumbbell, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -40,6 +40,11 @@ const activityLabels: Record<string, string> = {
 export default function MoodPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [moodLogs, setMoodLogs] = useState<MoodLog[]>([])
+  const [correlations, setCorrelations] = useState<{
+    sleep: { value: number; label: string; trend: "up" | "down" | "neutral" }
+    water: { value: number; label: string; trend: "up" | "down" | "neutral" }
+    workout: { value: number; label: string; trend: "up" | "down" | "neutral" }
+  } | null>(null)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -62,11 +67,124 @@ export default function MoodPage() {
       await initializeDatabase()
       const logs = await db.moodLogs.orderBy("date").reverse().limit(30).toArray()
       setMoodLogs(logs)
+      
+      // Вычисляем корреляции
+      await calculateCorrelations(logs)
     } catch (error) {
       console.error("Failed to load mood data:", error)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  async function calculateCorrelations(logs: MoodLog[]) {
+    if (logs.length < 3) {
+      setCorrelations(null)
+      return
+    }
+
+    const moodValues: Record<MoodType, number> = {
+      great: 5, good: 4, okay: 3, bad: 2, terrible: 1,
+    }
+
+    // Получаем данные за последние 14 дней
+    const last14Days = logs.slice(0, 14)
+    const dateSet = new Set(last14Days.map(l => l.date.split("T")[0]))
+
+    // Загружаем связанные данные
+    const [sleepLogs, waterLogs, workoutLogs] = await Promise.all([
+      db.sleepLogs.toArray(),
+      db.waterLogs.toArray(),
+      db.logs.where("type").equals("workout").toArray(),
+    ])
+
+    // Функция корреляции Пирсона
+    function pearsonCorrelation(x: number[], y: number[]): number {
+      const n = x.length
+      if (n < 3) return 0
+      
+      const sumX = x.reduce((a, b) => a + b, 0)
+      const sumY = y.reduce((a, b) => a + b, 0)
+      const sumXY = x.reduce((total, xi, i) => total + xi * y[i], 0)
+      const sumX2 = x.reduce((total, xi) => total + xi * xi, 0)
+      const sumY2 = y.reduce((total, yi) => total + yi * yi, 0)
+      
+      const numerator = n * sumXY - sumX * sumY
+      const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY))
+      
+      if (denominator === 0) return 0
+      return numerator / denominator
+    }
+
+    // Сон vs настроение
+    const sleepData: { mood: number; sleep: number }[] = []
+    for (const log of last14Days) {
+      const date = log.date.split("T")[0]
+      const prevDate = new Date(date)
+      prevDate.setDate(prevDate.getDate() - 1)
+      const prevDateStr = prevDate.toISOString().split("T")[0]
+      
+      const sleep = sleepLogs.find(s => s.date.startsWith(prevDateStr))
+      if (sleep && sleep.duration_min) {
+        sleepData.push({ mood: moodValues[log.mood], sleep: sleep.duration_min / 60 })
+      }
+    }
+
+    // Вода vs настроение
+    const waterData: { mood: number; water: number }[] = []
+    for (const log of last14Days) {
+      const date = log.date.split("T")[0]
+      const dayWater = waterLogs
+        .filter(w => w.date.startsWith(date))
+        .reduce((sum, w) => sum + w.amount_ml, 0)
+      if (dayWater > 0) {
+        waterData.push({ mood: moodValues[log.mood], water: dayWater / 1000 })
+      }
+    }
+
+    // Тренировки vs настроение
+    const workoutData: { mood: number; workout: number }[] = []
+    for (const log of last14Days) {
+      const date = log.date.split("T")[0]
+      const dayWorkouts = workoutLogs.filter(w => w.date.startsWith(date))
+      const workoutMin = dayWorkouts.reduce((sum, w) => {
+        const metadata = w.metadata as { duration?: number } | undefined
+        return sum + (metadata?.duration || 0)
+      }, 0)
+      workoutData.push({ mood: moodValues[log.mood], workout: workoutMin })
+    }
+
+    // Вычисляем корреляции
+    const sleepCorr = sleepData.length >= 3 
+      ? pearsonCorrelation(sleepData.map(d => d.sleep), sleepData.map(d => d.mood))
+      : 0
+    const waterCorr = waterData.length >= 3
+      ? pearsonCorrelation(waterData.map(d => d.water), waterData.map(d => d.mood))
+      : 0
+    const workoutCorr = workoutData.length >= 3
+      ? pearsonCorrelation(workoutData.map(d => d.workout), workoutData.map(d => d.mood))
+      : 0
+
+    function formatCorrelation(value: number): { label: string; trend: "up" | "down" | "neutral" } {
+      const absValue = Math.abs(value)
+      if (absValue < 0.3) {
+        return { label: "Нет связи", trend: "neutral" }
+      } else if (value > 0) {
+        if (absValue >= 0.7) return { label: "Сильная +", trend: "up" }
+        if (absValue >= 0.5) return { label: "Средняя +", trend: "up" }
+        return { label: "Слабая +", trend: "up" }
+      } else {
+        if (absValue >= 0.7) return { label: "Сильная −", trend: "down" }
+        if (absValue >= 0.5) return { label: "Средняя −", trend: "down" }
+        return { label: "Слабая −", trend: "down" }
+      }
+    }
+
+    setCorrelations({
+      sleep: { value: sleepCorr, ...formatCorrelation(sleepCorr) },
+      water: { value: waterCorr, ...formatCorrelation(waterCorr) },
+      workout: { value: workoutCorr, ...formatCorrelation(workoutCorr) },
+    })
   }
 
   async function addMoodLog() {
@@ -242,6 +360,82 @@ export default function MoodPage() {
           </Card>
         </div>
 
+        {/* Correlations */}
+        {correlations && (
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium mb-3">Корреляции с настроением</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                Как различные факторы влияют на ваше настроение (на основе последних 14 дней)
+              </p>
+              <div className="space-y-3">
+                {/* Sleep */}
+                <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-2">
+                    <Moon className="h-5 w-5 text-indigo-500" />
+                    <span className="text-sm">Сон</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{correlations.sleep.label}</span>
+                    {correlations.sleep.trend === "up" && (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    )}
+                    {correlations.sleep.trend === "down" && (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    {correlations.sleep.trend === "neutral" && (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+
+                {/* Water */}
+                <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-2">
+                    <Droplet className="h-5 w-5 text-blue-500" />
+                    <span className="text-sm">Вода</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{correlations.water.label}</span>
+                    {correlations.water.trend === "up" && (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    )}
+                    {correlations.water.trend === "down" && (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    {correlations.water.trend === "neutral" && (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+
+                {/* Workout */}
+                <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-2">
+                    <Dumbbell className="h-5 w-5 text-orange-500" />
+                    <span className="text-sm">Тренировки</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{correlations.workout.label}</span>
+                    {correlations.workout.trend === "up" && (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    )}
+                    {correlations.workout.trend === "down" && (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    {correlations.workout.trend === "neutral" && (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">
+                💡 Положительная корреляция означает, что больше/лучше → лучше настроение
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* History */}
         <div>
           <h2 className="text-lg font-semibold mb-3">История</h2>
@@ -294,7 +488,6 @@ export default function MoodPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => openEditDialog(log)}
                       >
                         <Settings className="h-4 w-4" />
@@ -516,14 +709,16 @@ export default function MoodPage() {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={updateMoodLog}>Сохранить</Button>
+            <DialogFooter className="flex justify-between">
               <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={updateMoodLog}>Сохранить</Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>

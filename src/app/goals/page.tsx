@@ -452,14 +452,16 @@ export default function GoalsPage() {
                 </Tabs>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={saveGoal}>Сохранить</Button>
+            <DialogFooter className="flex justify-between">
               <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={saveGoal}>Сохранить</Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>

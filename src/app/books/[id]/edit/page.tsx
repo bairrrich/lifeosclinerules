@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save, Trash2 } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,7 @@ export default function EditBookPage() {
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   
   // Справочники
   const [authors, setAuthors] = useState<Author[]>([])
@@ -225,6 +226,31 @@ export default function EditBookPage() {
     }
   }
 
+  const onDelete = async () => {
+    if (!confirm("Вы уверены, что хотите удалить эту книгу? Это действие нельзя отменить.")) return
+    
+    setIsDeleting(true)
+    try {
+      // Удаляем все связанные данные
+      await db.bookAuthors.where("book_id").equals(bookId).delete()
+      await db.bookGenres.where("book_id").equals(bookId).delete()
+      
+      if (userBookId) {
+        await db.bookQuotes.where("user_book_id").equals(userBookId).delete()
+        await db.userBooks.delete(userBookId)
+      }
+      
+      await db.books.delete(bookId)
+      
+      router.push("/books")
+    } catch (error) {
+      console.error("Failed to delete book:", error)
+      alert("Ошибка при удалении книги")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   if (isLoading) {
     return (
       <AppLayout title="Загрузка...">
@@ -261,20 +287,30 @@ export default function EditBookPage() {
           />
           
           {/* Действия */}
-          <div className="flex gap-4">
+          <div className="flex justify-between gap-4">
             <Button
               type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              className="flex-1"
+              variant="destructive"
+              onClick={onDelete}
+              disabled={isDeleting}
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Отмена
+              <Trash2 className="h-4 w-4 mr-2" />
+              {isDeleting ? "Удаление..." : "Удалить"}
             </Button>
-            <Button type="submit" disabled={isSaving} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              {isSaving ? "Сохранение..." : "Сохранить"}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Отмена
+              </Button>
+              <Button type="submit" disabled={isSaving}>
+                <Save className="h-4 w-4 mr-2" />
+                {isSaving ? "Сохранение..." : "Сохранить"}
+              </Button>
+            </div>
           </div>
         </form>
       </div>

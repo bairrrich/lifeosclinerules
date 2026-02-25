@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Flame, Check, X, Settings, Trash2, Calendar } from "lucide-react"
+import { Plus, Flame, Check, X, Settings, Trash2, Clock, AlertCircle, ListChecks } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity, updateStreak } from "@/lib/db"
-import type { Habit, HabitLog, Streak } from "@/types"
+import type { Habit, HabitLog, Streak, HabitSubtask } from "@/types"
 
 const habitColors = [
   { bg: "bg-red-500/10", text: "text-red-500", name: "Красный" },
@@ -21,8 +21,20 @@ const habitColors = [
   { bg: "bg-pink-500/10", text: "text-pink-500", name: "Розовый" },
 ]
 
-// Дни недели начиная с понедельника
+const skipReasons = [
+  "Забыл",
+  "Не было времени",
+  "Болезнь",
+  "Отпуск",
+  "Погода",
+  "Другое",
+]
+
 const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+
+function generateId(): string {
+  return Math.random().toString(36).substr(2, 9)
+}
 
 export default function HabitsPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -32,11 +44,18 @@ export default function HabitsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isSkipDialogOpen, setIsSkipDialogOpen] = useState(false)
+  const [isSubtaskDialogOpen, setIsSubtaskDialogOpen] = useState(false)
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null)
+  const [skippingHabit, setSkippingHabit] = useState<Habit | null>(null)
+  const [viewingSubtasks, setViewingSubtasks] = useState<Habit | null>(null)
   const [newHabitName, setNewHabitName] = useState("")
   const [selectedColor, setSelectedColor] = useState(0)
   const [startDate, setStartDate] = useState(new Date().toISOString().split("T")[0])
   const [endDate, setEndDate] = useState("")
+  const [subtasks, setSubtasks] = useState<HabitSubtask[]>([])
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
+  const [skipReason, setSkipReason] = useState("")
 
   useEffect(() => {
     loadData()
@@ -71,12 +90,10 @@ export default function HabitsPage() {
       color: `${color.bg} ${color.text}`,
       start_date: startDate,
       end_date: endDate || undefined,
+      subtasks: subtasks.length > 0 ? subtasks : undefined,
     })
 
-    setNewHabitName("")
-    setSelectedColor(0)
-    setStartDate(new Date().toISOString().split("T")[0])
-    setEndDate("")
+    resetForm()
     setIsAddDialogOpen(false)
     loadData()
   }
@@ -90,9 +107,10 @@ export default function HabitsPage() {
       color: `${color.bg} ${color.text}`,
       start_date: startDate,
       end_date: endDate || undefined,
+      subtasks: subtasks.length > 0 ? subtasks : undefined,
     })
 
-    setNewHabitName("")
+    resetForm()
     setEditingHabit(null)
     setIsEditDialogOpen(false)
     loadData()
@@ -103,7 +121,6 @@ export default function HabitsPage() {
     
     await deleteEntity(db.habits, editingHabit.id)
     
-    // Удаляем связанные логи и streaks
     const relatedLogs = habitLogs.filter(l => l.habit_id === editingHabit.id)
     for (const log of relatedLogs) {
       await db.habitLogs.delete(log.id)
@@ -114,21 +131,31 @@ export default function HabitsPage() {
       await db.streaks.delete(streak.id)
     }
 
-    setNewHabitName("")
+    resetForm()
     setEditingHabit(null)
     setIsDeleteDialogOpen(false)
     setIsEditDialogOpen(false)
     loadData()
   }
 
+  function resetForm() {
+    setNewHabitName("")
+    setSelectedColor(0)
+    setStartDate(new Date().toISOString().split("T")[0])
+    setEndDate("")
+    setSubtasks([])
+    setNewSubtaskTitle("")
+    setSkipReason("")
+  }
+
   function openEditDialog(habit: Habit) {
     setEditingHabit(habit)
     setNewHabitName(habit.name)
-    // Найти индекс цвета
     const colorIndex = habitColors.findIndex(c => habit.color?.includes(c.bg))
     setSelectedColor(colorIndex >= 0 ? colorIndex : 0)
     setStartDate(habit.start_date || new Date().toISOString().split("T")[0])
     setEndDate(habit.end_date || "")
+    setSubtasks(habit.subtasks || [])
     setIsEditDialogOpen(true)
   }
 
@@ -141,12 +168,15 @@ export default function HabitsPage() {
     if (existingLog) {
       await db.habitLogs.update(existingLog.id, {
         completed: !existingLog.completed,
+        completed_at: !existingLog.completed ? new Date().toTimeString().slice(0, 5) : undefined,
+        skipped_reason: undefined,
       })
     } else {
       await createEntity(db.habitLogs, {
         habit_id: habitId,
         date: today,
         completed: true,
+        completed_at: new Date().toTimeString().slice(0, 5),
       })
     }
 
@@ -154,34 +184,89 @@ export default function HabitsPage() {
     loadData()
   }
 
+  async function skipHabit() {
+    if (!skippingHabit || !skipReason) return
+
+    const today = new Date().toISOString().split("T")[0]
+    const existingLog = habitLogs.find(
+      (l) => l.habit_id === skippingHabit.id && l.date.startsWith(today)
+    )
+
+    if (existingLog) {
+      await db.habitLogs.update(existingLog.id, {
+        completed: false,
+        skipped_reason: skipReason,
+      })
+    } else {
+      await createEntity(db.habitLogs, {
+        habit_id: skippingHabit.id,
+        date: today,
+        completed: false,
+        skipped_reason: skipReason,
+      })
+    }
+
+    setSkippingHabit(null)
+    setIsSkipDialogOpen(false)
+    setSkipReason("")
+    loadData()
+  }
+
+  async function toggleSubtask(habitId: string, subtaskId: string) {
+    const habit = habits.find(h => h.id === habitId)
+    if (!habit || !habit.subtasks) return
+
+    const updatedSubtasks = habit.subtasks.map(st =>
+      st.id === subtaskId ? { ...st, completed: !st.completed } : st
+    )
+
+    await updateEntity(db.habits, habitId, {
+      subtasks: updatedSubtasks,
+    })
+
+    loadData()
+  }
+
+  function addSubtask() {
+    if (!newSubtaskTitle.trim()) return
+    setSubtasks([...subtasks, { id: generateId(), title: newSubtaskTitle.trim(), completed: false }])
+    setNewSubtaskTitle("")
+  }
+
+  function removeSubtask(id: string) {
+    setSubtasks(subtasks.filter(st => st.id !== id))
+  }
+
   function getStreak(habitId: string): Streak | undefined {
     return streaks.find((s) => s.habit_id === habitId)
   }
 
-  function isHabitCompletedToday(habitId: string): boolean {
+  function getTodayLog(habitId: string): HabitLog | undefined {
     const today = new Date().toISOString().split("T")[0]
-    return habitLogs.some(
-      (l) => l.habit_id === habitId && l.date.startsWith(today) && l.completed
-    )
+    return habitLogs.find(l => l.habit_id === habitId && l.date.startsWith(today))
   }
 
-  function getWeekCompletion(habitId: string): { date: string; completed: boolean; isToday: boolean; isWeekend: boolean }[] {
-    const result: { date: string; completed: boolean; isToday: boolean; isWeekend: boolean }[] = []
+  function isHabitCompletedToday(habitId: string): boolean {
+    const log = getTodayLog(habitId)
+    return log?.completed ?? false
+  }
+
+  function getWeekCompletion(habitId: string): { date: string; completed: boolean; skipped: boolean; isToday: boolean; isWeekend: boolean }[] {
+    const result: { date: string; completed: boolean; skipped: boolean; isToday: boolean; isWeekend: boolean }[] = []
     const today = new Date()
-    const dayOfWeek = (today.getDay() + 6) % 7 // Понедельник = 0, Воскресенье = 6
+    const dayOfWeek = (today.getDay() + 6) % 7
     
     for (let i = 0; i < 7; i++) {
       const date = new Date(today)
-      date.setDate(today.getDate() - dayOfWeek + i) // Начинаем с понедельника
+      date.setDate(today.getDate() - dayOfWeek + i)
       const dateStr = date.toISOString().split("T")[0]
-      const completed = habitLogs.some(
-        (l) => l.habit_id === habitId && l.date.startsWith(dateStr) && l.completed
-      )
+      const log = habitLogs.find(l => l.habit_id === habitId && l.date.startsWith(dateStr))
       result.push({
         date: dateStr,
-        completed,
+        completed: log?.completed ?? false,
+        skipped: !!log?.skipped_reason,
         isToday: i === dayOfWeek,
-        isWeekend: i >= 5, // Сб и Вс
+        isWeekend: i >= 5,
       })
     }
     return result
@@ -208,7 +293,6 @@ export default function HabitsPage() {
   return (
     <AppLayout title="Привычки">
       <div className="container mx-auto px-4 py-6 space-y-4">
-        {/* Summary */}
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -229,7 +313,6 @@ export default function HabitsPage() {
           </CardContent>
         </Card>
 
-        {/* Habits List */}
         {isLoading ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
@@ -247,9 +330,12 @@ export default function HabitsPage() {
             {habits.map((habit) => {
               const streak = getStreak(habit.id)
               const isCompleted = isHabitCompletedToday(habit.id)
+              const todayLog = getTodayLog(habit.id)
               const weekCompletion = getWeekCompletion(habit.id)
               const daysSinceStart = getDaysSinceStart(habit)
               const daysUntilEnd = getDaysUntilEnd(habit)
+              const completedSubtasks = habit.subtasks?.filter(st => st.completed).length || 0
+              const totalSubtasks = habit.subtasks?.length || 0
 
               return (
                 <Card key={habit.id} className={isCompleted ? "border-green-500/30" : ""}>
@@ -263,45 +349,81 @@ export default function HabitsPage() {
                       >
                         {isCompleted ? (
                           <Check className="h-6 w-6" />
+                        ) : todayLog?.skipped_reason ? (
+                          <AlertCircle className="h-6 w-6 text-orange-500" />
                         ) : (
                           <X className="h-6 w-6 text-muted-foreground" />
                         )}
                       </Button>
                       <div className="flex-1">
                         <h3 className="font-medium">{habit.name}</h3>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
                           {streak && streak.current_streak > 0 && (
                             <>
                               <Flame className="h-4 w-4 text-orange-500" />
                               <span>{streak.current_streak} дней</span>
                             </>
                           )}
-                          <span className="text-xs">
-                            {daysSinceStart} день
-                          </span>
+                          <span className="text-xs">{daysSinceStart} день</span>
+                          {todayLog?.completed_at && (
+                            <span className="text-xs flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {todayLog.completed_at}
+                            </span>
+                          )}
+                          {todayLog?.skipped_reason && (
+                            <span className="text-xs text-orange-500">
+                              Пропуск: {todayLog.skipped_reason}
+                            </span>
+                          )}
                           {daysUntilEnd !== null && (
                             <span className={`text-xs ${daysUntilEnd <= 7 ? "text-orange-500" : ""}`}>
                               • {daysUntilEnd > 0 ? `${daysUntilEnd} дн. осталось` : "Завершена"}
                             </span>
                           )}
                         </div>
+                        {totalSubtasks > 0 && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {completedSubtasks}/{totalSubtasks} подпривычек
+                          </div>
+                        )}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => openEditDialog(habit)}
-                      >
-                        <Settings className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-1">
+                        {totalSubtasks > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setViewingSubtasks(habit)}
+                          >
+                            <ListChecks className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {!isCompleted && !todayLog?.skipped_reason && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setSkippingHabit(habit)
+                              setIsSkipDialogOpen(true)
+                            }}
+                          >
+                            <AlertCircle className="h-4 w-4 text-orange-500" />
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditDialog(habit)}
+                        >
+                          <Settings className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
 
-                    {/* Week view - starting from Monday */}
+                    {/* Week view */}
                     <div className="flex justify-between">
                       {weekCompletion.map((day, i) => (
-                        <div
-                          key={i}
-                          className="flex flex-col items-center gap-1"
-                        >
+                        <div key={i} className="flex flex-col items-center gap-1">
                           <span className={`text-xs ${day.isWeekend ? "text-orange-500/70" : "text-muted-foreground"}`}>
                             {dayNames[i]}
                           </span>
@@ -309,6 +431,8 @@ export default function HabitsPage() {
                             className={`h-8 w-8 rounded-full flex items-center justify-center ${
                               day.completed
                                 ? "bg-green-500 text-white"
+                                : day.skipped
+                                ? "bg-orange-500/30 text-orange-500"
                                 : day.isToday
                                 ? "border-2 border-dashed border-muted-foreground/30"
                                 : day.isWeekend
@@ -317,6 +441,7 @@ export default function HabitsPage() {
                             }`}
                           >
                             {day.completed && <Check className="h-4 w-4" />}
+                            {day.skipped && <AlertCircle className="h-4 w-4" />}
                           </div>
                         </div>
                       ))}
@@ -336,10 +461,7 @@ export default function HabitsPage() {
                 size="icon"
                 className="h-14 w-14 rounded-full shadow-lg"
                 onClick={() => {
-                  setNewHabitName("")
-                  setSelectedColor(0)
-                  setStartDate(new Date().toISOString().split("T")[0])
-                  setEndDate("")
+                  resetForm()
                   setIsAddDialogOpen(true)
                 }}
               >
@@ -351,7 +473,7 @@ export default function HabitsPage() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Новая привычка</DialogTitle>
             </DialogHeader>
@@ -363,7 +485,6 @@ export default function HabitsPage() {
                   placeholder="Например: Утренняя зарядка"
                   value={newHabitName}
                   onChange={(e) => setNewHabitName(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addHabit()}
                 />
               </div>
               <div className="space-y-2">
@@ -399,6 +520,39 @@ export default function HabitsPage() {
                   />
                 </div>
               </div>
+              
+              {/* Subtasks */}
+              <div className="space-y-2">
+                <Label>Подпривычки (чек-лист)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Добавить шаг..."
+                    value={newSubtaskTitle}
+                    onChange={(e) => setNewSubtaskTitle(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addSubtask()}
+                  />
+                  <Button type="button" onClick={addSubtask}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                {subtasks.length > 0 && (
+                  <div className="space-y-1 mt-2">
+                    {subtasks.map((st) => (
+                      <div key={st.id} className="flex items-center gap-2 p-2 bg-muted rounded">
+                        <span className="flex-1 text-sm">{st.title}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => removeSubtask(st.id)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
@@ -411,7 +565,7 @@ export default function HabitsPage() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Редактировать привычку</DialogTitle>
             </DialogHeader>
@@ -422,7 +576,6 @@ export default function HabitsPage() {
                   id="edit-name"
                   value={newHabitName}
                   onChange={(e) => setNewHabitName(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && updateHabit()}
                 />
               </div>
               <div className="space-y-2">
@@ -458,16 +611,113 @@ export default function HabitsPage() {
                   />
                 </div>
               </div>
+              
+              {/* Subtasks */}
+              <div className="space-y-2">
+                <Label>Подпривычки</Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Добавить шаг..."
+                    value={newSubtaskTitle}
+                    onChange={(e) => setNewSubtaskTitle(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addSubtask()}
+                  />
+                  <Button type="button" onClick={addSubtask}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                {subtasks.length > 0 && (
+                  <div className="space-y-1 mt-2">
+                    {subtasks.map((st) => (
+                      <div key={st.id} className="flex items-center gap-2 p-2 bg-muted rounded">
+                        <span className="flex-1 text-sm">{st.title}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => removeSubtask(st.id)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={updateHabit}>Сохранить</Button>
+            <DialogFooter className="flex justify-between">
               <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={updateHabit}>Сохранить</Button>
+              </div>
             </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Skip Dialog */}
+        <Dialog open={isSkipDialogOpen} onOpenChange={setIsSkipDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Пропустить сегодня?</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Причина пропуска</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {skipReasons.map((reason) => (
+                    <Button
+                      key={reason}
+                      variant={skipReason === reason ? "default" : "outline"}
+                      onClick={() => setSkipReason(reason)}
+                    >
+                      {reason}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsSkipDialogOpen(false)}>
+                Отмена
+              </Button>
+              <Button onClick={skipHabit} disabled={!skipReason}>
+                Пропустить
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Subtasks Dialog */}
+        <Dialog open={!!viewingSubtasks} onOpenChange={() => setViewingSubtasks(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{viewingSubtasks?.name} — Подпривычки</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-2 py-4">
+              {viewingSubtasks?.subtasks?.map((st) => (
+                <div
+                  key={st.id}
+                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${
+                    st.completed ? "bg-green-500/10" : "bg-muted"
+                  }`}
+                  onClick={() => toggleSubtask(viewingSubtasks.id, st.id)}
+                >
+                  <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
+                    st.completed ? "border-green-500 bg-green-500" : "border-muted-foreground"
+                  }`}>
+                    {st.completed && <Check className="h-4 w-4 text-white" />}
+                  </div>
+                  <span className={st.completed ? "line-through text-muted-foreground" : ""}>
+                    {st.title}
+                  </span>
+                </div>
+              ))}
+            </div>
           </DialogContent>
         </Dialog>
 

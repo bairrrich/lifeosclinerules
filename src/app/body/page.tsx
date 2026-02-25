@@ -368,7 +368,7 @@ export default function BodyPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6"
+                              className="h-6 w-6"
                               onClick={() => openEditDialog(m)}
                             >
                               <Settings className="h-3 w-3" />
@@ -514,14 +514,16 @@ export default function BodyPage() {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={updateMeasurement}>Сохранить</Button>
+            <DialogFooter className="flex justify-between">
               <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={updateMeasurement}>Сохранить</Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>

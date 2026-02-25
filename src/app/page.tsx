@@ -16,6 +16,8 @@ import {
   Scale,
   Target,
   Flame,
+  Bell,
+  Copy,
 } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
@@ -105,6 +107,20 @@ const trackerLinks = [
     icon: Target,
     color: "text-green-500",
     bgColor: "bg-green-500/10",
+  },
+  {
+    href: "/reminders",
+    label: "Напоминания",
+    icon: Bell,
+    color: "text-red-500",
+    bgColor: "bg-red-500/10",
+  },
+  {
+    href: "/templates",
+    label: "Шаблоны",
+    icon: Copy,
+    color: "text-cyan-500",
+    bgColor: "bg-cyan-500/10",
   },
 ]
 

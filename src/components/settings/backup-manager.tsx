@@ -70,7 +70,7 @@ export function BackupManager() {
   // CSV экспорт для конкретной таблицы
   const handleCSVExport = async (tableName: string) => {
     try {
-      let data: Record<string, unknown>[] = []
+      let data: unknown[] = []
       
       switch (tableName) {
         case "logs":
@@ -97,7 +97,7 @@ export function BackupManager() {
       // Flatten metadata для CSV
       const flatData = data.map(item => {
         const flat: Record<string, unknown> = {}
-        Object.entries(item).forEach(([key, value]) => {
+        Object.entries(item as Record<string, unknown>).forEach(([key, value]) => {
           if (typeof value === "object" && value !== null) {
             flat[key] = JSON.stringify(value)
           } else {

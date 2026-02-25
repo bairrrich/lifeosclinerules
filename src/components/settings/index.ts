@@ -2,6 +2,7 @@ export { SettingsProvider, useSettings, accountTypes, unitTypes, logTypeLabels, 
 export { ThemeSwitcher } from "./theme-switcher"
 export { DataStats } from "./data-stats"
 export { BackupManager } from "./backup-manager"
+export { ExportManager } from "./export-manager"
 export { DangerZone } from "./danger-zone"
 export { AccountsManager } from "./accounts-manager"
 export { CategoriesManager } from "./categories-manager"

@@ -1,0 +1,513 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Plus, Bell, Trash2, Clock, CheckCircle2, Filter, BarChart3 } from "lucide-react"
+import { AppLayout } from "@/components/layout/app-layout"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
+import { ReminderForm, ReminderCard, reminderTypesConfig, getDefaultFormData, type ReminderFormData } from "@/components/reminders"
+import type { Reminder, ReminderType, ReminderPriority, ReminderLog } from "@/types"
+
+type SmartFilter = "all" | "today" | "active" | "completed" | "inactive"
+
+const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
+
+export default function RemindersPage() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [reminders, setReminders] = useState<Reminder[]>([])
+  const [smartFilter, setSmartFilter] = useState<SmartFilter>("all")
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isStatsDialogOpen, setIsStatsDialogOpen] = useState(false)
+  const [editingReminder, setEditingReminder] = useState<Reminder | null>(null)
+  const [selectedReminderForStats, setSelectedReminderForStats] = useState<Reminder | null>(null)
+  const [reminderLogs, setReminderLogs] = useState<ReminderLog[]>([])
+  
+  const [formData, setFormData] = useState(getDefaultFormData())
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  async function loadData() {
+    try {
+      await initializeDatabase()
+      const data = await db.reminders.orderBy("time").toArray()
+      setReminders(data)
+    } catch (error) {
+      console.error("Failed to load reminders:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function addReminder() {
+    if (!formData.title.trim()) return
+
+    await createEntity(db.reminders, {
+      type: formData.type,
+      title: formData.title.trim(),
+      message: formData.message || undefined,
+      time: formData.time,
+      days: formData.days,
+      priority: formData.priority,
+      advance_minutes: formData.advance_minutes || undefined,
+      repeat_type: formData.repeat_type,
+      repeat_interval: formData.repeat_interval,
+      start_date: formData.start_date || undefined,
+      end_date: formData.end_date || undefined,
+      is_active: true,
+      sound: formData.sound,
+      vibration: formData.vibration,
+      persistent: formData.persistent,
+      related_id: formData.related_id,
+      related_type: formData.related_type,
+      custom_unit: formData.custom_unit,
+      monthly_day: formData.monthly_day,
+      times: formData.times,
+      streak: 0,
+      longest_streak: 0,
+      total_completed: 0,
+    })
+
+    setIsAddDialogOpen(false)
+    resetForm()
+    loadData()
+  }
+
+  async function updateReminder() {
+    if (!editingReminder || !formData.title.trim()) return
+
+    await updateEntity(db.reminders, editingReminder.id, {
+      type: formData.type,
+      title: formData.title.trim(),
+      message: formData.message || undefined,
+      time: formData.time,
+      days: formData.days,
+      priority: formData.priority,
+      advance_minutes: formData.advance_minutes || undefined,
+      repeat_type: formData.repeat_type,
+      repeat_interval: formData.repeat_interval,
+      start_date: formData.start_date || undefined,
+      end_date: formData.end_date || undefined,
+      sound: formData.sound,
+      vibration: formData.vibration,
+      persistent: formData.persistent,
+      related_id: formData.related_id,
+      related_type: formData.related_type,
+      custom_unit: formData.custom_unit,
+      monthly_day: formData.monthly_day,
+      times: formData.times,
+    })
+
+    setIsEditDialogOpen(false)
+    setEditingReminder(null)
+    resetForm()
+    loadData()
+  }
+
+  async function deleteReminder() {
+    if (!editingReminder) return
+
+    await deleteEntity(db.reminders, editingReminder.id)
+
+    setIsDeleteDialogOpen(false)
+    setIsEditDialogOpen(false)
+    setEditingReminder(null)
+    resetForm()
+    loadData()
+  }
+
+  async function completeReminder(reminder: Reminder) {
+    const now = new Date().toISOString()
+    const today = now.split("T")[0]
+    
+    // Создаём лог выполнения
+    await createEntity(db.reminderLogs, {
+      reminder_id: reminder.id,
+      triggered_at: now,
+      scheduled_at: `${today}T${reminder.time}:00`,
+      action: "completed",
+    })
+
+    // Обновляем серию
+    let newStreak = (reminder.streak || 0) + 1
+    let newLongestStreak = Math.max(reminder.longest_streak || 0, newStreak)
+    
+    await updateEntity(db.reminders, reminder.id, {
+      last_completed_at: now,
+      streak: newStreak,
+      longest_streak: newLongestStreak,
+      total_completed: (reminder.total_completed || 0) + 1,
+    })
+
+    loadData()
+  }
+
+  async function showReminderStats(reminder: Reminder) {
+    const logs = await db.reminderLogs
+      .where("reminder_id")
+      .equals(reminder.id)
+      .toArray()
+    
+    setSelectedReminderForStats(reminder)
+    setReminderLogs(logs.sort((a, b) => b.triggered_at.localeCompare(a.triggered_at)))
+    setIsStatsDialogOpen(true)
+  }
+
+  function resetForm() {
+    setFormData(getDefaultFormData())
+  }
+
+  function openEditDialog(reminder: Reminder) {
+    setEditingReminder(reminder)
+    setFormData({
+      title: reminder.title,
+      message: reminder.message || "",
+      type: reminder.type,
+      time: reminder.time,
+      days: reminder.days,
+      priority: reminder.priority,
+      advance_minutes: reminder.advance_minutes || 0,
+      repeat_type: reminder.repeat_type || "none",
+      repeat_interval: reminder.repeat_interval || 1,
+      start_date: reminder.start_date || "",
+      end_date: reminder.end_date || "",
+      sound: reminder.sound ?? true,
+      vibration: reminder.vibration ?? true,
+      persistent: reminder.persistent ?? false,
+      related_id: reminder.related_id || undefined,
+      related_type: reminder.related_type || undefined,
+      custom_unit: (reminder as any).custom_unit || "days",
+      monthly_day: (reminder as any).monthly_day || new Date().getDate(),
+      times: (reminder as any).times || [],
+    })
+    setIsEditDialogOpen(true)
+  }
+
+  // Фильтрация напоминаний
+  const filteredReminders = reminders.filter((reminder) => {
+    const today = new Date()
+    const todayDay = today.getDay()
+    
+    switch (smartFilter) {
+      case "today":
+        return reminder.is_active && reminder.days.includes(todayDay)
+      case "active":
+        return reminder.is_active
+      case "inactive":
+        return !reminder.is_active
+      case "completed":
+        // Показываем напоминания, которые были выполнены сегодня
+        const todayStr = today.toISOString().split("T")[0]
+        return reminder.last_completed_at?.startsWith(todayStr)
+      default:
+        return true
+    }
+  })
+
+  // Группировка по типу
+  const groupedReminders = filteredReminders.reduce((acc, reminder) => {
+    const type = reminder.type
+    if (!acc[type]) {
+      acc[type] = []
+    }
+    acc[type].push(reminder)
+    return acc
+  }, {} as Record<ReminderType, Reminder[]>)
+
+  // Статистика
+  const stats = {
+    total: reminders.length,
+    active: reminders.filter((r) => r.is_active).length,
+    today: reminders.filter((r) => r.is_active && r.days.includes(new Date().getDay())).length,
+    completedToday: reminders.filter((r) => {
+      const todayStr = new Date().toISOString().split("T")[0]
+      return r.last_completed_at?.startsWith(todayStr)
+    }).length,
+  }
+
+  return (
+    <AppLayout title="Напоминания">
+      <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Bell className="h-8 w-8 text-blue-500" />
+                <div>
+                  <div className="text-2xl font-bold">{stats.active}</div>
+                  <div className="text-xs text-muted-foreground">Активных</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Clock className="h-8 w-8 text-orange-500" />
+                <div>
+                  <div className="text-2xl font-bold">{stats.today}</div>
+                  <div className="text-xs text-muted-foreground">Сегодня</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-8 w-8 text-green-500" />
+                <div>
+                  <div className="text-2xl font-bold">{stats.completedToday}</div>
+                  <div className="text-xs text-muted-foreground">Выполнено</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <BarChart3 className="h-8 w-8 text-purple-500" />
+                <div>
+                  <div className="text-2xl font-bold">{stats.total}</div>
+                  <div className="text-xs text-muted-foreground">Всего</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Smart Filters */}
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          <Button
+            variant={smartFilter === "all" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSmartFilter("all")}
+          >
+            Все ({stats.total})
+          </Button>
+          <Button
+            variant={smartFilter === "today" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSmartFilter("today")}
+          >
+            Сегодня ({stats.today})
+          </Button>
+          <Button
+            variant={smartFilter === "active" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSmartFilter("active")}
+          >
+            Активные ({stats.active})
+          </Button>
+          <Button
+            variant={smartFilter === "completed" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSmartFilter("completed")}
+          >
+            Выполненные ({stats.completedToday})
+          </Button>
+          <Button
+            variant={smartFilter === "inactive" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSmartFilter("inactive")}
+          >
+            Отключённые
+          </Button>
+        </div>
+
+        {/* Reminders List */}
+        {isLoading ? (
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              Загрузка...
+            </CardContent>
+          </Card>
+        ) : filteredReminders.length === 0 ? (
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              {smartFilter === "all" 
+                ? "Нет напоминаний. Добавьте первое!" 
+                : "Нет напоминаний в этой категории"}
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {Object.entries(groupedReminders).map(([type, typeReminders]) => (
+              <div key={type}>
+                <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                  <span>{reminderTypesConfig.find(t => t.type === type)?.icon}</span>
+                  <span>{reminderTypesConfig.find(t => t.type === type)?.label || type}</span>
+                  <Badge variant="secondary" className="ml-2">
+                    {typeReminders.length}
+                  </Badge>
+                </h2>
+                <div className="flex flex-col gap-2">
+                  {typeReminders.map((reminder) => (
+                    <ReminderCard
+                      key={reminder.id}
+                      reminder={reminder}
+                      onEdit={openEditDialog}
+                      onComplete={completeReminder}
+                      onRefresh={loadData}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* FAB */}
+        <div className="fixed bottom-24 left-0 right-0 z-30 pointer-events-none">
+          <div className="max-w-[960px] mx-auto px-4">
+            <div className="flex justify-end pointer-events-auto">
+              <Button
+                size="icon"
+                className="h-14 w-14 rounded-full shadow-lg"
+                onClick={() => {
+                  resetForm()
+                  setIsAddDialogOpen(true)
+                }}
+              >
+                <Plus className="h-6 w-6" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Add Dialog */}
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Новое напоминание</DialogTitle>
+            </DialogHeader>
+            <ReminderForm formData={formData} setFormData={setFormData} />
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                Отмена
+              </Button>
+              <Button onClick={addReminder}>Добавить</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Редактировать напоминание</DialogTitle>
+            </DialogHeader>
+            <ReminderForm formData={formData} setFormData={setFormData} />
+            <DialogFooter className="flex justify-between">
+              <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={updateReminder}>Сохранить</Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Удалить напоминание?</DialogTitle>
+            </DialogHeader>
+            <p className="py-4 text-muted-foreground">
+              Вы уверены, что хотите удалить напоминание "{editingReminder?.title}"? Это действие нельзя отменить.
+            </p>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                Отмена
+              </Button>
+              <Button variant="destructive" onClick={deleteReminder}>
+                Удалить
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Stats Dialog */}
+        <Dialog open={isStatsDialogOpen} onOpenChange={setIsStatsDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Статистика: {selectedReminderForStats?.title}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {selectedReminderForStats && (
+                <div className="grid grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="p-3 text-center">
+                      <div className="text-2xl font-bold text-orange-500">
+                        {selectedReminderForStats.streak || 0}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Серия</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-3 text-center">
+                      <div className="text-2xl font-bold text-green-500">
+                        {selectedReminderForStats.longest_streak || 0}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Лучшая</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-3 text-center">
+                      <div className="text-2xl font-bold text-blue-500">
+                        {selectedReminderForStats.total_completed || 0}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Всего</div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+              
+              {reminderLogs.length > 0 ? (
+                <div>
+                  <h3 className="font-medium mb-2">История</h3>
+                  <div className="max-h-60 overflow-y-auto space-y-1">
+                    {reminderLogs.slice(0, 20).map((log) => (
+                      <div 
+                        key={log.id} 
+                        className="flex items-center justify-between text-sm p-2 rounded bg-muted"
+                      >
+                        <span>
+                          {new Date(log.triggered_at).toLocaleDateString("ru-RU", {
+                            day: "numeric",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        <Badge variant={log.action === "completed" ? "default" : "secondary"}>
+                          {log.action === "completed" ? "Выполнено" : log.action}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">
+                  История пуста
+                </p>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </AppLayout>
+  )
+}

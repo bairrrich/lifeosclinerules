@@ -692,6 +692,13 @@ export interface Habit extends BaseEntity {
   is_active: boolean
   start_date: ISODate // Дата начала привычки
   end_date?: ISODate // Дата окончания (опционально)
+  subtasks?: HabitSubtask[] // Подпривычки (чек-лист)
+}
+
+export interface HabitSubtask {
+  id: string
+  title: string
+  completed: boolean
 }
 
 export interface HabitLog extends BaseEntity {
@@ -699,6 +706,9 @@ export interface HabitLog extends BaseEntity {
   date: ISODate
   completed: boolean
   note?: string
+  skipped_reason?: string // Причина пропуска
+  completed_at?: string // Время выполнения
+  subtask_ids?: string[] // ID выполненных подпривычек
 }
 
 export interface Streak extends BaseEntity {
@@ -775,18 +785,64 @@ export interface BodyMeasurement extends BaseEntity {
 // Напоминания
 // ============================================
 
-export type ReminderType = 'habit' | 'medicine' | 'water' | 'workout' | 'custom'
+export type ReminderType = 'habit' | 'medicine' | 'water' | 'workout' | 'food' | 'item' | 'custom'
+
+export type ReminderPriority = 'low' | 'medium' | 'high' | 'critical'
+
+export type ReminderRepeatType = 'none' | 'daily' | 'weekly' | 'monthly' | 'custom' | 'after_completion'
+
+export type ReminderRelatedType = 'habit' | 'item' | 'log' | 'recipe'
 
 export interface Reminder extends BaseEntity {
-  type: ReminderType
+  // Основное
   title: string
   message?: string
+  
+  // Тип и связь
+  type: ReminderType
+  related_id?: UUID
+  related_type?: ReminderRelatedType
+  
+  // Время
   time: string // "08:00"
   days: number[] // 0-6 для дней недели
+  start_date?: ISODate // Начало курса/периода
+  end_date?: ISODate // Окончание курса/периода
+  
+  // Упреждение
+  advance_minutes?: number // Напомнить за X минут
+  
+  // Повтор
+  repeat_type?: ReminderRepeatType
+  repeat_interval?: number // Каждые N дней
+  
+  // Приоритет
+  priority: ReminderPriority
+  
+  // Настройки уведомлений
   is_active: boolean
-  related_id?: UUID // связь с привычкой/лекарством
-  sound?: boolean
-  vibration?: boolean
+  sound: boolean
+  vibration: boolean
+  persistent: boolean // "Назойливый" режим
+  
+  // Статус выполнения
+  last_triggered_at?: ISODate
+  last_completed_at?: ISODate
+  streak?: number // Текущая серия выполнения
+  longest_streak?: number // Лучшая серия
+  total_completed?: number // Всего выполнено
+}
+
+// История срабатываний напоминаний
+export type ReminderLogAction = 'triggered' | 'completed' | 'snoozed' | 'dismissed'
+
+export interface ReminderLog extends BaseEntity {
+  reminder_id: UUID
+  triggered_at: ISODate
+  scheduled_at: ISODate // Когда было запланировано
+  action: ReminderLogAction
+  snooze_duration?: number // На сколько отложено (минуты)
+  notes?: string
 }
 
 // ============================================
@@ -795,7 +851,7 @@ export interface Reminder extends BaseEntity {
 
 export interface Template extends BaseEntity {
   name: string
-  type: LogType | 'water' | 'sleep' | 'mood'
+  type: 'food' | 'workout' | 'finance' | 'water' | 'sleep' | 'mood'
   data: JSONValue // сериализованные данные записи
   is_favorite?: boolean
   use_count?: number

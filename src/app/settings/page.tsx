@@ -8,6 +8,7 @@ import {
   ThemeSwitcher,
   DataStats,
   BackupManager,
+  ExportManager,
   DangerZone,
   AccountsManager,
   CategoriesManager,
@@ -51,6 +52,7 @@ export default function SettingsPage() {
               <ThemeSwitcher />
               <DataStats />
               <BackupManager />
+              <ExportManager />
               <DangerZone />
               <AboutCard />
             </TabsContent>

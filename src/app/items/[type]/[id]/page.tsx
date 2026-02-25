@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Pencil, Trash2, Tag, Calendar, Package, AlertTriangle } from "lucide-react"
+import { ArrowLeft, Pencil, Trash2, Tag, Calendar, Package, AlertTriangle, Bell, Plus } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,8 +17,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { db, getEntityById, deleteEntity } from "@/lib/db"
-import type { Item, ItemType } from "@/types"
+import { db, getEntityById, deleteEntity, createEntity } from "@/lib/db"
+import type { Item, ItemType, ReminderType, ReminderPriority } from "@/types"
+
+const typeToReminderType: Record<string, ReminderType> = {
+  vitamin: "medicine",
+  medicine: "medicine",
+  herb: "item",
+  cosmetic: "item",
+  product: "food",
+}
 
 const typeLabels: Record<ItemType, string> = {
   vitamin: "Витамины",
@@ -45,6 +53,11 @@ export default function ItemDetailPage() {
   const [item, setItem] = useState<Item | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showReminderDialog, setShowReminderDialog] = useState(false)
+  const [reminderTime, setReminderTime] = useState("09:00")
+  const [reminderDays, setReminderDays] = useState<number[]>([0, 1, 2, 3, 4, 5, 6])
+  const [reminderStartDate, setReminderStartDate] = useState("")
+  const [reminderEndDate, setReminderEndDate] = useState("")
 
   useEffect(() => {
     async function loadData() {
@@ -69,6 +82,43 @@ export default function ItemDetailPage() {
       console.error("Failed to delete item:", error)
     }
   }
+
+  const handleCreateReminder = async () => {
+    if (!item) return
+    
+    await createEntity(db.reminders, {
+      type: typeToReminderType[type] || "item",
+      title: item.name,
+      message: item.dosage || item.usage || "",
+      time: reminderTime,
+      days: reminderDays,
+      priority: "medium" as ReminderPriority,
+      is_active: true,
+      sound: true,
+      vibration: true,
+      persistent: false,
+      related_id: item.id,
+      related_type: "item",
+      start_date: reminderStartDate || undefined,
+      end_date: reminderEndDate || undefined,
+      streak: 0,
+      longest_streak: 0,
+      total_completed: 0,
+    })
+    
+    setShowReminderDialog(false)
+    router.push("/reminders")
+  }
+
+  const toggleReminderDay = (day: number) => {
+    setReminderDays(prev => 
+      prev.includes(day) 
+        ? prev.filter(d => d !== day) 
+        : [...prev, day].sort()
+    )
+  }
+
+  const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("ru-RU", {
@@ -262,6 +312,20 @@ export default function ItemDetailPage() {
           </TabsContent>
         </Tabs>
 
+        {/* Create Reminder Button */}
+        <Card className="border-dashed">
+          <CardContent className="p-4">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowReminderDialog(true)}
+            >
+              <Bell className="h-4 w-4 mr-2" />
+              Создать напоминание
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Actions */}
         <div className="flex gap-4">
           <Button
@@ -295,6 +359,84 @@ export default function ItemDetailPage() {
               </Button>
               <Button variant="destructive" onClick={handleDelete}>
                 Удалить
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Create Reminder Dialog */}
+        <Dialog open={showReminderDialog} onOpenChange={setShowReminderDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Создать напоминание</DialogTitle>
+              <DialogDescription>
+                Напоминание для: {item.name}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Время</label>
+                <input
+                  type="time"
+                  className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                  value={reminderTime}
+                  onChange={(e) => setReminderTime(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Дни недели</label>
+                <div className="grid grid-cols-7 gap-1">
+                  {dayNames.map((day, i) => (
+                    <Button
+                      key={i}
+                      type="button"
+                      variant={reminderDays.includes(i) ? "default" : "outline"}
+                      size="sm"
+                      className="px-0"
+                      onClick={() => toggleReminderDay(i)}
+                    >
+                      {day}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Начало курса</label>
+                  <input
+                    type="date"
+                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                    value={reminderStartDate}
+                    onChange={(e) => setReminderStartDate(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Окончание курса</label>
+                  <input
+                    type="date"
+                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                    value={reminderEndDate}
+                    onChange={(e) => setReminderEndDate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {item.dosage && (
+                <div className="p-3 bg-muted rounded-md">
+                  <p className="text-sm text-muted-foreground">Дозировка:</p>
+                  <p className="text-sm font-medium">{item.dosage}</p>
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowReminderDialog(false)}>
+                Отмена
+              </Button>
+              <Button onClick={handleCreateReminder}>
+                <Bell className="h-4 w-4 mr-2" />
+                Создать
               </Button>
             </DialogFooter>
           </DialogContent>

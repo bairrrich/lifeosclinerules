@@ -32,6 +32,7 @@ import type {
   MoodLog,
   BodyMeasurement,
   Reminder,
+  ReminderLog,
   Template,
 } from '@/types'
 import { LogType, ItemType, ContentType } from '@/types'
@@ -81,12 +82,13 @@ class LifeOSDatabase extends Dexie {
   
   // Новые таблицы - напоминания и шаблоны
   reminders!: EntityTable<Reminder, 'id'>
+  reminderLogs!: EntityTable<ReminderLog, 'id'>
   templates!: EntityTable<Template, 'id'>
 
   constructor() {
     super('LifeOSDB')
     
-    this.version(5).stores({
+    this.version(6).stores({
       // Основные таблицы
       logs: 'id, type, date, title, category_id, created_at, updated_at',
       items: 'id, type, name, category, created_at, updated_at',
@@ -113,7 +115,7 @@ class LifeOSDatabase extends Dexie {
       genres: 'id, name, parent_id, created_at, updated_at',
       bookGenres: 'id, book_id, genre_id',
       bookQuotes: 'id, user_book_id, created_at, updated_at',
-      bookReviews: 'id, userअBook_id, created_at, updated_at',
+      bookReviews: 'id, userBook_id, created_at, updated_at',
       
       // Цели и привычки
       goals: 'id, type, period, is_active, start_date, end_date',
@@ -128,7 +130,8 @@ class LifeOSDatabase extends Dexie {
       bodyMeasurements: 'id, date, type, value',
       
       // Напоминания и шаблоны
-      reminders: 'id, type, time, days, is_active, related_id',
+      reminders: 'id, type, time, days, is_active, related_id, priority',
+      reminderLogs: 'id, reminder_id, triggered_at, action',
       templates: 'id, name, type, is_favorite',
       
       // Синхронизация
