@@ -188,10 +188,13 @@ export default function HabitsPage() {
   }
 
   function getDaysSinceStart(habit: Habit): number {
+    if (!habit.start_date) return 0
     const start = new Date(habit.start_date)
     const today = new Date()
-    const diffTime = Math.abs(today.getTime() - start.getTime())
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    today.setHours(0, 0, 0, 0)
+    start.setHours(0, 0, 0, 0)
+    const diffTime = today.getTime() - start.getTime()
+    return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)))
   }
 
   function getDaysUntilEnd(habit: Habit): number | null {
