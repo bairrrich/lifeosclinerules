@@ -3,6 +3,8 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/layout/theme-provider"
 import { PWAProvider } from "@/components/pwa-provider"
+import { ToastContainer } from "@/components/ui/toast"
+import { ReminderNotification } from "@/components/reminder-notification"
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] })
 
@@ -56,6 +58,8 @@ export default function RootLayout({
         >
           <PWAProvider />
           {children}
+          <ToastContainer />
+          <ReminderNotification />
         </ThemeProvider>
       </body>
     </html>

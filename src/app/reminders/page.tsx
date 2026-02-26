@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Bell, Trash2, Clock, CheckCircle2, Filter, BarChart3 } from "lucide-react"
+import { Plus, Bell, Trash2, Clock, CheckCircle2, Filter, BarChart3, X, Check, AlertTriangle } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -11,9 +11,81 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import { ReminderForm, ReminderCard, reminderTypesConfig, getDefaultFormData, type ReminderFormData } from "@/components/reminders"
+import { toast } from "@/components/ui/toast"
 import type { Reminder, ReminderType, ReminderPriority, ReminderLog } from "@/types"
 
-type SmartFilter = "all" | "today" | "active" | "completed" | "inactive"
+// Функция для тестового показа уведомления
+function TestNotification() {
+  const [showTest, setShowTest] = useState(false)
+  
+  const testReminder: Reminder = {
+    id: "test-" + Date.now(),
+    title: "Тестовое напоминание",
+    message: "Это тестовое уведомление для проверки работы",
+    type: "medicine",
+    time: new Date().toTimeString().slice(0, 5),
+    days: [0, 1, 2, 3, 4, 5, 6],
+    priority: "medium",
+    is_active: true,
+    sound: true,
+    vibration: true,
+    persistent: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }
+
+  return (
+    <div className="fixed top-4 right-4 z-50">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setShowTest(!showTest)}
+        className="bg-yellow-500 text-white border-yellow-600"
+      >
+        🧪 Тест уведомления
+      </Button>
+      {showTest && (
+        <Card className="absolute top-10 right-0 w-80 bg-background/95 backdrop-blur shadow-lg">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">💊</div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-sm truncate">{testReminder.title}</p>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5 ml-auto"
+                    onClick={() => setShowTest(false)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">{testReminder.message}</p>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                  <Clock className="h-3 w-3" />
+                  <span>{testReminder.time}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <Button size="sm" className="flex-1" onClick={() => setShowTest(false)}>
+                <Check className="h-4 w-4 mr-1" />
+                Выполнено
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setShowTest(false)}>
+                <Clock className="h-4 w-4 mr-1" />
+                Через 5 мин
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  )
+}
+
+type SmartFilter = "all" | "today" | "active" | "completed" | "inactive" | "overdue"
 
 const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 
@@ -55,6 +127,7 @@ export default function RemindersPage() {
       title: formData.title.trim(),
       message: formData.message || undefined,
       time: formData.time,
+      date: formData.date, // Дата напоминания
       days: formData.days,
       priority: formData.priority,
       advance_minutes: formData.advance_minutes || undefined,
@@ -89,6 +162,7 @@ export default function RemindersPage() {
       title: formData.title.trim(),
       message: formData.message || undefined,
       time: formData.time,
+      date: formData.date, // Дата напоминания
       days: formData.days,
       priority: formData.priority,
       advance_minutes: formData.advance_minutes || undefined,
@@ -128,6 +202,25 @@ export default function RemindersPage() {
     const now = new Date().toISOString()
     const today = now.split("T")[0]
     
+    // Проверяем лимит выполнений на сегодня
+    const todayLogs = await db.reminderLogs
+      .where("reminder_id")
+      .equals(reminder.id)
+      .filter((log) => {
+        const logDate = log.triggered_at.split("T")[0]
+        return logDate === today && log.action === "completed"
+      })
+      .toArray()
+    
+    // Максимальное количество выполнений = основное время + дополнительные времена
+    const maxCompletionsPerDay = 1 + ((reminder as any).times?.length || 0)
+    
+    if (todayLogs.length >= maxCompletionsPerDay) {
+      // Лимит достигнут - показываем уведомление
+      toast.info(`Уже выполнено ${maxCompletionsPerDay}/${maxCompletionsPerDay} раз(а) сегодня`)
+      return
+    }
+    
     // Создаём лог выполнения
     await createEntity(db.reminderLogs, {
       reminder_id: reminder.id,
@@ -146,6 +239,14 @@ export default function RemindersPage() {
       longest_streak: newLongestStreak,
       total_completed: (reminder.total_completed || 0) + 1,
     })
+
+    // Показываем уведомление об успехе
+    const completedCount = todayLogs.length + 1
+    if (completedCount >= maxCompletionsPerDay) {
+      toast.success(`${reminder.title} — выполнено! Все ${maxCompletionsPerDay} на сегодня ✅`)
+    } else {
+      toast.success(`${reminder.title} — выполнено (${completedCount}/${maxCompletionsPerDay})`)
+    }
 
     loadData()
   }
@@ -172,6 +273,7 @@ export default function RemindersPage() {
       message: reminder.message || "",
       type: reminder.type,
       time: reminder.time,
+      date: (reminder as any).date || new Date().toISOString().split("T")[0],
       days: reminder.days,
       priority: reminder.priority,
       advance_minutes: reminder.advance_minutes || 0,
@@ -191,22 +293,61 @@ export default function RemindersPage() {
     setIsEditDialogOpen(true)
   }
 
+  // Проверка, просрочено ли напоминание
+  function isOverdue(reminder: Reminder): boolean {
+    if (!reminder.is_active) return false
+    
+    const now = new Date()
+    const todayStr = now.toISOString().split("T")[0]
+    const currentTime = now.toTimeString().slice(0, 5)
+    
+    // Для одиночных напоминаний (без повтора)
+    if (reminder.repeat_type === "none" && (reminder as any).date) {
+      const reminderDate = (reminder as any).date
+      // Если дата прошла или сегодня но время прошло
+      if (reminderDate < todayStr) return true
+      if (reminderDate === todayStr && reminder.time < currentTime) {
+        // Проверяем, было ли выполнено сегодня
+        if (!reminder.last_completed_at?.startsWith(todayStr)) return true
+      }
+      return false
+    }
+    
+    // Для повторяющихся напоминаний - проверяем было ли выполнено сегодня
+    if (reminder.days.includes(now.getDay())) {
+      // Если время уже прошло и не выполнено сегодня
+      if (reminder.time < currentTime && !reminder.last_completed_at?.startsWith(todayStr)) {
+        return true
+      }
+    }
+    
+    return false
+  }
+
   // Фильтрация напоминаний
   const filteredReminders = reminders.filter((reminder) => {
     const today = new Date()
     const todayDay = today.getDay()
+    const todayStr = today.toISOString().split("T")[0]
     
     switch (smartFilter) {
       case "today":
-        return reminder.is_active && reminder.days.includes(todayDay)
+        // Активные напоминания на сегодня (по дню недели или дате)
+        if (!reminder.is_active) return false
+        if (reminder.repeat_type === "none" && (reminder as any).date) {
+          return (reminder as any).date === todayStr
+        }
+        return reminder.days.includes(todayDay)
       case "active":
         return reminder.is_active
       case "inactive":
         return !reminder.is_active
       case "completed":
         // Показываем напоминания, которые были выполнены сегодня
-        const todayStr = today.toISOString().split("T")[0]
         return reminder.last_completed_at?.startsWith(todayStr)
+      case "overdue":
+        // Просроченные напоминания
+        return isOverdue(reminder)
       default:
         return true
     }
@@ -226,18 +367,27 @@ export default function RemindersPage() {
   const stats = {
     total: reminders.length,
     active: reminders.filter((r) => r.is_active).length,
-    today: reminders.filter((r) => r.is_active && r.days.includes(new Date().getDay())).length,
+    today: reminders.filter((r) => {
+      const todayStr = new Date().toISOString().split("T")[0]
+      if (!r.is_active) return false
+      if (r.repeat_type === "none" && (r as any).date) {
+        return (r as any).date === todayStr
+      }
+      return r.days.includes(new Date().getDay())
+    }).length,
     completedToday: reminders.filter((r) => {
       const todayStr = new Date().toISOString().split("T")[0]
       return r.last_completed_at?.startsWith(todayStr)
     }).length,
+    overdue: reminders.filter((r) => isOverdue(r)).length,
+    inactive: reminders.filter((r) => !r.is_active).length,
   }
 
   return (
     <AppLayout title="Напоминания">
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -267,6 +417,20 @@ export default function RemindersPage() {
                 <div>
                   <div className="text-2xl font-bold">{stats.completedToday}</div>
                   <div className="text-xs text-muted-foreground">Выполнено</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card 
+            className={stats.overdue > 0 ? "border-red-500 cursor-pointer" : ""}
+            onClick={() => stats.overdue > 0 && setSmartFilter("overdue")}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-8 w-8 text-red-500" />
+                <div>
+                  <div className="text-2xl font-bold text-red-500">{stats.overdue}</div>
+                  <div className="text-xs text-muted-foreground">Просрочено</div>
                 </div>
               </div>
             </CardContent>
@@ -315,11 +479,20 @@ export default function RemindersPage() {
             Выполненные ({stats.completedToday})
           </Button>
           <Button
+            variant={smartFilter === "overdue" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSmartFilter("overdue")}
+            className={smartFilter === "overdue" ? "bg-red-500 hover:bg-red-600" : ""}
+          >
+            <AlertTriangle className="h-4 w-4 mr-1" />
+            Просроченные ({stats.overdue})
+          </Button>
+          <Button
             variant={smartFilter === "inactive" ? "default" : "outline"}
             size="sm"
             onClick={() => setSmartFilter("inactive")}
           >
-            Отключённые
+            Отключённые ({stats.inactive})
           </Button>
         </div>
 
@@ -499,6 +672,9 @@ export default function RemindersPage() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Тестовое уведомление */}
+        <TestNotification />
       </div>
     </AppLayout>
   )

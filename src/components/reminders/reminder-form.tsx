@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Plus, X } from "lucide-react"
+import { Plus, X, Bell } from "lucide-react"
 import { db } from "@/lib/db"
 import type { ReminderType, ReminderPriority, ReminderRepeatType, Item } from "@/types"
 
@@ -64,6 +64,7 @@ interface ReminderFormProps {
     message: string
     type: ReminderType
     time: string
+    date: string // Дата напоминания (для одиночных)
     days: number[]
     priority: ReminderPriority
     advance_minutes: number
@@ -262,30 +263,40 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           )}
         </div>
         
-        {/* Основное время */}
+        {/* Дата, время и упреждение в одной строке */}
         <div className="flex gap-2">
+          <Input
+            type="date"
+            value={formData.date}
+            onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
+            className="flex-1"
+          />
           <Input
             type="time"
             value={formData.time}
             onChange={(e) => setFormData((prev) => ({ ...prev, time: e.target.value }))}
             className="flex-1"
           />
-          <select
-            className="h-10 px-3 rounded-md border border-input bg-background"
-            value={formData.advance_minutes}
-            onChange={(e) => setFormData((prev) => ({ ...prev, advance_minutes: Number(e.target.value) }))}
-          >
-            {advanceOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              className="h-10 pl-8 pr-2 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer"
+              value={formData.advance_minutes}
+              onChange={(e) => setFormData((prev) => ({ ...prev, advance_minutes: Number(e.target.value) }))}
+              title="Напомнить"
+            >
+              {advanceOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <Bell className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          </div>
         </div>
 
         {/* Быстрый выбор времени суток */}
         {(formData.repeat_type === "daily" || formData.repeat_type === "weekly" || formData.repeat_type === "none") && (
-          <div className="flex flex-wrap gap-1">
+          <div className="grid grid-cols-4 gap-1">
             {timeOfDayOptions.map(({ time, label }) => (
               <Button
                 key={time}
@@ -568,18 +579,42 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       <div className="space-y-2">
         <Label>Приоритет</Label>
         <div className="grid grid-cols-4 gap-2">
-          {priorityConfig.map(({ value, label, color }) => (
-            <Button
-              key={value}
-              type="button"
-              variant={formData.priority === value ? "default" : "outline"}
-              className="flex items-center gap-2"
-              onClick={() => setFormData((prev) => ({ ...prev, priority: value }))}
-            >
-              <span className={`w-2 h-2 rounded-full ${color}`} />
-              <span className="text-xs">{label}</span>
-            </Button>
-          ))}
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            style={formData.priority === "low" ? { backgroundColor: '#6b7280', color: 'white', borderColor: '#6b7280' } : {}}
+            onClick={() => setFormData((prev) => ({ ...prev, priority: "low" }))}
+          >
+            Низкий
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            style={formData.priority === "medium" ? { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' } : {}}
+            onClick={() => setFormData((prev) => ({ ...prev, priority: "medium" }))}
+          >
+            Средний
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            style={formData.priority === "high" ? { backgroundColor: '#f97316', color: 'white', borderColor: '#f97316' } : {}}
+            onClick={() => setFormData((prev) => ({ ...prev, priority: "high" }))}
+          >
+            Высокий
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="text-xs"
+            style={formData.priority === "critical" ? { backgroundColor: '#ef4444', color: 'white', borderColor: '#ef4444' } : {}}
+            onClick={() => setFormData((prev) => ({ ...prev, priority: "critical" }))}
+          >
+            Критичный
+          </Button>
         </div>
       </div>
 
@@ -648,6 +683,7 @@ export type ReminderFormData = {
   message: string
   type: ReminderType
   time: string
+  date: string // Дата напоминания (для одиночных)
   days: number[]
   priority: ReminderPriority
   advance_minutes: number
@@ -667,11 +703,13 @@ export type ReminderFormData = {
 
 // Функция для получения дефолтных значений формы
 export function getDefaultFormData(): ReminderFormData {
+  const now = new Date()
   return {
     title: "",
     message: "",
     type: "custom",
-    time: "09:00",
+    time: now.toTimeString().slice(0, 5), // Текущее время
+    date: now.toISOString().split("T")[0], // Текущая дата
     days: [0, 1, 2, 3, 4, 5, 6],
     priority: "medium",
     advance_minutes: 0,
@@ -685,7 +723,7 @@ export function getDefaultFormData(): ReminderFormData {
     related_id: undefined,
     related_type: undefined,
     custom_unit: "days",
-    monthly_day: new Date().getDate(),
+    monthly_day: now.getDate(),
     times: [],
   }
 }

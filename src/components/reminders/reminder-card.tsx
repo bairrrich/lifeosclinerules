@@ -1,7 +1,8 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Bell, BellOff, Clock, Calendar, Settings, Check, X, ChevronRight, Flame } from "lucide-react"
+import { Bell, BellOff, Clock, Calendar, Settings, Check, X, ChevronRight, Flame, CheckCircle2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -20,17 +21,64 @@ interface ReminderCardProps {
 
 export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: ReminderCardProps) {
   const router = useRouter()
+  const [completedToday, setCompletedToday] = useState(0)
+  
+  // Максимальное количество выполнений = основное время + дополнительные времена
+  const maxCompletionsPerDay = 1 + ((reminder as any).times?.length || 0)
+  const isLimitReached = completedToday >= maxCompletionsPerDay
+  
+  // Загружаем количество выполнений за сегодня
+  useEffect(() => {
+    async function loadTodayCompletions() {
+      const today = new Date().toISOString().split("T")[0]
+      const logs = await db.reminderLogs
+        .where("reminder_id")
+        .equals(reminder.id)
+        .filter((log) => {
+          const logDate = log.triggered_at.split("T")[0]
+          return logDate === today && log.action === "completed"
+        })
+        .toArray()
+      setCompletedToday(logs.length)
+    }
+    loadTodayCompletions()
+  }, [reminder.id, reminder.last_completed_at])
   
   const typeConfig = reminderTypesConfig.find((t) => t.type === reminder.type)
   const priorityConf = priorityConfig.find((p) => p.value === reminder.priority)
 
-  const daysDisplay = reminder.days.length === 7
-    ? "Каждый день"
-    : reminder.days.length === 5 && !reminder.days.includes(0) && !reminder.days.includes(6)
-    ? "По будням"
-    : reminder.days.length === 2 && reminder.days.includes(0) && reminder.days.includes(6)
-    ? "По выходным"
-    : reminder.days.map((d) => dayNames[d]).join(", ")
+  // Формируем отображение повторяемости
+  const getRepeatDisplay = () => {
+    const repeatType = reminder.repeat_type || "none"
+    
+    switch (repeatType) {
+      case "none":
+        return "Один раз"
+      case "daily":
+        return "Каждый день"
+      case "weekly":
+        if (reminder.days.length === 7) return "Каждый день"
+        if (reminder.days.length === 5 && !reminder.days.includes(0) && !reminder.days.includes(6)) return "По будням"
+        if (reminder.days.length === 2 && reminder.days.includes(0) && reminder.days.includes(6)) return "По выходным"
+        return reminder.days.map((d) => dayNames[d]).join(", ")
+      case "monthly":
+        return `Каждое ${((reminder as any).monthly_day || 1)}-е число`
+      case "custom":
+        const interval = reminder.repeat_interval || 1
+        const unit = (reminder as any).custom_unit || "days"
+        const unitLabels: Record<string, string> = {
+          hours: interval === 1 ? "час" : interval <= 4 ? "часа" : "часов",
+          days: interval === 1 ? "день" : interval <= 4 ? "дня" : "дней",
+          weeks: interval === 1 ? "неделю" : "недель",
+          months: interval === 1 ? "месяц" : interval <= 4 ? "месяца" : "месяцев",
+        }
+        return `Каждые ${interval} ${unitLabels[unit]}`
+      default:
+        return reminder.days.map((d) => dayNames[d]).join(", ")
+    }
+  }
+
+  const repeatDisplay = getRepeatDisplay()
 
   async function toggleActive() {
     await updateEntity(db.reminders, reminder.id, {
@@ -78,7 +126,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               <span className={`w-2 h-2 rounded-full ${priorityConf?.color}`} />
             </div>
             
-            {/* Время и дни */}
+            {/* Время и повторяемость */}
             <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
               <Clock className="h-3 w-3" />
               <span>{reminder.time}</span>
@@ -89,7 +137,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
                     : `${reminder.advance_minutes} мин`})
                 </span>
               )}
-              <span className="text-xs">• {daysDisplay}</span>
+              <span className="text-xs">• {repeatDisplay}</span>
             </div>
 
             {/* Сообщение */}
@@ -122,6 +170,27 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               </div>
             )}
 
+            {/* Прогресс выполнения за сегодня */}
+            {maxCompletionsPerDay > 1 && (
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex gap-1">
+                  {Array.from({ length: maxCompletionsPerDay }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-4 h-4 rounded-full border-2 ${
+                        i < completedToday
+                          ? "bg-green-500 border-green-500"
+                          : "border-muted-foreground/30"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {completedToday}/{maxCompletionsPerDay}
+                </span>
+              </div>
+            )}
+
             {/* Метки */}
             <div className="flex flex-wrap gap-1 mt-2">
               {reminder.persistent && (
@@ -134,6 +203,12 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
                   Курс завершён
                 </Badge>
               )}
+              {isLimitReached && (
+                <Badge variant="default" className="text-xs bg-green-500">
+                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                  Выполнено
+                </Badge>
+              )}
             </div>
           </div>
 
@@ -143,9 +218,10 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               variant="ghost"
               size="icon"
               onClick={() => onComplete(reminder)}
-              title="Выполнено"
+              disabled={isLimitReached}
+              title={isLimitReached ? "Лимит выполнений достигнут" : "Выполнено"}
             >
-              <Check className="h-4 w-4 text-green-500" />
+              <Check className={`h-4 w-4 ${isLimitReached ? "text-muted-foreground" : "text-green-500"}`} />
             </Button>
             <Button
               variant="ghost"
