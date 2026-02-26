@@ -18,12 +18,15 @@ import {
   Flame,
   Bell,
   Copy,
+  TrendingUp,
 } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { StatCardSkeleton, ListSkeleton } from "@/components/ui/skeleton"
+import { Progress } from "@/components/ui/progress"
+import { StreakWidget } from "@/components/shared/streak-widget"
 import { db, initializeDatabase } from "@/lib/db"
-import type { Log } from "@/types"
+import type { Log, Goal, WaterLog, HabitLog } from "@/types"
 
 // Quick action cards data
 const quickActions = [
@@ -151,6 +154,102 @@ const getTypeIcon = (type: string) => {
   }
 }
 
+// Круговой прогресс-бар
+function CircularProgress({ 
+  value, 
+  max, 
+  size = 80, 
+  strokeWidth = 6,
+  color = "stroke-primary",
+  bgColor = "stroke-muted",
+  children 
+}: { 
+  value: number
+  max: number
+  size?: number
+  strokeWidth?: number
+  color?: string
+  bgColor?: string
+  children?: React.ReactNode
+}) {
+  const radius = (size - strokeWidth) / 2
+  const circumference = radius * 2 * Math.PI
+  const progress = max > 0 ? Math.min(value / max, 1) : 0
+  const offset = circumference - progress * circumference
+  
+  return (
+    <div className="relative inline-flex items-center justify-center">
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          className={bgColor}
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          className={`${color} transition-all duration-500`}
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+        />
+      </svg>
+      {children && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Виджет прогресса цели
+function GoalProgressWidget({ 
+  goal, 
+  current, 
+  icon: Icon, 
+  color, 
+  unit 
+}: { 
+  goal: number
+  current: number
+  icon: React.ElementType
+  color: string
+  unit: string
+}) {
+  const percentage = goal > 0 ? Math.round((current / goal) * 100) : 0
+  const isComplete = current >= goal
+  
+  return (
+    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted/50">
+      <CircularProgress 
+        value={current} 
+        max={goal} 
+        size={70} 
+        strokeWidth={5}
+        color={isComplete ? "stroke-green-500" : color}
+      >
+        <Icon className={`h-5 w-5 ${isComplete ? "text-green-500" : color.replace('stroke-', 'text-')}`} />
+      </CircularProgress>
+      <div className="text-center">
+        <div className="text-sm font-semibold">
+          {current.toLocaleString()} / {goal.toLocaleString()}
+        </div>
+        <div className="text-xs text-muted-foreground">{unit}</div>
+        <div className={`text-xs font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}>
+          {percentage}%
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [stats, setStats] = useState({
@@ -164,6 +263,19 @@ export default function HomePage() {
     todayExpenses: 0,
   })
   const [recentLogs, setRecentLogs] = useState<Log[]>([])
+  
+  // Цели на сегодня
+  const [goals, setGoals] = useState<{
+    calories: { target: number; current: number }
+    water: { target: number; current: number }
+    workout: { target: number; current: number }
+    habits: { completed: number; total: number }
+  }>({
+    calories: { target: 2000, current: 0 },
+    water: { target: 2000, current: 0 },
+    workout: { target: 30, current: 0 },
+    habits: { completed: 0, total: 0 },
+  })
 
   useEffect(() => {
     async function loadData() {
@@ -173,7 +285,7 @@ export default function HomePage() {
         const today = new Date().toISOString().split("T")[0]
         
         // Оптимизированные запросы с использованием индексов
-        const [logsCount, itemsCount, books, recipes, todayLogs, recentLogs] = await Promise.all([
+        const [logsCount, itemsCount, books, recipes, todayLogs, recentLogs, activeGoals, waterLogs, habitLogs] = await Promise.all([
           db.logs.count(),
           db.items.count(),
           db.books.count(),
@@ -182,6 +294,12 @@ export default function HomePage() {
           db.logs.where("date").startsWith(today).toArray(),
           // Используем orderBy + reverse вместо сортировки на клиенте
           db.logs.orderBy("date").reverse().limit(5).toArray(),
+          // Загружаем активные цели
+          db.goals.where("is_active").equals(1).toArray(),
+          // Загружаем воду за сегодня
+          db.waterLogs.where("date").equals(today).toArray(),
+          // Загружаем привычки за сегодня
+          db.habitLogs.where("date").equals(today).toArray(),
         ])
         
         // Подсчитываем статистику за сегодня
@@ -199,6 +317,33 @@ export default function HomePage() {
           if (log.type === "finance" && log.value && log.metadata?.finance_type !== "income") {
             todayExpenses += log.value
           }
+        })
+        
+        // Подсчитываем воду
+        const todayWater = waterLogs.reduce((sum, log) => sum + (log.amount_ml || 0), 0)
+        
+        // Получаем цели из базы или используем дефолтные
+        const caloriesGoal = activeGoals.find(g => g.type === "calories")
+        const waterGoal = activeGoals.find(g => g.type === "water")
+        const workoutGoal = activeGoals.find(g => g.type === "workout")
+        
+        setGoals({
+          calories: { 
+            target: caloriesGoal?.target_value || 2000, 
+            current: todayCalories 
+          },
+          water: { 
+            target: waterGoal?.target_value || 2000, 
+            current: todayWater 
+          },
+          workout: { 
+            target: workoutGoal?.target_value || 30, 
+            current: todayWorkoutMinutes 
+          },
+          habits: { 
+            completed: habitLogs.filter(h => h.completed).length, 
+            total: habitLogs.length 
+          },
         })
         
         setStats({
@@ -225,6 +370,44 @@ export default function HomePage() {
   return (
     <AppLayout title="Life OS">
       <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Goals Progress Widgets */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Прогресс на сегодня</h2>
+          <div className="grid grid-cols-3 gap-3">
+            {isLoading ? (
+              <>
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+                <StatCardSkeleton />
+              </>
+            ) : (
+              <>
+                <GoalProgressWidget
+                  goal={goals.calories.target}
+                  current={goals.calories.current}
+                  icon={Utensils}
+                  color="stroke-orange-500"
+                  unit="ккал"
+                />
+                <GoalProgressWidget
+                  goal={goals.water.target}
+                  current={goals.water.current}
+                  icon={Droplet}
+                  color="stroke-blue-500"
+                  unit="мл"
+                />
+                <GoalProgressWidget
+                  goal={goals.workout.target}
+                  current={goals.workout.current}
+                  icon={Dumbbell}
+                  color="stroke-purple-500"
+                  unit="мин"
+                />
+              </>
+            )}
+          </div>
+        </div>
+
         {/* Today Stats */}
         <div className="grid grid-cols-3 gap-3">
           {isLoading ? (
@@ -267,6 +450,9 @@ export default function HomePage() {
             </>
           )}
         </div>
+
+        {/* Streak Widget */}
+        {!isLoading && <StreakWidget />}
 
         {/* Quick Actions */}
         <div>

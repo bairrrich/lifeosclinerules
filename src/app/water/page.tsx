@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Minus, Droplet, Coffee, CupSoda, GlassWater } from "lucide-react"
+import { Plus, Minus, Droplet, Coffee, CupSoda, GlassWater, Settings } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { db, initializeDatabase, createEntity } from "@/lib/db"
 import type { WaterLog, Goal } from "@/types"
+import { WaterReminderSettings } from "@/components/water/water-reminder-settings"
 
 const waterAmounts = [150, 200, 250, 300, 500]
 
@@ -239,6 +240,9 @@ export default function WaterPage() {
             </div>
           )}
         </div>
+
+        {/* Water Reminders */}
+        <WaterReminderSettings />
       </div>
     </AppLayout>
   )

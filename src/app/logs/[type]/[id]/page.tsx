@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Pencil, Trash2, Calendar, Tag, Flame, Timer, Heart, Weight, Repeat, Dumbbell, MapPin, Gauge } from "lucide-react"
+import { ArrowLeft, Pencil, Trash2, Calendar, Tag, Flame, Timer, Heart, Weight, Repeat, Dumbbell, MapPin, Gauge, Copy } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { db, getEntityById, deleteEntity } from "@/lib/db"
+import { db, getEntityById, deleteEntity, createEntity } from "@/lib/db"
 import type { Log, LogType, Category, WorkoutMetadata, StrengthSubcategory, CardioSubcategory, YogaSubcategory } from "@/types"
 
 const typeLabels: Record<LogType, string> = {
@@ -154,6 +154,32 @@ export default function LogDetailPage() {
       router.push("/logs")
     } catch (error) {
       console.error("Failed to delete log:", error)
+    }
+  }
+
+  // Копирование записи на сегодня
+  const handleCopy = async () => {
+    if (!log) return
+    try {
+      const today = new Date().toISOString().split("T")[0]
+      const currentTime = new Date().toTimeString().slice(0, 5)
+      
+      await createEntity(db.logs, {
+        type: log.type,
+        title: log.title,
+        date: `${today}T${currentTime}`,
+        value: log.value,
+        quantity: log.quantity,
+        unit: log.unit,
+        category_id: log.category_id,
+        metadata: log.metadata,
+        notes: log.notes,
+        tags: log.tags,
+      })
+      
+      router.push("/logs")
+    } catch (error) {
+      console.error("Failed to copy log:", error)
     }
   }
 
@@ -641,16 +667,21 @@ export default function LogDetailPage() {
         </Tabs>
 
         {/* Actions */}
-        <div className="flex gap-4">
+        <div className="grid grid-cols-3 gap-2">
           <Button
             variant="destructive"
-            className="flex-1"
             onClick={() => setShowDeleteDialog(true)}
           >
-            <Trash2 className="h-4 w-4 mr-2" />
-            Удалить
+            <Trash2 className="h-4 w-4" />
           </Button>
-          <Link href={`/logs/${type}/${id}/edit`} className="flex-1">
+          <Button
+            variant="outline"
+            onClick={handleCopy}
+          >
+            <Copy className="h-4 w-4 mr-2" />
+            Копировать
+          </Button>
+          <Link href={`/logs/${type}/${id}/edit`}>
             <Button className="w-full">
               <Pencil className="h-4 w-4 mr-2" />
               Изменить

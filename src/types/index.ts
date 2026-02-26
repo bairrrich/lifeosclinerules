@@ -856,3 +856,39 @@ export interface Template extends BaseEntity {
   is_favorite?: boolean
   use_count?: number
 }
+
+// ============================================
+// Бюджеты
+// ============================================
+
+export interface Budget {
+  id: string
+  category_id: string
+  category_name: string
+  amount: number
+  period: 'monthly' | 'weekly'
+}
+
+// ============================================
+// Повторяющиеся транзакции
+// ============================================
+
+export type RecurringFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly'
+
+export interface RecurringTransaction extends BaseEntity {
+  title: string
+  amount: number
+  type: 'income' | 'expense'
+  category?: string
+  subcategory?: string
+  account_id?: UUID
+  frequency: RecurringFrequency
+  day_of_month?: number // для monthly (1-31)
+  day_of_week?: number // для weekly (0-6)
+  start_date: ISODate
+  end_date?: ISODate
+  last_processed?: ISODate
+  next_due?: ISODate
+  is_active: boolean
+  notes?: string
+}

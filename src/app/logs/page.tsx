@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AddDialog } from "@/components/shared/add-dialog"
+import { BudgetManager } from "@/components/finance"
 import { db, initializeDatabase } from "@/lib/db"
 import { LogType } from "@/types"
 import type { Log } from "@/types"
@@ -134,6 +135,11 @@ export default function LogsPage() {
             className="pl-10"
           />
         </div>
+
+        {/* Budget Manager - показываем только для финансов */}
+        {(activeType === "all" || activeType === LogType.FINANCE) && (
+          <BudgetManager />
+        )}
 
         {/* Logs List */}
         {isLoading ? (

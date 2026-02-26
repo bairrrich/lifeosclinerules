@@ -17,6 +17,7 @@ import {
   BooksManager,
   RecipesManager,
 } from "@/components/settings"
+import { RecurringTransactions } from "@/components/finance/recurring-transactions"
 
 function AboutCard() {
   return (
@@ -60,6 +61,7 @@ export default function SettingsPage() {
             {/* Вкладка "Учёт" */}
             <TabsContent value="logs" className="space-y-6">
               <AccountsManager />
+              <RecurringTransactions />
               <CategoriesManager />
               <UnitsManager />
             </TabsContent>

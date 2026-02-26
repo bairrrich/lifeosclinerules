@@ -34,6 +34,7 @@ import type {
   Reminder,
   ReminderLog,
   Template,
+  RecurringTransaction,
 } from '@/types'
 import { LogType, ItemType, ContentType } from '@/types'
 
@@ -84,11 +85,14 @@ class LifeOSDatabase extends Dexie {
   reminders!: EntityTable<Reminder, 'id'>
   reminderLogs!: EntityTable<ReminderLog, 'id'>
   templates!: EntityTable<Template, 'id'>
+  
+  // Повторяющиеся транзакции
+  recurringTransactions!: EntityTable<RecurringTransaction, 'id'>
 
   constructor() {
     super('LifeOSDB')
     
-    this.version(6).stores({
+    this.version(7).stores({
       // Основные таблицы
       logs: 'id, type, date, title, category_id, created_at, updated_at',
       items: 'id, type, name, category, created_at, updated_at',
@@ -133,6 +137,9 @@ class LifeOSDatabase extends Dexie {
       reminders: 'id, type, time, days, is_active, related_id, priority',
       reminderLogs: 'id, reminder_id, triggered_at, action',
       templates: 'id, name, type, is_favorite',
+      
+      // Повторяющиеся транзакции
+      recurringTransactions: 'id, type, frequency, is_active, next_due, account_id',
       
       // Синхронизация
       syncQueue: 'id, table_name, record_id, action, synced',

@@ -1,15 +1,31 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Copy, Trash2, Star, Utensils, Dumbbell, Droplet, Moon, Smile } from "lucide-react"
+import { Plus, Copy, Trash2, Star, Utensils, Dumbbell, Droplet, Moon, Smile, Edit2, Check } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { db, initializeDatabase, createEntity, deleteEntity } from "@/lib/db"
-import type { Template } from "@/types"
+import { db, createEntity, deleteEntity } from "@/lib/db"
+import type { Template, WaterLog, SleepLog, MoodLog, JSONValue } from "@/types"
+import { LogType } from "@/types"
+import {
+  FoodTemplateForm,
+  WorkoutTemplateForm,
+  WaterTemplateForm,
+  SleepTemplateForm,
+  MoodTemplateForm,
+  FoodTemplateData,
+  WorkoutTemplateData,
+  WaterTemplateData,
+  SleepTemplateData,
+  MoodTemplateData,
+  moodOptions,
+} from "@/components/templates/template-forms"
+import { useRouter } from "next/navigation"
+import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
 
 const templateTypes = [
   { key: "food" as const, label: "Еда", icon: Utensils, color: "text-green-500" },
@@ -19,15 +35,48 @@ const templateTypes = [
   { key: "mood" as const, label: "Настроение", icon: Smile, color: "text-yellow-500" },
 ]
 
+// Дефолтные данные для каждого типа
+const getDefaultData = (type: Template["type"]) => {
+  switch (type) {
+    case "food":
+      return { title: "" } as FoodTemplateData
+    case "workout":
+      return { title: "" } as WorkoutTemplateData
+    case "water":
+      return { amount_ml: 250, type: "water" } as WaterTemplateData
+    case "sleep":
+      return { start_time: "23:00", end_time: "07:00", quality: 3 } as SleepTemplateData
+    case "mood":
+      return { mood: "good", energy: 3, stress: 3, activities: [] } as MoodTemplateData
+    default:
+      return {}
+  }
+}
+
 export default function TemplatesPage() {
+  const router = useRouter()
   const [templates, setTemplates] = useState<Template[]>([])
   const [loading, setLoading] = useState(true)
+  
+  // Состояния для создания шаблона
   const [showCreateDialog, setShowCreateDialog] = useState(false)
-  const [newTemplate, setNewTemplate] = useState({
-    name: "",
-    type: "food" as Template["type"],
-    data: {} as Record<string, unknown>,
-  })
+  const [newTemplateName, setNewTemplateName] = useState("")
+  const [newTemplateType, setNewTemplateType] = useState<Template["type"]>("food")
+  const [newTemplateData, setNewTemplateData] = useState<Record<string, unknown>>(getDefaultData("food"))
+  
+  // Состояния для редактирования шаблона
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
+  const [editTemplateName, setEditTemplateName] = useState("")
+  const [editTemplateData, setEditTemplateData] = useState<Record<string, unknown>>({})
+  
+  // Состояния для удаления
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  
+  // Состояния для применения шаблона
+  const [showApplyDialog, setShowApplyDialog] = useState(false)
+  const [applyingTemplate, setApplyingTemplate] = useState<Template | null>(null)
+  const [applySuccess, setApplySuccess] = useState(false)
 
   useEffect(() => {
     loadTemplates()
@@ -45,40 +94,204 @@ export default function TemplatesPage() {
     }
   }
 
+  // ========================================
+  // Создание шаблона
+  // ========================================
+  
+  function openCreateDialog(type: Template["type"] = "food") {
+    setNewTemplateType(type)
+    setNewTemplateName("")
+    setNewTemplateData(getDefaultData(type))
+    setShowCreateDialog(true)
+  }
+
   async function createTemplate() {
-    if (!newTemplate.name.trim()) return
+    if (!newTemplateName.trim()) return
 
     await createEntity(db.templates, {
-      name: newTemplate.name.trim(),
-      type: newTemplate.type,
-      data: newTemplate.data,
+      name: newTemplateName.trim(),
+      type: newTemplateType,
+      data: newTemplateData,
       is_favorite: false,
       use_count: 0,
     })
 
-    setNewTemplate({ name: "", type: "food", data: {} })
     setShowCreateDialog(false)
     loadTemplates()
   }
 
-  async function deleteTemplate(id: string) {
-    if (!confirm("Удалить этот шаблон?")) return
-    await deleteEntity(db.templates, id)
+  // ========================================
+  // Редактирование шаблона
+  // ========================================
+  
+  function openEditDialog(template: Template) {
+    setEditingTemplate(template)
+    setEditTemplateName(template.name)
+    setEditTemplateData(template.data as Record<string, unknown>)
+    setShowEditDialog(true)
+  }
+
+  async function updateTemplate() {
+    if (!editingTemplate || !editTemplateName.trim()) return
+
+    await db.templates.update(editingTemplate.id, {
+      name: editTemplateName.trim(),
+      data: editTemplateData as JSONValue,
+      updated_at: new Date().toISOString(),
+    })
+
+    setShowEditDialog(false)
+    setEditingTemplate(null)
     loadTemplates()
   }
 
+  // ========================================
+  // Удаление шаблона
+  // ========================================
+  
+  function openDeleteDialog(template: Template) {
+    setEditingTemplate(template)
+    setShowDeleteDialog(true)
+  }
+
+  async function deleteTemplate() {
+    if (!editingTemplate) return
+    
+    await deleteEntity(db.templates, editingTemplate.id)
+    
+    setShowDeleteDialog(false)
+    setShowEditDialog(false)
+    setEditingTemplate(null)
+    loadTemplates()
+  }
+
+  // ========================================
+  // Избранное
+  // ========================================
+  
   async function toggleFavorite(template: Template) {
     await db.templates.update(template.id, { is_favorite: !template.is_favorite })
     loadTemplates()
   }
 
+  // ========================================
+  // Применение шаблона
+  // ========================================
+  
   async function useTemplate(template: Template) {
+    // Увеличиваем счётчик использований
     await db.templates.update(template.id, { use_count: (template.use_count || 0) + 1 })
     
-    // Здесь можно добавить логику применения шаблона
-    // Например, создать запись на основе шаблона
-    alert(`Шаблон "${template.name}" применён!`)
-    loadTemplates()
+    const now = new Date()
+    const today = now.toISOString().split("T")[0]
+    const time = now.toTimeString().slice(0, 5)
+
+    try {
+      switch (template.type) {
+        case "food": {
+          const data = template.data as unknown as FoodTemplateData
+          await createEntity(db.logs, {
+            type: LogType.FOOD,
+            date: today,
+            time: time,
+            title: data.title || template.name,
+            calories: data.calories,
+            metadata: {
+              calories: data.calories,
+              protein: data.protein,
+              fat: data.fat,
+              carbs: data.carbs,
+            },
+          })
+          break
+        }
+        
+        case "workout": {
+          const data = template.data as unknown as WorkoutTemplateData
+          await createEntity(db.logs, {
+            type: LogType.WORKOUT,
+            date: today,
+            time: time,
+            title: data.title || template.name,
+            metadata: {
+              duration: data.duration,
+              intensity: data.intensity,
+              subcategory: data.subcategory,
+              equipment: data.equipment ? [data.equipment] : undefined,
+              goal: data.goal,
+              calories_burned: data.calories_burned,
+              exercises_count: data.exercises_count,
+              sets_count: data.sets_count,
+              reps_count: data.reps_count,
+              total_weight: data.total_weight,
+            },
+          })
+          break
+        }
+        
+        case "water": {
+          const data = template.data as unknown as WaterTemplateData
+          await createEntity(db.waterLogs, {
+            date: today,
+            amount_ml: data.amount_ml,
+            time: time,
+            type: data.type || "water",
+          } as WaterLog)
+          
+          // Обновляем цель по воде
+          const goal = await db.goals.where("type").equals("water").first()
+          if (goal) {
+            await db.goals.update(goal.id, {
+              current_value: (goal.current_value || 0) + data.amount_ml,
+            })
+          }
+          break
+        }
+        
+        case "sleep": {
+          const data = template.data as unknown as SleepTemplateData
+          // Расчёт длительности
+          const [startH, startM] = data.start_time.split(":").map(Number)
+          const [endH, endM] = data.end_time.split(":").map(Number)
+          let startMinutes = startH * 60 + startM
+          let endMinutes = endH * 60 + endM
+          if (endMinutes < startMinutes) endMinutes += 24 * 60
+          const duration = endMinutes - startMinutes
+          
+          await createEntity(db.sleepLogs, {
+            date: today,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            duration_min: duration,
+            quality: data.quality || 3,
+            notes: data.notes,
+          } as SleepLog)
+          break
+        }
+        
+        case "mood": {
+          const data = template.data as unknown as MoodTemplateData
+          await createEntity(db.moodLogs, {
+            date: now.toISOString(),
+            mood: data.mood,
+            energy: data.energy || 3,
+            stress: data.stress || 3,
+            activities: data.activities,
+            notes: data.notes,
+          } as MoodLog)
+          break
+        }
+      }
+      
+      setApplySuccess(true)
+      setApplyingTemplate(template)
+      setShowApplyDialog(true)
+      
+      loadTemplates()
+    } catch (error) {
+      console.error("Failed to apply template:", error)
+      alert("Ошибка при применении шаблона")
+    }
   }
 
   const getTypeInfo = (type: Template["type"]) => {
@@ -94,6 +307,88 @@ export default function TemplatesPage() {
     mood: templates.filter(t => t.type === "mood" && !t.is_favorite),
   }
 
+  // Рендер формы в зависимости от типа
+  const renderTemplateForm = (
+    type: Template["type"],
+    data: Record<string, unknown>,
+    onChange: (data: Record<string, unknown>) => void
+  ) => {
+    switch (type) {
+      case "food":
+        return (
+          <FoodTemplateForm
+            data={data as unknown as FoodTemplateData}
+            onChange={(d) => onChange(d as unknown as Record<string, unknown>)}
+          />
+        )
+      case "workout":
+        return (
+          <WorkoutTemplateForm
+            data={data as unknown as WorkoutTemplateData}
+            onChange={(d) => onChange(d as unknown as Record<string, unknown>)}
+          />
+        )
+      case "water":
+        return (
+          <WaterTemplateForm
+            data={data as unknown as WaterTemplateData}
+            onChange={(d) => onChange(d as unknown as Record<string, unknown>)}
+          />
+        )
+      case "sleep":
+        return (
+          <SleepTemplateForm
+            data={data as unknown as SleepTemplateData}
+            onChange={(d) => onChange(d as unknown as Record<string, unknown>)}
+          />
+        )
+      case "mood":
+        return (
+          <MoodTemplateForm
+            data={data as unknown as MoodTemplateData}
+            onChange={(d) => onChange(d as unknown as Record<string, unknown>)}
+          />
+        )
+    }
+  }
+
+  // Получить краткое описание данных шаблона
+  const getTemplateSummary = (template: Template): string => {
+    const data = template.data as Record<string, unknown>
+    
+    switch (template.type) {
+      case "food": {
+        const d = data as unknown as FoodTemplateData
+        const parts: string[] = []
+        if (d.calories) parts.push(`${d.calories} ккал`)
+        if (d.portion_size) parts.push(`${d.portion_size}г`)
+        return parts.join(" • ") || d.title || "Без данных"
+      }
+      case "workout": {
+        const d = data as unknown as WorkoutTemplateData
+        const parts: string[] = []
+        if (d.duration) parts.push(`${d.duration} мин`)
+        if (d.calories_burned) parts.push(`${d.calories_burned} ккал`)
+        return parts.join(" • ") || d.title || "Без данных"
+      }
+      case "water": {
+        const d = data as unknown as WaterTemplateData
+        return `${d.amount_ml} мл • ${d.type === "water" ? "Вода" : d.type === "tea" ? "Чай" : d.type === "coffee" ? "Кофе" : "Другое"}`
+      }
+      case "sleep": {
+        const d = data as unknown as SleepTemplateData
+        return `${d.start_time} → ${d.end_time}`
+      }
+      case "mood": {
+        const d = data as unknown as MoodTemplateData
+        const moodInfo = moodOptions.find(m => m.value === d.mood)
+        return `${moodInfo?.emoji} ${moodInfo?.label}`
+      }
+      default:
+        return "Без данных"
+    }
+  }
+
   return (
     <div className="min-h-screen bg-light">
       <AppLayout>
@@ -103,7 +398,7 @@ export default function TemplatesPage() {
               <h1 className="text-2xl font-bold text-dark">Шаблоны</h1>
               <p className="text-dark-lighter text-sm">Быстрые шаблоны для частых записей</p>
             </div>
-            <Button onClick={() => setShowCreateDialog(true)}>
+            <Button onClick={() => openCreateDialog()}>
               <Plus className="h-4 w-4 mr-2" />
               Создать шаблон
             </Button>
@@ -118,7 +413,7 @@ export default function TemplatesPage() {
               </div>
               <h3 className="text-lg font-medium text-dark mb-2">Нет шаблонов</h3>
               <p className="text-dark-lighter text-sm mb-4">Создайте шаблоны для быстрого добавления частых записей</p>
-              <Button onClick={() => setShowCreateDialog(true)}>
+              <Button onClick={() => openCreateDialog()}>
                 <Plus className="h-4 w-4 mr-2" />
                 Создать первый шаблон
               </Button>
@@ -129,7 +424,7 @@ export default function TemplatesPage() {
               {groupedTemplates.favorite.length > 0 && (
                 <div>
                   <h2 className="text-lg font-semibold text-dark mb-3 flex items-center gap-2">
-                    <Star className="h-5 w-5 text-yellow-500" />
+                    <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
                     Избранное
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -139,10 +434,15 @@ export default function TemplatesPage() {
                       return (
                         <Card key={template.id} className="hover:shadow-md transition-shadow">
                           <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-start justify-between mb-2">
                               <div className="flex items-center gap-2">
-                                <Icon className={`h-5 w-5 ${typeInfo.color}`} />
-                                <h3 className="font-medium">{template.name}</h3>
+                                <div className={`p-2 rounded-lg bg-light-dark`}>
+                                  <Icon className={`h-5 w-5 ${typeInfo.color}`} />
+                                </div>
+                                <div>
+                                  <h3 className="font-medium">{template.name}</h3>
+                                  <p className="text-xs text-dark-lighter">{typeInfo.label}</p>
+                                </div>
                               </div>
                               <Button
                                 variant="ghost"
@@ -150,9 +450,14 @@ export default function TemplatesPage() {
                                 className="h-8 w-8"
                                 onClick={() => toggleFavorite(template)}
                               >
-                                <Star className={`h-4 w-4 ${template.is_favorite ? "fill-yellow-500 text-yellow-500" : ""}`} />
+                                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                               </Button>
                             </div>
+                            
+                            <p className="text-sm text-dark-lighter mb-3">
+                              {getTemplateSummary(template)}
+                            </p>
+                            
                             <div className="flex items-center justify-between">
                               <span className="text-xs text-dark-lighter">
                                 Использований: {template.use_count || 0}
@@ -168,8 +473,16 @@ export default function TemplatesPage() {
                                 <Button
                                   variant="ghost"
                                   size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => openEditDialog(template)}
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
                                   className="h-8 w-8 text-dark-lighter hover:text-red-500"
-                                  onClick={() => deleteTemplate(template.id)}
+                                  onClick={() => openDeleteDialog(template)}
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -185,16 +498,26 @@ export default function TemplatesPage() {
 
               {/* По категориям */}
               {templateTypes.map(type => {
-                const items = groupedTemplates[type.key as keyof typeof groupedTemplates]
+                const items = groupedTemplates[type.key as keyof typeof groupedTemplates] as Template[]
                 if (items.length === 0) return null
                 
                 const Icon = type.icon
                 return (
                   <div key={type.key}>
-                    <h2 className="text-lg font-semibold text-dark mb-3 flex items-center gap-2">
-                      <Icon className={`h-5 w-5 ${type.color}`} />
-                      {type.label}
-                    </h2>
+                    <div className="flex items-center justify-between mb-3">
+                      <h2 className="text-lg font-semibold text-dark flex items-center gap-2">
+                        <Icon className={`h-5 w-5 ${type.color}`} />
+                        {type.label}
+                      </h2>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openCreateDialog(type.key)}
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        Добавить
+                      </Button>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {items.map(template => {
                         const typeInfo = getTypeInfo(template.type)
@@ -202,10 +525,15 @@ export default function TemplatesPage() {
                         return (
                           <Card key={template.id} className="hover:shadow-md transition-shadow">
                             <CardContent className="p-4">
-                              <div className="flex items-start justify-between mb-3">
+                              <div className="flex items-start justify-between mb-2">
                                 <div className="flex items-center gap-2">
-                                  <Icon className={`h-5 w-5 ${typeInfo.color}`} />
-                                  <h3 className="font-medium">{template.name}</h3>
+                                  <div className={`p-2 rounded-lg bg-light-dark`}>
+                                    <Icon className={`h-5 w-5 ${typeInfo.color}`} />
+                                  </div>
+                                  <div>
+                                    <h3 className="font-medium">{template.name}</h3>
+                                    <p className="text-xs text-dark-lighter">{typeInfo.label}</p>
+                                  </div>
                                 </div>
                                 <Button
                                   variant="ghost"
@@ -216,6 +544,11 @@ export default function TemplatesPage() {
                                   <Star className={`h-4 w-4 ${template.is_favorite ? "fill-yellow-500 text-yellow-500" : ""}`} />
                                 </Button>
                               </div>
+                              
+                              <p className="text-sm text-dark-lighter mb-3">
+                                {getTemplateSummary(template)}
+                              </p>
+                              
                               <div className="flex items-center justify-between">
                                 <span className="text-xs text-dark-lighter">
                                   Использований: {template.use_count || 0}
@@ -231,8 +564,16 @@ export default function TemplatesPage() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
+                                    className="h-8 w-8"
+                                    onClick={() => openEditDialog(template)}
+                                  >
+                                    <Edit2 className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
                                     className="h-8 w-8 text-dark-lighter hover:text-red-500"
-                                    onClick={() => deleteTemplate(template.id)}
+                                    onClick={() => openDeleteDialog(template)}
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
@@ -253,7 +594,7 @@ export default function TemplatesPage() {
 
       {/* Create Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Создать шаблон</DialogTitle>
           </DialogHeader>
@@ -262,8 +603,8 @@ export default function TemplatesPage() {
               <Label>Название шаблона</Label>
               <Input
                 placeholder="Например: Завтрак - овсянка"
-                value={newTemplate.name}
-                onChange={(e) => setNewTemplate({ ...newTemplate, name: e.target.value })}
+                value={newTemplateName}
+                onChange={(e) => setNewTemplateName(e.target.value)}
               />
             </div>
 
@@ -276,9 +617,12 @@ export default function TemplatesPage() {
                     <button
                       key={type.key}
                       type="button"
-                      onClick={() => setNewTemplate({ ...newTemplate, type: type.key as Template["type"] })}
+                      onClick={() => {
+                        setNewTemplateType(type.key as Template["type"])
+                        setNewTemplateData(getDefaultData(type.key))
+                      }}
                       className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-all ${
-                        newTemplate.type === type.key
+                        newTemplateType === type.key
                           ? "border-primary bg-primary/5"
                           : "border-light-darker hover:border-primary/50"
                       }`}
@@ -290,15 +634,123 @@ export default function TemplatesPage() {
                 })}
               </div>
             </div>
+
+            {renderTemplateForm(newTemplateType, newTemplateData, setNewTemplateData)}
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
-              Отмена
-            </Button>
-            <Button onClick={createTemplate} disabled={!newTemplate.name.trim()}>
-              Создать
-            </Button>
-          </DialogFooter>
+          <CreateFormActions
+            onCancel={() => setShowCreateDialog(false)}
+            onSave={createTemplate}
+            saveText="Создать"
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Редактировать шаблон</DialogTitle>
+          </DialogHeader>
+          {editingTemplate && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Название шаблона</Label>
+                <Input
+                  value={editTemplateName}
+                  onChange={(e) => setEditTemplateName(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Тип</Label>
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-muted">
+                  {(() => {
+                    const typeInfo = getTypeInfo(editingTemplate.type)
+                    const Icon = typeInfo.icon
+                    return (
+                      <>
+                        <Icon className={`h-5 w-5 ${typeInfo.color}`} />
+                        <span>{typeInfo.label}</span>
+                      </>
+                    )
+                  })()}
+                </div>
+              </div>
+
+              {renderTemplateForm(editingTemplate.type, editTemplateData, setEditTemplateData)}
+            </div>
+          )}
+          <FormActions
+            type="dialog"
+            showDelete
+            onDelete={() => setShowDeleteDialog(true)}
+            onCancel={() => setShowEditDialog(false)}
+            onSave={updateTemplate}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Удалить шаблон?</DialogTitle>
+          </DialogHeader>
+          <p className="py-4 text-muted-foreground">
+            Вы уверены, что хотите удалить шаблон "{editingTemplate?.name}"? Это действие нельзя отменить.
+          </p>
+          <DeleteConfirmActions
+            onCancel={() => setShowDeleteDialog(false)}
+            onConfirm={deleteTemplate}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Apply Success Dialog */}
+      <Dialog open={showApplyDialog} onOpenChange={setShowApplyDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-600">
+              <Check className="h-5 w-5" />
+              Шаблон применён
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-muted-foreground">
+              Запись "{applyingTemplate?.name}" успешно создана.
+            </p>
+            {applyingTemplate && (
+              <div className="mt-4 flex gap-2">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    setShowApplyDialog(false)
+                    // Можно добавить переход к соответствующему разделу
+                  }}
+                >
+                  Остаться
+                </Button>
+                <Button
+                  className="flex-1"
+                  onClick={() => {
+                    setShowApplyDialog(false)
+                    // Переход к соответствующему разделу
+                    const routes: Record<string, string> = {
+                      food: "/logs/food",
+                      workout: "/logs/workout",
+                      water: "/water",
+                      sleep: "/sleep",
+                      mood: "/mood",
+                    }
+                    router.push(routes[applyingTemplate.type])
+                  }}
+                >
+                  Перейти к записи
+                </Button>
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

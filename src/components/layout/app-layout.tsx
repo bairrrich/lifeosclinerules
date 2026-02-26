@@ -3,6 +3,8 @@
 import { ReactNode } from "react"
 import { Header } from "./header"
 import { BottomNav } from "./bottom-nav"
+import { GlobalSearch } from "@/components/shared/global-search"
+import { FAB } from "@/components/shared/fab"
 
 interface AppLayoutProps {
   children: ReactNode
@@ -20,6 +22,12 @@ export function AppLayout({ children, title, showNav = true }: AppLayoutProps) {
       </main>
 
       {showNav && <BottomNav />}
+      
+      {/* Global Search (Cmd+K) */}
+      <GlobalSearch />
+      
+      {/* Floating Action Button */}
+      {showNav && <FAB />}
     </div>
   )
 }

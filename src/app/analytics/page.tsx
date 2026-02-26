@@ -157,14 +157,30 @@ export default function AnalyticsPage() {
     })
   }, [daysInRange, financeLogs])
 
-  // Мемоизированная общая статистика
+  // Мемоизированная общая статистика с сравнением периодов
   const stats = useMemo(() => {
+    const days = parseInt(dateRange)
     const startDate = format(daysInRange[0], "yyyy-MM-dd")
+    const prevStartDate = format(subDays(daysInRange[0], days), "yyyy-MM-dd")
+    const prevEndDate = format(subDays(daysInRange[0], 1), "yyyy-MM-dd")
 
+    // Текущий период
     const periodFoodLogs = foodLogs.filter((log) => log.date >= startDate)
     const periodWorkoutLogs = workoutLogs.filter((log) => log.date >= startDate)
     const periodFinanceLogs = financeLogs.filter((log) => log.date >= startDate)
 
+    // Предыдущий период
+    const prevPeriodFoodLogs = foodLogs.filter((log) => 
+      log.date >= prevStartDate && log.date <= prevEndDate
+    )
+    const prevPeriodWorkoutLogs = workoutLogs.filter((log) => 
+      log.date >= prevStartDate && log.date <= prevEndDate
+    )
+    const prevPeriodFinanceLogs = financeLogs.filter((log) => 
+      log.date >= prevStartDate && log.date <= prevEndDate
+    )
+
+    // Текущие значения
     const totalCalories = periodFoodLogs.reduce((sum, log) => {
       const metadata = log.metadata as FoodMetadata | undefined
       return sum + (metadata?.calories || 0)
@@ -185,6 +201,37 @@ export default function AnalyticsPage() {
       return metadata?.finance_type === "expense" ? sum + (log.value || 0) : sum
     }, 0)
 
+    // Предыдущие значения
+    const prevTotalCalories = prevPeriodFoodLogs.reduce((sum, log) => {
+      const metadata = log.metadata as FoodMetadata | undefined
+      return sum + (metadata?.calories || 0)
+    }, 0)
+
+    const prevTotalWorkoutDuration = prevPeriodWorkoutLogs.reduce((sum, log) => {
+      const metadata = log.metadata as WorkoutMetadata | undefined
+      return sum + (metadata?.duration || 0)
+    }, 0)
+
+    const prevTotalIncome = prevPeriodFinanceLogs.reduce((sum, log) => {
+      const metadata = log.metadata as FinanceMetadata | undefined
+      return metadata?.finance_type === "income" ? sum + (log.value || 0) : sum
+    }, 0)
+
+    const prevTotalExpense = prevPeriodFinanceLogs.reduce((sum, log) => {
+      const metadata = log.metadata as FinanceMetadata | undefined
+      return metadata?.finance_type === "expense" ? sum + (log.value || 0) : sum
+    }, 0)
+
+    // Функция расчёта процента изменения
+    const calcChange = (current: number, prev: number): { value: number; trend: 'up' | 'down' | 'same' } => {
+      if (prev === 0) return { value: 0, trend: 'same' }
+      const change = ((current - prev) / prev) * 100
+      return {
+        value: Math.round(change),
+        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'same'
+      }
+    }
+
     return {
       calories: Math.round(totalCalories),
       workouts: periodWorkoutLogs.length,
@@ -192,8 +239,16 @@ export default function AnalyticsPage() {
       income: totalIncome,
       expense: totalExpense,
       balance: totalIncome - totalExpense,
+      // Тренды
+      caloriesTrend: calcChange(totalCalories, prevTotalCalories),
+      workoutsTrend: calcChange(periodWorkoutLogs.length, prevPeriodWorkoutLogs.length),
+      incomeTrend: calcChange(totalIncome, prevTotalIncome),
+      expenseTrend: calcChange(totalExpense, prevTotalExpense),
+      // Средние значения
+      avgCalories: Math.round(totalCalories / days),
+      avgWorkoutDuration: Math.round(totalWorkoutDuration / Math.max(1, periodWorkoutLogs.length)),
     }
-  }, [daysInRange, foodLogs, workoutLogs, financeLogs])
+  }, [daysInRange, foodLogs, workoutLogs, financeLogs, dateRange])
 
   // Мемоизированные данные по категориям
   const categoryData = useMemo(() => {
@@ -237,16 +292,26 @@ export default function AnalyticsPage() {
           </Tabs>
         </div>
 
-        {/* Summary Cards */}
+        {/* Summary Cards with Trends */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <Utensils className="h-4 w-4" />
                 <span className="text-sm">Калории</span>
+                {stats.caloriesTrend.trend !== 'same' && (
+                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
+                    stats.caloriesTrend.trend === 'up' ? 'text-orange-500' : 'text-green-500'
+                  }`}>
+                    {stats.caloriesTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                    {Math.abs(stats.caloriesTrend.value)}%
+                  </span>
+                )}
               </div>
               <div className="text-2xl font-bold">{stats.calories.toLocaleString()}</div>
-              <div className="text-xs text-muted-foreground">за период</div>
+              <div className="text-xs text-muted-foreground">
+                ~{stats.avgCalories} ккал/день
+              </div>
             </CardContent>
           </Card>
 
@@ -255,9 +320,19 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <Dumbbell className="h-4 w-4" />
                 <span className="text-sm">Тренировки</span>
+                {stats.workoutsTrend.trend !== 'same' && (
+                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
+                    stats.workoutsTrend.trend === 'up' ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    {stats.workoutsTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                    {Math.abs(stats.workoutsTrend.value)}%
+                  </span>
+                )}
               </div>
               <div className="text-2xl font-bold">{stats.workouts}</div>
-              <div className="text-xs text-muted-foreground">{stats.workoutDuration} мин</div>
+              <div className="text-xs text-muted-foreground">
+                {stats.workoutDuration} мин • ~{stats.avgWorkoutDuration} мин/трен
+              </div>
             </CardContent>
           </Card>
 
@@ -266,10 +341,19 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <TrendingUp className="h-4 w-4 text-green-500" />
                 <span className="text-sm">Доход</span>
+                {stats.incomeTrend.trend !== 'same' && (
+                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
+                    stats.incomeTrend.trend === 'up' ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    {stats.incomeTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                    {Math.abs(stats.incomeTrend.value)}%
+                  </span>
+                )}
               </div>
               <div className="text-2xl font-bold text-green-500">
                 {stats.income.toLocaleString()} ₽
               </div>
+              <div className="text-xs text-muted-foreground">vs прошлый период</div>
             </CardContent>
           </Card>
 
@@ -278,10 +362,19 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <TrendingDown className="h-4 w-4 text-red-500" />
                 <span className="text-sm">Расход</span>
+                {stats.expenseTrend.trend !== 'same' && (
+                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
+                    stats.expenseTrend.trend === 'down' ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    {stats.expenseTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                    {Math.abs(stats.expenseTrend.value)}%
+                  </span>
+                )}
               </div>
               <div className="text-2xl font-bold text-red-500">
                 {stats.expense.toLocaleString()} ₽
               </div>
+              <div className="text-xs text-muted-foreground">vs прошлый период</div>
             </CardContent>
           </Card>
         </div>

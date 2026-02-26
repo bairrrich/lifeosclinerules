@@ -54,7 +54,6 @@ export function useNotifications() {
           badge: "/icons/icon-192.svg",
           tag: `${NOTIFICATION_TAG_PREFIX}${reminder.id}-${timeLabel}`,
           requireInteraction: reminder.persistent, // Не исчезает пока пользователь не взаимодействует
-          vibrate: reminder.vibration ? [200, 100, 200] : undefined,
           data: {
             reminderId: reminder.id,
             url: "/reminders",

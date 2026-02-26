@@ -1,13 +1,28 @@
 "use client"
 
-import { useState } from "react"
-import { Download, Upload, Trash2, FileJson, FileSpreadsheet, Check, AlertTriangle } from "lucide-react"
+import { useState, useEffect, useCallback } from "react"
+import { Download, Upload, Trash2, FileJson, FileSpreadsheet, Check, AlertTriangle, Clock, RefreshCw } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { db } from "@/lib/db"
 
 type ExportFormat = "json" | "csv"
+
+// Ключи для localStorage
+const AUTO_BACKUP_ENABLED_KEY = "life-os-auto-backup-enabled"
+const AUTO_BACKUP_INTERVAL_KEY = "life-os-auto-backup-interval"
+const LAST_BACKUP_KEY = "life-os-last-backup"
+
+// Интервалы автобэкапа в часах
+const BACKUP_INTERVALS = [
+  { value: 1, label: "Каждый час" },
+  { value: 6, label: "Каждые 6 часов" },
+  { value: 12, label: "Каждые 12 часов" },
+  { value: 24, label: "Каждый день" },
+  { value: 168, label: "Каждую неделю" },
+]
 
 export function BackupManager() {
   const [isExporting, setIsExporting] = useState(false)
@@ -15,6 +30,134 @@ export function BackupManager() {
   const [showConfirmImport, setShowConfirmImport] = useState(false)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null)
+  
+  // Автоматический бэкап
+  const [autoBackupEnabled, setAutoBackupEnabled] = useState(false)
+  const [autoBackupInterval, setAutoBackupInterval] = useState(24)
+  const [lastBackup, setLastBackup] = useState<string | null>(null)
+
+  // Загрузка настроек автобэкапа
+  useEffect(() => {
+    const savedEnabled = localStorage.getItem(AUTO_BACKUP_ENABLED_KEY)
+    const savedInterval = localStorage.getItem(AUTO_BACKUP_INTERVAL_KEY)
+    const savedLastBackup = localStorage.getItem(LAST_BACKUP_KEY)
+    
+    if (savedEnabled === "true") {
+      setAutoBackupEnabled(true)
+    }
+    if (savedInterval) {
+      setAutoBackupInterval(parseInt(savedInterval))
+    }
+    if (savedLastBackup) {
+      setLastBackup(savedLastBackup)
+    }
+  }, [])
+
+  // Функция создания автобэкапа
+  const createAutoBackup = useCallback(async () => {
+    try {
+      const data = {
+        version: "1.0",
+        exportedAt: new Date().toISOString(),
+        autoBackup: true,
+        logs: await db.logs.toArray(),
+        items: await db.items.toArray(),
+        content: await db.content.toArray(),
+        categories: await db.categories.toArray(),
+        tags: await db.tags.toArray(),
+        accounts: await db.accounts.toArray(),
+        units: await db.units.toArray(),
+        books: await db.books.toArray(),
+        userBooks: await db.userBooks.toArray(),
+        authors: await db.authors.toArray(),
+        bookAuthors: await db.bookAuthors.toArray(),
+        genres: await db.genres.toArray(),
+        bookGenres: await db.bookGenres.toArray(),
+        bookQuotes: await db.bookQuotes.toArray(),
+        bookReviews: await db.bookReviews.toArray(),
+        recipeIngredients: await db.recipeIngredients.toArray(),
+        recipeIngredientItems: await db.recipeIngredientItems.toArray(),
+        recipeSteps: await db.recipeSteps.toArray(),
+        goals: await db.goals.toArray(),
+        habits: await db.habits.toArray(),
+        habitLogs: await db.habitLogs.toArray(),
+        streaks: await db.streaks.toArray(),
+        sleepLogs: await db.sleepLogs.toArray(),
+        waterLogs: await db.waterLogs.toArray(),
+        moodLogs: await db.moodLogs.toArray(),
+        bodyMeasurements: await db.bodyMeasurements.toArray(),
+        reminders: await db.reminders.toArray(),
+        templates: await db.templates.toArray(),
+        recurringTransactions: await db.recurringTransactions.toArray(),
+      }
+
+      // Сохраняем в localStorage (ограничение ~5-10MB)
+      const jsonStr = JSON.stringify(data)
+      
+      // Проверяем размер
+      if (jsonStr.length > 4 * 1024 * 1024) { // 4MB лимит
+        console.warn("Auto backup too large, skipping localStorage save")
+        // Сохраняем метаданные о том, что бэкап был сделан
+        localStorage.setItem(LAST_BACKUP_KEY, new Date().toISOString())
+        setLastBackup(new Date().toISOString())
+        return
+      }
+
+      localStorage.setItem("life-os-auto-backup-data", jsonStr)
+      localStorage.setItem(LAST_BACKUP_KEY, new Date().toISOString())
+      setLastBackup(new Date().toISOString())
+      
+      console.log("Auto backup created at", new Date().toISOString())
+    } catch (error) {
+      console.error("Auto backup failed:", error)
+    }
+  }, [])
+
+  // Проверка необходимости автобэкапа
+  useEffect(() => {
+    if (!autoBackupEnabled) return
+
+    const checkAndBackup = () => {
+      const now = new Date()
+      const lastBackupDate = lastBackup ? new Date(lastBackup) : null
+      
+      if (!lastBackupDate) {
+        // Первым делом создаём бэкап
+        createAutoBackup()
+        return
+      }
+
+      const hoursSinceLastBackup = (now.getTime() - lastBackupDate.getTime()) / (1000 * 60 * 60)
+      
+      if (hoursSinceLastBackup >= autoBackupInterval) {
+        createAutoBackup()
+      }
+    }
+
+    // Проверяем сразу при загрузке
+    checkAndBackup()
+
+    // Проверяем каждые 10 минут
+    const interval = setInterval(checkAndBackup, 10 * 60 * 1000)
+
+    return () => clearInterval(interval)
+  }, [autoBackupEnabled, autoBackupInterval, lastBackup, createAutoBackup])
+
+  // Включение/выключение автобэкапа
+  const toggleAutoBackup = (enabled: boolean) => {
+    setAutoBackupEnabled(enabled)
+    localStorage.setItem(AUTO_BACKUP_ENABLED_KEY, String(enabled))
+    
+    if (enabled) {
+      createAutoBackup()
+    }
+  }
+
+  // Изменение интервала
+  const updateInterval = (interval: number) => {
+    setAutoBackupInterval(interval)
+    localStorage.setItem(AUTO_BACKUP_INTERVAL_KEY, String(interval))
+  }
 
   const showToast = (type: "success" | "error", message: string) => {
     setToast({ type, message })
@@ -264,6 +407,48 @@ export function BackupManager() {
               <Upload className="h-4 w-4 mr-2" />
               {isImporting ? "Импорт..." : "Импорт JSON"}
             </Button>
+          </div>
+
+          {/* Автоматический бэкап */}
+          <div className="pt-2 border-t">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-sm font-medium">Автобэкап</Label>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={autoBackupEnabled}
+                  onChange={(e) => toggleAutoBackup(e.target.checked)}
+                />
+                <div className="w-9 h-5 bg-muted rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+              </label>
+            </div>
+            
+            {autoBackupEnabled && (
+              <div className="space-y-2">
+                <select
+                  value={autoBackupInterval}
+                  onChange={(e) => updateInterval(parseInt(e.target.value))}
+                  className="w-full text-sm bg-muted border rounded-md px-3 py-2"
+                >
+                  {BACKUP_INTERVALS.map((interval) => (
+                    <option key={interval.value} value={interval.value}>
+                      {interval.label}
+                    </option>
+                  ))}
+                </select>
+                
+                {lastBackup && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <RefreshCw className="h-3 w-3" />
+                    Последний: {new Date(lastBackup).toLocaleString("ru-RU")}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* CSV экспорт */}
