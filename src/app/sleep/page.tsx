@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Moon, Plus, Trash2, Settings } from "lucide-react"
+import { Moon, Plus, Settings } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { SleepLog } from "@/types"
 
@@ -65,7 +66,6 @@ export default function SleepPage() {
     let startMinutes = startH * 60 + startM
     let endMinutes = endH * 60 + endM
     
-    // Если end < start, значит переход через полночь
     if (endMinutes < startMinutes) {
       endMinutes += 24 * 60
     }
@@ -375,12 +375,11 @@ export default function SleepPage() {
                 Продолжительность: {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={addSleepLog}>Сохранить</Button>
-            </DialogFooter>
+            <CreateFormActions
+              onCancel={() => setIsAddDialogOpen(false)}
+              onSave={addSleepLog}
+              saveText="Сохранить"
+            />
           </DialogContent>
         </Dialog>
 
@@ -454,17 +453,13 @@ export default function SleepPage() {
                 Продолжительность: {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
               </div>
             </div>
-            <DialogFooter className="flex justify-between">
-              <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                  Отмена
-                </Button>
-                <Button onClick={updateSleepLog}>Сохранить</Button>
-              </div>
-            </DialogFooter>
+            <FormActions
+              type="dialog"
+              showDelete
+              onDelete={() => setIsDeleteDialogOpen(true)}
+              onCancel={() => setIsEditDialogOpen(false)}
+              onSave={updateSleepLog}
+            />
           </DialogContent>
         </Dialog>
 
@@ -477,14 +472,10 @@ export default function SleepPage() {
             <p className="py-4 text-muted-foreground">
               Вы уверены, что хотите удалить запись о сне? Это действие нельзя отменить.
             </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button variant="destructive" onClick={deleteSleepLog}>
-                Удалить
-              </Button>
-            </DialogFooter>
+            <DeleteConfirmActions
+              onCancel={() => setIsDeleteDialogOpen(false)}
+              onConfirm={deleteSleepLog}
+            />
           </DialogContent>
         </Dialog>
       </div>

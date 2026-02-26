@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Scale, Ruler, TrendingDown, TrendingUp, Trash2, Settings, Activity, Minus } from "lucide-react"
+import { Plus, Scale, Ruler, TrendingDown, TrendingUp, Settings, Activity } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
@@ -454,12 +455,11 @@ export default function BodyPage() {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={addMeasurement}>Добавить</Button>
-            </DialogFooter>
+            <CreateFormActions
+              onCancel={() => setIsAddDialogOpen(false)}
+              onSave={addMeasurement}
+              saveText="Добавить"
+            />
           </DialogContent>
         </Dialog>
 
@@ -514,17 +514,13 @@ export default function BodyPage() {
                 />
               </div>
             </div>
-            <DialogFooter className="flex justify-between">
-              <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                  Отмена
-                </Button>
-                <Button onClick={updateMeasurement}>Сохранить</Button>
-              </div>
-            </DialogFooter>
+            <FormActions
+              type="dialog"
+              showDelete
+              onDelete={() => setIsDeleteDialogOpen(true)}
+              onCancel={() => setIsEditDialogOpen(false)}
+              onSave={updateMeasurement}
+            />
           </DialogContent>
         </Dialog>
 
@@ -537,14 +533,10 @@ export default function BodyPage() {
             <p className="py-4 text-muted-foreground">
               Вы уверены, что хотите удалить это измерение? Это действие нельзя отменить.
             </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button variant="destructive" onClick={deleteMeasurement}>
-                Удалить
-              </Button>
-            </DialogFooter>
+            <DeleteConfirmActions
+              onCancel={() => setIsDeleteDialogOpen(false)}
+              onConfirm={deleteMeasurement}
+            />
           </DialogContent>
         </Dialog>
       </div>

@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { ArrowLeft, Save, Trash2 } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
+import { FormActions } from "@/components/shared/form-actions"
 import { 
   BookForm, 
   UserBookForm, 
@@ -287,31 +286,15 @@ export default function EditBookPage() {
           />
           
           {/* Действия */}
-          <div className="flex justify-between gap-4">
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={onDelete}
-              disabled={isDeleting}
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              {isDeleting ? "Удаление..." : "Удалить"}
-            </Button>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Отмена
-              </Button>
-              <Button type="submit" disabled={isSaving}>
-                <Save className="h-4 w-4 mr-2" />
-                {isSaving ? "Сохранение..." : "Сохранить"}
-              </Button>
-            </div>
-          </div>
+          <FormActions
+            type="page"
+            showDelete
+            onDelete={onDelete}
+            isDeleting={isDeleting}
+            onCancel={() => router.back()}
+            onSave={onSubmit}
+            isSaving={isSaving}
+          />
         </form>
       </div>
     </AppLayout>

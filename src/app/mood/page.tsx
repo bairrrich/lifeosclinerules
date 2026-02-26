@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Smile, Meh, Frown, Plus, Battery, Brain, Trash2, Settings, Droplet, Moon, Dumbbell, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { Smile, Meh, Frown, Plus, Battery, Brain, Settings, Droplet, Moon, Dumbbell, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { MoodLog, MoodType } from "@/types"
 
@@ -68,7 +69,6 @@ export default function MoodPage() {
       const logs = await db.moodLogs.orderBy("date").reverse().limit(30).toArray()
       setMoodLogs(logs)
       
-      // Вычисляем корреляции
       await calculateCorrelations(logs)
     } catch (error) {
       console.error("Failed to load mood data:", error)
@@ -87,18 +87,13 @@ export default function MoodPage() {
       great: 5, good: 4, okay: 3, bad: 2, terrible: 1,
     }
 
-    // Получаем данные за последние 14 дней
     const last14Days = logs.slice(0, 14)
-    const dateSet = new Set(last14Days.map(l => l.date.split("T")[0]))
-
-    // Загружаем связанные данные
     const [sleepLogs, waterLogs, workoutLogs] = await Promise.all([
       db.sleepLogs.toArray(),
       db.waterLogs.toArray(),
       db.logs.where("type").equals("workout").toArray(),
     ])
 
-    // Функция корреляции Пирсона
     function pearsonCorrelation(x: number[], y: number[]): number {
       const n = x.length
       if (n < 3) return 0
@@ -116,7 +111,6 @@ export default function MoodPage() {
       return numerator / denominator
     }
 
-    // Сон vs настроение
     const sleepData: { mood: number; sleep: number }[] = []
     for (const log of last14Days) {
       const date = log.date.split("T")[0]
@@ -130,7 +124,6 @@ export default function MoodPage() {
       }
     }
 
-    // Вода vs настроение
     const waterData: { mood: number; water: number }[] = []
     for (const log of last14Days) {
       const date = log.date.split("T")[0]
@@ -142,7 +135,6 @@ export default function MoodPage() {
       }
     }
 
-    // Тренировки vs настроение
     const workoutData: { mood: number; workout: number }[] = []
     for (const log of last14Days) {
       const date = log.date.split("T")[0]
@@ -154,7 +146,6 @@ export default function MoodPage() {
       workoutData.push({ mood: moodValues[log.mood], workout: workoutMin })
     }
 
-    // Вычисляем корреляции
     const sleepCorr = sleepData.length >= 3 
       ? pearsonCorrelation(sleepData.map(d => d.sleep), sleepData.map(d => d.mood))
       : 0
@@ -369,7 +360,6 @@ export default function MoodPage() {
                 Как различные факторы влияют на ваше настроение (на основе последних 14 дней)
               </p>
               <div className="space-y-3">
-                {/* Sleep */}
                 <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
                   <div className="flex items-center gap-2">
                     <Moon className="h-5 w-5 text-indigo-500" />
@@ -377,19 +367,12 @@ export default function MoodPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{correlations.sleep.label}</span>
-                    {correlations.sleep.trend === "up" && (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    )}
-                    {correlations.sleep.trend === "down" && (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    {correlations.sleep.trend === "neutral" && (
-                      <Minus className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {correlations.sleep.trend === "up" && <TrendingUp className="h-4 w-4 text-green-500" />}
+                    {correlations.sleep.trend === "down" && <TrendingDown className="h-4 w-4 text-red-500" />}
+                    {correlations.sleep.trend === "neutral" && <Minus className="h-4 w-4 text-muted-foreground" />}
                   </div>
                 </div>
 
-                {/* Water */}
                 <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
                   <div className="flex items-center gap-2">
                     <Droplet className="h-5 w-5 text-blue-500" />
@@ -397,19 +380,12 @@ export default function MoodPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{correlations.water.label}</span>
-                    {correlations.water.trend === "up" && (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    )}
-                    {correlations.water.trend === "down" && (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    {correlations.water.trend === "neutral" && (
-                      <Minus className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {correlations.water.trend === "up" && <TrendingUp className="h-4 w-4 text-green-500" />}
+                    {correlations.water.trend === "down" && <TrendingDown className="h-4 w-4 text-red-500" />}
+                    {correlations.water.trend === "neutral" && <Minus className="h-4 w-4 text-muted-foreground" />}
                   </div>
                 </div>
 
-                {/* Workout */}
                 <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
                   <div className="flex items-center gap-2">
                     <Dumbbell className="h-5 w-5 text-orange-500" />
@@ -417,15 +393,9 @@ export default function MoodPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{correlations.workout.label}</span>
-                    {correlations.workout.trend === "up" && (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    )}
-                    {correlations.workout.trend === "down" && (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    {correlations.workout.trend === "neutral" && (
-                      <Minus className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {correlations.workout.trend === "up" && <TrendingUp className="h-4 w-4 text-green-500" />}
+                    {correlations.workout.trend === "down" && <TrendingDown className="h-4 w-4 text-red-500" />}
+                    {correlations.workout.trend === "neutral" && <Minus className="h-4 w-4 text-muted-foreground" />}
                   </div>
                 </div>
               </div>
@@ -441,15 +411,11 @@ export default function MoodPage() {
           <h2 className="text-lg font-semibold mb-3">История</h2>
           {isLoading ? (
             <Card>
-              <CardContent className="p-4 text-center text-muted-foreground">
-                Загрузка...
-              </CardContent>
+              <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
             </Card>
           ) : moodLogs.length === 0 ? (
             <Card>
-              <CardContent className="p-4 text-center text-muted-foreground">
-                Нет записей
-              </CardContent>
+              <CardContent className="p-4 text-center text-muted-foreground">Нет записей</CardContent>
             </Card>
           ) : (
             <div className="flex flex-col gap-2">
@@ -462,12 +428,8 @@ export default function MoodPage() {
                         <div className="flex items-center gap-3">
                           <span className="font-medium">{moodConfig[log.mood].label}</span>
                           <div className="flex gap-2 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Battery className="h-3 w-3" /> {log.energy}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Brain className="h-3 w-3" /> {log.stress}
-                            </span>
+                            <span className="flex items-center gap-1"><Battery className="h-3 w-3" /> {log.energy}</span>
+                            <span className="flex items-center gap-1"><Brain className="h-3 w-3" /> {log.stress}</span>
                           </div>
                         </div>
                         {log.activities && log.activities.length > 0 && (
@@ -475,21 +437,12 @@ export default function MoodPage() {
                             {log.activities.map((a) => activityLabels[a] || a).join(", ")}
                           </div>
                         )}
-                        {log.notes && (
-                          <div className="text-sm text-muted-foreground mt-1">{log.notes}</div>
-                        )}
+                        {log.notes && <div className="text-sm text-muted-foreground mt-1">{log.notes}</div>}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {new Date(log.date).toLocaleDateString("ru-RU", {
-                          day: "numeric",
-                          month: "short",
-                        })}
+                        {new Date(log.date).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => openEditDialog(log)}
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(log)}>
                         <Settings className="h-4 w-4" />
                       </Button>
                     </div>
@@ -504,14 +457,7 @@ export default function MoodPage() {
         <div className="fixed bottom-24 left-0 right-0 z-30 pointer-events-none">
           <div className="max-w-[960px] mx-auto px-4">
             <div className="flex justify-end pointer-events-auto">
-              <Button
-                size="icon"
-                className="h-14 w-14 rounded-full shadow-lg"
-                onClick={() => {
-                  resetForm()
-                  setIsAddDialogOpen(true)
-                }}
-              >
+              <Button size="icon" className="h-14 w-14 rounded-full shadow-lg" onClick={() => { resetForm(); setIsAddDialogOpen(true) }}>
                 <Plus className="h-6 w-6" />
               </Button>
             </div>
@@ -521,11 +467,8 @@ export default function MoodPage() {
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Как вы себя чувствуете?</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>Как вы себя чувствуете?</DialogTitle></DialogHeader>
             <div className="space-y-4 py-4">
-              {/* Mood Selection */}
               <div className="space-y-2">
                 <Label>Настроение</Label>
                 <div className="flex justify-between">
@@ -543,89 +486,49 @@ export default function MoodPage() {
                 </div>
               </div>
 
-              {/* Energy */}
               <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Battery className="h-4 w-4" /> Энергия
-                </Label>
+                <Label className="flex items-center gap-2"><Battery className="h-4 w-4" /> Энергия</Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((e) => (
-                    <Button
-                      key={e}
-                      variant={formData.energy === e ? "default" : "outline"}
-                      onClick={() => setFormData({ ...formData, energy: e })}
-                      className="flex-1"
-                    >
-                      {e}
-                    </Button>
+                    <Button key={e} variant={formData.energy === e ? "default" : "outline"} onClick={() => setFormData({ ...formData, energy: e })} className="flex-1">{e}</Button>
                   ))}
                 </div>
               </div>
 
-              {/* Stress */}
               <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)
-                </Label>
+                <Label className="flex items-center gap-2"><Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)</Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((s) => (
-                    <Button
-                      key={s}
-                      variant={formData.stress === s ? "default" : "outline"}
-                      onClick={() => setFormData({ ...formData, stress: s })}
-                      className="flex-1"
-                    >
-                      {s}
-                    </Button>
+                    <Button key={s} variant={formData.stress === s ? "default" : "outline"} onClick={() => setFormData({ ...formData, stress: s })} className="flex-1">{s}</Button>
                   ))}
                 </div>
               </div>
 
-              {/* Activities */}
               <div className="space-y-2">
                 <Label>Активности</Label>
                 <div className="flex flex-wrap gap-2">
                   {activityOptions.map((activity) => (
-                    <Button
-                      key={activity}
-                      variant={formData.activities.includes(activity) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => toggleActivity(activity)}
-                    >
+                    <Button key={activity} variant={formData.activities.includes(activity) ? "default" : "outline"} size="sm" onClick={() => toggleActivity(activity)}>
                       {activityLabels[activity]}
                     </Button>
                   ))}
                 </div>
               </div>
 
-              {/* Notes */}
               <div className="space-y-2">
                 <Label htmlFor="notes">Заметки</Label>
-                <Input
-                  id="notes"
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="Что повлияло на настроение?"
-                />
+                <Input id="notes" value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} placeholder="Что повлияло на настроение?" />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={addMoodLog}>Сохранить</Button>
-            </DialogFooter>
+            <CreateFormActions onCancel={() => setIsAddDialogOpen(false)} onSave={addMoodLog} saveText="Сохранить" />
           </DialogContent>
         </Dialog>
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Редактировать запись</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>Редактировать запись</DialogTitle></DialogHeader>
             <div className="space-y-4 py-4">
-              {/* Mood Selection */}
               <div className="space-y-2">
                 <Label>Настроение</Label>
                 <div className="flex justify-between">
@@ -643,103 +546,50 @@ export default function MoodPage() {
                 </div>
               </div>
 
-              {/* Energy */}
               <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Battery className="h-4 w-4" /> Энергия
-                </Label>
+                <Label className="flex items-center gap-2"><Battery className="h-4 w-4" /> Энергия</Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((e) => (
-                    <Button
-                      key={e}
-                      variant={formData.energy === e ? "default" : "outline"}
-                      onClick={() => setFormData({ ...formData, energy: e })}
-                      className="flex-1"
-                    >
-                      {e}
-                    </Button>
+                    <Button key={e} variant={formData.energy === e ? "default" : "outline"} onClick={() => setFormData({ ...formData, energy: e })} className="flex-1">{e}</Button>
                   ))}
                 </div>
               </div>
 
-              {/* Stress */}
               <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)
-                </Label>
+                <Label className="flex items-center gap-2"><Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)</Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((s) => (
-                    <Button
-                      key={s}
-                      variant={formData.stress === s ? "default" : "outline"}
-                      onClick={() => setFormData({ ...formData, stress: s })}
-                      className="flex-1"
-                    >
-                      {s}
-                    </Button>
+                    <Button key={s} variant={formData.stress === s ? "default" : "outline"} onClick={() => setFormData({ ...formData, stress: s })} className="flex-1">{s}</Button>
                   ))}
                 </div>
               </div>
 
-              {/* Activities */}
               <div className="space-y-2">
                 <Label>Активности</Label>
                 <div className="flex flex-wrap gap-2">
                   {activityOptions.map((activity) => (
-                    <Button
-                      key={activity}
-                      variant={formData.activities.includes(activity) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => toggleActivity(activity)}
-                    >
+                    <Button key={activity} variant={formData.activities.includes(activity) ? "default" : "outline"} size="sm" onClick={() => toggleActivity(activity)}>
                       {activityLabels[activity]}
                     </Button>
                   ))}
                 </div>
               </div>
 
-              {/* Notes */}
               <div className="space-y-2">
                 <Label htmlFor="edit-notes">Заметки</Label>
-                <Input
-                  id="edit-notes"
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="Что повлияло на настроение?"
-                />
+                <Input id="edit-notes" value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} placeholder="Что повлияло на настроение?" />
               </div>
             </div>
-            <DialogFooter className="flex justify-between">
-              <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                  Отмена
-                </Button>
-                <Button onClick={updateMoodLog}>Сохранить</Button>
-              </div>
-            </DialogFooter>
+            <FormActions type="dialog" showDelete onDelete={() => setIsDeleteDialogOpen(true)} onCancel={() => setIsEditDialogOpen(false)} onSave={updateMoodLog} />
           </DialogContent>
         </Dialog>
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Удалить запись?</DialogTitle>
-            </DialogHeader>
-            <p className="py-4 text-muted-foreground">
-              Вы уверены, что хотите удалить запись о настроении? Это действие нельзя отменить.
-            </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button variant="destructive" onClick={deleteMoodLog}>
-                Удалить
-              </Button>
-            </DialogFooter>
+            <DialogHeader><DialogTitle>Удалить запись?</DialogTitle></DialogHeader>
+            <p className="py-4 text-muted-foreground">Вы уверены, что хотите удалить запись о настроении? Это действие нельзя отменить.</p>
+            <DeleteConfirmActions onCancel={() => setIsDeleteDialogOpen(false)} onConfirm={deleteMoodLog} />
           </DialogContent>
         </Dialog>
       </div>

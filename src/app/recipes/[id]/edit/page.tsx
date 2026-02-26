@@ -5,10 +5,9 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
+import { FormActions } from "@/components/shared/form-actions"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase, getTimestamp } from "@/lib/db"
 import {
@@ -418,14 +417,12 @@ export default function EditRecipePage() {
             </CardContent>
           </Card>
 
-          <div className="flex gap-4">
-            <Button type="button" variant="outline" onClick={() => router.back()} className="flex-1">
-              <ArrowLeft className="h-4 w-4 mr-2" />Отмена
-            </Button>
-            <Button type="submit" disabled={isSaving} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />{isSaving ? "Сохранение..." : "Сохранить"}
-            </Button>
-          </div>
+          <FormActions
+            type="page"
+            onCancel={() => router.back()}
+            onSave={handleSubmit(onSubmit)}
+            isSaving={isSaving}
+          />
         </form>
       </div>
     </AppLayout>

@@ -5,7 +5,8 @@ import { Plus, Bell, Trash2, Clock, CheckCircle2, Filter, BarChart3 } from "luci
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
@@ -389,12 +390,11 @@ export default function RemindersPage() {
               <DialogTitle>Новое напоминание</DialogTitle>
             </DialogHeader>
             <ReminderForm formData={formData} setFormData={setFormData} />
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={addReminder}>Добавить</Button>
-            </DialogFooter>
+            <CreateFormActions
+              onCancel={() => setIsAddDialogOpen(false)}
+              onSave={addReminder}
+              saveText="Добавить"
+            />
           </DialogContent>
         </Dialog>
 
@@ -405,17 +405,13 @@ export default function RemindersPage() {
               <DialogTitle>Редактировать напоминание</DialogTitle>
             </DialogHeader>
             <ReminderForm formData={formData} setFormData={setFormData} />
-            <DialogFooter className="flex justify-between">
-              <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                  Отмена
-                </Button>
-                <Button onClick={updateReminder}>Сохранить</Button>
-              </div>
-            </DialogFooter>
+            <FormActions
+              type="dialog"
+              showDelete
+              onDelete={() => setIsDeleteDialogOpen(true)}
+              onCancel={() => setIsEditDialogOpen(false)}
+              onSave={updateReminder}
+            />
           </DialogContent>
         </Dialog>
 
@@ -428,14 +424,10 @@ export default function RemindersPage() {
             <p className="py-4 text-muted-foreground">
               Вы уверены, что хотите удалить напоминание "{editingReminder?.title}"? Это действие нельзя отменить.
             </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button variant="destructive" onClick={deleteReminder}>
-                Удалить
-              </Button>
-            </DialogFooter>
+            <DeleteConfirmActions
+              onCancel={() => setIsDeleteDialogOpen(false)}
+              onConfirm={deleteReminder}
+            />
           </DialogContent>
         </Dialog>
 

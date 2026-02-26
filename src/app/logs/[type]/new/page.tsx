@@ -5,7 +5,8 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save, Bell } from "lucide-react"
+import { ArrowLeft, Bell } from "lucide-react"
+import { CreateFormActions } from "@/components/shared/form-actions"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -610,21 +611,12 @@ export default function NewLogPage() {
           )}
 
           {/* Actions */}
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              className="flex-1"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Отмена
-            </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              {isLoading ? "Сохранение..." : "Сохранить"}
-            </Button>
-          </div>
+          <CreateFormActions
+            onCancel={() => router.back()}
+            onSave={handleSubmit(onSubmit)}
+            saveText="Сохранить"
+            isSaving={isLoading}
+          />
         </form>
       </div>
     </AppLayout>

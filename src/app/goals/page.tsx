@@ -5,7 +5,8 @@ import { Plus, Target, Check, Settings, Trash2, ChevronDown } from "lucide-react
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -351,12 +352,11 @@ export default function GoalsPage() {
                 </Tabs>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button onClick={saveGoal}>Добавить</Button>
-            </DialogFooter>
+            <CreateFormActions
+              onCancel={() => setIsAddDialogOpen(false)}
+              onSave={saveGoal}
+              saveText="Добавить"
+            />
           </DialogContent>
         </Dialog>
 
@@ -452,17 +452,13 @@ export default function GoalsPage() {
                 </Tabs>
               </div>
             </div>
-            <DialogFooter className="flex justify-between">
-              <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                  Отмена
-                </Button>
-                <Button onClick={saveGoal}>Сохранить</Button>
-              </div>
-            </DialogFooter>
+            <FormActions
+              type="dialog"
+              showDelete
+              onDelete={() => setIsDeleteDialogOpen(true)}
+              onCancel={() => setIsEditDialogOpen(false)}
+              onSave={saveGoal}
+            />
           </DialogContent>
         </Dialog>
 
@@ -475,14 +471,10 @@ export default function GoalsPage() {
             <p className="py-4 text-muted-foreground">
               Вы уверены, что хотите удалить цель "{editingGoal?.name}"? Это действие нельзя отменить.
             </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                Отмена
-              </Button>
-              <Button variant="destructive" onClick={deleteGoal}>
-                Удалить
-              </Button>
-            </DialogFooter>
+            <DeleteConfirmActions
+              onCancel={() => setIsDeleteDialogOpen(false)}
+              onConfirm={deleteGoal}
+            />
           </DialogContent>
         </Dialog>
       </div>

@@ -5,10 +5,9 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { CreateFormActions } from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -398,21 +397,11 @@ export default function NewItemPage() {
           </Card>
 
           {/* Actions */}
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              className="flex-1"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Отмена
-            </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              {isLoading ? "Сохранение..." : "Сохранить"}
-            </Button>
-          </div>
+          <CreateFormActions
+            onCancel={() => router.back()}
+            onSave={handleSubmit(onSubmit)}
+            isSaving={isLoading}
+          />
         </form>
       </div>
     </AppLayout>
