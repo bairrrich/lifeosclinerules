@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, X, Utensils, Dumbbell, Wallet, Droplets, Moon, Smile, BookOpen, ChefHat } from "lucide-react"
+import { Plus, X, Utensils, Dumbbell, Wallet, Droplets, Moon, Smile, BookOpen, ChefHat, Ruler, Target, Bell, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface FabAction {
@@ -19,6 +19,10 @@ const actions: FabAction[] = [
   { icon: <Droplets className="h-5 w-5" />, label: "Вода", href: "/water", color: "bg-blue-500" },
   { icon: <Moon className="h-5 w-5" />, label: "Сон", href: "/sleep", color: "bg-indigo-500" },
   { icon: <Smile className="h-5 w-5" />, label: "Настроение", href: "/mood", color: "bg-pink-500" },
+  { icon: <Ruler className="h-5 w-5" />, label: "Измерения", href: "/body", color: "bg-cyan-500" },
+  { icon: <Flame className="h-5 w-5" />, label: "Привычка", href: "/habits", color: "bg-rose-500" },
+  { icon: <Target className="h-5 w-5" />, label: "Цель", href: "/goals", color: "bg-emerald-500" },
+  { icon: <Bell className="h-5 w-5" />, label: "Напоминание", href: "/reminders", color: "bg-yellow-500" },
   { icon: <BookOpen className="h-5 w-5" />, label: "Книга", href: "/books/new", color: "bg-amber-500" },
   { icon: <ChefHat className="h-5 w-5" />, label: "Рецепт", href: "/recipes/new", color: "bg-red-500" },
 ]

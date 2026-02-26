@@ -385,24 +385,6 @@ export default function BodyPage() {
           )}
         </div>
 
-        {/* FAB */}
-        <div className="fixed bottom-24 left-0 right-0 z-30 pointer-events-none">
-          <div className="max-w-[960px] mx-auto px-4">
-            <div className="flex justify-end pointer-events-auto">
-              <Button
-                size="icon"
-                className="h-14 w-14 rounded-full shadow-lg"
-                onClick={() => {
-                  resetForm()
-                  setIsAddDialogOpen(true)
-                }}
-              >
-                <Plus className="h-6 w-6" />
-              </Button>
-            </div>
-          </div>
-        </div>
-
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogContent>
