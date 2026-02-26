@@ -686,6 +686,7 @@ export interface Habit extends BaseEntity {
   name: string
   icon?: string
   color?: string
+  habit_type: 'positive' | 'negative' // Позитивная (делать) или негативная (не делать)
   frequency: 'daily' | 'weekly' | 'custom'
   custom_days?: number[] // 0-6 для дней недели
   reminder_time?: string // "08:00"

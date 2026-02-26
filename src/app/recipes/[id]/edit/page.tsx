@@ -5,9 +5,11 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { Calculator } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { FormActions } from "@/components/shared/form-actions"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase, getTimestamp } from "@/lib/db"
 import {
@@ -59,6 +61,29 @@ export default function EditRecipePage() {
   const [foodMetadata, setFoodMetadata] = useState<FoodRecipeMetadata>({})
   const [drinkMetadata, setDrinkMetadata] = useState<DrinkRecipeMetadata>({ is_carbonated: false })
   const [cocktailMetadata, setCocktailMetadata] = useState<CocktailRecipeMetadata>({ is_alcoholic: true })
+
+  // Автоматический расчёт КБЖУ из ингредиентов
+  const calculateNutrition = () => {
+    let totalCalories = 0, totalProtein = 0, totalFat = 0, totalCarbs = 0
+    for (const ing of ingredients) {
+      if (ing.calories_per_100 && ing.amount > 0) {
+        let multiplier = 1
+        const unit = ing.unit.toLowerCase()
+        if (unit === "г" || unit === "гр" || unit === "мл") multiplier = ing.amount / 100
+        else if (unit === "кг" || unit === "л") multiplier = ing.amount * 10
+        else if (unit === "ст.л.") multiplier = (ing.amount * 15) / 100
+        else if (unit === "ч.л.") multiplier = (ing.amount * 5) / 100
+        else if (unit === "стакан") multiplier = (ing.amount * 200) / 100
+        else if (unit === "шт") multiplier = ing.amount
+        else multiplier = ing.amount / 100
+        totalCalories += (ing.calories_per_100 || 0) * multiplier
+        totalProtein += (ing.protein_per_100 || 0) * multiplier
+        totalFat += (ing.fat_per_100 || 0) * multiplier
+        totalCarbs += (ing.carbs_per_100 || 0) * multiplier
+      }
+    }
+    return { calories: Math.round(totalCalories), protein: Math.round(totalProtein * 10) / 10, fat: Math.round(totalFat * 10) / 10, carbs: Math.round(totalCarbs * 10) / 10 }
+  }
 
   const {
     register,
@@ -340,51 +365,67 @@ export default function EditRecipePage() {
           {/* Nutrition */}
           <Card>
             <CardContent className="p-4 space-y-4">
-              <div className="text-sm font-medium">Пищевая ценность</div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="flex items-center justify-between">
+                <div className="text-sm font-medium">Пищевая ценность</div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const nutrition = calculateNutrition()
+                    setValue("calories", nutrition.calories || undefined)
+                    setValue("protein", nutrition.protein || undefined)
+                    setValue("fat", nutrition.fat || undefined)
+                    setValue("carbs", nutrition.carbs || undefined)
+                  }}
+                  disabled={ingredients.length === 0}
+                >
+                  <Calculator className="h-4 w-4 mr-1" />
+                  Рассчитать
+                </Button>
+              </div>
+              <div className="grid grid-cols-5 gap-3">
                 <div className="space-y-2">
                   <label className="text-xs text-muted-foreground">Ккал</label>
                   <input
                     type="number"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("calories", { valueAsNumber: true })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">Белки (г)</label>
+                  <label className="text-xs text-muted-foreground">Белки</label>
                   <input
                     type="number"
                     step="0.1"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("protein", { valueAsNumber: true })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">Жиры (г)</label>
+                  <label className="text-xs text-muted-foreground">Жиры</label>
                   <input
                     type="number"
                     step="0.1"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("fat", { valueAsNumber: true })}
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">Углеводы (г)</label>
+                  <label className="text-xs text-muted-foreground">Угл.</label>
                   <input
                     type="number"
                     step="0.1"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("carbs", { valueAsNumber: true })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">Сахар (г)</label>
+                  <label className="text-xs text-muted-foreground">Сахар</label>
                   <input
                     type="number"
                     step="0.1"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("sugar", { valueAsNumber: true })}
                   />
                 </div>

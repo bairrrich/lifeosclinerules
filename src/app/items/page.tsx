@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Pill, Bandage, Leaf, Sparkles, Package, Plus, Search, LucideIcon } from "lucide-react"
+import { Pill, Bandage, Leaf, Sparkles, Package, Search, LucideIcon } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AddDialog } from "@/components/shared/add-dialog"
 import { db, initializeDatabase } from "@/lib/db"
 import { ItemType } from "@/types"
 import type { Item } from "@/types"
@@ -27,7 +25,6 @@ export default function ItemsPage() {
   const [items, setItems] = useState<Item[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [activeType, setActiveType] = useState<ItemType | "all">("all")
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   useEffect(() => {
     async function loadData() {
@@ -200,26 +197,6 @@ export default function ItemsPage() {
             })}
           </div>
         )}
-
-        {/* FAB */}
-        <div className="fixed bottom-20 right-4 max-w-[960px] mx-auto left-0 right-0 pointer-events-none">
-          <div className="flex justify-end">
-            <Button
-              size="icon"
-              className="h-14 w-14 rounded-full shadow-lg pointer-events-auto"
-              onClick={() => setIsAddDialogOpen(true)}
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Add Dialog */}
-        <AddDialog
-          open={isAddDialogOpen}
-          onOpenChange={setIsAddDialogOpen}
-          category="items"
-        />
       </div>
     </AppLayout>
   )

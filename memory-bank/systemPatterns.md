@@ -20,12 +20,20 @@ src/
 ├── components/
 │   ├── layout/            # Layout компоненты
 │   ├── shared/            # Общие компоненты
+│   │   ├── fab.tsx        # FAB кнопка
+│   │   ├── virtual-list.tsx # Виртуализированный список
+│   │   └── lazy-load.tsx  # Lazy loading компонент
+│   ├── finance/           # Финансовые компоненты
+│   │   └── budget-manager.tsx
 │   └── ui/                # shadcn/ui компоненты
 ├── lib/
 │   ├── utils.ts           # Утилиты
 │   └── db/                # Dexie database
 ├── stores/                # Zustand stores
 ├── hooks/                 # React hooks
+│   ├── use-units.ts       # Единицы измерения
+│   ├── use-notifications.ts # Уведомления
+│   └── use-cached-data.ts # Кэширование данных
 └── types/                 # TypeScript типы
 ```
 
@@ -75,6 +83,26 @@ interface BaseContent extends BaseEntity, Taggable { ... }
 /items/[type]/[id] → /items/vitamin/uuid
 ```
 
+### 4. Оптимизация производительности
+
+**Проблема**: Большие списки и тяжёлые компоненты замедляют работу
+
+**Решение**: Три уровня оптимизации
+
+```typescript
+// 1. Виртуализация списков
+import { VirtualList } from "@/components/shared/virtual-list"
+<VirtualList items={logs} renderItem={(log) => <LogCard log={log} />} />
+
+// 2. Кэширование данных
+import { useCachedData } from "@/hooks/use-cached-data"
+const { data } = useCachedData("logs", () => db.logs.toArray())
+
+// 3. Lazy loading
+import { LazyLoad } from "@/components/shared/lazy-load"
+<LazyLoad><HeavyChart /></LazyLoad>
+```
+
 ## Паттерны проектирования
 
 ### Repository Pattern (Database Layer)
@@ -113,6 +141,19 @@ export const useSettingsStore = create<SettingsState>()(
 </Card>
 ```
 
+### Cache Pattern
+
+```typescript
+// Кэширование с TTL
+const cache = new Map<string, { data: unknown; timestamp: number }>()
+const DEFAULT_TTL = 5 * 60 * 1000 // 5 минут
+
+// Автоматическая инвалидиция по истечении TTL
+if (Date.now() - cached.timestamp >= ttl) {
+  cache.delete(key)
+}
+```
+
 ## Отношения компонентов
 
 ### Layout иерархия
@@ -124,6 +165,7 @@ AppLayout
 │   └── Menu
 ├── Main Content
 │   └── Page Component
+├── FAB (плавающая кнопка)
 └── BottomNav
     ├── Dashboard
     ├── Logs
@@ -132,19 +174,21 @@ AppLayout
     └── Settings
 ```
 
-### Форма создания/редактирования
+### FAB компонент
 
 ```
-AddDialog
-├── DialogTrigger (Button +)
-├── DialogContent
-│   ├── DialogHeader
-│   │   └── DialogTitle
-│   ├── Form
-│   │   ├── FormField(s)
-│   │   └── Submit Button
-│   └── DialogFooter
-└── DialogClose
+FAB
+├── Backdrop (when open)
+├── Action Grid (when open)
+│   ├── Еда → /logs/food/new
+│   ├── Тренировка → /logs/workout/new
+│   ├── Финансы → /logs/finance/new
+│   ├── Вода → /water
+│   ├── Сон → /sleep
+│   ├── Настроение → /mood
+│   ├── Книга → /books/new
+│   └── Рецепт → /recipes/new
+└── Main Button (+ / ×)
 ```
 
 ## Критические пути реализации
@@ -156,7 +200,7 @@ AddDialog
 3. Заполняется форма
 4. Валидация (Zod)
 5. Сохранение в Dexie
-6. Добавление в SyncQueue
+6. Инвалидация кэша
 7. Редирект на список
 
 ### Путь синхронизации
@@ -169,24 +213,25 @@ AddDialog
 
 ## Повторяющиеся шаблоны
 
-### Список страниц
+### Список страниц с кэшированием
 
 ```typescript
-// Паттерн страницы списка
+// Паттерн страницы списка с оптимизацией
 export default function ListPage() {
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    loadData()
-  }, [])
+  const { data, isLoading, refetch } = useCachedData("logs", fetchLogs)
 
   return (
     <AppLayout title="Title">
       {/* Search */}
       {/* Filters */}
-      {/* List */}
-      {/* FAB */}
+      {isLoading ? (
+        <Skeleton />
+      ) : data && data.length > 100 ? (
+        <VirtualList items={data} renderItem={renderItem} />
+      ) : (
+        <SimpleList items={data} />
+      )}
+      <FAB />
     </AppLayout>
   )
 }
@@ -207,12 +252,34 @@ export default function ListPage() {
 </Card>
 ```
 
+### Форма с автоподсчётом
+
+```typescript
+// Паттерн формы с вычисляемыми полями
+<Card>
+  <CardHeader>
+    <CardTitle>Расчётные данные</CardTitle>
+    <Button onClick={calculate}>Рассчитать</Button>
+  </CardHeader>
+  <CardContent>
+    <Grid>
+      <Input label="Ккал" />
+      <Input label="Белки" />
+      ...
+    </Grid>
+  </CardContent>
+</Card>
+```
+
 ## Интеграции
 
 ### Dexie ↔ React
 
 ```typescript
-// Чтение данных
+// Чтение данных с кэшированием
+const { data } = useCachedData("logs", () => db.logs.toArray())
+
+// Или напрямую для простых случаев
 useEffect(() => {
   async function loadData() {
     const data = await db.logs.toArray()
@@ -227,3 +294,15 @@ useEffect(() => {
 ```typescript
 // Автоматическое сохранение через persist middleware
 persist(store, { name: 'life-os-settings' })
+```
+
+### Virtual List ↔ Data
+
+```typescript
+// Виртуализация для больших списков
+<VirtualList
+  items={logs}
+  renderItem={(log, i) => <LogCard key={log.id} log={log} />}
+  estimateSize={72}
+  overscan={5}
+/>

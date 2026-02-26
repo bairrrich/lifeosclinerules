@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Utensils, Dumbbell, Wallet, Plus, Search, LucideIcon } from "lucide-react"
+import { Utensils, Dumbbell, Wallet, Search, LucideIcon } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AddDialog } from "@/components/shared/add-dialog"
 import { BudgetManager } from "@/components/finance"
 import { db, initializeDatabase } from "@/lib/db"
 import { LogType } from "@/types"
@@ -25,7 +23,6 @@ export default function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [activeType, setActiveType] = useState<LogType | "all">("all")
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   useEffect(() => {
     async function loadData() {
@@ -197,26 +194,6 @@ export default function LogsPage() {
             })}
           </div>
         )}
-
-        {/* FAB */}
-        <div className="fixed bottom-20 right-4 max-w-[960px] mx-auto left-0 right-0 pointer-events-none">
-          <div className="flex justify-end">
-            <Button
-              size="icon"
-              className="h-14 w-14 rounded-full shadow-lg pointer-events-auto"
-              onClick={() => setIsAddDialogOpen(true)}
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Add Dialog */}
-        <AddDialog
-          open={isAddDialogOpen}
-          onOpenChange={setIsAddDialogOpen}
-          category="logs"
-        />
       </div>
     </AppLayout>
   )

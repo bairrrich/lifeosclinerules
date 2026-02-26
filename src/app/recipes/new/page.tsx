@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save, Calculator } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -58,6 +58,52 @@ export default function NewRecipePage() {
   // Состояния формы
   const [recipeType, setRecipeType] = useState<RecipeType>(RecipeTypeEnum.FOOD)
   const [ingredients, setIngredients] = useState<IngredientItem[]>([])
+  
+  // Автоматический расчёт КБЖУ из ингредиентов
+  const calculateNutrition = () => {
+    let totalCalories = 0
+    let totalProtein = 0
+    let totalFat = 0
+    let totalCarbs = 0
+    
+    for (const ing of ingredients) {
+      if (ing.calories_per_100 && ing.amount > 0) {
+        // Определяем множитель в зависимости от единицы
+        let multiplier = 1
+        const unit = ing.unit.toLowerCase()
+        
+        if (unit === "г" || unit === "гр" || unit === "мл") {
+          multiplier = ing.amount / 100
+        } else if (unit === "кг" || unit === "л") {
+          multiplier = ing.amount * 10 // кг = 1000г, делим на 100 = 10
+        } else if (unit === "ст.л." || unit === "столовая ложка") {
+          multiplier = (ing.amount * 15) / 100 // ~15г в ст.л.
+        } else if (unit === "ч.л." || unit === "чайная ложка") {
+          multiplier = (ing.amount * 5) / 100 // ~5г в ч.л.
+        } else if (unit === "стакан") {
+          multiplier = (ing.amount * 200) / 100 // ~200г в стакане
+        } else if (unit === "шт" || unit === "штук") {
+          // Для штук берём средний вес ~100г
+          multiplier = (ing.amount * 100) / 100
+        } else {
+          // По умолчанию считаем как граммы
+          multiplier = ing.amount / 100
+        }
+        
+        totalCalories += (ing.calories_per_100 || 0) * multiplier
+        totalProtein += (ing.protein_per_100 || 0) * multiplier
+        totalFat += (ing.fat_per_100 || 0) * multiplier
+        totalCarbs += (ing.carbs_per_100 || 0) * multiplier
+      }
+    }
+    
+    return {
+      calories: Math.round(totalCalories),
+      protein: Math.round(totalProtein * 10) / 10,
+      fat: Math.round(totalFat * 10) / 10,
+      carbs: Math.round(totalCarbs * 10) / 10,
+    }
+  }
   const [steps, setSteps] = useState<{ id?: string; order: number; text: string; timer_min?: number; isNew?: boolean }[]>([])
   
   // Специфичные метаданные
@@ -294,54 +340,75 @@ export default function NewRecipePage() {
           {/* КБЖУ */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Пищевая ценность</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Пищевая ценность</CardTitle>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const nutrition = calculateNutrition()
+                    setValue("calories", nutrition.calories || undefined)
+                    setValue("protein", nutrition.protein || undefined)
+                    setValue("fat", nutrition.fat || undefined)
+                    setValue("carbs", nutrition.carbs || undefined)
+                  }}
+                  disabled={ingredients.length === 0}
+                >
+                  <Calculator className="h-4 w-4 mr-1" />
+                  Рассчитать
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-5 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="calories">Ккал</Label>
+                  <Label htmlFor="calories" className="text-xs">Ккал</Label>
                   <Input
                     id="calories"
                     type="number"
                     {...register("calories", { valueAsNumber: true })}
+                    className="h-9"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="protein">Белки (г)</Label>
+                  <Label htmlFor="protein" className="text-xs">Белки</Label>
                   <Input
                     id="protein"
                     type="number"
                     step="0.1"
                     {...register("protein", { valueAsNumber: true })}
+                    className="h-9"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="fat">Жиры (г)</Label>
+                  <Label htmlFor="fat" className="text-xs">Жиры</Label>
                   <Input
                     id="fat"
                     type="number"
                     step="0.1"
                     {...register("fat", { valueAsNumber: true })}
+                    className="h-9"
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="carbs">Углеводы (г)</Label>
+                  <Label htmlFor="carbs" className="text-xs">Угл.</Label>
                   <Input
                     id="carbs"
                     type="number"
                     step="0.1"
                     {...register("carbs", { valueAsNumber: true })}
+                    className="h-9"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sugar">Сахар (г)</Label>
+                  <Label htmlFor="sugar" className="text-xs">Сахар</Label>
                   <Input
                     id="sugar"
                     type="number"
                     step="0.1"
                     {...register("sugar", { valueAsNumber: true })}
+                    className="h-9"
                   />
                 </div>
               </div>

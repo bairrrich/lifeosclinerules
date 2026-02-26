@@ -10,6 +10,11 @@ import type { RecipeIngredientItem } from "@/types"
 export interface IngredientItem extends Omit<RecipeIngredientItem, 'id' | 'recipe_id' | 'created_at' | 'updated_at'> {
   id?: string
   isNew?: boolean
+  // Пищевая ценность на 100г/мл
+  calories_per_100?: number
+  protein_per_100?: number
+  fat_per_100?: number
+  carbs_per_100?: number
 }
 
 interface RecipeIngredientsProps {
@@ -144,6 +149,55 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                     </Button>
                   </div>
                 </div>
+                
+                {/* КБЖУ на 100г (раскрывающийся блок) */}
+                <details className="group">
+                  <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground flex items-center gap-1">
+                    <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-180" />
+                    Пищевая ценность на 100г
+                  </summary>
+                  <div className="grid grid-cols-4 gap-2 mt-2">
+                    <div>
+                      <Input
+                        type="number"
+                        placeholder="Ккал"
+                        value={ingredient.calories_per_100 || ""}
+                        onChange={(e) => updateIngredient(index, "calories_per_100", parseFloat(e.target.value) || undefined)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        type="number"
+                        placeholder="Белки"
+                        value={ingredient.protein_per_100 || ""}
+                        onChange={(e) => updateIngredient(index, "protein_per_100", parseFloat(e.target.value) || undefined)}
+                        className="h-8 text-xs"
+                        step="0.1"
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        type="number"
+                        placeholder="Жиры"
+                        value={ingredient.fat_per_100 || ""}
+                        onChange={(e) => updateIngredient(index, "fat_per_100", parseFloat(e.target.value) || undefined)}
+                        className="h-8 text-xs"
+                        step="0.1"
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        type="number"
+                        placeholder="Угл."
+                        value={ingredient.carbs_per_100 || ""}
+                        onChange={(e) => updateIngredient(index, "carbs_per_100", parseFloat(e.target.value) || undefined)}
+                        className="h-8 text-xs"
+                        step="0.1"
+                      />
+                    </div>
+                  </div>
+                </details>
                 
                 {/* Примечание (опционально) */}
                 <Input

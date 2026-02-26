@@ -22,6 +22,11 @@ const habitColors = [
   { bg: "bg-pink-500/10", text: "text-pink-500", name: "Розовый" },
 ]
 
+const habitTypes = [
+  { value: "positive", label: "Делать", description: "Привычка что-то делать", icon: "✓" },
+  { value: "negative", label: "Не делать", description: "Привычка чего-то избегать", icon: "✗" },
+]
+
 const skipReasons = [
   "Забыл",
   "Не было времени",
@@ -57,6 +62,7 @@ export default function HabitsPage() {
   const [subtasks, setSubtasks] = useState<HabitSubtask[]>([])
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
   const [skipReason, setSkipReason] = useState("")
+  const [habitType, setHabitType] = useState<"positive" | "negative">("positive")
 
   useEffect(() => {
     loadData()
@@ -86,6 +92,7 @@ export default function HabitsPage() {
     const color = habitColors[selectedColor]
     await createEntity(db.habits, {
       name: newHabitName.trim(),
+      habit_type: habitType,
       frequency: "daily",
       is_active: true,
       color: `${color.bg} ${color.text}`,
@@ -105,6 +112,7 @@ export default function HabitsPage() {
     const color = habitColors[selectedColor]
     await updateEntity(db.habits, editingHabit.id, {
       name: newHabitName.trim(),
+      habit_type: habitType,
       color: `${color.bg} ${color.text}`,
       start_date: startDate,
       end_date: endDate || undefined,
@@ -147,6 +155,7 @@ export default function HabitsPage() {
     setSubtasks([])
     setNewSubtaskTitle("")
     setSkipReason("")
+    setHabitType("positive")
   }
 
   function openEditDialog(habit: Habit) {
@@ -157,6 +166,7 @@ export default function HabitsPage() {
     setStartDate(habit.start_date || new Date().toISOString().split("T")[0])
     setEndDate(habit.end_date || "")
     setSubtasks(habit.subtasks || [])
+    setHabitType(habit.habit_type || "positive")
     setIsEditDialogOpen(true)
   }
 
@@ -337,6 +347,7 @@ export default function HabitsPage() {
               const daysUntilEnd = getDaysUntilEnd(habit)
               const completedSubtasks = habit.subtasks?.filter(st => st.completed).length || 0
               const totalSubtasks = habit.subtasks?.length || 0
+              const isNegativeHabit = habit.habit_type === "negative"
 
               return (
                 <Card key={habit.id} className={isCompleted ? "border-green-500/30" : ""}>
@@ -357,7 +368,14 @@ export default function HabitsPage() {
                         )}
                       </Button>
                       <div className="flex-1">
-                        <h3 className="font-medium">{habit.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-medium">{habit.name}</h3>
+                          {isNegativeHabit && (
+                            <span className="text-xs bg-red-500/10 text-red-500 px-2 py-0.5 rounded-full">
+                              Не делать
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
                           {streak && streak.current_streak > 0 && (
                             <>
@@ -374,7 +392,7 @@ export default function HabitsPage() {
                           )}
                           {todayLog?.skipped_reason && (
                             <span className="text-xs text-orange-500">
-                              Пропуск: {todayLog.skipped_reason}
+                              {isNegativeHabit ? "Нарушение" : "Пропуск"}: {todayLog.skipped_reason}
                             </span>
                           )}
                           {daysUntilEnd !== null && (
@@ -483,10 +501,33 @@ export default function HabitsPage() {
                 <Label htmlFor="name">Название</Label>
                 <Input
                   id="name"
-                  placeholder="Например: Утренняя зарядка"
+                  placeholder={habitType === "positive" ? "Например: Утренняя зарядка" : "Например: Не есть сладкое"}
                   value={newHabitName}
                   onChange={(e) => setNewHabitName(e.target.value)}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label>Тип привычки</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {habitTypes.map((type) => (
+                    <button
+                      key={type.value}
+                      type="button"
+                      onClick={() => setHabitType(type.value as "positive" | "negative")}
+                      className={`p-3 rounded-lg border-2 text-left transition-colors ${
+                        habitType === type.value 
+                          ? "border-primary bg-primary/5" 
+                          : "border-muted hover:border-muted-foreground/50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{type.icon}</span>
+                        <span className="font-medium">{type.label}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{type.description}</p>
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Цвет</Label>
@@ -577,6 +618,29 @@ export default function HabitsPage() {
                   value={newHabitName}
                   onChange={(e) => setNewHabitName(e.target.value)}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label>Тип привычки</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {habitTypes.map((type) => (
+                    <button
+                      key={type.value}
+                      type="button"
+                      onClick={() => setHabitType(type.value as "positive" | "negative")}
+                      className={`p-3 rounded-lg border-2 text-left transition-colors ${
+                        habitType === type.value 
+                          ? "border-primary bg-primary/5" 
+                          : "border-muted hover:border-muted-foreground/50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{type.icon}</span>
+                        <span className="font-medium">{type.label}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{type.description}</p>
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Цвет</Label>
