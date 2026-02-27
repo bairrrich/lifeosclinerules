@@ -104,16 +104,17 @@ export default function LogsPage() {
         </div>
 
         {/* Type Filters */}
-        <Tabs
-          value={activeType}
-          onValueChange={(value) => setActiveType(value as LogType | "all")}
-        >
+        <Tabs value={activeType} onValueChange={(value) => setActiveType(value as LogType | "all")}>
           <TabsList className="grid grid-cols-4 w-full h-auto">
             <TabsTrigger value="all" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
               Все
             </TabsTrigger>
             {logTypes.map((lt) => (
-              <TabsTrigger key={lt.type} value={lt.type} className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+              <TabsTrigger
+                key={lt.type}
+                value={lt.type}
+                className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+              >
                 <lt.icon className="h-4 w-4 sm:mr-1" />
                 <span className="hidden sm:inline">{lt.label}</span>
                 <span className="sm:hidden text-[10px]">{lt.label.slice(0, 4)}</span>
@@ -133,24 +134,18 @@ export default function LogsPage() {
           />
         </div>
 
-        {/* Budget Manager - показываем только для финансов */}
-        {(activeType === "all" || activeType === LogType.FINANCE) && (
-          <BudgetManager />
-        )}
+        {/* Budget Manager - показываем только на вкладке Финансы */}
+        {activeType === LogType.FINANCE && <BudgetManager />}
 
         {/* Logs List */}
         {isLoading ? (
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         ) : filteredLogs.length === 0 ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
-              {logs.length === 0
-                ? "Нет записей. Начните вести учёт!"
-                : "Ничего не найдено"}
+              {logs.length === 0 ? "Нет записей. Начните вести учёт!" : "Ничего не найдено"}
             </CardContent>
           </Card>
         ) : (
@@ -168,23 +163,26 @@ export default function LogsPage() {
                 <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
                   <Card className="hover:bg-accent transition-colors">
                     <CardContent className="p-3 flex items-center gap-3">
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || 'bg-muted'}`}>
+                      <div
+                        className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || "bg-muted"}`}
+                      >
                         <TypeIcon className="h-4 w-4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-sm truncate">{log.title}</h3>
                         <p className="text-xs text-muted-foreground">
-                          {typeLabels[log.type] || log.type} • {new Date(log.date).toLocaleDateString('ru-RU', {
-                            day: 'numeric',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit',
+                          {typeLabels[log.type] || log.type} •{" "}
+                          {new Date(log.date).toLocaleDateString("ru-RU", {
+                            day: "numeric",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
                           })}
                         </p>
                       </div>
                       {log.value !== undefined && (
                         <div className="text-sm font-medium">
-                          {log.type === 'finance' ? `${log.value.toLocaleString()} ₽` : log.value}
+                          {log.type === "finance" ? `${log.value.toLocaleString()} ₽` : log.value}
                         </div>
                       )}
                     </CardContent>
