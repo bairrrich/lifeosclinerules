@@ -6,21 +6,8 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
 import { FormActions } from "@/components/shared/form-actions"
-import { 
-  BookForm, 
-  UserBookForm, 
-  BookQuotes 
-} from "@/components/books"
-import type { 
-  Book, UserBook, Author, Genre, BookAuthor, BookQuote, BookGenre 
-} from "@/types"
-
-interface BookEditData extends Book {
-  userBook?: UserBook
-  authorsList?: Author[]
-  quotesList?: BookQuote[]
-  genresList?: Genre[]
-}
+import { BookForm, UserBookForm, BookQuotes } from "@/components/books"
+import type { Book, UserBook, Author, Genre, BookAuthor, BookQuote, BookGenre } from "@/types"
 
 export default function EditBookPage() {
   const router = useRouter()
@@ -30,18 +17,18 @@ export default function EditBookPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  
+
   // Справочники
   const [authors, setAuthors] = useState<Author[]>([])
   const [genres, setGenres] = useState<Genre[]>([])
-  
+
   // Данные
   const [bookData, setBookData] = useState<Partial<Book>>({})
   const [userBookData, setUserBookData] = useState<Partial<UserBook>>({})
   const [quotes, setQuotes] = useState<BookQuote[]>([])
   const [selectedAuthorIds, setSelectedAuthorIds] = useState<string[]>([])
   const [selectedGenreIds, setSelectedGenreIds] = useState<string[]>([])
-  
+
   // ID пользователя книги
   const [userBookId, setUserBookId] = useState<string | null>(null)
 
@@ -49,38 +36,38 @@ export default function EditBookPage() {
     async function loadData() {
       try {
         await initializeDatabase()
-        
+
         // Загружаем справочники
         const authorsData = await db.authors.toArray()
         const genresData = await db.genres.toArray()
         setAuthors(authorsData)
         setGenres(genresData)
-        
+
         // Загружаем книгу
         const book = await db.books.get(bookId)
         if (!book) {
           setIsLoading(false)
           return
         }
-        
+
         // Загружаем пользовательские данные
         const userBook = await db.userBooks.where("book_id").equals(bookId).first()
-        
+
         // Загружаем авторов
         const bookAuthors = await db.bookAuthors.where("book_id").equals(bookId).toArray()
         const authorIds = bookAuthors.sort((a, b) => a.order - b.order).map((ba) => ba.author_id)
-        
+
         // Загружаем цитаты
         let quotesList: BookQuote[] = []
         if (userBook) {
           quotesList = await db.bookQuotes.where("user_book_id").equals(userBook.id).toArray()
           setUserBookId(userBook.id)
         }
-        
+
         // Загружаем жанры
         const bookGenres = await db.bookGenres.where("book_id").equals(bookId).toArray()
         const genreIds = bookGenres.map((bg) => bg.genre_id)
-        
+
         // Устанавливаем данные
         setBookData(book)
         setUserBookData(userBook || { status: "planned" })
@@ -96,6 +83,62 @@ export default function EditBookPage() {
     loadData()
   }, [bookId])
 
+  // Обработчик изменения авторов
+  const handleAuthorsChange = async (selectedIds: string[], newAuthors?: string[]) => {
+    setSelectedAuthorIds(selectedIds)
+
+    // Если есть новые авторы, добавляем их в базу
+    if (newAuthors && newAuthors.length > 0) {
+      const now = getTimestamp()
+      const newAuthorIds: string[] = []
+
+      for (const authorName of newAuthors) {
+        const authorId = generateId()
+        const newAuthor: Author = {
+          id: authorId,
+          name: authorName,
+          created_at: now,
+          updated_at: now,
+        }
+        await db.authors.add(newAuthor)
+        newAuthorIds.push(authorId)
+      }
+
+      // Обновляем список авторов и выбранные ID
+      const updatedAuthors = await db.authors.toArray()
+      setAuthors(updatedAuthors)
+      setSelectedAuthorIds([...selectedIds, ...newAuthorIds])
+    }
+  }
+
+  // Обработчик изменения жанров
+  const handleGenresChange = async (selectedIds: string[], newGenres?: string[]) => {
+    setSelectedGenreIds(selectedIds)
+
+    // Если есть новые жанры, добавляем их в базу
+    if (newGenres && newGenres.length > 0) {
+      const now = getTimestamp()
+      const newGenreIds: string[] = []
+
+      for (const genreName of newGenres) {
+        const genreId = generateId()
+        const newGenre: Genre = {
+          id: genreId,
+          name: genreName,
+          created_at: now,
+          updated_at: now,
+        }
+        await db.genres.add(newGenre)
+        newGenreIds.push(genreId)
+      }
+
+      // Обновляем список жанров и выбранные ID
+      const updatedGenres = await db.genres.toArray()
+      setGenres(updatedGenres)
+      setSelectedGenreIds([...selectedIds, ...newGenreIds])
+    }
+  }
+
   const onSubmit = async () => {
     if (!bookData.title?.trim()) {
       alert("Введите название книги")
@@ -105,7 +148,7 @@ export default function EditBookPage() {
     setIsSaving(true)
     try {
       const now = getTimestamp()
-      
+
       // 1. Обновляем книгу
       await db.books.update(bookId, {
         title: bookData.title,
@@ -123,7 +166,7 @@ export default function EditBookPage() {
         tags: bookData.tags,
         updated_at: now,
       })
-      
+
       // 2. Обновляем авторов
       await db.bookAuthors.where("book_id").equals(bookId).delete()
       for (let i = 0; i < selectedAuthorIds.length; i++) {
@@ -138,7 +181,7 @@ export default function EditBookPage() {
         }
         await db.bookAuthors.add(bookAuthor)
       }
-      
+
       // 3. Обновляем жанры
       await db.bookGenres.where("book_id").equals(bookId).delete()
       for (const genreId of selectedGenreIds) {
@@ -151,7 +194,7 @@ export default function EditBookPage() {
         }
         await db.bookGenres.add(bookGenre)
       }
-      
+
       // 4. Обновляем пользовательские данные
       if (userBookId) {
         await db.userBooks.update(userBookId, {
@@ -168,7 +211,7 @@ export default function EditBookPage() {
           reread_count: userBookData.reread_count,
           updated_at: now,
         })
-        
+
         // Обновляем цитаты
         await db.bookQuotes.where("user_book_id").equals(userBookId).delete()
         for (const quote of quotes) {
@@ -202,7 +245,7 @@ export default function EditBookPage() {
           updated_at: now,
         }
         await db.userBooks.add(userBook)
-        
+
         // Сохраняем цитаты
         for (const quote of quotes) {
           const savedQuote: BookQuote = {
@@ -215,7 +258,7 @@ export default function EditBookPage() {
           await db.bookQuotes.add(savedQuote)
         }
       }
-      
+
       router.push(`/books/${bookId}`)
     } catch (error) {
       console.error("Failed to update book:", error)
@@ -227,20 +270,20 @@ export default function EditBookPage() {
 
   const onDelete = async () => {
     if (!confirm("Вы уверены, что хотите удалить эту книгу? Это действие нельзя отменить.")) return
-    
+
     setIsDeleting(true)
     try {
       // Удаляем все связанные данные
       await db.bookAuthors.where("book_id").equals(bookId).delete()
       await db.bookGenres.where("book_id").equals(bookId).delete()
-      
+
       if (userBookId) {
         await db.bookQuotes.where("user_book_id").equals(userBookId).delete()
         await db.userBooks.delete(userBookId)
       }
-      
+
       await db.books.delete(bookId)
-      
+
       router.push("/books")
     } catch (error) {
       console.error("Failed to delete book:", error)
@@ -254,7 +297,9 @@ export default function EditBookPage() {
     return (
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -263,28 +308,35 @@ export default function EditBookPage() {
   return (
     <AppLayout title="Редактировать книгу">
       <div className="container mx-auto px-4 py-6">
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            onSubmit()
+          }}
+          className="space-y-6"
+        >
           {/* Метаданные книги */}
           <BookForm
             data={bookData}
             authors={authors}
             genres={genres}
+            selectedAuthorIds={selectedAuthorIds}
+            selectedGenreIds={selectedGenreIds}
+            onAuthorsChange={handleAuthorsChange}
+            onGenresChange={handleGenresChange}
             onChange={setBookData}
           />
-          
+
           {/* Пользовательские данные */}
           <UserBookForm
             data={userBookData}
             pageCount={bookData.page_count}
             onChange={setUserBookData}
           />
-          
+
           {/* Цитаты */}
-          <BookQuotes
-            quotes={quotes}
-            onChange={setQuotes}
-          />
-          
+          <BookQuotes quotes={quotes} onChange={setQuotes} />
+
           {/* Действия */}
           <FormActions
             type="page"

@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button"
 import { useUnits } from "@/hooks/use-units"
 import type { RecipeIngredientItem } from "@/types"
 
-export interface IngredientItem extends Omit<RecipeIngredientItem, 'id' | 'recipe_id' | 'created_at' | 'updated_at'> {
+export interface IngredientItem extends Omit<
+  RecipeIngredientItem,
+  "id" | "recipe_id" | "created_at" | "updated_at"
+> {
   id?: string
   isNew?: boolean
   // Пищевая ценность на 100г/мл
@@ -42,7 +45,11 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
     onChange(ingredients.filter((_, i) => i !== index))
   }
 
-  const updateIngredient = (index: number, field: keyof IngredientItem, value: string | number | boolean) => {
+  const updateIngredient = (
+    index: number,
+    field: keyof IngredientItem,
+    value: string | number | boolean | undefined
+  ) => {
     const updated = [...ingredients]
     updated[index] = { ...updated[index], [field]: value }
     onChange(updated)
@@ -50,7 +57,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
 
   // Фильтруем единицы для рецептов (вес, объём, штуки)
   const recipeUnitOptions = unitOptions.filter(
-    u => u.type === "weight" || u.type === "volume" || u.type === "count"
+    (u) => u.type === "weight" || u.type === "volume" || u.type === "count"
   )
 
   return (
@@ -71,7 +78,10 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
           </div>
         ) : (
           ingredients.map((ingredient, index) => (
-            <div key={ingredient.id || index} className="flex items-start gap-2 p-2 rounded-lg bg-muted/30">
+            <div
+              key={ingredient.id || index}
+              className="flex items-start gap-2 p-2 rounded-lg bg-muted/30"
+            >
               <div className="flex-1 space-y-2">
                 <div className="grid grid-cols-12 gap-2">
                   {/* Название */}
@@ -83,19 +93,21 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                       className="h-9"
                     />
                   </div>
-                  
+
                   {/* Количество */}
                   <div className="col-span-2">
                     <Input
                       type="number"
                       placeholder="Кол-во"
                       value={ingredient.amount || ""}
-                      onChange={(e) => updateIngredient(index, "amount", parseFloat(e.target.value) || 0)}
+                      onChange={(e) =>
+                        updateIngredient(index, "amount", parseFloat(e.target.value) || 0)
+                      }
                       className="h-9"
                       step="0.1"
                     />
                   </div>
-                  
+
                   {/* Единица */}
                   <div className="col-span-3 relative">
                     <select
@@ -103,10 +115,10 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                       value={ingredient.unit}
                       onChange={(e) => updateIngredient(index, "unit", e.target.value)}
                       style={{
-                        backgroundImage: 'none',
-                        WebkitAppearance: 'none',
-                        MozAppearance: 'none',
-                        appearance: 'none',
+                        backgroundImage: "none",
+                        WebkitAppearance: "none",
+                        MozAppearance: "none",
+                        appearance: "none",
                       }}
                     >
                       {isLoading ? (
@@ -135,7 +147,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                     </select>
                     <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
                   </div>
-                  
+
                   {/* Удалить */}
                   <div className="col-span-1">
                     <Button
@@ -149,7 +161,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                     </Button>
                   </div>
                 </div>
-                
+
                 {/* КБЖУ на 100г (раскрывающийся блок) */}
                 <details className="group">
                   <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground flex items-center gap-1">
@@ -162,7 +174,13 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                         type="number"
                         placeholder="Ккал"
                         value={ingredient.calories_per_100 || ""}
-                        onChange={(e) => updateIngredient(index, "calories_per_100", parseFloat(e.target.value) || undefined)}
+                        onChange={(e) =>
+                          updateIngredient(
+                            index,
+                            "calories_per_100",
+                            parseFloat(e.target.value) || undefined
+                          )
+                        }
                         className="h-8 text-xs"
                       />
                     </div>
@@ -171,7 +189,13 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                         type="number"
                         placeholder="Белки"
                         value={ingredient.protein_per_100 || ""}
-                        onChange={(e) => updateIngredient(index, "protein_per_100", parseFloat(e.target.value) || undefined)}
+                        onChange={(e) =>
+                          updateIngredient(
+                            index,
+                            "protein_per_100",
+                            parseFloat(e.target.value) || undefined
+                          )
+                        }
                         className="h-8 text-xs"
                         step="0.1"
                       />
@@ -181,7 +205,13 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                         type="number"
                         placeholder="Жиры"
                         value={ingredient.fat_per_100 || ""}
-                        onChange={(e) => updateIngredient(index, "fat_per_100", parseFloat(e.target.value) || undefined)}
+                        onChange={(e) =>
+                          updateIngredient(
+                            index,
+                            "fat_per_100",
+                            parseFloat(e.target.value) || undefined
+                          )
+                        }
                         className="h-8 text-xs"
                         step="0.1"
                       />
@@ -191,14 +221,20 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                         type="number"
                         placeholder="Угл."
                         value={ingredient.carbs_per_100 || ""}
-                        onChange={(e) => updateIngredient(index, "carbs_per_100", parseFloat(e.target.value) || undefined)}
+                        onChange={(e) =>
+                          updateIngredient(
+                            index,
+                            "carbs_per_100",
+                            parseFloat(e.target.value) || undefined
+                          )
+                        }
                         className="h-8 text-xs"
                         step="0.1"
                       />
                     </div>
                   </div>
                 </details>
-                
+
                 {/* Примечание (опционально) */}
                 <Input
                   placeholder="Примечание (свежий, мелко нарезать...)"
@@ -206,7 +242,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                   onChange={(e) => updateIngredient(index, "note", e.target.value)}
                   className="h-8 text-xs"
                 />
-                
+
                 {/* Опционально */}
                 <label className="flex items-center gap-2 text-xs text-muted-foreground">
                   <input
