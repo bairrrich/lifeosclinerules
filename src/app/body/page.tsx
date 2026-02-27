@@ -339,7 +339,7 @@ function BodyContent() {
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center">
                         <div
-                          className="w-full bg-blue-500 rounded-t transition-all"
+                          className="w-full bg-blue-500 rounded-t transition-[height]"
                           style={{ height: `${height}%` }}
                         />
                       </div>

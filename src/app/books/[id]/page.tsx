@@ -231,7 +231,7 @@ export default function BookDetailPage() {
                     </div>
                     <div className="h-2 bg-secondary rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-primary transition-all"
+                        className="h-full bg-primary transition-[width]"
                         style={{ width: `${progressPercent}%` }}
                       />
                     </div>

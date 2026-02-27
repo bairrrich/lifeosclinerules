@@ -98,7 +98,7 @@ export function StreakWidget() {
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-[width] duration-500"
               style={{ width: `${activeHabits > 0 ? (completedToday / activeHabits) * 100 : 0}%` }}
             />
           </div>

@@ -661,7 +661,7 @@ export default function TemplatesPage() {
                         setNewTemplateType(type.key as Template["type"])
                         setNewTemplateData(getDefaultData(type.key))
                       }}
-                      className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-all ${
+                      className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-[border-color,background-color] duration-200 ${
                         newTemplateType === type.key
                           ? "border-primary bg-primary/5"
                           : "border-light-darker hover:border-primary/50"

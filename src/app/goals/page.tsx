@@ -258,7 +258,7 @@ function GoalsContent() {
                       </div>
                       <div className="h-3 rounded-full bg-muted overflow-hidden">
                         <div
-                          className={`h-full transition-all ${getProgressColor(progress)}`}
+                          className={`h-full transition-[width,background-color] duration-300 ${getProgressColor(progress)}`}
                           style={{ width: `${progress}%` }}
                         />
                       </div>

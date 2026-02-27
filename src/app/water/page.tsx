@@ -119,7 +119,7 @@ export default function WaterPage() {
                     fill="none"
                     strokeDasharray={440}
                     strokeDashoffset={440 - (440 * progress) / 100}
-                    className={`transition-all duration-500 ${
+                    className={`transition-[stroke-dashoffset] duration-500 ${
                       progress >= 100 ? "text-green-500" : "text-blue-500"
                     }`}
                     strokeLinecap="round"

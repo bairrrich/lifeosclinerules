@@ -248,7 +248,7 @@ function SleepContent() {
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center">
                         <div
-                          className={`w-full rounded-t transition-all ${
+                          className={`w-full rounded-t transition-[height] ${
                             log.quality >= 4
                               ? "bg-green-500"
                               : log.quality >= 3

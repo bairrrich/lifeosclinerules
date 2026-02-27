@@ -37,7 +37,8 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
   }
 
   // Вычисляем процент прогресса
-  const progressPercent = data?.progress_percent ?? 
+  const progressPercent =
+    data?.progress_percent ??
     (data?.progress_pages && pageCount ? Math.round((data.progress_pages / pageCount) * 100) : 0)
 
   return (
@@ -56,11 +57,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
             >
               <TabsList className="grid grid-cols-5 w-full">
                 {readingStatuses.map((s) => (
-                  <TabsTrigger
-                    key={s.value}
-                    value={s.value}
-                    className="text-xs px-1"
-                  >
+                  <TabsTrigger key={s.value} value={s.value} className="text-xs px-1">
                     {s.label}
                   </TabsTrigger>
                 ))}
@@ -104,7 +101,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-primary transition-all"
+                      className="h-full bg-primary transition-[width]"
                       style={{ width: `${progressPercent}%` }}
                     />
                   </div>

@@ -193,7 +193,7 @@ function CircularProgress({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          className={`${color} transition-all duration-500`}
+          className={`${color} transition-[stroke-dashoffset] duration-500`}
           strokeWidth={strokeWidth}
           fill="none"
           strokeDasharray={circumference}

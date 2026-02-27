@@ -136,7 +136,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             {steps.map((_, index) => (
               <button
                 key={index}
-                className={`h-2 rounded-full transition-all ${
+                className={`h-2 rounded-full transition-[width,background-color] ${
                   index === currentStep ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30"
                 }`}
                 onClick={() => setCurrentStep(index)}
