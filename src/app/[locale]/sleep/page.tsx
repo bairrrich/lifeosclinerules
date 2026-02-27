@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "@/lib/navigation"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { Moon, Plus, Settings } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
@@ -45,6 +45,7 @@ export default function SleepPage() {
 function SleepContent() {
   const searchParams = useSearchParams()
   const t = useTranslations("sleep")
+  const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [sleepLogs, setSleepLogs] = useState<SleepLog[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -260,7 +261,7 @@ function SleepContent() {
                           style={{ height: `${height}%` }}
                         />
                         <span className="text-xs text-muted-foreground mt-1">
-                          {new Date(log.date).toLocaleDateString("ru-RU", { weekday: "short" })}
+                          {new Date(log.date).toLocaleDateString(locale, { weekday: "short" })}
                         </span>
                       </div>
                     )
@@ -303,7 +304,7 @@ function SleepContent() {
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium">
-                        {new Date(log.date).toLocaleDateString("ru-RU", {
+                        {new Date(log.date).toLocaleDateString(locale, {
                           day: "numeric",
                           month: "short",
                         })}

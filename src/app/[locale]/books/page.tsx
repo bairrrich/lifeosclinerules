@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { BookOpen, Plus, Search, Star, Calendar, FileText, TrendingUp } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
@@ -11,16 +11,16 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase } from "@/lib/db"
-import { statusColors, statusLabels } from "@/components/books"
+import { statusColors } from "@/components/books"
 import type { Book, UserBook, Author, BookAuthor, ReadingStatus } from "@/types"
 
-// Фильтры статуса
-const statusFilters: { value: ReadingStatus | "all"; label: string }[] = [
-  { value: "all", label: "Все" },
-  { value: "reading", label: "Читаю" },
-  { value: "planned", label: "Запланировано" },
-  { value: "completed", label: "Прочитано" },
-  { value: "paused", label: "Пауза" },
+// Фильтры статуса с переводами будут в компоненте
+const statusFilters: { value: ReadingStatus | "all"; labelKey: string }[] = [
+  { value: "all", labelKey: "filters.all" },
+  { value: "reading", labelKey: "filters.reading" },
+  { value: "planned", labelKey: "filters.planned" },
+  { value: "completed", labelKey: "filters.completed" },
+  { value: "paused", labelKey: "filters.paused" },
 ]
 
 interface BookWithDetails extends Book {
@@ -30,6 +30,7 @@ interface BookWithDetails extends Book {
 
 export default function BooksPage() {
   const t = useTranslations("books")
+  const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [books, setBooks] = useState<BookWithDetails[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -96,7 +97,7 @@ export default function BooksPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ru-RU", {
+    return new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -243,7 +244,7 @@ export default function BooksPage() {
                                 className={`${statusColors[book.userBook.status]} whitespace-nowrap text-[10px] sm:text-xs`}
                               >
                                 <span className="hidden sm:inline">
-                                  {statusLabels[book.userBook.status]}
+                                  {t(`status.${book.userBook.status}`)}
                                 </span>
                                 <span className="sm:hidden">
                                   {book.userBook.status === "planned"

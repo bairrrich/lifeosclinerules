@@ -1,8 +1,8 @@
-export { BookForm, bookFormats, languages } from "./book-form"
-export { UserBookForm, readingStatuses, ownedFormats } from "./user-book-form"
+export { BookForm } from "./book-form"
+export { UserBookForm } from "./user-book-form"
 export { BookQuotes } from "./book-quotes"
 
-// Статусы для отображения
+// Статусы для отображения (используются в таблицах без переводов)
 export const statusColors: Record<string, string> = {
   planned: "bg-gray-500/10 text-gray-500",
   reading: "bg-blue-500/10 text-blue-500",
@@ -11,18 +11,10 @@ export const statusColors: Record<string, string> = {
   dropped: "bg-red-500/10 text-red-500",
 }
 
-export const statusLabels: Record<string, string> = {
-  planned: "Запланировано",
-  reading: "Читаю",
-  completed: "Прочитано",
-  paused: "Пауза",
-  dropped: "Брошено",
-}
-
-// Форматы книг
-export const formatLabels: Record<string, string> = {
-  paperback: "Мягкая обложка",
-  hardcover: "Твёрдая обложка",
-  ebook: "Электронная",
-  audiobook: "Аудиокнига",
+// Форматы книг (используются в таблицах без переводов)
+export const formatColors: Record<string, string> = {
+  paperback: "bg-purple-500/10 text-purple-500",
+  hardcover: "bg-blue-500/10 text-blue-500",
+  ebook: "bg-green-500/10 text-green-500",
+  audiobook: "bg-pink-500/10 text-pink-500",
 }

@@ -9,23 +9,6 @@ import { NativeSelect } from "@/components/ui/native-select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { UserBook, ReadingStatus, BookFormat } from "@/types"
 
-// Статусы чтения
-export const readingStatuses: { value: ReadingStatus; label: string; color: string }[] = [
-  { value: "planned", label: "Запланировано", color: "bg-gray-500/10 text-gray-500" },
-  { value: "reading", label: "Читаю", color: "bg-blue-500/10 text-blue-500" },
-  { value: "completed", label: "Прочитано", color: "bg-green-500/10 text-green-500" },
-  { value: "paused", label: "Пауза", color: "bg-yellow-500/10 text-yellow-500" },
-  { value: "dropped", label: "Брошено", color: "bg-red-500/10 text-red-500" },
-]
-
-// Форматы владения
-export const ownedFormats: { value: BookFormat; label: string }[] = [
-  { value: "paperback", label: "Мягкая обложка" },
-  { value: "hardcover", label: "Твёрдая обложка" },
-  { value: "ebook", label: "Электронная" },
-  { value: "audiobook", label: "Аудиокнига" },
-]
-
 interface UserBookFormProps {
   data?: Partial<UserBook>
   pageCount?: number
@@ -34,6 +17,24 @@ interface UserBookFormProps {
 
 export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
   const t = useTranslations("books")
+
+  // Статусы чтения с переводами
+  const readingStatuses: { value: ReadingStatus; label: string; color: string }[] = [
+    { value: "planned", label: t("status.planned"), color: "bg-gray-500/10 text-gray-500" },
+    { value: "reading", label: t("status.reading"), color: "bg-blue-500/10 text-blue-500" },
+    { value: "completed", label: t("status.completed"), color: "bg-green-500/10 text-green-500" },
+    { value: "paused", label: t("status.paused"), color: "bg-yellow-500/10 text-yellow-500" },
+    { value: "dropped", label: t("status.dropped"), color: "bg-red-500/10 text-red-500" },
+  ]
+
+  // Форматы владения с переводами
+  const ownedFormats: { value: BookFormat; label: string }[] = [
+    { value: "paperback", label: t("formats.paperback") },
+    { value: "hardcover", label: t("formats.hardcover") },
+    { value: "ebook", label: t("formats.ebook") },
+    { value: "audiobook", label: t("formats.audiobook") },
+  ]
+
   const updateField = <K extends keyof UserBook>(field: K, value: UserBook[K]) => {
     onChange({ ...data, [field]: value })
   }

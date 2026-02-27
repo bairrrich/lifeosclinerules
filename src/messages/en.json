@@ -381,14 +381,6 @@
       "description": "Manage catalog reference books",
       "comingSoon": "Management of categories and forms of release for the substance catalog will be available in the next version."
     },
-    "books": {
-      "title": "Books",
-      "description": "Manage reference books for books",
-      "totalBooks": "Total books",
-      "reading": "Reading",
-      "completed": "Completed",
-      "comingSoon": "Management of genres, authors and series will be available in the next version."
-    },
     "recipes": {
       "title": "Recipes",
       "description": "Manage reference books for recipes",
@@ -436,6 +428,10 @@
     "addBook": "Add Book",
     "editBook": "Edit Book",
     "noBooks": "No books yet",
+    "totalBooks": "Total books",
+    "reading": "Reading",
+    "completed": "Completed",
+    "comingSoon": "Management of genres, authors and series will be available in the next version.",
     "forms": {
       "main": "Main",
       "authorAndEdition": "Author & Edition",
@@ -456,6 +452,7 @@
       "format": "Format",
       "language": "Language",
       "pageCount": "Number of Pages",
+      "pages": "Pages",
       "isbn10": "ISBN-10",
       "isbn13": "ISBN-13",
       "goodreadsId": "Goodreads ID",
@@ -472,6 +469,17 @@
       "hardcover": "Hardcover",
       "ebook": "E-book",
       "audiobook": "Audiobook"
+    },
+    "languages": {
+      "ru": "Russian",
+      "en": "English",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish",
+      "it": "Italian",
+      "ja": "Japanese",
+      "zh": "Chinese",
+      "other": "Other"
     },
     "status": {
       "planned": "Planned",
@@ -499,7 +507,8 @@
       "addQuote": "Add Quote",
       "text": "Quote Text",
       "page": "Page",
-      "location": "Location"
+      "location": "Location",
+      "noQuotes": "No saved quotes"
     },
     "reviews": {
       "title": "Reviews",
@@ -520,14 +529,7 @@
     "categories": "Categories",
     "inCollection": "In Collection",
     "createdAt": "Added",
-    "fields": {
-      "pages": "pages"
-    },
     "noNotes": "No notes",
-    "quotes": {
-      "noQuotes": "No saved quotes",
-      "page": "p."
-    },
     "deleteDialog": {
       "title": "Delete book?",
       "description": "This action cannot be undone. \"{title}\" will be deleted permanently."

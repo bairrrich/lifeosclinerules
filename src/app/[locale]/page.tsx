@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Link } from "@/lib/navigation"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import {
   Utensils,
   Dumbbell,
@@ -258,6 +258,7 @@ export default function HomePage() {
   const t = useTranslations("home")
   const tNav = useTranslations("navigation")
   const tLog = useTranslations("logs")
+  const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [stats, setStats] = useState({
     logs: 0,
@@ -596,7 +597,7 @@ export default function HomePage() {
                           <h3 className="font-medium text-sm truncate">{log.title}</h3>
                           <p className="text-xs text-muted-foreground">
                             {tLog("types." + log.type)} •{" "}
-                            {new Date(log.date).toLocaleDateString("ru-RU", {
+                            {new Date(log.date).toLocaleDateString(locale, {
                               day: "numeric",
                               month: "short",
                               hour: "2-digit",

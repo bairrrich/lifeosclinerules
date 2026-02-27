@@ -34,7 +34,7 @@ import {
   type ReminderFormData,
 } from "@/components/reminders"
 import { toast } from "@/components/ui/toast"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import type { Reminder, ReminderType, ReminderPriority, ReminderLog } from "@/types"
 
 // Функция для тестового показа уведомления
@@ -124,6 +124,7 @@ export default function RemindersPage() {
 function RemindersContent() {
   const searchParams = useSearchParams()
   const t = useTranslations("reminders")
+  const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [reminders, setReminders] = useState<Reminder[]>([])
   const [smartFilter, setSmartFilter] = useState<SmartFilter>("all")
@@ -673,7 +674,7 @@ function RemindersContent() {
                         className="flex items-center justify-between text-sm p-2 rounded bg-muted"
                       >
                         <span>
-                          {new Date(log.triggered_at).toLocaleDateString("ru-RU", {
+                          {new Date(log.triggered_at).toLocaleDateString(locale, {
                             day: "numeric",
                             month: "short",
                             hour: "2-digit",

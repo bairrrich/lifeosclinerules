@@ -14,7 +14,7 @@ import {
   Bell,
   Plus,
 } from "@/lib/icons"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -61,6 +61,7 @@ export default function ItemDetailPage() {
   const type = params.type as ItemType
   const id = params.id as string
   const t = useTranslations("items")
+  const locale = useLocale()
 
   const [item, setItem] = useState<Item | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -131,7 +132,7 @@ export default function ItemDetailPage() {
   const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ru-RU", {
+    return new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",

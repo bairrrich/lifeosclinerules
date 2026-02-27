@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   // Отключаем статическую генерацию для динамических страниц
   output: "standalone",
+  // Отключаем предупреждение о middleware
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   // Оптимизация импортов пакетов для tree-shaking
   experimental: {
     optimizePackageImports: [

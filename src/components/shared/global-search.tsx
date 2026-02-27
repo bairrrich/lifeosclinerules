@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "@/lib/navigation"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { db, initializeDatabase } from "@/lib/db"
@@ -69,6 +69,7 @@ const quickActions = [
 export function GlobalSearch() {
   const router = useRouter()
   const t = useTranslations("globalSearch")
+  const locale = useLocale()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchResult[]>([])
@@ -164,7 +165,7 @@ export function GlobalSearch() {
           href: `/logs/${log.type}/${log.id}`,
           icon: config.icon,
           color: config.color,
-          subtitle: `${config.label} • ${new Date(log.date).toLocaleDateString("ru-RU")}`,
+          subtitle: `${config.label} • ${new Date(log.date).toLocaleDateString(locale)}`,
         })
       })
 

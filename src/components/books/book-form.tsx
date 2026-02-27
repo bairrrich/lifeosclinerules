@@ -13,26 +13,12 @@ import { Button } from "@/components/ui/button"
 import { MultiCombobox, type ComboboxOption } from "@/components/ui/multi-combobox"
 import type { Book, BookFormat, Author, Genre } from "@/types"
 
-// Форматы книг
-export const bookFormats: { value: BookFormat; label: string }[] = [
-  { value: "paperback", label: "Мягкая обложка" },
-  { value: "hardcover", label: "Твёрдая обложка" },
-  { value: "ebook", label: "Электронная книга" },
-  { value: "audiobook", label: "Аудиокнига" },
-]
+// Форматы книг (значения)
+export const bookFormatValues: BookFormat[] = ["paperback", "hardcover", "ebook", "audiobook"]
 
-// Языки
-export const languages = [
-  { value: "ru", label: "Русский" },
-  { value: "en", label: "Английский" },
-  { value: "de", label: "Немецкий" },
-  { value: "fr", label: "Французский" },
-  { value: "es", label: "Испанский" },
-  { value: "it", label: "Итальянский" },
-  { value: "ja", label: "Японский" },
-  { value: "zh", label: "Китайский" },
-  { value: "other", label: "Другой" },
-]
+// Языки (значения)
+export const languageValues = ["ru", "en", "de", "fr", "es", "it", "ja", "zh", "other"] as const
+export type BookLanguage = (typeof languageValues)[number]
 
 interface BookFormProps {
   data?: Partial<Book>
@@ -205,9 +191,9 @@ export function BookForm({
                 value={data?.format || "paperback"}
                 onChange={(e) => updateField("format", e.target.value as BookFormat)}
               >
-                {bookFormats.map((f) => (
-                  <option key={f.value} value={f.value}>
-                    {f.label}
+                {bookFormatValues.map((f) => (
+                  <option key={f} value={f}>
+                    {t(`formats.${f}`)}
                   </option>
                 ))}
               </NativeSelect>
@@ -219,9 +205,9 @@ export function BookForm({
                 value={data?.language || "ru"}
                 onChange={(e) => updateField("language", e.target.value)}
               >
-                {languages.map((l) => (
-                  <option key={l.value} value={l.value}>
-                    {l.label}
+                {languageValues.map((l) => (
+                  <option key={l} value={l}>
+                    {t(`languages.${l}`)}
                   </option>
                 ))}
               </NativeSelect>

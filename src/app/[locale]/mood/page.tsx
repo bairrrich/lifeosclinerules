@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import {
   Smile,
   Meh,
@@ -57,6 +57,7 @@ const activityOptions = [
 
 export default function MoodPage() {
   const t = useTranslations("mood")
+  const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [moodLogs, setMoodLogs] = useState<MoodLog[]>([])
   const [correlations, setCorrelations] = useState<{
@@ -323,7 +324,7 @@ export default function MoodPage() {
                   <div>
                     <div className="text-2xl font-bold">{t(`moods.${todayMood.mood}`)}</div>
                     <div className="text-sm text-muted-foreground">
-                      {new Date(todayMood.date).toLocaleDateString("ru-RU", {
+                      {new Date(todayMood.date).toLocaleDateString(locale, {
                         day: "numeric",
                         month: "long",
                       })}
@@ -363,7 +364,7 @@ export default function MoodPage() {
                 <div key={i} className="flex flex-col items-center gap-1">
                   <span className="text-2xl">{moodConfig[log.mood].emoji}</span>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(log.date).toLocaleDateString("ru-RU", { weekday: "short" })}
+                    {new Date(log.date).toLocaleDateString(locale, { weekday: "short" })}
                   </span>
                 </div>
               ))}
@@ -548,7 +549,7 @@ export default function MoodPage() {
                         )}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {new Date(log.date).toLocaleDateString("ru-RU", {
+                        {new Date(log.date).toLocaleDateString(locale, {
                           day: "numeric",
                           month: "short",
                         })}

@@ -13,10 +13,12 @@ import { BudgetManager } from "@/components/finance"
 import { db, initializeDatabase } from "@/lib/db"
 import { LogType } from "@/types"
 import type { Log } from "@/types"
+import { useLocale } from "next-intl"
 
 export default function LogsPage() {
   const t = useTranslations("logs")
   const tCommon = useTranslations("common")
+  const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [logs, setLogs] = useState<Log[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -202,7 +204,7 @@ export default function LogsPage() {
                         <h3 className="font-medium text-sm truncate">{log.title}</h3>
                         <p className="text-xs text-muted-foreground">
                           {typeLabels[log.type] || log.type} •{" "}
-                          {new Date(log.date).toLocaleDateString("ru-RU", {
+                          {new Date(log.date).toLocaleDateString(locale, {
                             day: "numeric",
                             month: "short",
                             hour: "2-digit",

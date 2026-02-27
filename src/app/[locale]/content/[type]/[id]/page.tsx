@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { db, getEntityById, deleteEntity } from "@/lib/db"
+import { useLocale } from "next-intl"
 import type {
   Content,
   ContentType,
@@ -81,6 +82,7 @@ export default function ContentDetailPage() {
   const params = useParams()
   const type = params.type as ContentType
   const id = params.id as string
+  const locale = useLocale()
 
   const [content, setContent] = useState<Content | null>(null)
   const [ingredients, setIngredients] = useState<RecipeIngredientItem[]>([])
@@ -131,7 +133,7 @@ export default function ContentDetailPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ru-RU", {
+    return new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",

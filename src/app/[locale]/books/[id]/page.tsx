@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { useRouter, useParams } from "@/lib/navigation"
 import Link from "next/link"
 import Image from "next/image"
@@ -33,7 +33,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { db, initializeDatabase } from "@/lib/db"
-import { statusColors, statusLabels, formatLabels } from "@/components/books"
+import { statusColors } from "@/components/books"
 import type { Book, UserBook, Author, BookQuote, Genre } from "@/types"
 
 interface BookDetails extends Book {
@@ -48,6 +48,7 @@ export default function BookDetailPage() {
   const params = useParams()
   const bookId = params.id as string
   const t = useTranslations("books")
+  const locale = useLocale()
 
   const [book, setBook] = useState<BookDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -131,7 +132,7 @@ export default function BookDetailPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ru-RU", {
+    return new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -215,7 +216,7 @@ export default function BookDetailPage() {
                 <div className="flex items-center gap-2 mt-2">
                   {book.userBook?.status && (
                     <Badge className={statusColors[book.userBook.status]}>
-                      {statusLabels[book.userBook.status]}
+                      {t(`status.${book.userBook.status}`)}
                     </Badge>
                   )}
                   {book.userBook?.rating && (
@@ -293,7 +294,7 @@ export default function BookDetailPage() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-muted-foreground">{t("fields.format")}: </span>
-                    <span>{formatLabels[book.format] || book.format}</span>
+                    <span>{t(`formats.${book.format}`) || book.format}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">{t("fields.language")}: </span>
@@ -355,7 +356,7 @@ export default function BookDetailPage() {
                 <CardContent className="space-y-2">
                   <div className="text-sm">
                     <span className="text-muted-foreground">{t("fields.format")}: </span>
-                    <span>{formatLabels[book.userBook.owned_format || "paperback"]}</span>
+                    <span>{t(`formats.${book.userBook.owned_format || "paperback"}`)}</span>
                   </div>
                   {book.userBook.location && (
                     <div className="flex items-center gap-2 text-sm">

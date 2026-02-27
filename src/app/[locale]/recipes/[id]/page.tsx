@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { useRouter, useParams } from "@/lib/navigation"
 import Link from "next/link"
 import {
@@ -58,6 +58,7 @@ export default function RecipeDetailPage() {
   const params = useParams()
   const id = params.id as string
   const t = useTranslations("recipes")
+  const locale = useLocale()
 
   const [recipe, setRecipe] = useState<RecipeContentExtended | null>(null)
   const [ingredients, setIngredients] = useState<RecipeIngredientItem[]>([])
@@ -108,7 +109,7 @@ export default function RecipeDetailPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ru-RU", {
+    return new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",

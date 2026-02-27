@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "@/lib/navigation"
+import { useLocale } from "next-intl"
 import {
   Bell,
   BellOff,
@@ -32,6 +33,7 @@ interface ReminderCardProps {
 
 export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: ReminderCardProps) {
   const router = useRouter()
+  const locale = useLocale()
   const [completedToday, setCompletedToday] = useState(0)
 
   // Максимальное количество выполнений = основное время + дополнительные времена
@@ -167,7 +169,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
                 {reminder.start_date && (
                   <span>
                     с{" "}
-                    {new Date(reminder.start_date).toLocaleDateString("ru-RU", {
+                    {new Date(reminder.start_date).toLocaleDateString(locale, {
                       day: "numeric",
                       month: "short",
                     })}
@@ -176,7 +178,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
                 {reminder.end_date && (
                   <span>
                     по{" "}
-                    {new Date(reminder.end_date).toLocaleDateString("ru-RU", {
+                    {new Date(reminder.end_date).toLocaleDateString(locale, {
                       day: "numeric",
                       month: "short",
                     })}

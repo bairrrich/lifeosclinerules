@@ -33,7 +33,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { db, getEntityById, deleteEntity, createEntity } from "@/lib/db"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import type {
   Log,
   LogType,
@@ -144,6 +144,7 @@ const focusLabels: Record<string, string> = {
 export default function LogDetailPage() {
   const t = useTranslations("logs")
   const tCommon = useTranslations("common")
+  const locale = useLocale()
   const router = useRouter()
   const params = useParams()
   const type = params.type as LogType
@@ -210,7 +211,7 @@ export default function LogDetailPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ru-RU", {
+    return new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",

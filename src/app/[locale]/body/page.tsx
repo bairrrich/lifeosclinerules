@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "@/lib/navigation"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { Plus, Scale, Ruler, TrendingDown, TrendingUp, Settings, Activity } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
@@ -46,6 +46,7 @@ export default function BodyPage() {
 function BodyContent() {
   const searchParams = useSearchParams()
   const t = useTranslations("body")
+  const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [measurements, setMeasurements] = useState<BodyMeasurement[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -398,7 +399,7 @@ function BodyContent() {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">
-                              {new Date(m.date).toLocaleDateString("ru-RU", {
+                              {new Date(m.date).toLocaleDateString(locale, {
                                 day: "numeric",
                                 month: "short",
                               })}
