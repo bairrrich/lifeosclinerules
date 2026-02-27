@@ -40,17 +40,63 @@ export default function SettingsPage() {
     <SettingsProvider>
       <AppLayout title="Настройки">
         <div className="container mx-auto px-4 py-6">
-          <Tabs defaultValue="general" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="general">Общие</TabsTrigger>
-              <TabsTrigger value="logs">Учёт</TabsTrigger>
-              <TabsTrigger value="items">Каталог</TabsTrigger>
-              <TabsTrigger value="books">Книги</TabsTrigger>
-              <TabsTrigger value="recipes">Рецепты</TabsTrigger>
+          <Tabs defaultValue="general" className="space-y-4" aria-label="Разделы настроек">
+            <TabsList className="grid w-full grid-cols-5" role="tablist">
+              <TabsTrigger
+                value="general"
+                role="tab"
+                aria-selected={true}
+                id="tab-general"
+                aria-controls="panel-general"
+              >
+                Общие
+              </TabsTrigger>
+              <TabsTrigger
+                value="logs"
+                role="tab"
+                aria-selected={false}
+                id="tab-logs"
+                aria-controls="panel-logs"
+              >
+                Учёт
+              </TabsTrigger>
+              <TabsTrigger
+                value="items"
+                role="tab"
+                aria-selected={false}
+                id="tab-items"
+                aria-controls="panel-items"
+              >
+                Каталог
+              </TabsTrigger>
+              <TabsTrigger
+                value="books"
+                role="tab"
+                aria-selected={false}
+                id="tab-books"
+                aria-controls="panel-books"
+              >
+                Книги
+              </TabsTrigger>
+              <TabsTrigger
+                value="recipes"
+                role="tab"
+                aria-selected={false}
+                id="tab-recipes"
+                aria-controls="panel-recipes"
+              >
+                Рецепты
+              </TabsTrigger>
             </TabsList>
 
             {/* Вкладка "Общие" */}
-            <TabsContent value="general" className="space-y-6">
+            <TabsContent
+              value="general"
+              className="space-y-6"
+              role="tabpanel"
+              id="panel-general"
+              aria-labelledby="tab-general"
+            >
               <SyncManager />
               <ThemeSwitcher />
               <DataStats />
@@ -61,7 +107,13 @@ export default function SettingsPage() {
             </TabsContent>
 
             {/* Вкладка "Учёт" */}
-            <TabsContent value="logs" className="space-y-6">
+            <TabsContent
+              value="logs"
+              className="space-y-6"
+              role="tabpanel"
+              id="panel-logs"
+              aria-labelledby="tab-logs"
+            >
               <AccountsManager />
               <RecurringTransactions />
               <CategoriesManager />
@@ -69,17 +121,35 @@ export default function SettingsPage() {
             </TabsContent>
 
             {/* Вкладка "Каталог" */}
-            <TabsContent value="items" className="space-y-6">
+            <TabsContent
+              value="items"
+              className="space-y-6"
+              role="tabpanel"
+              id="panel-items"
+              aria-labelledby="tab-items"
+            >
               <ItemsManager />
             </TabsContent>
 
             {/* Вкладка "Книги" */}
-            <TabsContent value="books" className="space-y-6">
+            <TabsContent
+              value="books"
+              className="space-y-6"
+              role="tabpanel"
+              id="panel-books"
+              aria-labelledby="tab-books"
+            >
               <BooksManager />
             </TabsContent>
 
             {/* Вкладка "Рецепты" */}
-            <TabsContent value="recipes" className="space-y-6">
+            <TabsContent
+              value="recipes"
+              className="space-y-6"
+              role="tabpanel"
+              id="panel-recipes"
+              aria-labelledby="tab-recipes"
+            >
               <RecipesManager />
             </TabsContent>
           </Tabs>

@@ -544,7 +544,7 @@ export default function MoodPage() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent>
+          <DialogContent aria-label="Форма добавления записи настроения">
             <DialogHeader>
               <DialogTitle>Как вы себя чувствуете?</DialogTitle>
             </DialogHeader>
@@ -638,7 +638,7 @@ export default function MoodPage() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
+          <DialogContent aria-label="Форма редактирования записи настроения">
             <DialogHeader>
               <DialogTitle>Редактировать запись</DialogTitle>
             </DialogHeader>
@@ -734,7 +734,7 @@ export default function MoodPage() {
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogContent>
+          <DialogContent aria-label="Подтверждение удаления записи настроения">
             <DialogHeader>
               <DialogTitle>Удалить запись?</DialogTitle>
             </DialogHeader>

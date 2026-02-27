@@ -132,13 +132,22 @@ export default function BooksPage() {
         <Tabs
           value={activeStatus}
           onValueChange={(value) => setActiveStatus(value as ReadingStatus | "all")}
+          aria-label="Фильтры статуса книг"
         >
-          <TabsList className="grid grid-cols-5 w-full h-auto">
+          <TabsList
+            className="grid grid-cols-5 w-full h-auto"
+            role="tablist"
+            aria-label="Статусы книг"
+          >
             {statusFilters.map((filter) => (
               <TabsTrigger
                 key={filter.value}
                 value={filter.value}
                 className="text-xs sm:text-sm px-1 sm:px-3 py-2"
+                role="tab"
+                aria-selected={activeStatus === filter.value}
+                aria-controls={`panel-${filter.value}`}
+                id={`tab-${filter.value}`}
               >
                 <span className="hidden sm:inline">{filter.label}</span>
                 <span className="sm:hidden text-[10px]">{filter.label.slice(0, 4)}</span>
@@ -172,7 +181,7 @@ export default function BooksPage() {
         ) : (
           <div className="flex flex-col gap-2">
             {filteredBooks.map((book) => (
-              <Link key={book.id} href={`/books/${book.id}`}>
+              <Link key={book.id} href={`/books/${book.id}`} aria-label={`Книга: ${book.title}`}>
                 <Card className="hover:bg-accent transition-colors">
                   <CardContent className="p-4">
                     <div className="flex gap-3">
@@ -185,7 +194,7 @@ export default function BooksPage() {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <BookOpen className="h-6 w-6 text-muted-foreground" />
+                          <BookOpen className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
                         )}
                       </div>
 

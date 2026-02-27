@@ -25,9 +25,7 @@ export const metadata: Metadata = {
       { url: "/icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
       { url: "/icons/icon-512.svg", sizes: "512x512", type: "image/svg+xml" },
     ],
-    apple: [
-      { url: "/icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
-    ],
+    apple: [{ url: "/icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml" }],
   },
 }
 
@@ -49,7 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={inter.className} role="main">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -58,8 +56,8 @@ export default function RootLayout({
         >
           <PWAProvider />
           {children}
-          <ToastContainer />
-          <ReminderNotification />
+          <ToastContainer role="alert" aria-live="polite" />
+          <ReminderNotification role="status" aria-live="polite" />
         </ThemeProvider>
       </body>
     </html>

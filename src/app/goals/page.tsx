@@ -272,7 +272,7 @@ function GoalsContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md" aria-label="Форма добавления новой цели">
             <DialogHeader>
               <DialogTitle>Новая цель</DialogTitle>
             </DialogHeader>
@@ -370,7 +370,7 @@ function GoalsContent() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md" aria-label="Форма редактирования цели">
             <DialogHeader>
               <DialogTitle>Редактировать цель</DialogTitle>
             </DialogHeader>
@@ -469,7 +469,7 @@ function GoalsContent() {
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogContent>
+          <DialogContent aria-label="Подтверждение удаления цели">
             <DialogHeader>
               <DialogTitle>Удалить цель?</DialogTitle>
             </DialogHeader>

@@ -105,9 +105,24 @@ export default function LogsPage() {
         </div>
 
         {/* Type Filters */}
-        <Tabs value={activeType} onValueChange={(value) => setActiveType(value as LogType | "all")}>
-          <TabsList className="grid grid-cols-4 w-full h-auto">
-            <TabsTrigger value="all" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+        <Tabs
+          value={activeType}
+          onValueChange={(value) => setActiveType(value as LogType | "all")}
+          aria-label="Фильтры типов записей"
+        >
+          <TabsList
+            className="grid grid-cols-4 w-full h-auto"
+            role="tablist"
+            aria-label="Типы записей"
+          >
+            <TabsTrigger
+              value="all"
+              className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+              role="tab"
+              aria-selected={activeType === "all"}
+              aria-controls="panel-all"
+              id="tab-all"
+            >
               Все
             </TabsTrigger>
             {logTypes.map((lt) => (
@@ -115,6 +130,10 @@ export default function LogsPage() {
                 key={lt.type}
                 value={lt.type}
                 className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+                role="tab"
+                aria-selected={activeType === lt.type}
+                aria-controls={`panel-${lt.type}`}
+                id={`tab-${lt.type}`}
               >
                 <lt.icon className="h-4 w-4 sm:mr-1" />
                 <span className="hidden sm:inline">{lt.label}</span>
@@ -161,11 +180,16 @@ export default function LogsPage() {
                 colorKey = "finance_expense"
               }
               return (
-                <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
+                <Link
+                  key={log.id}
+                  href={`/logs/${log.type}/${log.id}`}
+                  aria-label={`Запись: ${log.title}`}
+                >
                   <Card className="hover:bg-accent transition-colors">
                     <CardContent className="p-3 flex items-center gap-3">
                       <div
                         className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || "bg-muted"}`}
+                        aria-hidden="true"
                       >
                         <TypeIcon className="h-4 w-4" />
                       </div>

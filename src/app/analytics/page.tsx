@@ -429,10 +429,10 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={caloriesData}>
+                    <AreaChart data={caloriesData} aria-label="График калорий по дням" role="img">
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="date" className="text-xs" />
-                      <YAxis className="text-xs" />
+                      <XAxis dataKey="date" className="text-xs" aria-label="Дата" />
+                      <YAxis className="text-xs" aria-label="Калории" />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "hsl(var(--card))",
@@ -462,10 +462,10 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={macrosData}>
+                    <LineChart data={macrosData} aria-label="График БЖУ по дням" role="img">
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="date" className="text-xs" />
-                      <YAxis className="text-xs" />
+                      <XAxis dataKey="date" className="text-xs" aria-label="Дата" />
+                      <YAxis className="text-xs" aria-label="Значение" />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "hsl(var(--card))",
@@ -511,7 +511,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
+                    <PieChart aria-label="Распределение по категориям" role="img">
                       <Pie
                         data={categoryData}
                         cx="50%"
@@ -520,11 +520,13 @@ export default function AnalyticsPage() {
                         outerRadius={80}
                         paddingAngle={5}
                         dataKey="value"
+                        nameKey="name"
                       >
                         {categoryData.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
                             fill={PIE_COLORS[index % PIE_COLORS.length]}
+                            aria-label={`${entry.name}: ${entry.value}`}
                           />
                         ))}
                       </Pie>
@@ -563,10 +565,14 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={workoutData}>
+                    <BarChart
+                      data={workoutData}
+                      aria-label="График длительности тренировок"
+                      role="img"
+                    >
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="date" className="text-xs" />
-                      <YAxis className="text-xs" />
+                      <XAxis dataKey="date" className="text-xs" aria-label="Дата" />
+                      <YAxis className="text-xs" aria-label="Длительность (мин)" />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "hsl(var(--card))",
@@ -598,10 +604,14 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={workoutData}>
+                    <BarChart
+                      data={workoutData}
+                      aria-label="График количества тренировок"
+                      role="img"
+                    >
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="date" className="text-xs" />
-                      <YAxis className="text-xs" />
+                      <XAxis dataKey="date" className="text-xs" aria-label="Дата" />
+                      <YAxis className="text-xs" aria-label="Количество" />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "hsl(var(--card))",
@@ -631,10 +641,10 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={financeData}>
+                    <AreaChart data={financeData} aria-label="График доходов и расходов" role="img">
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="date" className="text-xs" />
-                      <YAxis className="text-xs" />
+                      <XAxis dataKey="date" className="text-xs" aria-label="Дата" />
+                      <YAxis className="text-xs" aria-label="Сумма (₽)" />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "hsl(var(--card))",

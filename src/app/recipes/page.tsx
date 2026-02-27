@@ -143,13 +143,22 @@ export default function RecipesPage() {
         <Tabs
           value={activeType}
           onValueChange={(value) => setActiveType(value as RecipeType | "all")}
+          aria-label="Фильтры типов рецептов"
         >
-          <TabsList className="grid grid-cols-4 w-full h-auto">
+          <TabsList
+            className="grid grid-cols-4 w-full h-auto"
+            role="tablist"
+            aria-label="Типы рецептов"
+          >
             {recipeTypeFilters.map((filter) => (
               <TabsTrigger
                 key={filter.value}
                 value={filter.value}
                 className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+                role="tab"
+                aria-selected={activeType === filter.value}
+                aria-controls={`panel-${filter.value}`}
+                id={`tab-${filter.value}`}
               >
                 <filter.icon className="h-4 w-4 sm:mr-1" />
                 <span className="hidden sm:inline">{filter.label}</span>
@@ -188,13 +197,18 @@ export default function RecipesPage() {
               const typeColor = getTypeColor(recipe.recipe_type || "food")
 
               return (
-                <Link key={recipe.id} href={`/recipes/${recipe.id}`}>
+                <Link
+                  key={recipe.id}
+                  href={`/recipes/${recipe.id}`}
+                  aria-label={`Рецепт: ${recipe.title}`}
+                >
                   <Card className="hover:bg-accent transition-colors">
                     <CardContent className="p-4">
                       <div className="flex gap-3">
                         {/* Иконка типа */}
                         <div
                           className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${typeColor}`}
+                          aria-hidden="true"
                         >
                           <TypeIcon className="h-6 w-6" />
                         </div>

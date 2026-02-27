@@ -402,6 +402,7 @@ export default function HomePage() {
                   icon={Utensils}
                   color="stroke-orange-500"
                   unit="ккал"
+                  aria-label="Прогресс цели по калориям"
                 />
                 <GoalProgressWidget
                   goal={goals.water.target}
@@ -409,6 +410,7 @@ export default function HomePage() {
                   icon={Droplet}
                   color="stroke-blue-500"
                   unit="мл"
+                  aria-label="Прогресс цели по воде"
                 />
                 <GoalProgressWidget
                   goal={goals.workout.target}
@@ -416,6 +418,7 @@ export default function HomePage() {
                   icon={Dumbbell}
                   color="stroke-purple-500"
                   unit="мин"
+                  aria-label="Прогресс цели по тренировкам"
                 />
               </>
             )}
@@ -477,9 +480,11 @@ export default function HomePage() {
                 key={action.href}
                 href={action.href}
                 className="flex flex-col items-center gap-2"
+                aria-label={`Быстрое действие: ${action.label}`}
               >
                 <div
                   className={`flex h-12 w-12 items-center justify-center rounded-2xl ${action.bgColor}`}
+                  aria-hidden="true"
                 >
                   <action.icon className={`h-5 w-5 ${action.color}`} />
                 </div>
@@ -529,9 +534,11 @@ export default function HomePage() {
                 key={tracker.href}
                 href={tracker.href}
                 className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted hover:bg-accent transition-colors"
+                aria-label={`Трекер: ${tracker.label}`}
               >
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-xl ${tracker.bgColor}`}
+                  aria-hidden="true"
                 >
                   <tracker.icon className={`h-5 w-5 ${tracker.color}`} />
                 </div>
@@ -564,11 +571,16 @@ export default function HomePage() {
                   colorKey = "finance_expense"
                 }
                 return (
-                  <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
+                  <Link
+                    key={log.id}
+                    href={`/logs/${log.type}/${log.id}`}
+                    aria-label={`Запись: ${log.title}`}
+                  >
                     <Card className="hover:bg-accent transition-colors">
                       <CardContent className="p-3 flex items-center gap-3">
                         <div
                           className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || "bg-muted"}`}
+                          aria-hidden="true"
                         >
                           <TypeIcon className="h-4 w-4" />
                         </div>
