@@ -25,6 +25,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { StatCardSkeleton, ListSkeleton } from "@/components/ui/skeleton"
 import { Progress } from "@/components/ui/progress"
 import { StreakWidget } from "@/components/shared/streak-widget"
+import { Onboarding } from "@/components/shared/onboarding"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Log, Goal, WaterLog, HabitLog } from "@/types"
 
@@ -155,15 +156,15 @@ const getTypeIcon = (type: string) => {
 }
 
 // Круговой прогресс-бар
-function CircularProgress({ 
-  value, 
-  max, 
-  size = 80, 
+function CircularProgress({
+  value,
+  max,
+  size = 80,
   strokeWidth = 6,
   color = "stroke-primary",
   bgColor = "stroke-muted",
-  children 
-}: { 
+  children,
+}: {
   value: number
   max: number
   size?: number
@@ -176,7 +177,7 @@ function CircularProgress({
   const circumference = radius * 2 * Math.PI
   const progress = max > 0 ? Math.min(value / max, 1) : 0
   const offset = circumference - progress * circumference
-  
+
   return (
     <div className="relative inline-flex items-center justify-center">
       <svg width={size} height={size} className="-rotate-90">
@@ -201,22 +202,20 @@ function CircularProgress({
         />
       </svg>
       {children && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          {children}
-        </div>
+        <div className="absolute inset-0 flex items-center justify-center">{children}</div>
       )}
     </div>
   )
 }
 
 // Виджет прогресса цели
-function GoalProgressWidget({ 
-  goal, 
-  current, 
-  icon: Icon, 
-  color, 
-  unit 
-}: { 
+function GoalProgressWidget({
+  goal,
+  current,
+  icon: Icon,
+  color,
+  unit,
+}: {
   goal: number
   current: number
   icon: React.ElementType
@@ -225,24 +224,28 @@ function GoalProgressWidget({
 }) {
   const percentage = goal > 0 ? Math.round((current / goal) * 100) : 0
   const isComplete = current >= goal
-  
+
   return (
     <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted/50">
-      <CircularProgress 
-        value={current} 
-        max={goal} 
-        size={70} 
+      <CircularProgress
+        value={current}
+        max={goal}
+        size={70}
         strokeWidth={5}
         color={isComplete ? "stroke-green-500" : color}
       >
-        <Icon className={`h-5 w-5 ${isComplete ? "text-green-500" : color.replace('stroke-', 'text-')}`} />
+        <Icon
+          className={`h-5 w-5 ${isComplete ? "text-green-500" : color.replace("stroke-", "text-")}`}
+        />
       </CircularProgress>
       <div className="text-center">
         <div className="text-sm font-semibold">
           {current.toLocaleString()} / {goal.toLocaleString()}
         </div>
         <div className="text-xs text-muted-foreground">{unit}</div>
-        <div className={`text-xs font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}>
+        <div
+          className={`text-xs font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}
+        >
           {percentage}%
         </div>
       </div>
@@ -263,7 +266,7 @@ export default function HomePage() {
     todayExpenses: 0,
   })
   const [recentLogs, setRecentLogs] = useState<Log[]>([])
-  
+
   // Цели на сегодня
   const [goals, setGoals] = useState<{
     calories: { target: number; current: number }
@@ -281,11 +284,21 @@ export default function HomePage() {
     async function loadData() {
       try {
         await initializeDatabase()
-        
+
         const today = new Date().toISOString().split("T")[0]
-        
+
         // Оптимизированные запросы с использованием индексов
-        const [logsCount, itemsCount, books, recipes, todayLogs, recentLogs, activeGoals, waterLogs, habitLogs] = await Promise.all([
+        const [
+          logsCount,
+          itemsCount,
+          books,
+          recipes,
+          todayLogs,
+          recentLogs,
+          activeGoals,
+          waterLogs,
+          habitLogs,
+        ] = await Promise.all([
           db.logs.count(),
           db.items.count(),
           db.books.count(),
@@ -301,12 +314,12 @@ export default function HomePage() {
           // Загружаем привычки за сегодня
           db.habitLogs.where("date").equals(today).toArray(),
         ])
-        
+
         // Подсчитываем статистику за сегодня
         let todayCalories = 0
         let todayWorkoutMinutes = 0
         let todayExpenses = 0
-        
+
         todayLogs.forEach((log) => {
           if (log.type === "food" && log.metadata?.calories) {
             todayCalories += log.metadata.calories
@@ -318,34 +331,34 @@ export default function HomePage() {
             todayExpenses += log.value
           }
         })
-        
+
         // Подсчитываем воду
         const todayWater = waterLogs.reduce((sum, log) => sum + (log.amount_ml || 0), 0)
-        
+
         // Получаем цели из базы или используем дефолтные
-        const caloriesGoal = activeGoals.find(g => g.type === "calories")
-        const waterGoal = activeGoals.find(g => g.type === "water")
-        const workoutGoal = activeGoals.find(g => g.type === "workout")
-        
+        const caloriesGoal = activeGoals.find((g) => g.type === "calories")
+        const waterGoal = activeGoals.find((g) => g.type === "water")
+        const workoutGoal = activeGoals.find((g) => g.type === "workout")
+
         setGoals({
-          calories: { 
-            target: caloriesGoal?.target_value || 2000, 
-            current: todayCalories 
+          calories: {
+            target: caloriesGoal?.target_value || 2000,
+            current: todayCalories,
           },
-          water: { 
-            target: waterGoal?.target_value || 2000, 
-            current: todayWater 
+          water: {
+            target: waterGoal?.target_value || 2000,
+            current: todayWater,
           },
-          workout: { 
-            target: workoutGoal?.target_value || 30, 
-            current: todayWorkoutMinutes 
+          workout: {
+            target: workoutGoal?.target_value || 30,
+            current: todayWorkoutMinutes,
           },
-          habits: { 
-            completed: habitLogs.filter(h => h.completed).length, 
-            total: habitLogs.length 
+          habits: {
+            completed: habitLogs.filter((h) => h.completed).length,
+            total: habitLogs.length,
           },
         })
-        
+
         setStats({
           logs: logsCount,
           items: itemsCount,
@@ -363,12 +376,13 @@ export default function HomePage() {
         setIsLoading(false)
       }
     }
-    
+
     loadData()
   }, [])
 
   return (
     <AppLayout title="Life OS">
+      <Onboarding />
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Goals Progress Widgets */}
         <div>
@@ -516,7 +530,9 @@ export default function HomePage() {
                 href={tracker.href}
                 className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted hover:bg-accent transition-colors"
               >
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${tracker.bgColor}`}>
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl ${tracker.bgColor}`}
+                >
                   <tracker.icon className={`h-5 w-5 ${tracker.color}`} />
                 </div>
                 <span className="text-xs font-medium">{tracker.label}</span>
@@ -551,23 +567,26 @@ export default function HomePage() {
                   <Link key={log.id} href={`/logs/${log.type}/${log.id}`}>
                     <Card className="hover:bg-accent transition-colors">
                       <CardContent className="p-3 flex items-center gap-3">
-                        <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || 'bg-muted'}`}>
+                        <div
+                          className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || "bg-muted"}`}
+                        >
                           <TypeIcon className="h-4 w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-medium text-sm truncate">{log.title}</h3>
                           <p className="text-xs text-muted-foreground">
-                            {typeLabels[log.type] || log.type} • {new Date(log.date).toLocaleDateString('ru-RU', {
-                              day: 'numeric',
-                              month: 'short',
-                              hour: '2-digit',
-                              minute: '2-digit',
+                            {typeLabels[log.type] || log.type} •{" "}
+                            {new Date(log.date).toLocaleDateString("ru-RU", {
+                              day: "numeric",
+                              month: "short",
+                              hour: "2-digit",
+                              minute: "2-digit",
                             })}
                           </p>
                         </div>
                         {log.value !== undefined && (
                           <div className="text-sm font-medium">
-                            {log.type === 'finance' ? `${log.value.toLocaleString()} ₽` : log.value}
+                            {log.type === "finance" ? `${log.value.toLocaleString()} ₽` : log.value}
                           </div>
                         )}
                       </CardContent>
