@@ -474,21 +474,21 @@ export default function HomePage() {
         {/* Quick Actions */}
         <div>
           <h2 className="text-lg font-semibold mb-3">Быстрые действия</h2>
-          <div className="flex justify-center gap-3 flex-wrap">
+          <div className="flex justify-center gap-3 sm:gap-4 flex-wrap">
             {quickActions.map((action) => (
               <Link
                 key={action.href}
                 href={action.href}
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-2 min-w-[60px] active:scale-95 transition-transform"
                 aria-label={`Быстрое действие: ${action.label}`}
               >
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-2xl ${action.bgColor}`}
+                  className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl ${action.bgColor}`}
                   aria-hidden="true"
                 >
-                  <action.icon className={`h-5 w-5 ${action.color}`} />
+                  <action.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${action.color}`} />
                 </div>
-                <span className="text-xs font-medium">{action.label}</span>
+                <span className="text-xs sm:text-sm font-medium">{action.label}</span>
               </Link>
             ))}
           </div>
@@ -528,21 +528,23 @@ export default function HomePage() {
         {/* Trackers */}
         <div>
           <h2 className="text-lg font-semibold mb-3">Трекеры</h2>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {trackerLinks.map((tracker) => (
               <Link
                 key={tracker.href}
                 href={tracker.href}
-                className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted hover:bg-accent transition-colors"
+                className="flex flex-col items-center gap-2 p-2 sm:p-3 rounded-xl bg-muted hover:bg-accent active:scale-95 transition-all"
                 aria-label={`Трекер: ${tracker.label}`}
               >
                 <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl ${tracker.bgColor}`}
+                  className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl ${tracker.bgColor}`}
                   aria-hidden="true"
                 >
                   <tracker.icon className={`h-5 w-5 ${tracker.color}`} />
                 </div>
-                <span className="text-xs font-medium">{tracker.label}</span>
+                <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">
+                  {tracker.label}
+                </span>
               </Link>
             ))}
           </div>

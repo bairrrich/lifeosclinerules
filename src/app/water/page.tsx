@@ -148,31 +148,34 @@ export default function WaterPage() {
 
         {/* Quick Add */}
         <Card>
-          <CardContent className="p-4 pb-24">
+          <CardContent className="p-4">
             <div className="space-y-4">
               {/* Type Selection */}
-              <div className="flex justify-center gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {drinkTypes.map((dt) => (
                   <Button
                     key={dt.type}
                     variant={selectedType === dt.type ? "default" : "outline"}
                     size="sm"
                     onClick={() => setSelectedType(dt.type as typeof selectedType)}
-                    className="flex items-center gap-2 px-3"
+                    className="flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 h-10"
                   >
-                    <dt.icon className={`h-4 w-4 ${selectedType === dt.type ? "" : dt.color}`} />
-                    <span>{dt.label}</span>
+                    <dt.icon
+                      className={`h-4 w-4 flex-shrink-0 ${selectedType === dt.type ? "" : dt.color}`}
+                    />
+                    <span className="text-xs sm:text-sm">{dt.label}</span>
                   </Button>
                 ))}
               </div>
 
               {/* Amount Selection */}
-              <div className="flex justify-center gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                 {waterAmounts.map((amount) => (
                   <Button
                     key={amount}
                     variant={selectedAmount === amount ? "default" : "outline"}
                     onClick={() => setSelectedAmount(amount)}
+                    className="text-xs sm:text-sm h-10"
                   >
                     {amount} мл
                   </Button>

@@ -41,50 +41,20 @@ export default function SettingsPage() {
       <AppLayout title="Настройки">
         <div className="container mx-auto px-4 py-6">
           <Tabs defaultValue="general" className="space-y-4" aria-label="Разделы настроек">
-            <TabsList className="grid w-full grid-cols-5" role="tablist">
-              <TabsTrigger
-                value="general"
-                role="tab"
-                aria-selected={true}
-                id="tab-general"
-                aria-controls="panel-general"
-              >
+            <TabsList className="grid grid-cols-5 w-full">
+              <TabsTrigger value="general" className="text-xs sm:text-sm">
                 Общие
               </TabsTrigger>
-              <TabsTrigger
-                value="logs"
-                role="tab"
-                aria-selected={false}
-                id="tab-logs"
-                aria-controls="panel-logs"
-              >
+              <TabsTrigger value="logs" className="text-xs sm:text-sm">
                 Учёт
               </TabsTrigger>
-              <TabsTrigger
-                value="items"
-                role="tab"
-                aria-selected={false}
-                id="tab-items"
-                aria-controls="panel-items"
-              >
+              <TabsTrigger value="items" className="text-xs sm:text-sm">
                 Каталог
               </TabsTrigger>
-              <TabsTrigger
-                value="books"
-                role="tab"
-                aria-selected={false}
-                id="tab-books"
-                aria-controls="panel-books"
-              >
+              <TabsTrigger value="books" className="text-xs sm:text-sm">
                 Книги
               </TabsTrigger>
-              <TabsTrigger
-                value="recipes"
-                role="tab"
-                aria-selected={false}
-                id="tab-recipes"
-                aria-controls="panel-recipes"
-              >
+              <TabsTrigger value="recipes" className="text-xs sm:text-sm">
                 Рецепты
               </TabsTrigger>
             </TabsList>

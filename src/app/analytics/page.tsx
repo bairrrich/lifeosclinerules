@@ -285,10 +285,16 @@ export default function AnalyticsPage() {
         {/* Period Selector */}
         <div className="flex gap-2">
           <Tabs value={dateRange} onValueChange={(v) => setDateRange(v as "7" | "14" | "30")}>
-            <TabsList>
-              <TabsTrigger value="7">7 дней</TabsTrigger>
-              <TabsTrigger value="14">14 дней</TabsTrigger>
-              <TabsTrigger value="30">30 дней</TabsTrigger>
+            <TabsList className="h-auto">
+              <TabsTrigger value="7" className="text-xs sm:text-sm px-3 py-2">
+                7 дн.
+              </TabsTrigger>
+              <TabsTrigger value="14" className="text-xs sm:text-sm px-3 py-2">
+                14 дн.
+              </TabsTrigger>
+              <TabsTrigger value="30" className="text-xs sm:text-sm px-3 py-2">
+                30 дн.
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -404,18 +410,21 @@ export default function AnalyticsPage() {
 
         {/* Charts */}
         <Tabs defaultValue="food">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="food">
-              <Utensils className="h-4 w-4 mr-2" />
-              Питание
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="food" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+              <Utensils className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Питание</span>
+              <span className="sm:hidden">Еда</span>
             </TabsTrigger>
-            <TabsTrigger value="workout">
-              <Dumbbell className="h-4 w-4 mr-2" />
-              Тренировки
+            <TabsTrigger value="workout" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+              <Dumbbell className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Тренировки</span>
+              <span className="sm:hidden">Спорт</span>
             </TabsTrigger>
-            <TabsTrigger value="finance">
-              <Wallet className="h-4 w-4 mr-2" />
-              Финансы
+            <TabsTrigger value="finance" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+              <Wallet className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Финансы</span>
+              <span className="sm:hidden">Деньги</span>
             </TabsTrigger>
           </TabsList>
 

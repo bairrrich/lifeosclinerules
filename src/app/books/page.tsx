@@ -106,25 +106,31 @@ export default function BooksPage() {
       <div className="container mx-auto px-4 py-6 space-y-4">
         {/* Статистика */}
         <div className="grid grid-cols-5 gap-2">
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <div className="text-xs text-muted-foreground">Всего</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold">{stats.total}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">Всего</div>
           </Card>
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-blue-500">{stats.reading}</div>
-            <div className="text-xs text-muted-foreground">Читаю</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-blue-500">{stats.reading}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">Читаю</div>
           </Card>
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-green-500">{stats.completed}</div>
-            <div className="text-xs text-muted-foreground">Прочитано</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.completed}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">
+              <span className="hidden sm:inline">Прочитано</span>
+              <span className="sm:hidden">Готово</span>
+            </div>
           </Card>
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-gray-500">{stats.planned}</div>
-            <div className="text-xs text-muted-foreground">В планах</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-gray-500">{stats.planned}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">
+              <span className="hidden sm:inline">В планах</span>
+              <span className="sm:hidden">План</span>
+            </div>
           </Card>
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-yellow-500">{stats.paused}</div>
-            <div className="text-xs text-muted-foreground">Пауза</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{stats.paused}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">Пауза</div>
           </Card>
         </div>
 
@@ -201,7 +207,7 @@ export default function BooksPage() {
                       {/* Контент */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <h3 className="font-medium truncate">{book.title}</h3>
                             {book.authorsList && book.authorsList.length > 0 && (
                               <p className="text-sm text-muted-foreground truncate">
@@ -209,16 +215,33 @@ export default function BooksPage() {
                               </p>
                             )}
                           </div>
-                          <div className="flex flex-col items-end gap-1 shrink-0">
+                          <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
                             {book.userBook?.rating && (
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-1 shrink-0">
                                 <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                                 <span className="text-sm">{book.userBook.rating}</span>
                               </div>
                             )}
                             {book.userBook?.status && (
-                              <Badge className={statusColors[book.userBook.status]}>
-                                {statusLabels[book.userBook.status]}
+                              <Badge
+                                className={`${statusColors[book.userBook.status]} whitespace-nowrap text-[10px] sm:text-xs`}
+                              >
+                                <span className="hidden sm:inline">
+                                  {statusLabels[book.userBook.status]}
+                                </span>
+                                <span className="sm:hidden">
+                                  {book.userBook.status === "planned"
+                                    ? "План"
+                                    : book.userBook.status === "completed"
+                                      ? "Готово"
+                                      : book.userBook.status === "reading"
+                                        ? "Читаю"
+                                        : book.userBook.status === "paused"
+                                          ? "Пауза"
+                                          : book.userBook.status === "dropped"
+                                            ? "Брошено"
+                                            : book.userBook.status}
+                                </span>
                               </Badge>
                             )}
                           </div>

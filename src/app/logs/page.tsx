@@ -85,22 +85,22 @@ export default function LogsPage() {
     <AppLayout title="Учет">
       <div className="container mx-auto px-4 py-6 space-y-4">
         {/* Статистика */}
-        <div className="grid grid-cols-4 gap-2">
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <div className="text-xs text-muted-foreground">Всего</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold">{stats.total}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">Всего</div>
           </Card>
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-orange-500">{stats.food}</div>
-            <div className="text-xs text-muted-foreground">Питание</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-orange-500">{stats.food}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">Питание</div>
           </Card>
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-blue-500">{stats.workout}</div>
-            <div className="text-xs text-muted-foreground">Тренировки</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-blue-500">{stats.workout}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">Тренировки</div>
           </Card>
-          <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-green-500">{stats.finance}</div>
-            <div className="text-xs text-muted-foreground">Финансы</div>
+          <Card className="p-2 sm:p-3 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.finance}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">Финансы</div>
           </Card>
         </div>
 

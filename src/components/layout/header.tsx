@@ -26,8 +26,8 @@ export function Header({ title = "Life OS", showMenu = false, onMenuClick }: Hea
           </div>
 
           {/* Center section - title */}
-          <div className="flex-1 flex justify-center">
-            <h1 className="text-lg font-semibold">{title}</h1>
+          <div className="flex-1 flex justify-center px-2">
+            <h1 className="text-lg font-semibold truncate max-w-[180px] sm:max-w-none">{title}</h1>
           </div>
 
           {/* Right section - settings icon */}

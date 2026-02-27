@@ -181,18 +181,20 @@ export function FAB() {
           />
         )}
 
-        {/* Action buttons - simple grid popup */}
+        {/* Action buttons - scrollable grid popup */}
         {isOpen && (
-          <div className="absolute bottom-16 right-0 bg-card border rounded-2xl shadow-xl p-3 z-50 w-72 max-h-[70vh] overflow-y-auto">
-            <div className="grid grid-cols-3 gap-2">
+          <div className="absolute bottom-16 right-0 bg-card border rounded-2xl shadow-xl p-2 sm:p-3 z-50 w-[280px] sm:w-72 max-h-[60vh] sm:max-h-[70vh] overflow-y-auto overscroll-contain">
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
               {actions.map((action) => (
                 <button
                   key={action.label}
                   onClick={() => handleAction(action)}
-                  className="flex flex-col items-center gap-1.5 p-2 rounded-xl hover:bg-accent transition-colors"
+                  className="flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-xl hover:bg-accent transition-colors min-h-[64px] sm:min-h-[72px]"
                 >
                   <div className={`${action.color} text-white p-2 rounded-full`}>{action.icon}</div>
-                  <span className="text-xs font-medium">{action.label}</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">
+                    {action.label}
+                  </span>
                 </button>
               ))}
             </div>
