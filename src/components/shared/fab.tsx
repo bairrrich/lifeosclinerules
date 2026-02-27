@@ -17,6 +17,11 @@ import {
   Target,
   Bell,
   Flame,
+  Pill,
+  Leaf,
+  Sparkles,
+  ShoppingBag,
+  HeartPulse,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { QuickMoodDialog } from "./quick-mood-dialog"
@@ -113,6 +118,41 @@ const actions: FabAction[] = [
     color: "bg-red-500",
     action: "navigate",
   },
+  {
+    icon: <HeartPulse className="h-5 w-5" />,
+    label: "Витамины",
+    href: "/items/vitamin/new",
+    color: "bg-lime-500",
+    action: "navigate",
+  },
+  {
+    icon: <Pill className="h-5 w-5" />,
+    label: "Лекарства",
+    href: "/items/medicine/new",
+    color: "bg-teal-500",
+    action: "navigate",
+  },
+  {
+    icon: <Leaf className="h-5 w-5" />,
+    label: "Травы",
+    href: "/items/herb/new",
+    color: "bg-green-600",
+    action: "navigate",
+  },
+  {
+    icon: <Sparkles className="h-5 w-5" />,
+    label: "Косметика",
+    href: "/items/cosmetic/new",
+    color: "bg-fuchsia-500",
+    action: "navigate",
+  },
+  {
+    icon: <ShoppingBag className="h-5 w-5" />,
+    label: "Продукты",
+    href: "/items/product/new",
+    color: "bg-amber-600",
+    action: "navigate",
+  },
 ]
 
 export function FAB() {
@@ -143,7 +183,7 @@ export function FAB() {
 
         {/* Action buttons - simple grid popup */}
         {isOpen && (
-          <div className="absolute bottom-16 right-0 bg-card border rounded-2xl shadow-xl p-3 z-50 w-64">
+          <div className="absolute bottom-16 right-0 bg-card border rounded-2xl shadow-xl p-3 z-50 w-72 max-h-[70vh] overflow-y-auto">
             <div className="grid grid-cols-3 gap-2">
               {actions.map((action) => (
                 <button
