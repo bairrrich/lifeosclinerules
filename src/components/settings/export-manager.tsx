@@ -1,12 +1,15 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Download, FileJson, FileSpreadsheet, Loader2 } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
 
 export function ExportManager() {
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
   const [isExporting, setIsExporting] = useState(false)
 
   async function exportToJson() {
@@ -85,7 +88,7 @@ export function ExportManager() {
       URL.revokeObjectURL(url)
     } catch (error) {
       console.error("Export failed:", error)
-      alert("Ошибка экспорта")
+      alert(tCommon("exportError"))
     } finally {
       setIsExporting(false)
     }
@@ -98,7 +101,7 @@ export function ExportManager() {
       const logs = await db.logs.toArray()
 
       if (logs.length === 0) {
-        alert("Нет данных для экспорта")
+        alert(tCommon("noData"))
         setIsExporting(false)
         return
       }
@@ -182,10 +185,10 @@ export function ExportManager() {
         downloadCsv(measurementsCsv, "body-measurements")
       }
 
-      alert("CSV файлы экспортированы")
+      alert(tCommon("csvExported"))
     } catch (error) {
       console.error("CSV export failed:", error)
-      alert("Ошибка экспорта CSV")
+      alert(tCommon("exportError"))
     } finally {
       setIsExporting(false)
     }
@@ -208,13 +211,11 @@ export function ExportManager() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Download className="h-5 w-5" />
-          Экспорт данных
+          {tCommon("export")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Экспортируйте свои данные для резервного копирования или анализа в других приложениях.
-        </p>
+        <p className="text-sm text-muted-foreground">{t("export.description")}</p>
 
         <div className="flex gap-3">
           <Button

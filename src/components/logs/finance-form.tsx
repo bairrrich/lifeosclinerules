@@ -6,15 +6,15 @@ import { ChevronDown } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ComboboxSelect } from "./combobox-select"
+import { useTranslations } from "next-intl"
 import type { FinanceType, Account } from "@/types"
 
 // ============================================
 // Схема валидации
-// ============================================
 
 const baseLogSchema = z.object({
-  date: z.string().min(1, "Выберите дату"),
-  time: z.string().min(1, "Выберите время"),
+  date: z.string().min(1, "Date required"),
+  time: z.string().min(1, "Time required"),
   title: z.string().optional(),
   category_id: z.string().optional(),
   quantity: z.number().optional(),
@@ -117,12 +117,12 @@ export const suppliers: Record<string, string[]> = {
 
 // Типы аккаунтов с иконками
 export const accountTypeLabels: Record<string, string> = {
-  cash: "💵 Наличные",
-  card: "💳 Карта",
-  bank: "🏦 Счёт",
-  deposit: "📈 Вклад",
-  investment: "📊 Инвестиции",
-  crypto: "₿ Крипто",
+  cash: "💵 Cash",
+  card: "💳 Card",
+  bank: "🏦 Bank Account",
+  deposit: "📈 Deposit",
+  investment: "📊 Investment",
+  crypto: "₿ Crypto",
 }
 
 // ============================================
@@ -176,6 +176,31 @@ export function FinanceForm({
   financeSupplier,
   setFinanceSupplier,
 }: FinanceFormProps) {
+  const t = useTranslations("logs")
+  const tCommon = useTranslations("common")
+  const tSettings = useTranslations("settings")
+
+  // Get account type label with translation
+  const getAccountTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      cash: tSettings("accounts.accountTypes.cash"),
+      card: tSettings("accounts.accountTypes.card"),
+      bank: tSettings("accounts.accountTypes.bank"),
+      deposit: tSettings("accounts.accountTypes.deposit"),
+      investment: tSettings("accounts.accountTypes.investment"),
+      crypto: tSettings("accounts.accountTypes.crypto"),
+    }
+    const icons: Record<string, string> = {
+      cash: "💵",
+      card: "💳",
+      bank: "🏦",
+      deposit: "📈",
+      investment: "📊",
+      crypto: "₿",
+    }
+    return `${icons[type] || ""} ${labels[type] || type}`
+  }
+
   // Получаем категории для текущего типа финансов
   const currentFinanceCategories = Object.keys(financeCategories[financeType] || {})
 
@@ -200,7 +225,7 @@ export function FinanceForm({
     <>
       {/* Сумма */}
       <div className="space-y-2">
-        <Label htmlFor="value">Сумма</Label>
+        <Label htmlFor="value">{t("finance.amount")}</Label>
         <Input
           id="value"
           type="number"
@@ -215,7 +240,7 @@ export function FinanceForm({
       {/* Выбор аккаунта */}
       {accounts.length > 0 && (
         <div className="space-y-2">
-          <Label>{financeType === "transfer" ? "Откуда" : "Аккаунт"}</Label>
+          <Label>{financeType === "transfer" ? t("finance.from") : t("finance.account")}</Label>
           <div className="relative">
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
@@ -233,8 +258,7 @@ export function FinanceForm({
             >
               {accounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
-                  {accountTypeLabels[acc.type] || acc.type} • {acc.name} (
-                  {acc.balance.toLocaleString()} ₽)
+                  {getAccountTypeLabel(acc.type)} • {acc.name} ({acc.balance.toLocaleString()} ₽)
                 </option>
               ))}
             </select>
@@ -246,11 +270,11 @@ export function FinanceForm({
       {/* Сообщение если нет аккаунтов */}
       {accounts.length === 0 && (
         <div className="space-y-2">
-          <Label>Аккаунт *</Label>
+          <Label>{t("finance.account")} *</Label>
           <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-4">
-            <p className="text-sm text-destructive font-medium">Нет доступных аккаунтов</p>
+            <p className="text-sm text-destructive font-medium">{t("finance.noAccounts")}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Создайте аккаунт в настройках для ведения учёта финансов
+              {t("finance.createAccountInSettings")}
             </p>
           </div>
         </div>
@@ -259,7 +283,7 @@ export function FinanceForm({
       {/* Выбор целевого аккаунта для переводов */}
       {financeType === "transfer" && accounts.length > 1 && (
         <div className="space-y-2">
-          <Label>Куда</Label>
+          <Label>{t("finance.to")}</Label>
           <div className="relative">
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
@@ -273,14 +297,13 @@ export function FinanceForm({
               }}
             >
               <option value="" disabled>
-                Выберите аккаунт
+                {t("finance.account")}
               </option>
               {accounts
                 .filter((acc) => acc.id !== selectedAccountId)
                 .map((acc) => (
                   <option key={acc.id} value={acc.id}>
-                    {accountTypeLabels[acc.type] || acc.type} • {acc.name} (
-                    {acc.balance.toLocaleString()} ₽)
+                    {getAccountTypeLabel(acc.type)} • {acc.name} ({acc.balance.toLocaleString()} ₽)
                   </option>
                 ))}
             </select>
@@ -291,7 +314,7 @@ export function FinanceForm({
 
       {/* Зависимые выпадающие списки */}
       <ComboboxSelect
-        label="Категория"
+        label={t("finance.category")}
         options={currentFinanceCategories}
         value={financeCategory}
         onChange={(value) => {
@@ -300,44 +323,44 @@ export function FinanceForm({
           setFinanceItem("")
           setFinanceSupplier("")
         }}
-        placeholder="Выберите категорию"
+        placeholder={t("finance.category")}
       />
 
       <ComboboxSelect
-        label="Подкатегория"
+        label={t("finance.subcategory")}
         options={currentSubcategories}
         value={financeSubcategory}
         onChange={(value) => {
           setFinanceSubcategory(value)
           setFinanceItem("")
         }}
-        placeholder="Выберите подкатегорию"
+        placeholder={t("finance.subcategory")}
       />
 
       {currentItems.length > 0 ? (
         <ComboboxSelect
-          label="Товар/услуга"
+          label={t("finance.item")}
           options={currentItems}
           value={financeItem}
           onChange={(value) => {
             setFinanceItem(value)
             setValue("title", value)
           }}
-          placeholder="Выберите товар/услугу"
+          placeholder={t("finance.item")}
         />
       ) : (
         <div className="space-y-2">
-          <Label htmlFor="title">Товар/услуга</Label>
-          <Input id="title" placeholder="Введите название товара/услуги" {...register("title")} />
+          <Label htmlFor="title">{t("finance.item")}</Label>
+          <Input id="title" placeholder={t("finance.item")} {...register("title")} />
         </div>
       )}
 
       <ComboboxSelect
-        label="Поставщик"
+        label={t("finance.supplier")}
         options={currentSuppliers}
         value={financeSupplier}
         onChange={setFinanceSupplier}
-        placeholder="Выберите поставщика"
+        placeholder={t("finance.supplier")}
       />
     </>
   )

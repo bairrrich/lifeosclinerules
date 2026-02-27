@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { ChevronDown, Plus, X, Check } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -28,8 +29,8 @@ export function MultiCombobox({
   options,
   selectedIds,
   onChange,
-  placeholder = "Выберите...",
-  addPlaceholder = "Добавить новый...",
+  placeholder,
+  addPlaceholder,
   disabled = false,
 }: MultiComboboxProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -38,6 +39,7 @@ export function MultiCombobox({
   const [newItemName, setNewItemName] = useState("")
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const t = useTranslations("common")
 
   // Фильтрация опций по поиску
   const filteredOptions = options.filter((option) =>
@@ -132,7 +134,9 @@ export function MultiCombobox({
           )}
         >
           <span>
-            {selectedOptions.length > 0 ? `${selectedOptions.length} выбрано` : placeholder}
+            {selectedOptions.length > 0
+              ? `${selectedOptions.length} ${t("combobox.selected")}`
+              : placeholder || t("combobox.selectPlaceholder")}
           </span>
           <ChevronDown
             className={cn("h-4 w-4 opacity-50 transition-transform", isOpen && "rotate-180")}
@@ -150,7 +154,7 @@ export function MultiCombobox({
                   setSearchQuery(e.target.value)
                   setShowAddForm(false)
                 }}
-                placeholder="Поиск..."
+                placeholder={t("combobox.searchPlaceholder")}
                 className="h-8"
               />
             </div>
@@ -182,7 +186,9 @@ export function MultiCombobox({
                   </button>
                 ))
               ) : (
-                <div className="px-3 py-2 text-sm text-muted-foreground">Ничего не найдено</div>
+                <div className="px-3 py-2 text-sm text-muted-foreground">
+                  {t("combobox.nothingFound")}
+                </div>
               )}
             </div>
 
@@ -202,8 +208,8 @@ export function MultiCombobox({
                 >
                   <Plus className="h-4 w-4" />
                   {searchQuery.trim() && !exactMatch
-                    ? `Добавить "${searchQuery.trim()}"`
-                    : "Добавить свой вариант"}
+                    ? t("combobox.addWithName", { name: searchQuery.trim() })
+                    : t("combobox.addCustom")}
                 </button>
               </div>
             ) : (
@@ -213,7 +219,7 @@ export function MultiCombobox({
                     ref={inputRef}
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
-                    placeholder={addPlaceholder}
+                    placeholder={addPlaceholder || t("combobox.addNewPlaceholder")}
                     className="h-8 flex-1"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {

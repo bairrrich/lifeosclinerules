@@ -2,17 +2,20 @@
 
 import { FolderOpen } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { useTranslations } from "next-intl"
 import { itemTypeLabels } from "./settings-context"
 
 export function ItemsManager() {
+  const t = useTranslations("settings")
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FolderOpen className="h-5 w-5" />
-          Каталог веществ
+          {t("items.title")}
         </CardTitle>
-        <CardDescription>Управление справочниками каталога</CardDescription>
+        <CardDescription>{t("items.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         {/* Статистика по типам */}
@@ -28,10 +31,7 @@ export function ItemsManager() {
           ))}
         </div>
 
-        <p className="text-sm text-muted-foreground">
-          Управление категориями и формами выпуска для каталога веществ будет доступно в следующей
-          версии.
-        </p>
+        <p className="text-sm text-muted-foreground">{t("items.comingSoon")}</p>
       </CardContent>
     </Card>
   )

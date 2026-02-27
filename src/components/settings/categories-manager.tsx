@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Tag, Plus, Save, Edit2, Trash2 } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -11,6 +12,8 @@ import { LogType } from "@/types"
 import type { Category } from "@/types"
 
 export function CategoriesManager() {
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
   const {
     categories,
     editingCategory,
@@ -47,7 +50,7 @@ export function CategoriesManager() {
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm("Удалить категорию?")) {
+    if (confirm(tCommon("delete"))) {
       await deleteCategoryData(id)
     }
   }
@@ -60,9 +63,9 @@ export function CategoriesManager() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Tag className="h-5 w-5" />
-          Категории
+          {t("categories.title")}
         </CardTitle>
-        <CardDescription>Категории для записей учёта</CardDescription>
+        <CardDescription>{t("categories.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Фильтр */}
@@ -72,7 +75,7 @@ export function CategoriesManager() {
             variant={categoryFilter === "all" ? "default" : "outline"}
             onClick={() => setCategoryFilter("all")}
           >
-            Все
+            {t("categories.all")}
           </Button>
           {Object.entries(logTypeLabels).map(([type, { label, icon: Icon }]) => (
             <Button
@@ -100,7 +103,7 @@ export function CategoriesManager() {
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
                           <Label htmlFor={`edit-cat-name-${category.id}`} className="sr-only">
-                            Название
+                            {t("categories.name")}
                           </Label>
                           <Input
                             id={`edit-cat-name-${category.id}`}
@@ -108,12 +111,12 @@ export function CategoriesManager() {
                             onChange={(e) =>
                               setEditingCategory({ ...editingCategory, name: e.target.value })
                             }
-                            placeholder="Название"
+                            placeholder={t("categories.name")}
                           />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor={`edit-cat-type-${category.id}`} className="sr-only">
-                            Тип
+                            {t("categories.type")}
                           </Label>
                           <select
                             id={`edit-cat-type-${category.id}`}
@@ -136,7 +139,7 @@ export function CategoriesManager() {
                       </div>
                       <div className="space-y-1">
                         <Label htmlFor={`edit-cat-icon-${category.id}`} className="sr-only">
-                          Иконка
+                          {t("categories.icon")}
                         </Label>
                         <Input
                           id={`edit-cat-icon-${category.id}`}
@@ -144,20 +147,20 @@ export function CategoriesManager() {
                           onChange={(e) =>
                             setEditingCategory({ ...editingCategory, icon: e.target.value })
                           }
-                          placeholder="Иконка (emoji)"
+                          placeholder={t("categories.icon")}
                         />
                       </div>
                       <div className="flex gap-2">
                         <Button size="sm" onClick={handleUpdate}>
                           <Save className="h-4 w-4 mr-1" />
-                          Сохранить
+                          {tCommon("save")}
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => setEditingCategory(null)}
                         >
-                          Отмена
+                          {tCommon("cancel")}
                         </Button>
                       </div>
                     </div>
@@ -175,7 +178,7 @@ export function CategoriesManager() {
                           size="icon"
                           variant="ghost"
                           onClick={() => setEditingCategory(category)}
-                          aria-label="Редактировать"
+                          aria-label={tCommon("edit")}
                         >
                           <Edit2 className="h-4 w-4" />
                         </Button>
@@ -183,7 +186,7 @@ export function CategoriesManager() {
                           size="icon"
                           variant="ghost"
                           onClick={() => handleDelete(category.id)}
-                          aria-label="Удалить"
+                          aria-label={tCommon("delete")}
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
@@ -195,27 +198,29 @@ export function CategoriesManager() {
             })}
           </div>
         ) : (
-          <div className="text-sm text-muted-foreground text-center py-4">Нет категорий</div>
+          <div className="text-sm text-muted-foreground text-center py-4">
+            {t("categories.noCategories")}
+          </div>
         )}
 
         {/* Форма добавления */}
         <div className="p-3 rounded-xl border-2 border-dashed space-y-3">
-          <div className="text-sm font-medium">Добавить категорию</div>
+          <div className="text-sm font-medium">{t("categories.addCategory")}</div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
               <Label htmlFor="new-cat-name" className="sr-only">
-                Название
+                {t("categories.name")}
               </Label>
               <Input
                 id="new-cat-name"
                 value={newCategory.name}
                 onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                placeholder="Название"
+                placeholder={t("categories.name")}
               />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new-cat-type" className="sr-only">
-                Тип
+                {t("categories.type")}
               </Label>
               <select
                 id="new-cat-type"
@@ -235,18 +240,18 @@ export function CategoriesManager() {
           </div>
           <div className="space-y-1">
             <Label htmlFor="new-cat-icon" className="sr-only">
-              Иконка
+              {t("categories.icon")}
             </Label>
             <Input
               id="new-cat-icon"
               value={newCategory.icon}
               onChange={(e) => setNewCategory({ ...newCategory, icon: e.target.value })}
-              placeholder="Иконка (emoji, опционально)"
+              placeholder={t("categories.icon")}
             />
           </div>
           <Button onClick={handleCreate} disabled={!newCategory.name.trim()}>
             <Plus className="h-4 w-4 mr-2" />
-            Добавить
+            {tCommon("add")}
           </Button>
         </div>
       </CardContent>

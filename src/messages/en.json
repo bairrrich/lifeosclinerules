@@ -1,0 +1,1913 @@
+{
+  "common": {
+    "title": "Life OS",
+    "description": "Unified application for tracking nutrition, workouts, finances and more",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "language": "Language",
+    "noData": "No data",
+    "noResults": "Nothing found",
+    "create": "Create",
+    "update": "Update",
+    "remove": "Remove",
+    "reset": "Reset",
+    "apply": "Apply",
+    "clear": "Clear",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "upload": "Upload",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "done": "Done",
+    "start": "Start",
+    "finish": "Finish",
+    "continue": "Continue",
+    "skip": "Skip",
+    "finishOnboarding": "Get Started",
+    "required": "Required",
+    "optional": "Optional",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info",
+    "new": "New Entry",
+    "main": "Main",
+    "additional": "Additional",
+    "copy": "Copy",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "grams": "grams",
+    "notFound": "Not found",
+    "books": "Books",
+    "records": "Records",
+    "catalog": "Catalog",
+    "content": "Content",
+    "recipes": "Recipes",
+    "deleteDialog": {
+      "title": "Delete entry?",
+      "description": "This action cannot be undone. Entry \"{title}\" will be deleted permanently."
+    },
+    "reminders": {
+      "title": "Reminders",
+      "time": "Reminder time",
+      "days": "Days",
+      "daysOfWeek": {
+        "su": "Su",
+        "mo": "Mo",
+        "tu": "Tu",
+        "we": "We",
+        "th": "Th",
+        "fr": "Fr",
+        "sa": "Sa"
+      },
+      "pageHint": "Reminder will appear on reminders page"
+    },
+    "email": "Email",
+    "password": "Password",
+    "login": "Log In",
+    "signup": "Sign Up",
+    "noAccountSignup": "No account? Sign up",
+    "hasAccountLogin": "Already have an account? Log in",
+    "records": "Records",
+    "catalog": "Catalog",
+    "content": "Content",
+    "logsByType": "Logs by Type",
+    "reading": "Reading",
+    "completed": "Completed",
+    "planned": "Planned",
+    "exportError": "Export Error",
+    "csvExported": "CSV files exported",
+    "databaseNotEmpty": "Database already contains data. Clear data first.",
+    "duplicatesRemoved": "Removed {count} duplicate categories",
+    "noDuplicates": "No duplicates found",
+    "combobox": {
+      "selectPlaceholder": "Select...",
+      "addNewPlaceholder": "Add new...",
+      "searchPlaceholder": "Search...",
+      "nothingFound": "Nothing found",
+      "addCustom": "Add custom option",
+      "addWithName": "Add \"{name}\"",
+      "selected": "selected",
+      "remove": "Remove"
+    },
+    "addDialog": {
+      "addLog": "Add log",
+      "addCatalog": "Add to catalog",
+      "addBook": "Add book",
+      "addRecipe": "Add recipe",
+      "food": "Food",
+      "workout": "Workout",
+      "finance": "Finance",
+      "vitamins": "Vitamins",
+      "medicine": "Medicine",
+      "herbs": "Herbs",
+      "cosmetics": "Cosmetics",
+      "products": "Products",
+      "book": "Book",
+      "dish": "Dish",
+      "drink": "Drink",
+      "cocktail": "Cocktail"
+    },
+    "pwa": {
+      "installTitle": "Install Life OS",
+      "installDescription": "Works offline and launches faster",
+      "install": "Install",
+      "dismiss": "Dismiss",
+      "notificationTitle": "Enable notifications",
+      "notificationDescription": "Get reminders for medications and workouts",
+      "enable": "Enable"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "analytics": "Analytics",
+    "body": "Body",
+    "books": "Books",
+    "content": "Content",
+    "goals": "Goals",
+    "habits": "Habits",
+    "items": "Items",
+    "logs": "Logs",
+    "mood": "Mood",
+    "recipes": "Recipes",
+    "reminders": "Reminders",
+    "settings": "Settings",
+    "sleep": "Sleep",
+    "templates": "Templates",
+    "water": "Water",
+    "food": "Food",
+    "workout": "Workout",
+    "finance": "Finance"
+  },
+  "language": {
+    "en": "English",
+    "ru": "Russian",
+    "select": "Select language"
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to Life OS",
+      "description": "A unified application for comprehensive tracking of life indicators. Keep records of nutrition, workouts, finances and much more."
+    },
+    "trackers": {
+      "title": "Trackers",
+      "description": "Track water, sleep, mood, body measurements and habits. Set goals and monitor progress.",
+      "nutrition": "Nutrition",
+      "workouts": "Workouts",
+      "finance": "Finance",
+      "water": "Water"
+    },
+    "content": {
+      "title": "Content",
+      "description": "Maintain a library of books and a collection of recipes with automatic calorie calculation.",
+      "books": "Books",
+      "recipes": "Recipes"
+    },
+    "offline": {
+      "title": "Works Offline",
+      "description": "All data is stored locally on your device. The application works without internet, and data syncs when the network is available."
+    }
+  },
+  "home": {
+    "title": "Life OS",
+    "todayProgress": "Today's Progress",
+    "todayStats": "Today's Stats",
+    "calories": "Calories",
+    "minutes": "Min",
+    "ml": "ml",
+    "expense": "Expense",
+    "quickActions": "Quick Actions",
+    "trackers": "Trackers",
+    "databaseStats": "Database Stats",
+    "records": "Records",
+    "catalog": "Catalog",
+    "books": "Books",
+    "recipes": "Recipes",
+    "recentActivity": "Recent Activity",
+    "noLogs": "No records. Start tracking!",
+    "streakWidget": {
+      "title": "Streaks",
+      "currentStreak": "Current streak",
+      "days": "days",
+      "noStreaks": "No active streaks",
+      "bestStreak": "Best streak",
+      "completedToday": "Today",
+      "habits": "habits",
+      "totalCompletions": "completed"
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "loading": "Loading...",
+    "date": "Date",
+    "common": {
+      "count": "Count"
+    },
+    "period": {
+      "7days": "7 days",
+      "14days": "14 days",
+      "30days": "30 days"
+    },
+    "summary": {
+      "calories": "Calories",
+      "workouts": "Workouts",
+      "workoutDuration": "Duration",
+      "income": "Income",
+      "expense": "Expense",
+      "balance": "Balance",
+      "avgPerDay": "avg/day",
+      "avgPerWorkout": "avg/workout",
+      "vsPreviousPeriod": "vs previous period"
+    },
+    "food": {
+      "title": "Nutrition",
+      "caloriesByDay": "Calories by Day",
+      "macrosByDay": "Macros by Day",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "byCategory": "By Category"
+    },
+    "workout": {
+      "title": "Workouts",
+      "durationByDay": "Workout Duration (min)",
+      "countByDay": "Number of Workouts",
+      "minutes": "Minutes",
+      "workouts": "Workouts"
+    },
+    "finance": {
+      "title": "Finance",
+      "incomeExpenseByDay": "Income/Expense by Day",
+      "categoryDistribution": "Category Distribution",
+      "income": "Income",
+      "expense": "Expense"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "general": "General",
+      "logs": "Logs",
+      "items": "Catalog",
+      "books": "Books",
+      "recipes": "Recipes"
+    },
+    "about": {
+      "title": "About Application",
+      "description": "Life OS is a unified application for tracking various aspects of life.",
+      "version": "Version",
+      "technologies": "Technologies"
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "Application appearance settings",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Interface language settings"
+    },
+    "dataStats": {
+      "title": "Data Statistics",
+      "description": "Overview of stored data",
+      "totalLogs": "Total Logs",
+      "totalItems": "Total Items",
+      "totalContent": "Total Content",
+      "foodLogs": "Food Logs",
+      "workoutLogs": "Workout Logs",
+      "financeLogs": "Finance Logs"
+    },
+    "sync": {
+      "title": "Sync",
+      "description": "Data synchronization settings",
+      "syncStatus": "Sync Status",
+      "lastSync": "Last Sync",
+      "syncNow": "Sync Now",
+      "autoSync": "Auto Sync",
+      "syncEnabled": "Sync Enabled",
+      "syncDisabled": "Sync Disabled",
+      "notConfigured": "Sync not configured. Add Supabase keys to .env.local file",
+      "loginHint": "Log in to sync data between devices",
+      "syncing": "Syncing...",
+      "synced": "Synced",
+      "syncError": "Sync Error",
+      "ready": "Ready to sync",
+      "never": "Never",
+      "pending": "Pending sync",
+      "records": "records",
+      "changes": "changes",
+      "autoSyncHint": "💡 Sync works in background when internet is available",
+      "signupSuccess": "Check your email to confirm registration"
+    },
+    "backup": {
+      "title": "Backup",
+      "description": "Data export and import",
+      "exportJson": "Export JSON",
+      "importJson": "Import JSON",
+      "exporting": "Exporting...",
+      "importing": "Importing...",
+      "autoBackup": "Auto Backup",
+      "backupIntervals": {
+        "hourly": "Every hour",
+        "every6Hours": "Every 6 hours",
+        "every12Hours": "Every 12 hours",
+        "daily": "Every day",
+        "weekly": "Every week"
+      },
+      "lastBackup": "Last backup",
+      "csvExport": "CSV Export (for Excel)",
+      "logs": "Logs",
+      "items": "Catalog",
+      "books": "Books",
+      "accounts": "Accounts",
+      "clearAllData": "Clear All Data",
+      "confirmImport": {
+        "title": "Confirm Import",
+        "description": "Importing data may overwrite existing records with the same IDs. Are you sure you want to continue?"
+      }
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Irreversible actions",
+      "seedData": "Seed Test Data",
+      "reseedData": "Reseed Test Data",
+      "cleanupDuplicates": "Cleanup Duplicate Categories",
+      "clearAllData": "Clear All Data",
+      "confirmClear": "Are you sure? All data will be deleted without recovery!",
+      "confirmReseed": "Recreate database? All current data will be deleted and replaced with test data!"
+    },
+    "accounts": {
+      "title": "Financial Accounts",
+      "description": "Manage accounts and cards",
+      "noAccounts": "No accounts created",
+      "addAccount": "Add Account",
+      "name": "Name",
+      "type": "Type",
+      "balance": "Balance",
+      "currency": "Currency",
+      "initialBalance": "Initial Balance",
+      "accountTypes": {
+        "cash": "Cash",
+        "card": "Card",
+        "bank": "Bank Account",
+        "deposit": "Deposit",
+        "investment": "Investment",
+        "crypto": "Crypto"
+      }
+    },
+    "items": {
+      "title": "Substance Catalog",
+      "description": "Manage catalog reference books",
+      "comingSoon": "Management of categories and forms of release for the substance catalog will be available in the next version."
+    },
+    "books": {
+      "title": "Books",
+      "description": "Manage reference books for books",
+      "totalBooks": "Total books",
+      "reading": "Reading",
+      "completed": "Completed",
+      "comingSoon": "Management of genres, authors and series will be available in the next version."
+    },
+    "recipes": {
+      "title": "Recipes",
+      "description": "Manage reference books for recipes",
+      "totalRecipes": "Total recipes",
+      "otherContent": "Other content",
+      "comingSoon": "Management of ingredients and recipe categories will be available in the next version."
+    },
+    "categories": {
+      "title": "Categories",
+      "description": "Categories for log entries",
+      "noCategories": "No categories",
+      "addCategory": "Add Category",
+      "all": "All",
+      "icon": "Icon (emoji)",
+      "name": "Name",
+      "type": "Type",
+      "categoryTypes": {
+        "food": "Nutrition",
+        "workout": "Workouts",
+        "finance": "Finance"
+      }
+    },
+    "units": {
+      "title": "Units of Measurement",
+      "description": "Units of measurement reference",
+      "noUnits": "No units of measurement",
+      "addUnit": "Add Unit",
+      "name": "Name",
+      "abbreviation": "Abbreviation",
+      "type": "Type",
+      "unitTypes": {
+        "weight": "Weight",
+        "volume": "Volume",
+        "count": "Count",
+        "time": "Time",
+        "money": "Money"
+      }
+    },
+    "export": {
+      "description": "Export your data for backup or analysis in other applications."
+    }
+  },
+  "books": {
+    "title": "Books",
+    "addBook": "Add Book",
+    "editBook": "Edit Book",
+    "noBooks": "No books yet",
+    "forms": {
+      "main": "Main",
+      "authorAndEdition": "Author & Edition",
+      "characteristics": "Characteristics",
+      "isbnAndExternalIds": "ISBN & External IDs",
+      "genresAndTags": "Genres & Tags",
+      "cover": "Cover"
+    },
+    "fields": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "description": "Description",
+      "annotation": "Annotation or brief description...",
+      "authors": "Author(s)",
+      "publishedYear": "Publication Year",
+      "originalYear": "Original Year",
+      "publisher": "Publisher",
+      "format": "Format",
+      "language": "Language",
+      "pageCount": "Number of Pages",
+      "isbn10": "ISBN-10",
+      "isbn13": "ISBN-13",
+      "goodreadsId": "Goodreads ID",
+      "googleBooksId": "Google Books ID",
+      "genres": "Genres",
+      "tags": "Tags",
+      "coverUrl": "Cover URL",
+      "addTag": "Add Tag",
+      "newAuthor": "New author name...",
+      "newGenre": "New genre name..."
+    },
+    "formats": {
+      "paperback": "Paperback",
+      "hardcover": "Hardcover",
+      "ebook": "E-book",
+      "audiobook": "Audiobook"
+    },
+    "status": {
+      "planned": "Planned",
+      "reading": "Reading",
+      "completed": "Completed",
+      "paused": "Paused",
+      "dropped": "Dropped"
+    },
+    "userBook": {
+      "status": "Status",
+      "rating": "Rating",
+      "progress": "Progress",
+      "pages": "Pages",
+      "percent": "Percent",
+      "startedAt": "Started At",
+      "finishedAt": "Finished At",
+      "notes": "Personal Notes",
+      "isOwned": "Owned",
+      "ownedFormat": "Owned Format",
+      "location": "Location",
+      "rereadCount": "Reread Count"
+    },
+    "quotes": {
+      "title": "Quotes",
+      "addQuote": "Add Quote",
+      "text": "Quote Text",
+      "page": "Page",
+      "location": "Location"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "addReview": "Add Review",
+      "reviewTitle": "Review Title",
+      "reviewText": "Review Text"
+    },
+    "common": {
+      "loading": "Loading...",
+      "back": "Back",
+      "delete": "Delete",
+      "edit": "Edit",
+      "cancel": "Cancel"
+    },
+    "notFound": "Book not found",
+    "details": "Details",
+    "aboutBook": "About Book",
+    "categories": "Categories",
+    "inCollection": "In Collection",
+    "createdAt": "Added",
+    "fields": {
+      "pages": "pages"
+    },
+    "noNotes": "No notes",
+    "quotes": {
+      "noQuotes": "No saved quotes",
+      "page": "p."
+    },
+    "deleteDialog": {
+      "title": "Delete book?",
+      "description": "This action cannot be undone. \"{title}\" will be deleted permanently."
+    },
+    "list": {
+      "title": "Books",
+      "stats": {
+        "total": "Total",
+        "reading": "Reading",
+        "completed": "Completed",
+        "planned": "Planned",
+        "paused": "Paused"
+      },
+      "filters": {
+        "all": "All",
+        "reading": "Reading",
+        "planned": "Planned",
+        "completed": "Completed",
+        "paused": "Paused"
+      },
+      "search": {
+        "placeholder": "Search by title or author..."
+      },
+      "empty": {
+        "library": "Library is empty. Add your first book!",
+        "noResults": "No books found"
+      },
+      "loading": "Loading...",
+      "progress": "Progress",
+      "pages": "pages"
+    },
+    "new": {
+      "title": "New Book",
+      "form": {
+        "bookDetails": "Book Details",
+        "userProgress": "User Progress",
+        "quotes": "Quotes"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      },
+      "validation": {
+        "titleRequired": "Enter book title"
+      },
+      "error": {
+        "failedToCreate": "Failed to create book"
+      }
+    },
+    "edit": {
+      "title": "Edit Book",
+      "loading": "Loading...",
+      "validation": {
+        "titleRequired": "Enter book title"
+      },
+      "error": {
+        "failedToUpdate": "Failed to update book",
+        "failedToDelete": "Failed to delete book"
+      },
+      "delete": {
+        "confirm": "Are you sure you want to delete this book? This action cannot be undone."
+      }
+    }
+  },
+  "recipes": {
+    "title": "Recipes",
+    "addRecipe": "Add Recipe",
+    "editRecipe": "Edit Recipe",
+    "newRecipe": "New Recipe",
+    "noRecipes": "No recipes yet",
+    "types": {
+      "food": "Food Recipe",
+      "drink": "Drink Recipe",
+      "cocktail": "Cocktail Recipe"
+    },
+    "forms": {
+      "main": "Main",
+      "dishParameters": "Dish Parameters",
+      "drinkParameters": "Drink Parameters",
+      "cocktailParameters": "Cocktail Parameters",
+      "ingredients": "Ingredients",
+      "steps": "Cooking Steps",
+      "recipeType": "Recipe Type",
+      "additional": "Additional"
+    },
+    "fields": {
+      "title": "Recipe Title",
+      "titlePlaceholder": "Recipe Title",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description...",
+      "recipeType": "Recipe Type",
+      "prepTime": "Prep Time (min)",
+      "cookTime": "Cook Time (min)",
+      "totalTime": "Total Time (min)",
+      "servings": "Servings",
+      "servingUnit": "Unit",
+      "servingUnitPlaceholder": "servings",
+      "difficulty": "Difficulty",
+      "cuisine": "Cuisine",
+      "courseType": "Course Type",
+      "cookingMethod": "Cooking Method",
+      "servingTemperature": "Serving Temperature",
+      "spicyLevel": "Spicy Level",
+      "dietary": "Dietary Options",
+      "drinkType": "Drink Type",
+      "base": "Base",
+      "isCarbonated": "Carbonated",
+      "volumeMl": "Volume (ml)",
+      "caffeineMg": "Caffeine (mg)",
+      "isAlcoholic": "Alcoholic",
+      "alcoholPercent": "Alcohol %",
+      "baseSpirit": "Base Spirit",
+      "cocktailMethod": "Cocktail Method",
+      "glassType": "Glass Type",
+      "iceType": "Ice Type",
+      "garnish": "Garnish",
+      "color": "Color",
+      "tools": "Tools",
+      "nutrition": "Nutrition Facts",
+      "tags": "Tags",
+      "tagsPlaceholder": "tags separated by comma"
+    },
+    "edit": {
+      "title": "Edit Recipe",
+      "loading": "Loading..."
+    },
+    "new": {
+      "title": "New Recipe"
+    },
+    "courseTypes": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "soup": "Soup",
+      "salad": "Salad",
+      "dessert": "Dessert",
+      "snack": "Snack",
+      "sauce": "Sauce",
+      "appetizer": "Appetizer"
+    },
+    "cookingMethods": {
+      "bake": "Bake",
+      "fry": "Fry",
+      "boil": "Boil",
+      "steam": "Steam",
+      "grill": "Grill",
+      "raw": "Raw",
+      "stew": "Stew",
+      "roast": "Roast"
+    },
+    "servingTemperatures": {
+      "hot": "Hot",
+      "warm": "Warm",
+      "room": "Room Temperature",
+      "cold": "Cold"
+    },
+    "spicyLevels": {
+      "none": "None",
+      "mild": "Mild",
+      "medium": "Medium",
+      "hot": "Hot"
+    },
+    "dietaryOptions": {
+      "vegan": "Vegan",
+      "vegetarian": "Vegetarian",
+      "glutenFree": "Gluten-Free",
+      "keto": "Keto",
+      "lowCarb": "Low-Carb",
+      "dairyFree": "Dairy-Free",
+      "nutFree": "Nut-Free",
+      "diabetic": "Diabetic"
+    },
+    "difficulties": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "pro": "Pro"
+    },
+    "drinkTypes": {
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "smoothie": "Smoothie",
+      "juice": "Juice",
+      "lemonade": "Lemonade",
+      "milkshake": "Milkshake",
+      "compote": "Compote",
+      "cocoa": "Cocoa"
+    },
+    "ingredients": {
+      "addIngredient": "Add Ingredient",
+      "ingredientName": "Ingredient Name",
+      "amount": "Amount",
+      "unit": "Unit",
+      "optional": "Optional",
+      "note": "Note",
+      "substitute": "Substitute",
+      "fromCatalog": "From Catalog",
+      "custom": "Custom",
+      "removeIngredient": "Remove ingredient",
+      "nutritionPer100": "Nutrition per 100g",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "empty": "No ingredients. Click \"Add\" to create.",
+      "calculate": "Calculate"
+    },
+    "steps": {
+      "addStep": "Add Step",
+      "stepText": "Step Description",
+      "timer": "Timer (min)",
+      "image": "Image",
+      "minutes": "minutes",
+      "removeStep": "Remove step",
+      "empty": "No steps. Click \"Add Step\" to create.",
+      "noInstructions": "No instructions"
+    },
+    "common": {
+      "loading": "Loading...",
+      "back": "Back",
+      "delete": "Delete",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "add": "Add"
+    },
+    "details": "Details",
+    "notFound": "Recipe not found",
+    "nutrition": {
+      "title": "Nutrition Facts",
+      "calories": "calories",
+      "protein": "protein",
+      "fat": "fat",
+      "carbs": "carbs",
+      "sugar": "sugar"
+    },
+    "cocktailDetails": {
+      "title": "Cocktail Details",
+      "base": "Base",
+      "method": "Method",
+      "glass": "Glass",
+      "strength": "Strength"
+    },
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "deleteDialog": {
+      "title": "Delete recipe?",
+      "description": "This action cannot be undone. \"{title}\" will be deleted permanently."
+    },
+    "list": {
+      "title": "Recipes",
+      "stats": {
+        "total": "Total",
+        "food": "Food",
+        "drink": "Drinks",
+        "cocktail": "Cocktails"
+      },
+      "filters": {
+        "all": "All",
+        "food": "Food",
+        "drink": "Drinks",
+        "cocktail": "Cocktails"
+      },
+      "search": {
+        "placeholder": "Search by title..."
+      },
+      "empty": {
+        "noRecipes": "No recipes. Add your first!",
+        "noResults": "No recipes found"
+      },
+      "loading": "Loading...",
+      "ingredients": "ingr.",
+      "minutes": "min",
+      "calories": "cal",
+      "servings": "servings"
+    }
+  },
+  "fab": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "food": "Food",
+    "workout": "Workout",
+    "finance": "Finance",
+    "water": "Water",
+    "sleep": "Sleep",
+    "mood": "Mood",
+    "measurements": "Measurements",
+    "habit": "Habit",
+    "goal": "Goal",
+    "reminder": "Reminder",
+    "book": "Book",
+    "recipe": "Recipe",
+    "vitamins": "Vitamins",
+    "medicine": "Medicine",
+    "herbs": "Herbs",
+    "cosmetics": "Cosmetics",
+    "products": "Products"
+  },
+  "logs": {
+    "title": "Logs",
+    "addLog": "Add Entry",
+    "editLog": "Edit Entry",
+    "searchPlaceholder": "Search logs...",
+    "types": {
+      "food": "Nutrition",
+      "workout": "Workout",
+      "finance": "Finance"
+    },
+    "stats": {
+      "total": "Total"
+    },
+    "filters": {
+      "typeLabel": "Log type filters",
+      "all": "All"
+    },
+    "empty": {
+      "noLogs": "No logs. Start tracking!"
+    },
+    "common": {
+      "optional": "Optional",
+      "grams": "grams"
+    },
+    "recipes": {
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "calories": "Calories",
+        "protein": "Protein",
+        "fat": "Fat",
+        "carbs": "Carbs",
+        "sugar": "Sugar"
+      }
+    },
+    "fields": {
+      "date": "Date",
+      "time": "Time",
+      "title": "Title",
+      "category": "Category",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "value": "Value",
+      "notes": "Notes",
+      "tags": "Tags"
+    },
+    "edit": {
+      "title": "Edit: {type}",
+      "basic": "Basic",
+      "type": "Type",
+      "additional": "Additional",
+      "notesPlaceholder": "Your notes...",
+      "tagsPlaceholder": "tags separated by comma",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "save": "Save"
+    },
+    "food": {
+      "source": "Source",
+      "sourceTypes": {
+        "custom": "Custom",
+        "recipe": "Recipes",
+        "product": "Products"
+      },
+      "dishName": "Dish Name",
+      "portionSize": "Portion Size (g)",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "selectRecipe": "Select Recipe",
+      "selectProduct": "Select Product",
+      "productCategory": "Product Category",
+      "product": "Product",
+      "noRecipes": "No saved recipes",
+      "addRecipeToContent": "Add recipes in Content section"
+    },
+    "workout": {
+      "workoutType": "Workout Type",
+      "types": {
+        "strength": "Strength",
+        "cardio": "Cardio",
+        "yoga": "Yoga"
+      },
+      "subcategory": "Subcategory",
+      "duration": "Duration (min)",
+      "intensity": "Intensity",
+      "intensityLevels": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "equipment": "Equipment",
+      "goal": "Goal",
+      "caloriesBurned": "Calories Burned",
+      "distance": "Distance (km)",
+      "heartRateAvg": "Avg Heart Rate",
+      "heartRateMax": "Max Heart Rate",
+      "exercisesCount": "Number of Exercises",
+      "setsCount": "Number of Sets",
+      "repsCount": "Number of Reps",
+      "totalWeight": "Total Weight (kg)",
+      "averageSpeed": "Avg Speed (km/h)",
+      "averagePace": "Avg Pace (min/km)",
+      "rounds": "Rounds",
+      "level": "Level",
+      "focus": "Focus",
+      "strengthSubcategories": {
+        "anatomical": "By Anatomy",
+        "equipment": "By Equipment",
+        "chest": "Chest",
+        "back": "Back",
+        "legs": "Legs",
+        "shoulders": "Shoulders",
+        "arms": "Arms",
+        "core": "Core",
+        "freeWeights": "Free Weights",
+        "machines": "Machines",
+        "bodyweight": "Bodyweight",
+        "functional": "Functional"
+      },
+      "cardioSubcategories": {
+        "activity": "By Activity",
+        "byIntensity": "By Intensity",
+        "running": "Running",
+        "walking": "Walking",
+        "cycling": "Cycling",
+        "rowing": "Rowing",
+        "jumping": "Jumping",
+        "liss": "LISS (Low Intensity)",
+        "hiit": "HIIT (Interval)",
+        "tabata": "Tabata"
+      },
+      "yogaSubcategories": {
+        "style": "By Style",
+        "byGoal": "By Goal",
+        "byLevel": "By Level",
+        "hatha": "Hatha Yoga",
+        "vinyasa": "Vinyasa Yoga",
+        "ashtanga": "Ashtanga Yoga",
+        "kundalini": "Kundalini Yoga",
+        "iyengar": "Iyengar Yoga",
+        "stretching": "Stretching / Flexibility",
+        "power": "Power Yoga",
+        "relax": "Relax / Recovery",
+        "breathing": "Breathing & Meditation",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "goals": {
+        "mass": "Mass Gain",
+        "relief": "Definition",
+        "strength": "Strength",
+        "endurance": "Endurance",
+        "flexibility": "Flexibility",
+        "relaxation": "Relaxation",
+        "balance": "Balance",
+        "fatLoss": "Fat Loss",
+        "recovery": "Recovery"
+      },
+      "placeholders": {
+        "calories": "cal",
+        "distance": "km",
+        "avgPulse": "bpm",
+        "maxPulse": "bpm",
+        "count": "count",
+        "weight": "kg",
+        "speed": "km/h",
+        "pace": "5:30"
+      }
+    },
+    "finance": {
+      "type": "Transaction Type",
+      "types": {
+        "income": "Income",
+        "expense": "Expense",
+        "transfer": "Transfer"
+      },
+      "amount": "Amount",
+      "from": "From",
+      "to": "To",
+      "account": "Account",
+      "noAccounts": "No accounts available",
+      "createAccountInSettings": "Create an account in Settings for finance tracking",
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "item": "Item/Service",
+      "supplier": "Supplier",
+      "accountTypes": {
+        "cash": "Cash",
+        "card": "Card",
+        "bank": "Bank Account",
+        "deposit": "Deposit",
+        "investment": "Investment",
+        "crypto": "Crypto"
+      }
+    }
+  },
+  "habits": {
+    "title": "Habits",
+    "addHabit": "Add Habit",
+    "editHabit": "Edit Habit",
+    "noHabits": "No habits yet",
+    "fields": {
+      "name": "Habit Name",
+      "type": "Type",
+      "frequency": "Frequency",
+      "reminderTime": "Reminder Time",
+      "isActive": "Active",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "subtasks": "Subtasks"
+    },
+    "types": {
+      "positive": "Positive (do)",
+      "negative": "Negative (don't do)"
+    },
+    "frequencies": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "custom": "Custom"
+    },
+    "today": "Today",
+    "completed": "Completed",
+    "skipped": "Skipped",
+    "streak": "Streak",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "days": "days"
+  },
+  "goals": {
+    "title": "Goals",
+    "addGoal": "Add Goal",
+    "editGoal": "Edit Goal",
+    "noGoals": "No goals yet",
+    "fields": {
+      "type": "Goal Type",
+      "name": "Name",
+      "targetValue": "Target Value",
+      "currentValue": "Current Value",
+      "period": "Period",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "isActive": "Active",
+      "unit": "Unit"
+    },
+    "types": {
+      "calories": "Calories",
+      "workout": "Workout",
+      "water": "Water",
+      "sleep": "Sleep",
+      "steps": "Steps",
+      "weight": "Weight",
+      "finance": "Finance"
+    },
+    "periods": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "progress": "Progress",
+    "completed": "Completed"
+  },
+  "reminders": {
+    "title": "Reminders",
+    "addReminder": "Add Reminder",
+    "editReminder": "Edit Reminder",
+    "noReminders": "No reminders yet",
+    "fields": {
+      "title": "Title",
+      "message": "Message",
+      "type": "Type",
+      "time": "Time",
+      "days": "Days",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "advanceMinutes": "Advance Notice (min)",
+      "repeatType": "Repeat Type",
+      "priority": "Priority",
+      "isActive": "Active",
+      "sound": "Sound",
+      "vibration": "Vibration",
+      "persistent": "Persistent"
+    },
+    "types": {
+      "habit": "Habit",
+      "medicine": "Medicine",
+      "water": "Water",
+      "workout": "Workout",
+      "food": "Food",
+      "item": "Item",
+      "custom": "Custom"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "repeatTypes": {
+      "none": "None",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "custom": "Custom",
+      "afterCompletion": "After Completion"
+    },
+    "daysOfWeek": {
+      "sunday": "Sun",
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat"
+    },
+    "stats": {
+      "active": "Active",
+      "today": "Today",
+      "completed": "Completed",
+      "overdue": "Overdue",
+      "total": "Total"
+    },
+    "filters": {
+      "all": "All",
+      "today": "Today",
+      "active": "Active",
+      "completed": "Completed",
+      "overdue": "Overdue",
+      "inactive": "Inactive"
+    },
+    "empty": {
+      "noReminders": "No reminders. Add the first one!",
+      "noCategory": "No reminders in this category"
+    },
+    "dialogs": {
+      "newTitle": "New Reminder",
+      "editTitle": "Edit Reminder",
+      "deleteTitle": "Delete Reminder?",
+      "deleteConfirm": "Are you sure you want to delete reminder \"{title}\"? This action cannot be undone.",
+      "statsTitle": "Stats: {title}"
+    },
+    "statsLabels": {
+      "streak": "Streak",
+      "best": "Best",
+      "total": "Total"
+    },
+    "history": "History",
+    "historyEmpty": "History is empty",
+    "completed": "Completed",
+    "snooze": "In 5 min",
+    "close": "Close",
+    "testNotification": {
+      "button": "🧪 Test Notification",
+      "title": "Test Reminder",
+      "message": "This is a test notification for testing purposes"
+    },
+    "advance": {
+      "onTime": "On Time",
+      "5minBefore": "5 min before",
+      "10minBefore": "10 min before",
+      "15minBefore": "15 min before",
+      "30minBefore": "30 min before",
+      "1hourBefore": "1 hour before",
+      "1dayBefore": "1 day before"
+    },
+    "form": {
+      "type": "Type",
+      "title": "Title",
+      "titlePlaceholder": "Reminder title",
+      "message": "Message",
+      "messagePlaceholder": "Additional information",
+      "time": "Reminder time",
+      "date": "Date",
+      "repeatType": "Repeat type",
+      "repeatTypes": {
+        "none": "No repeat",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "custom": "Custom interval"
+      },
+      "daysOfWeek": "Days of week",
+      "everyDay": "Every day",
+      "weekdays": "Weekdays",
+      "weekends": "Weekends",
+      "monthDay": "Day of month",
+      "monthDayLabel": "Every",
+      "monthDaySuffix": "day",
+      "monthDayHint": "If the month has fewer days, the reminder will trigger on the last day of the month",
+      "customInterval": "Every",
+      "onDays": "On which days",
+      "priority": "Priority",
+      "priorities": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "courseStart": "Course start",
+      "courseEnd": "Course end",
+      "notificationSettings": "Notification settings",
+      "sound": "Sound",
+      "vibration": "Vibration",
+      "persistent": "Persistent mode (repeat until confirmed)",
+      "addTime": "Add time",
+      "alsoRemindAt": "Also remind at:",
+      "dailyHint": "📅 Reminder will repeat every day",
+      "itemSelect": "Catalog item",
+      "medicineSelect": "Medicine/Vitamin",
+      "selectPlaceholder": "Select...",
+      "hours": "hours",
+      "days": "days",
+      "weeks": "weeks",
+      "months": "months",
+      "timeOfDay": {
+        "morning": "Morning",
+        "lunch": "Lunch",
+        "evening": "Evening",
+        "bedtime": "Before bed"
+      }
+    }
+  },
+  "water": {
+    "title": "Water",
+    "addWater": "Add Water",
+    "editWater": "Edit Water",
+    "todayIntake": "Today's Intake",
+    "dailyGoal": "Daily Goal",
+    "unit": "ml",
+    "fields": {
+      "amount": "Amount (ml)",
+      "time": "Time",
+      "type": "Type",
+      "note": "Note"
+    },
+    "types": {
+      "water": "Water",
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "other": "Other"
+    },
+    "quickAdd": {
+      "glass": "Glass (250ml)",
+      "cup": "Cup (200ml)",
+      "bottle": "Bottle (500ml)",
+      "liter": "Liter (1000ml)"
+    },
+    "goal": "Goal: {target} ml",
+    "goalReached": "🎉 Goal reached!",
+    "today": "Today",
+    "add": "Add {amount} ml",
+    "delete": "Delete entry",
+    "empty": {
+      "loading": "Loading...",
+      "noRecords": "No records yet"
+    },
+    "reminder": {
+      "title": "Water Reminders",
+      "enabled": "Reminders enabled",
+      "disabled": "Reminders disabled",
+      "enable": "Enable",
+      "disable": "Disable",
+      "interval": "Interval (minutes)",
+      "from": "From",
+      "to": "To",
+      "reminders": "Reminders:",
+      "andMore": "and {count} more",
+      "permissionWarning": "Click \"Enable\" and allow notifications in your browser",
+      "permissionRequired": "Notifications must be enabled in your browser for reminders to work",
+      "waterReminderTitle": "Water Reminder",
+      "waterReminderMessage": "Time to drink water! (interval {interval} min)"
+    }
+  },
+  "sleep": {
+    "title": "Sleep",
+    "addSleep": "Add Sleep",
+    "editSleep": "Edit Sleep",
+    "fields": {
+      "date": "Date",
+      "startTime": "Bedtime",
+      "endTime": "Wake Time",
+      "duration": "Duration",
+      "quality": "Quality",
+      "deepSleep": "Deep Sleep (min)",
+      "remSleep": "REM Sleep (min)",
+      "awake": "Awake Time (min)",
+      "notes": "Notes",
+      "factors": "Factors"
+    },
+    "quality": {
+      "veryPoor": "Very Poor",
+      "poor": "Poor",
+      "okay": "Okay",
+      "good": "Good",
+      "excellent": "Excellent"
+    },
+    "factors": {
+      "caffeine": "Caffeine",
+      "exercise": "Exercise",
+      "stress": "Stress",
+      "alcohol": "Alcohol"
+    },
+    "stats": {
+      "weekAverage": "Week Average",
+      "recordsCount": "Records"
+    },
+    "weekChart": "Last 7 Days",
+    "history": "History",
+    "dialogs": {
+      "addTitle": "Log Sleep",
+      "editTitle": "Edit Entry",
+      "deleteTitle": "Delete Entry?",
+      "deleteConfirm": "Are you sure you want to delete sleep entry? This action cannot be undone.",
+      "dateLabel": "Date",
+      "bedtimeLabel": "Bedtime",
+      "wakeTimeLabel": "Wake Time",
+      "qualityLabel": "Sleep Quality",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Had dreams, woke up during night...",
+      "duration": "Duration",
+      "save": "Save"
+    },
+    "empty": {
+      "loading": "Loading...",
+      "noRecords": "No records",
+      "noSleep": "No sleep records"
+    },
+    "edit": "Edit entry"
+  },
+  "mood": {
+    "title": "Mood",
+    "addMood": "Add Mood",
+    "editMood": "Edit Mood",
+    "fields": {
+      "date": "Date",
+      "mood": "Mood",
+      "energy": "Energy",
+      "stress": "Stress",
+      "activities": "Activities",
+      "notes": "Notes",
+      "factors": "Factors"
+    },
+    "moods": {
+      "great": "Great",
+      "good": "Good",
+      "okay": "Okay",
+      "bad": "Bad",
+      "terrible": "Terrible"
+    },
+    "levels": {
+      "veryLow": "Very Low",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "veryHigh": "Very High"
+    },
+    "activities": {
+      "work": "Work",
+      "exercise": "Exercise",
+      "social": "Social",
+      "hobby": "Hobby",
+      "rest": "Rest",
+      "shopping": "Shopping",
+      "reading": "Reading",
+      "gaming": "Gaming",
+      "cooking": "Cooking",
+      "walk": "Walk"
+    },
+    "factors": {
+      "sleep": "Sleep",
+      "weather": "Weather",
+      "health": "Health",
+      "work": "Work"
+    },
+    "today": "How are you feeling today?",
+    "last7Days": "Last 7 Days",
+    "weekAverage": "Week Average",
+    "recordsCount": "Records",
+    "history": "History",
+    "correlations": {
+      "title": "Correlations with Mood",
+      "description": "How different factors affect your mood (based on last 14 days)",
+      "sleep": "Sleep",
+      "water": "Water",
+      "workout": "Workouts",
+      "noConnection": "No connection",
+      "strongPositive": "Strong +",
+      "mediumPositive": "Medium +",
+      "weakPositive": "Weak +",
+      "strongNegative": "Strong −",
+      "mediumNegative": "Medium −",
+      "weakNegative": "Weak −",
+      "tip": "💡 Positive correlation means more/better → better mood"
+    },
+    "dialogs": {
+      "addTitle": "How are you feeling?",
+      "editTitle": "Edit Entry",
+      "deleteTitle": "Delete Entry?",
+      "deleteConfirm": "Are you sure you want to delete this mood entry? This action cannot be undone.",
+      "save": "Save",
+      "stressLabel": "Stress (1 - low, 5 - high)",
+      "notesPlaceholder": "What affected your mood?"
+    },
+    "empty": {
+      "loading": "Loading...",
+      "noRecords": "No records"
+    },
+    "edit": "Edit entry"
+  },
+  "body": {
+    "title": "Body",
+    "addMeasurement": "Add Measurement",
+    "editMeasurement": "Edit Measurement",
+    "fields": {
+      "date": "Date",
+      "type": "Type",
+      "value": "Value",
+      "unit": "Unit",
+      "notes": "Notes"
+    },
+    "measurementTypes": {
+      "weight": "Weight",
+      "height": "Height",
+      "bmi": "BMI",
+      "chest": "Chest",
+      "waist": "Waist",
+      "hips": "Hips",
+      "neck": "Neck",
+      "biceps": "Biceps",
+      "forearm": "Forearm",
+      "thigh": "Thigh",
+      "calf": "Calf",
+      "bodyFat": "Body Fat",
+      "muscleMass": "Muscle Mass"
+    },
+    "bmi": {
+      "title": "BMI",
+      "underweight": "Underweight",
+      "normal": "Normal Weight",
+      "overweight": "Overweight",
+      "obese": "Obese",
+      "addHint": "Add height and weight to calculate BMI"
+    },
+    "stats": {
+      "max": "Max",
+      "avg": "Avg",
+      "min": "Min",
+      "recordsCount": "records"
+    },
+    "weightChart": "Weight - Last Month",
+    "history": "History",
+    "dialogs": {
+      "addTitle": "Add Measurement",
+      "editTitle": "Edit Measurement",
+      "deleteTitle": "Delete Measurement?",
+      "deleteConfirm": "Are you sure you want to delete this measurement? This action cannot be undone.",
+      "typeLabel": "Measurement Type",
+      "valueLabel": "Value",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Optional"
+    },
+    "empty": {
+      "loading": "Loading...",
+      "noRecords": "No records. Add the first measurement!"
+    },
+    "edit": "Edit measurement"
+  },
+  "templates": {
+    "title": "Templates",
+    "addTemplate": "Add Template",
+    "editTemplate": "Edit Template",
+    "noTemplates": "No templates yet",
+    "fields": {
+      "name": "Template Name",
+      "type": "Type",
+      "data": "Data",
+      "isFavorite": "Favorite",
+      "useCount": "Use Count"
+    },
+    "types": {
+      "food": "Food",
+      "workout": "Workout",
+      "finance": "Finance",
+      "water": "Water",
+      "sleep": "Sleep",
+      "mood": "Mood"
+    },
+    "applyTemplate": "Apply Template",
+    "deleteTemplate": "Delete Template",
+    "header": {
+      "title": "Templates",
+      "subtitle": "Quick templates for frequent entries"
+    },
+    "actions": {
+      "create": "Create Template",
+      "createFirst": "Create First Template",
+      "apply": "Apply",
+      "edit": "Edit Template",
+      "delete": "Delete Template",
+      "addToFavorite": "Add to Favorites",
+      "removeFromFavorite": "Remove from Favorites"
+    },
+    "empty": {
+      "loading": "Loading...",
+      "noTemplates": "No templates",
+      "createHint": "Create templates for quick adding of frequent entries"
+    },
+    "sections": {
+      "favorite": "Favorites",
+      "usedCount": "Used: {count}"
+    },
+    "dialogs": {
+      "createTitle": "Create Template",
+      "editTitle": "Edit Template",
+      "deleteTitle": "Delete Template?",
+      "deleteConfirm": "Are you sure you want to delete template \"{name}\"? This action cannot be undone.",
+      "nameLabel": "Template Name",
+      "namePlaceholder": "e.g., Breakfast - Oatmeal",
+      "typeLabel": "Type"
+    },
+    "apply": {
+      "title": "Apply Template",
+      "success": "Template applied successfully!",
+      "stay": "Stay",
+      "goToRecord": "Go to Entry"
+    },
+    "noData": "No data",
+    "units": {
+      "kcal": "kcal",
+      "g": "g",
+      "min": "min"
+    },
+    "moods": {
+      "great": "Great",
+      "good": "Good",
+      "okay": "Okay",
+      "bad": "Bad",
+      "terrible": "Terrible"
+    }
+  },
+  "items": {
+    "title": "Catalog",
+    "addItem": "Add Item",
+    "editItem": "Edit Item",
+    "noItems": "No items yet",
+    "list": {
+      "title": "Catalog",
+      "stats": {
+        "total": "Total"
+      },
+      "filters": {
+        "all": "All"
+      },
+      "searchPlaceholder": "Search catalog...",
+      "types": {
+        "vitamin": "Vitamins",
+        "medicine": "Medicine",
+        "herb": "Herbs",
+        "cosmetic": "Cosmetics",
+        "product": "Products"
+      },
+      "empty": {
+        "noItems": "Catalog is empty. Add the first item!"
+      }
+    },
+    "fields": {
+      "name": "Name",
+      "type": "Type",
+      "category": "Category",
+      "description": "Description",
+      "usage": "Usage",
+      "benefits": "Benefits",
+      "contraindications": "Contraindications",
+      "dosage": "Dosage",
+      "form": "Form",
+      "manufacturer": "Manufacturer",
+      "composition": "Composition",
+      "storage": "Storage",
+      "expiration": "Expiration",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "servingSize": "Serving Size (g)"
+    },
+    "types": {
+      "vitamin": "Vitamin",
+      "medicine": "Medicine",
+      "herb": "Herb",
+      "cosmetic": "Cosmetic",
+      "product": "Product"
+    },
+    "catalog": {
+      "loading": "Loading...",
+      "notFound": "Item not found"
+    },
+    "detail": {
+      "loading": "Loading...",
+      "notFound": "Item not found",
+      "back": "Back",
+      "usage": "Usage",
+      "health": "Health",
+      "info": "Info",
+      "usageMethod": "Usage Method",
+      "dosage": "Dosage",
+      "form": "Form",
+      "benefits": "Benefits",
+      "contraindications": "Contraindications",
+      "manufacturer": "Manufacturer",
+      "expiration": "Expiration",
+      "composition": "Composition",
+      "storage": "Storage Conditions",
+      "notes": "Notes",
+      "tags": "Tags",
+      "notSpecified": "Not specified",
+      "createReminder": "Create Reminder",
+      "delete": "Delete",
+      "edit": "Edit",
+      "deleteDialogTitle": "Delete Item?",
+      "deleteDialogDescription": "This action cannot be undone. \"{name}\" will be deleted permanently.",
+      "reminderDialogTitle": "Create Reminder",
+      "reminderDialogDescription": "Reminder for: {name}",
+      "reminderTime": "Time",
+      "reminderDays": "Days of Week",
+      "reminderStartDate": "Course Start",
+      "reminderEndDate": "Course End",
+      "reminderDosageLabel": "Dosage:",
+      "reminderCreate": "Create",
+      "reminderCancel": "Cancel"
+    },
+    "new": {
+      "title": "New: {type}",
+      "basic": "Basic",
+      "usage": "Usage",
+      "health": "Health",
+      "nutrition": "Nutrition Facts (per 100g)",
+      "additional": "Additional",
+      "namePlaceholder": "Enter name",
+      "categoryPlaceholder": "Select category",
+      "descriptionPlaceholder": "Brief description...",
+      "usagePlaceholder": "How to use...",
+      "dosagePlaceholder": "Recommended dosage",
+      "formPlaceholder": "Select form",
+      "benefitsPlaceholder": "Beneficial properties...",
+      "contraindicationsPlaceholder": "Contraindications and limitations...",
+      "manufacturerPlaceholder": "Select manufacturer",
+      "compositionPlaceholder": "Product composition...",
+      "storagePlaceholder": "Temperature, humidity...",
+      "notesPlaceholder": "Your notes...",
+      "tagsPlaceholder": "tags separated by comma",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "servingSize": "Serving Size (g)"
+    },
+    "edit": {
+      "title": "Edit: {type}",
+      "loading": "Loading...",
+      "basic": "Basic",
+      "usage": "Usage",
+      "health": "Health",
+      "nutrition": "Nutrition Facts (per 100g)",
+      "additional": "Additional",
+      "namePlaceholder": "Enter name",
+      "categoryPlaceholder": "Select category",
+      "descriptionPlaceholder": "Brief description...",
+      "usagePlaceholder": "How to use...",
+      "dosagePlaceholder": "Recommended dosage",
+      "formPlaceholder": "Select form",
+      "benefitsPlaceholder": "Beneficial properties...",
+      "contraindicationsPlaceholder": "Contraindications and limitations...",
+      "manufacturerPlaceholder": "Select manufacturer",
+      "compositionPlaceholder": "Product composition...",
+      "storagePlaceholder": "Temperature, humidity...",
+      "notesPlaceholder": "Your notes...",
+      "tagsPlaceholder": "tags separated by comma",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "servingSize": "Serving Size (g)"
+    }
+  },
+  "content": {
+    "title": "Content",
+    "addContent": "Add Content",
+    "editContent": "Edit Content",
+    "types": {
+      "book": "Book",
+      "recipe": "Recipe"
+    },
+    "new": {
+      "recipe": "New Recipe",
+      "book": "New Book",
+      "type": "Recipe Type",
+      "basic": "Basic",
+      "title": "Title",
+      "titlePlaceholder": "Recipe Title",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description...",
+      "servings": "Servings",
+      "servingUnit": "Unit",
+      "servingUnitPlaceholder": "servings",
+      "prepTime": "Prep Time (min)",
+      "cookTime": "Cook Time (min)",
+      "difficulty": "Difficulty",
+      "difficulties": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      },
+      "nutrition": "Nutrition Facts",
+      "calories": "Calories",
+      "protein": "Protein (g)",
+      "fat": "Fat (g)",
+      "carbs": "Carbs (g)",
+      "sugar": "Sugar (g)",
+      "tags": "Tags",
+      "tagsPlaceholder": "tags separated by comma",
+      "additional": "Additional",
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      }
+    },
+    "view": {
+      "back": "Back",
+      "loading": "Loading...",
+      "notFound": "Content not found",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Delete {type}?",
+      "deleteDescription": "This action cannot be undone. \"{title}\" will be deleted permanently.",
+      "instructions": "Instructions",
+      "details": "Details",
+      "notes": "Notes",
+      "noInstructions": "No instructions",
+      "noContent": "No content",
+      "ingredients": "Ingredients",
+      "optional": "(opt.)",
+      "nutrition": "Nutrition Facts",
+      "calories": "calories",
+      "protein": "protein",
+      "fat": "fat",
+      "carbs": "carbs",
+      "sugar": "sugar",
+      "additional": "Additional",
+      "courseType": "Course Type",
+      "cuisine": "Cuisine",
+      "method": "Method",
+      "cocktailDetails": "Cocktail Details",
+      "base": "Base",
+      "glass": "Glass",
+      "strength": "Strength",
+      "drinkDetails": "Drink Details",
+      "type": "Type",
+      "caffeine": "Caffeine",
+      "volume": "Volume",
+      "createdAt": "Created",
+      "updatedAt": "Updated",
+      "tags": "Tags"
+    },
+    "edit": {
+      "title": "Edit: {type}",
+      "loading": "Loading...",
+      "basic": "Basic",
+      "bookDetails": "Book Details",
+      "notes": "Notes",
+      "recipeType": "Recipe Type",
+      "ingredients": "Ingredients",
+      "steps": "Steps",
+      "nutrition": "Nutrition Facts",
+      "additional": "Additional",
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      }
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "notFound": "Not found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "serverError": "Server error",
+    "networkError": "Network error",
+    "validationError": "Validation error",
+    "required": "This field is required",
+    "invalidEmail": "Invalid email",
+    "invalidDate": "Invalid date",
+    "invalidNumber": "Invalid number",
+    "tooShort": "Too short",
+    "tooLong": "Too long",
+    "minValue": "Value too low",
+    "maxValue": "Value too high",
+    "duplicate": "Already exists",
+    "loadFailed": "Failed to load data",
+    "saveFailed": "Failed to save data",
+    "deleteFailed": "Failed to delete",
+    "importFailed": "Import failed. Check file format.",
+    "exportFailed": "Export failed"
+  },
+  "loading": {
+    "data": "Loading data...",
+    "saving": "Saving...",
+    "deleting": "Deleting...",
+    "importing": "Importing...",
+    "exporting": "Exporting...",
+    "syncing": "Syncing..."
+  },
+  "confirmations": {
+    "delete": "Are you sure you want to delete?",
+    "discard": "Discard changes?",
+    "logout": "Are you sure you want to logout?",
+    "clearData": "All data will be deleted. Continue?"
+  },
+  "empty": {
+    "noData": "No data yet",
+    "noResults": "No results found",
+    "noLogs": "No logs yet. Start tracking!",
+    "noBooks": "No books yet",
+    "noRecipes": "No recipes yet",
+    "noHabits": "No habits yet",
+    "noGoals": "No goals yet",
+    "noReminders": "No reminders yet",
+    "noTemplates": "No templates yet",
+    "noItems": "No items yet"
+  },
+  "globalSearch": {
+    "placeholder": "Search... (Cmd+K)",
+    "noResults": "Nothing found",
+    "navigate": "↑↓ to navigate",
+    "select": "Enter to select",
+    "close": "Esc to close",
+    "quickActions": {
+      "addFood": "Add Food",
+      "addWorkout": "Add Workout",
+      "addExpense": "Add Expense",
+      "addBook": "Add Book",
+      "addRecipe": "Add Recipe",
+      "logWater": "Log Water",
+      "logSleep": "Log Sleep",
+      "logMood": "Log Mood",
+      "analytics": "Analytics",
+      "settings": "Settings"
+    }
+  },
+  "finance": {
+    "recurring": {
+      "title": "Recurring Transactions",
+      "add": "Add",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Delete recurring transaction?",
+      "form": {
+        "title": "Title",
+        "titlePlaceholder": "Rent, Salary...",
+        "amount": "Amount",
+        "frequency": "Frequency",
+        "dayOfMonth": "Day of Month",
+        "account": "Account",
+        "startDate": "Start Date",
+        "save": "Save",
+        "create": "Create"
+      },
+      "frequency": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "biweekly": "Bi-weekly",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly"
+      },
+      "expense": "Expense",
+      "income": "Income",
+      "empty": "No recurring transactions",
+      "loading": "Loading...",
+      "nextDue": "Next"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/lib/navigation"
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -26,19 +27,19 @@ type ItemType = "vitamin" | "medicine" | "herb" | "cosmetic" | "product"
 const logOptions = [
   {
     type: "food" as LogType,
-    label: "Питание",
+    label: "food",
     icon: Utensils,
     color: "bg-orange-500/10 text-orange-500",
   },
   {
     type: "workout" as LogType,
-    label: "Тренировка",
+    label: "workout",
     icon: Dumbbell,
     color: "bg-blue-500/10 text-blue-500",
   },
   {
     type: "finance" as LogType,
-    label: "Финансы",
+    label: "finance",
     icon: Wallet,
     color: "bg-green-500/10 text-green-500",
   },
@@ -48,26 +49,26 @@ const logOptions = [
 const itemOptions = [
   {
     type: "vitamin" as ItemType,
-    label: "Витамины",
+    label: "vitamins",
     icon: Pill,
     color: "bg-purple-500/10 text-purple-500",
   },
   {
     type: "medicine" as ItemType,
-    label: "Лекарства",
+    label: "medicine",
     icon: Bandage,
     color: "bg-red-500/10 text-red-500",
   },
-  { type: "herb" as ItemType, label: "Травы", icon: Leaf, color: "bg-green-500/10 text-green-500" },
+  { type: "herb" as ItemType, label: "herbs", icon: Leaf, color: "bg-green-500/10 text-green-500" },
   {
     type: "cosmetic" as ItemType,
-    label: "Косметика",
+    label: "cosmetics",
     icon: Sparkles,
     color: "bg-pink-500/10 text-pink-500",
   },
   {
     type: "product" as ItemType,
-    label: "Продукты",
+    label: "products",
     icon: Package,
     color: "bg-yellow-500/10 text-yellow-500",
   },
@@ -77,7 +78,7 @@ const itemOptions = [
 const bookOptions = [
   {
     type: "book",
-    label: "Книга",
+    label: "book",
     icon: BookOpen,
     color: "bg-blue-500/10 text-blue-500",
     route: "/books/new",
@@ -88,21 +89,21 @@ const bookOptions = [
 const recipeOptions = [
   {
     type: "food",
-    label: "Блюдо",
+    label: "dish",
     icon: ChefHat,
     color: "bg-orange-500/10 text-orange-500",
     route: "/recipes/new?type=food",
   },
   {
     type: "drink",
-    label: "Напиток",
+    label: "drink",
     icon: Coffee,
     color: "bg-blue-500/10 text-blue-500",
     route: "/recipes/new?type=drink",
   },
   {
     type: "cocktail",
-    label: "Коктейль",
+    label: "cocktail",
     icon: Martini,
     color: "bg-purple-500/10 text-purple-500",
     route: "/recipes/new?type=cocktail",
@@ -119,6 +120,7 @@ interface AddDialogProps {
 
 export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
   const router = useRouter()
+  const t = useTranslations("common.addDialog")
 
   const getOptions = () => {
     switch (category) {
@@ -138,15 +140,15 @@ export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
   const getTitle = () => {
     switch (category) {
       case "logs":
-        return "Добавить запись"
+        return t("addLog")
       case "items":
-        return "Добавить в каталог"
+        return t("addCatalog")
       case "books":
-        return "Добавить книгу"
+        return t("addBook")
       case "recipes":
-        return "Добавить рецепт"
+        return t("addRecipe")
       default:
-        return "Добавить"
+        return t("addLog")
     }
   }
 
@@ -190,7 +192,7 @@ export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
                 >
                   {"icon" in option && <option.icon className="h-6 w-6" />}
                 </div>
-                <span className="font-medium text-sm">{option.label}</span>
+                <span className="font-medium text-sm">{t(option.label)}</span>
               </CardContent>
             </Card>
           ))}

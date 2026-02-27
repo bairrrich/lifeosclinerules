@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Bell, BellOff, Clock, Droplet } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,6 +23,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
   const [reminder, setReminder] = useState<Reminder | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const { hasPermission, requestPermission } = useNotifications()
+  const t = useTranslations("water")
 
   useEffect(() => {
     loadReminder()
@@ -32,7 +34,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
       const existing = await db.reminders
         .where("type")
         .equals("water")
-        .filter((r) => r.title === "Напоминание о воде")
+        .filter((r) => r.title === t("reminder.waterReminderTitle"))
         .first()
 
       if (existing) {
@@ -55,7 +57,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
     if (!hasPermission) {
       const granted = await requestPermission()
       if (!granted) {
-        alert("Для работы напоминаний необходимо разрешить уведомления в браузере")
+        alert(t("reminder.permissionRequired"))
         return
       }
     }
@@ -74,8 +76,8 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
 
   async function createReminder() {
     const reminderData: Omit<Reminder, "id" | "created_at" | "updated_at"> = {
-      title: "Напоминание о воде",
-      message: `Пора выпить воды! (интервал ${interval} мин)`,
+      title: t("reminder.waterReminderTitle"),
+      message: t("reminder.waterReminderMessage", { interval }),
       type: "water",
       time: startTime,
       days: [0, 1, 2, 3, 4, 5, 6], // Все дни недели
@@ -129,7 +131,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
     setInterval(newInterval)
     if (isEnabled && reminder) {
       await db.reminders.update(reminder.id, {
-        message: `Пора выпить воды! (интервал ${newInterval} мин)`,
+        message: t("reminder.waterReminderMessage", { interval: newInterval }),
         repeat_interval: newInterval,
         updated_at: new Date().toISOString(),
       })
@@ -160,7 +162,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Droplet className="h-4 w-4 text-blue-500" />
-          Напоминания о воде
+          {t("reminder.title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -173,11 +175,11 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
               <BellOff className="h-4 w-4 text-muted-foreground" />
             )}
             <span className="text-sm">
-              {isEnabled ? "Напоминания включены" : "Напоминания выключены"}
+              {isEnabled ? t("reminder.enabled") : t("reminder.disabled")}
             </span>
           </div>
           <Button variant={isEnabled ? "default" : "outline"} size="sm" onClick={toggleReminder}>
-            {isEnabled ? "Выключить" : "Включить"}
+            {isEnabled ? t("reminder.disable") : t("reminder.enable")}
           </Button>
         </div>
 
@@ -186,7 +188,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
           <>
             {/* Interval */}
             <div className="space-y-2">
-              <Label>Интервал (минуты)</Label>
+              <Label>{t("reminder.interval")}</Label>
               <div className="flex gap-2">
                 {[30, 60, 90, 120].map((mins) => (
                   <Button
@@ -204,7 +206,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
             {/* Time Range */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="start-time">С</Label>
+                <Label htmlFor="start-time">{t("reminder.from")}</Label>
                 <Input
                   id="start-time"
                   type="time"
@@ -213,7 +215,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="end-time">До</Label>
+                <Label htmlFor="end-time">{t("reminder.to")}</Label>
                 <Input
                   id="end-time"
                   type="time"
@@ -226,8 +228,9 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
             {/* Preview */}
             <div className="text-xs text-muted-foreground">
               <Clock className="h-3 w-3 inline mr-1" />
-              Напоминания: {generateTimes().slice(0, 5).join(", ")}
-              {generateTimes().length > 5 && ` и ещё ${generateTimes().length - 5}`}
+              {t("reminder.reminders")} {generateTimes().slice(0, 5).join(", ")}
+              {generateTimes().length > 5 &&
+                ` ${t("reminder.andMore", { count: generateTimes().length - 5 })}`}
             </div>
           </>
         )}
@@ -235,7 +238,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
         {/* Permission warning */}
         {!hasPermission && (
           <div className="text-xs text-amber-500 bg-amber-50 dark:bg-amber-950/20 p-2 rounded">
-            Нажмите "Включить" и разрешите уведомления в браузере
+            {t("reminder.permissionWarning")}
           </div>
         )}
       </CardContent>

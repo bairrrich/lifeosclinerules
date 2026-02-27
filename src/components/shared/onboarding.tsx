@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/lib/navigation"
+import { useTranslations } from "next-intl"
 import {
   Utensils,
   Dumbbell,
@@ -69,6 +70,7 @@ interface OnboardingProps {
 
 export function Onboarding({ onComplete }: OnboardingProps) {
   const router = useRouter()
+  const t = useTranslations("onboarding")
   const [currentStep, setCurrentStep] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -125,7 +127,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           size="icon"
           className="absolute right-2 top-2"
           onClick={handleSkip}
-          aria-label="Пропустить"
+          aria-label={t("skip")}
         >
           <X className="h-4 w-4" />
         </Button>
@@ -155,8 +157,10 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           )}
 
           {/* Content */}
-          <h2 className="text-xl font-semibold text-center mb-2">{step.title}</h2>
-          <p className="text-sm text-muted-foreground text-center mb-6">{step.description}</p>
+          <h2 className="text-xl font-semibold text-center mb-2">{t(`${step.id}.title`)}</h2>
+          <p className="text-sm text-muted-foreground text-center mb-6">
+            {t(`${step.id}.description`)}
+          </p>
 
           {/* Features grid */}
           {step.features && (
@@ -175,11 +179,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             {currentStep > 0 && (
               <Button variant="outline" onClick={handlePrev} className="flex-1 gap-2">
                 <ChevronLeft className="h-4 w-4" />
-                Назад
+                {t("back")}
               </Button>
             )}
             <Button onClick={handleNext} className="flex-1 gap-2">
-              {currentStep === steps.length - 1 ? "Начать" : "Далее"}
+              {currentStep === steps.length - 1 ? t("finishOnboarding") : t("next")}
               {currentStep < steps.length - 1 && <ChevronRight className="h-4 w-4" />}
             </Button>
           </div>
@@ -190,7 +194,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               className="w-full mt-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
               onClick={handleSkip}
             >
-              Пропустить
+              {t("skip")}
             </button>
           )}
         </CardContent>

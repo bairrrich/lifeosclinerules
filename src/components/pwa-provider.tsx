@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 import { Download, X, Bell, BellOff } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,6 +24,7 @@ export function PWAProvider() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   // Инициализируем состояние сразу, чтобы избежать setState в effect
   const [isInstalled, setIsInstalled] = useState(getIsInstalledInitial)
+  const t = useTranslations("common.pwa")
 
   // Инициализация системы уведомлений
   const { hasPermission, requestPermission } = useNotifications()
@@ -122,10 +124,8 @@ export function PWAProvider() {
               <Bell className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-sm">Включить уведомления</p>
-              <p className="text-xs text-muted-foreground">
-                Получайте напоминания о приёме лекарств и тренировках
-              </p>
+              <p className="font-medium text-sm">{t("notificationTitle")}</p>
+              <p className="text-xs text-muted-foreground">{t("notificationDescription")}</p>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -133,12 +133,12 @@ export function PWAProvider() {
                 size="icon"
                 onClick={handleNotificationDismiss}
                 className="h-8 w-8"
-                aria-label="Закрыть"
+                aria-label={t("dismiss")}
               >
                 <X className="h-4 w-4" />
               </Button>
               <Button size="sm" onClick={handleEnableNotifications}>
-                Включить
+                {t("enable")}
               </Button>
             </div>
           </CardContent>
@@ -157,8 +157,8 @@ export function PWAProvider() {
             <Download className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1">
-            <p className="font-medium text-sm">Установить Life OS</p>
-            <p className="text-xs text-muted-foreground">Работает офлайн и быстрее запускается</p>
+            <p className="font-medium text-sm">{t("installTitle")}</p>
+            <p className="text-xs text-muted-foreground">{t("installDescription")}</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -166,12 +166,12 @@ export function PWAProvider() {
               size="icon"
               onClick={handleDismiss}
               className="h-8 w-8"
-              aria-label="Закрыть"
+              aria-label={t("dismiss")}
             >
               <X className="h-4 w-4" />
             </Button>
             <Button size="sm" onClick={handleInstall}>
-              Установить
+              {t("install")}
             </Button>
           </div>
         </CardContent>

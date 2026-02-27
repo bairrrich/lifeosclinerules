@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,6 +33,7 @@ interface UserBookFormProps {
 }
 
 export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
+  const t = useTranslations("books")
   const updateField = <K extends keyof UserBook>(field: K, value: UserBook[K]) => {
     onChange({ ...data, [field]: value })
   }
@@ -46,11 +48,11 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
       {/* Статус и прогресс */}
       <Card>
         <CardHeader>
-          <CardTitle>Статус и прогресс</CardTitle>
+          <CardTitle>{t("userBook.status")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Статус чтения</Label>
+            <Label>{t("userBook.status")}</Label>
             <Tabs
               value={data?.status || "planned"}
               onValueChange={(value) => updateField("status", value as ReadingStatus)}
@@ -69,7 +71,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
           {(data?.status === "reading" || data?.status === "paused") && (
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label htmlFor="progress_pages">Страниц прочитано</Label>
+                <Label htmlFor="progress_pages">{t("userBook.pages")}</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="progress_pages"
@@ -87,7 +89,9 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
                     }}
                   />
                   {pageCount && (
-                    <span className="text-sm text-muted-foreground">из {pageCount}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {t("userBook.pages")} {pageCount}
+                    </span>
                   )}
                 </div>
               </div>
@@ -96,7 +100,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               {progressPercent > 0 && (
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Прогресс</span>
+                    <span>{t("userBook.progress")}</span>
                     <span>{progressPercent}%</span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -113,7 +117,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
           {/* Даты */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="started_at">Начал читать</Label>
+              <Label htmlFor="started_at">{t("userBook.startedAt")}</Label>
               <Input
                 id="started_at"
                 type="date"
@@ -122,7 +126,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="finished_at">Закончил</Label>
+              <Label htmlFor="finished_at">{t("userBook.finishedAt")}</Label>
               <Input
                 id="finished_at"
                 type="date"
@@ -137,11 +141,11 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
       {/* Оценка и заметки */}
       <Card>
         <CardHeader>
-          <CardTitle>Оценка и заметки</CardTitle>
+          <CardTitle>{t("userBook.rating")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="rating">Моя оценка</Label>
+            <Label htmlFor="rating">{t("userBook.rating")}</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="rating"
@@ -156,15 +160,15 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
                 }
                 className="w-20"
               />
-              <span className="text-sm text-muted-foreground">из 5</span>
+              <span className="text-sm text-muted-foreground">{t("userBook.rating")} 5</span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="personal_notes">Личные заметки</Label>
+            <Label htmlFor="personal_notes">{t("userBook.notes")}</Label>
             <Textarea
               id="personal_notes"
-              placeholder="Ваши мысли о книге..."
+              placeholder={t("userBook.notes")}
               value={data?.personal_notes || ""}
               onChange={(e) => updateField("personal_notes", e.target.value)}
               className="min-h-[100px]"
@@ -176,7 +180,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
       {/* Владение */}
       <Card>
         <CardHeader>
-          <CardTitle>Владение</CardTitle>
+          <CardTitle>{t("userBook.isOwned")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-2">
@@ -187,13 +191,13 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               onChange={(e) => updateField("is_owned", e.target.checked)}
               className="h-4 w-4"
             />
-            <Label htmlFor="is_owned">Книга в моей коллекции</Label>
+            <Label htmlFor="is_owned">{t("userBook.isOwned")}</Label>
           </div>
 
           {data?.is_owned && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="owned_format">Формат владения</Label>
+                <Label htmlFor="owned_format">{t("userBook.ownedFormat")}</Label>
                 <NativeSelect
                   id="owned_format"
                   value={data?.owned_format || "paperback"}
@@ -208,10 +212,10 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Местоположение</Label>
+                <Label htmlFor="location">{t("userBook.location")}</Label>
                 <Input
                   id="location"
-                  placeholder="Полка №3, коробка..."
+                  placeholder={t("userBook.location")}
                   value={data?.location || ""}
                   onChange={(e) => updateField("location", e.target.value)}
                 />
@@ -220,7 +224,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="reread_count">Перечитано раз</Label>
+            <Label htmlFor="reread_count">{t("userBook.rereadCount")}</Label>
             <Input
               id="reread_count"
               type="number"

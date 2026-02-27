@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -12,48 +13,48 @@ import type { ReminderType, ReminderPriority, ReminderRepeatType, Item } from "@
 
 // Конфигурация типов напоминаний
 export const reminderTypesConfig: { type: ReminderType; label: string; icon: string }[] = [
-  { type: "habit", label: "Привычка", icon: "🎯" },
-  { type: "medicine", label: "Лекарство", icon: "💊" },
-  { type: "water", label: "Вода", icon: "💧" },
-  { type: "workout", label: "Тренировка", icon: "💪" },
-  { type: "food", label: "Питание", icon: "🍽️" },
-  { type: "item", label: "Из каталога", icon: "📦" },
-  { type: "custom", label: "Другое", icon: "🔔" },
+  { type: "habit", label: "habit", icon: "🎯" },
+  { type: "medicine", label: "medicine", icon: "💊" },
+  { type: "water", label: "water", icon: "💧" },
+  { type: "workout", label: "workout", icon: "💪" },
+  { type: "food", label: "food", icon: "🍽️" },
+  { type: "item", label: "item", icon: "📦" },
+  { type: "custom", label: "custom", icon: "🔔" },
 ]
 
 // Конфигурация приоритетов
 export const priorityConfig: { value: ReminderPriority; label: string; color: string }[] = [
-  { value: "low", label: "Низкий", color: "bg-gray-500" },
-  { value: "medium", label: "Средний", color: "bg-blue-500" },
-  { value: "high", label: "Высокий", color: "bg-orange-500" },
-  { value: "critical", label: "Критичный", color: "bg-red-500" },
+  { value: "low", label: "low", color: "bg-gray-500" },
+  { value: "medium", label: "medium", color: "bg-blue-500" },
+  { value: "high", label: "high", color: "bg-orange-500" },
+  { value: "critical", label: "critical", color: "bg-red-500" },
 ]
 
 // Опции упреждения
 export const advanceOptions = [
-  { value: 0, label: "Вовремя" },
-  { value: 5, label: "За 5 мин" },
-  { value: 10, label: "За 10 мин" },
-  { value: 15, label: "За 15 мин" },
-  { value: 30, label: "За 30 мин" },
-  { value: 60, label: "За 1 час" },
-  { value: 1440, label: "За 1 день" },
+  { value: 0, label: "onTime" },
+  { value: 5, label: "5minBefore" },
+  { value: 10, label: "10minBefore" },
+  { value: 15, label: "15minBefore" },
+  { value: 30, label: "30minBefore" },
+  { value: 60, label: "1hourBefore" },
+  { value: 1440, label: "1dayBefore" },
 ]
 
 // Опции для кастомного интервала
 const customIntervalUnits = [
-  { value: "hours", label: "часов" },
-  { value: "days", label: "дней" },
-  { value: "weeks", label: "недель" },
-  { value: "months", label: "месяцев" },
+  { value: "hours", label: "hours" },
+  { value: "days", label: "days" },
+  { value: "weeks", label: "weeks" },
+  { value: "months", label: "months" },
 ]
 
 // Опции для времени суток (быстрый выбор)
 const timeOfDayOptions = [
-  { time: "07:00", label: "Утро" },
-  { time: "12:00", label: "Обед" },
-  { time: "18:00", label: "Вечер" },
-  { time: "21:00", label: "Перед сном" },
+  { time: "07:00", label: "morning" },
+  { time: "12:00", label: "lunch" },
+  { time: "18:00", label: "evening" },
+  { time: "21:00", label: "bedtime" },
 ]
 
 const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
@@ -89,6 +90,7 @@ interface ReminderFormProps {
 export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
   const [items, setItems] = useState<Item[]>([])
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
+  const t = useTranslations("reminders")
 
   useEffect(() => {
     if (formData.type === "item" || formData.type === "medicine") {
@@ -200,13 +202,15 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       {/* Выбор элемента из каталога */}
       {(formData.type === "item" || formData.type === "medicine") && items.length > 0 && (
         <div className="space-y-2">
-          <Label>{formData.type === "medicine" ? "Лекарство/Витамин" : "Элемент каталога"}</Label>
+          <Label>
+            {formData.type === "medicine" ? t("form.medicineSelect") : t("form.itemSelect")}
+          </Label>
           <select
             className="w-full h-10 px-3 rounded-md border border-input bg-background"
             value={formData.related_id || ""}
             onChange={(e) => handleItemSelect(e.target.value)}
           >
-            <option value="">Выберите...</option>
+            <option value="">{t("form.selectPlaceholder")}</option>
             {items.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name} {item.form ? `(${item.form})` : ""}
@@ -218,23 +222,23 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
 
       {/* Название */}
       <div className="space-y-2">
-        <Label htmlFor="title">Название</Label>
+        <Label htmlFor="title">{t("form.title")}</Label>
         <Input
           id="title"
           value={formData.title}
           onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-          placeholder="Название напоминания"
+          placeholder={t("form.titlePlaceholder")}
         />
       </div>
 
       {/* Сообщение */}
       <div className="space-y-2">
-        <Label htmlFor="message">Сообщение (опц.)</Label>
+        <Label htmlFor="message">{t("form.message")}</Label>
         <Textarea
           id="message"
           value={formData.message}
           onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-          placeholder="Дополнительная информация"
+          placeholder={t("form.messagePlaceholder")}
           rows={2}
         />
       </div>
@@ -242,7 +246,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       {/* Время напоминания */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label>Время напоминания</Label>
+          <Label>{t("form.time")}</Label>
           {(formData.repeat_type === "daily" || formData.repeat_type === "weekly") && (
             <Button
               type="button"
@@ -267,7 +271,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               className="h-7 text-xs"
             >
               <Plus className="h-3 w-3 mr-1" />
-              Добавить время
+              {t("form.addTime")}
             </Button>
           )}
         </div>
@@ -319,7 +323,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                 className="h-7 text-xs"
                 onClick={() => setFormData((prev) => ({ ...prev, time }))}
               >
-                {label}
+                {t(`form.timeOfDay.${label}`)}
               </Button>
             ))}
           </div>
@@ -330,7 +334,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           formData.times &&
           formData.times.length > 0 && (
             <div className="space-y-2 mt-2">
-              <p className="text-xs text-muted-foreground">Также напомнить в:</p>
+              <p className="text-xs text-muted-foreground">{t("form.alsoRemindAt")}</p>
               <div className="flex flex-wrap gap-2">
                 {formData.times.map((t, idx) => (
                   <Badge
@@ -371,7 +375,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
 
       {/* Повторяемость - основной переключатель */}
       <div className="space-y-2">
-        <Label>Повторяемость</Label>
+        <Label>{t("form.repeatType")}</Label>
         <div className="grid grid-cols-2 gap-2">
           <Button
             type="button"
@@ -379,7 +383,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             size="sm"
             onClick={() => handleRepeatTypeChange("none")}
           >
-            Без повтора
+            {t("form.repeatTypes.none")}
           </Button>
           <Button
             type="button"
@@ -387,7 +391,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             size="sm"
             onClick={() => handleRepeatTypeChange("daily")}
           >
-            Ежедневно
+            {t("form.repeatTypes.daily")}
           </Button>
           <Button
             type="button"
@@ -395,7 +399,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             size="sm"
             onClick={() => handleRepeatTypeChange("weekly")}
           >
-            Еженедельно
+            {t("form.repeatTypes.weekly")}
           </Button>
           <Button
             type="button"
@@ -403,7 +407,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             size="sm"
             onClick={() => handleRepeatTypeChange("monthly")}
           >
-            Ежемесячно
+            {t("form.repeatTypes.monthly")}
           </Button>
           <Button
             type="button"
@@ -412,7 +416,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             className="col-span-2"
             onClick={() => handleRepeatTypeChange("custom")}
           >
-            Кастомный интервал
+            {t("form.repeatTypes.custom")}
           </Button>
         </div>
       </div>
@@ -422,14 +426,14 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       {/* Ежедневно - пояснение */}
       {formData.repeat_type === "daily" && (
         <div className="p-3 rounded-lg bg-muted/50 text-sm text-muted-foreground">
-          📅 Напоминание будет повторяться каждый день
+          {t("form.dailyHint")}
         </div>
       )}
 
       {/* Еженедельно - выбор дней недели */}
       {formData.repeat_type === "weekly" && (
         <div className="space-y-2">
-          <Label>Дни недели</Label>
+          <Label>{t("form.daysOfWeek")}</Label>
           <div className="grid grid-cols-7 gap-1">
             {dayNames.map((day, i) => (
               <Button
@@ -451,7 +455,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               size="sm"
               onClick={() => setFormData((prev) => ({ ...prev, days: [0, 1, 2, 3, 4, 5, 6] }))}
             >
-              Каждый день
+              {t("form.everyDay")}
             </Button>
             <Button
               type="button"
@@ -459,7 +463,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               size="sm"
               onClick={() => setFormData((prev) => ({ ...prev, days: [1, 2, 3, 4, 5] }))}
             >
-              По будням
+              {t("form.weekdays")}
             </Button>
             <Button
               type="button"
@@ -467,7 +471,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               size="sm"
               onClick={() => setFormData((prev) => ({ ...prev, days: [0, 6] }))}
             >
-              Выходные
+              {t("form.weekends")}
             </Button>
           </div>
         </div>
@@ -476,9 +480,9 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       {/* Ежемесячно - выбор числа */}
       {formData.repeat_type === "monthly" && (
         <div className="space-y-2">
-          <Label>Число месяца</Label>
+          <Label>{t("form.monthDay")}</Label>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Каждое</span>
+            <span className="text-sm text-muted-foreground">{t("form.monthDayLabel")}</span>
             <Input
               type="number"
               min={1}
@@ -492,11 +496,9 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                 }))
               }
             />
-            <span className="text-sm text-muted-foreground">число</span>
+            <span className="text-sm text-muted-foreground">{t("form.monthDaySuffix")}</span>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Если в месяце меньше дней, напоминание сработает в последний день месяца
-          </p>
+          <p className="text-xs text-muted-foreground">{t("form.monthDayHint")}</p>
         </div>
       )}
 
@@ -504,7 +506,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       {formData.repeat_type === "custom" && (
         <div className="space-y-4 p-3 rounded-lg border">
           <div className="flex items-center gap-2">
-            <span className="text-sm">Каждые</span>
+            <span className="text-sm">{t("form.customInterval")}</span>
             <Input
               type="number"
               min={1}
@@ -530,7 +532,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             >
               {customIntervalUnits.map((unit) => (
                 <option key={unit.value} value={unit.value}>
-                  {unit.label}
+                  {t(`form.${unit.value}`)}
                 </option>
               ))}
             </select>
@@ -539,7 +541,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           {/* Если выбраны недели - показать выбор дней */}
           {formData.custom_unit === "weeks" && (
             <div className="space-y-2">
-              <Label className="text-sm">В какие дни</Label>
+              <Label className="text-sm">{t("form.onDays")}</Label>
               <div className="grid grid-cols-7 gap-1">
                 {dayNames.map((day, i) => (
                   <Button
@@ -561,7 +563,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                   size="sm"
                   onClick={() => setFormData((prev) => ({ ...prev, days: [0, 1, 2, 3, 4, 5, 6] }))}
                 >
-                  Каждый день
+                  {t("form.everyDay")}
                 </Button>
                 <Button
                   type="button"
@@ -569,7 +571,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                   size="sm"
                   onClick={() => setFormData((prev) => ({ ...prev, days: [1, 2, 3, 4, 5] }))}
                 >
-                  По будням
+                  {t("form.weekdays")}
                 </Button>
               </div>
             </div>
@@ -578,7 +580,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           {/* Если выбраны месяцы - показать выбор числа */}
           {formData.custom_unit === "months" && (
             <div className="space-y-2">
-              <Label className="text-sm">Число месяца</Label>
+              <Label className="text-sm">{t("form.monthDay")}</Label>
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
@@ -593,7 +595,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                     }))
                   }
                 />
-                <span className="text-sm text-muted-foreground">число</span>
+                <span className="text-sm text-muted-foreground">{t("form.monthDaySuffix")}</span>
               </div>
             </div>
           )}
@@ -602,7 +604,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
 
       {/* Приоритет */}
       <div className="space-y-2">
-        <Label>Приоритет</Label>
+        <Label>{t("form.priority")}</Label>
         <div className="grid grid-cols-4 gap-2">
           <Button
             type="button"
@@ -615,7 +617,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "low" }))}
           >
-            Низкий
+            {t("form.priorities.low")}
           </Button>
           <Button
             type="button"
@@ -628,7 +630,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "medium" }))}
           >
-            Средний
+            {t("form.priorities.medium")}
           </Button>
           <Button
             type="button"
@@ -641,7 +643,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "high" }))}
           >
-            Высокий
+            {t("form.priorities.high")}
           </Button>
           <Button
             type="button"
@@ -654,7 +656,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "critical" }))}
           >
-            Критичный
+            {t("form.priorities.critical")}
           </Button>
         </div>
       </div>
@@ -662,7 +664,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       {/* Даты курса */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="start_date">Начало курса</Label>
+          <Label htmlFor="start_date">{t("form.courseStart")}</Label>
           <Input
             id="start_date"
             type="date"
@@ -671,7 +673,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="end_date">Окончание курса</Label>
+          <Label htmlFor="end_date">{t("form.courseEnd")}</Label>
           <Input
             id="end_date"
             type="date"
@@ -683,7 +685,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
 
       {/* Настройки уведомлений */}
       <div className="space-y-3">
-        <Label>Настройки уведомлений</Label>
+        <Label>{t("form.notificationSettings")}</Label>
         <div className="flex flex-col gap-2">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -692,7 +694,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               onChange={(e) => setFormData((prev) => ({ ...prev, sound: e.target.checked }))}
               className="w-4 h-4"
             />
-            <span className="text-sm">Звук</span>
+            <span className="text-sm">{t("form.sound")}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -701,7 +703,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               onChange={(e) => setFormData((prev) => ({ ...prev, vibration: e.target.checked }))}
               className="w-4 h-4"
             />
-            <span className="text-sm">Вибрация</span>
+            <span className="text-sm">{t("form.vibration")}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -710,7 +712,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               onChange={(e) => setFormData((prev) => ({ ...prev, persistent: e.target.checked }))}
               className="w-4 h-4"
             />
-            <span className="text-sm">Назойливый режим (повторять пока не подтвердит)</span>
+            <span className="text-sm">{t("form.persistent")}</span>
           </label>
         </div>
       </div>

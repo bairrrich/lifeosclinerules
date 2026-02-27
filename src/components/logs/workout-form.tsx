@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ComboboxSelect } from "./combobox-select"
+import { useTranslations } from "next-intl"
 import type { StrengthSubcategory, CardioSubcategory, YogaSubcategory, WorkoutGoal } from "@/types"
 
 // ============================================
@@ -14,8 +15,8 @@ import type { StrengthSubcategory, CardioSubcategory, YogaSubcategory, WorkoutGo
 // ============================================
 
 const baseLogSchema = z.object({
-  date: z.string().min(1, "Выберите дату"),
-  time: z.string().min(1, "Выберите время"),
+  date: z.string().min(1, "Date required"),
+  time: z.string().min(1, "Time required"),
   title: z.string().optional(),
   category_id: z.string().optional(),
   quantity: z.number().optional(),
@@ -26,7 +27,7 @@ const baseLogSchema = z.object({
 })
 
 const workoutSchema = baseLogSchema.extend({
-  title: z.string().min(1, "Введите название"),
+  title: z.string().min(1, "Title required"),
   duration: z.number().optional(),
   intensity: z.enum(["low", "medium", "high"]).optional(),
 })
@@ -37,79 +38,79 @@ export type WorkoutFormData = z.infer<typeof workoutSchema>
 // Константы
 // ============================================
 
-// Силовые тренировки - подкатегории
+// Strength training - subcategories
 export const strengthSubcategories = {
   anatomical: {
-    label: "По анатомическому принципу",
+    label: "By Anatomy",
     options: [
-      { value: "chest", label: "Грудь" },
-      { value: "back", label: "Спина" },
-      { value: "legs", label: "Ноги" },
-      { value: "shoulders", label: "Плечи" },
-      { value: "arms", label: "Руки" },
-      { value: "core", label: "Пресс (Кор)" },
+      { value: "chest", label: "Chest" },
+      { value: "back", label: "Back" },
+      { value: "legs", label: "Legs" },
+      { value: "shoulders", label: "Shoulders" },
+      { value: "arms", label: "Arms" },
+      { value: "core", label: "Core" },
     ],
   },
   equipment: {
-    label: "По типу оборудования",
+    label: "By Equipment",
     options: [
-      { value: "free_weights", label: "Свободные веса" },
-      { value: "machines", label: "Тренажеры" },
-      { value: "bodyweight", label: "С собственным весом" },
-      { value: "functional", label: "Функциональный тренинг" },
+      { value: "free_weights", label: "Free Weights" },
+      { value: "machines", label: "Machines" },
+      { value: "bodyweight", label: "Bodyweight" },
+      { value: "functional", label: "Functional" },
     ],
   },
 }
 
-// Кардио - подкатегории
+// Cardio - subcategories
 export const cardioSubcategories = {
   activity: {
-    label: "По типу активности",
+    label: "By Activity",
     options: [
-      { value: "running", label: "Бег" },
-      { value: "walking", label: "Ходьба" },
-      { value: "cycling", label: "Велосипед" },
-      { value: "rowing", label: "Гребля" },
-      { value: "jumping", label: "Прыжки" },
+      { value: "running", label: "Running" },
+      { value: "walking", label: "Walking" },
+      { value: "cycling", label: "Cycling" },
+      { value: "rowing", label: "Rowing" },
+      { value: "jumping", label: "Jumping" },
     ],
   },
   intensity: {
-    label: "По интенсивности",
+    label: "By Intensity",
     options: [
-      { value: "liss", label: "LISS (низкоинтенсивное)" },
-      { value: "hiit", label: "HIIT (интервальное)" },
-      { value: "tabata", label: "Табата" },
+      { value: "liss", label: "LISS (Low Intensity)" },
+      { value: "hiit", label: "HIIT (Interval)" },
+      { value: "tabata", label: "Tabata" },
     ],
   },
 }
 
-// Йога - подкатегории
+// Yoga - subcategories
 export const yogaSubcategories = {
   style: {
-    label: "По стилю",
+    label: "By Style",
     options: [
-      { value: "hatha", label: "Хатха-йога" },
-      { value: "vinyasa", label: "Виньяса-йога" },
-      { value: "ashtanga", label: "Аштанга-йога" },
-      { value: "kundalini", label: "Кундалини-йога" },
-      { value: "iyengar", label: "Айенгар-йога" },
+      { value: "hatha", label: "Hatha Yoga" },
+      { value: "vinyasa", label: "Vinyasa Yoga" },
+      { value: "ashtanga", label: "Ashtanga Yoga" },
+      { value: "kundalini", label: "Kundalini Yoga" },
+      { value: "iyengar", label: "Iyengar Yoga" },
     ],
   },
   goal: {
-    label: "По целям",
+    label: "By Goal",
     options: [
-      { value: "stretching", label: "Стретчинг / Гибкость" },
-      { value: "power", label: "Силовая йога" },
-      { value: "relax", label: "Релакс / Восстановление" },
-      { value: "breathing", label: "Дыхание и медитация" },
+      { value: "stretching", label: "Stretching / Flexibility" },
+      { value: "power", label: "Power Yoga" },
+      { value: "relax", label: "Relax / Recovery" },
+      { value: "breathing", label: "Breathing & Meditation" },
     ],
   },
   level: {
-    label: "По уровню",
+    label: "By Level",
     options: [
-      { value: "beginner", label: "Для начинающих" },
-      { value: "intermediate", label: "Для продолжающих" },
-      { value: "advanced", label: "Для опытных" },
+      { value: "beginner", label: "Beginner" },
+      { value: "intermediate", label: "Intermediate" },
+      { value: "advanced", label: "Advanced" },
     ],
   },
 }
@@ -117,57 +118,57 @@ export const yogaSubcategories = {
 // Инвентарь для тренировок
 export const equipmentOptions: Record<string, string[]> = {
   strength: [
-    "Штанга",
-    "Гантели",
-    "Гири",
-    "Блочный тренажер",
-    "Рычажный тренажер",
-    "Скамья",
-    "Турник",
-    "Брусья",
-    "Кроссовер",
-    "Смит-машина",
-    "Резинки",
-    "Медбол",
+    "Barbell",
+    "Dumbbells",
+    "Kettlebells",
+    "Cable Machine",
+    "Leverage Machine",
+    "Bench",
+    "Pull-up Bar",
+    "Parallel Bars",
+    "Cable Crossover",
+    "Smith Machine",
+    "Resistance Bands",
+    "Medicine Ball",
     "TRX",
-    "Без инвентаря",
+    "No Equipment",
   ],
   cardio: [
-    "Беговая дорожка",
-    "Эллипсоид",
-    "Велотренажер",
-    "Гребной тренажер",
-    "Скакалка",
-    "Степпер",
-    "Без инвентаря",
+    "Treadmill",
+    "Elliptical",
+    "Exercise Bike",
+    "Rowing Machine",
+    "Jump Rope",
+    "Stepper",
+    "No Equipment",
   ],
-  yoga: ["Коврик", "Кирпичи", "Ремень", "Болстер", "Одеяло", "Стул", "Стена", "Без инвентаря"],
+  yoga: ["Mat", "Blocks", "Strap", "Bolster", "Blanket", "Chair", "Wall", "No Equipment"],
 }
 
 // Цели тренировок
 export const goalOptions: Record<string, { value: string; label: string }[]> = {
   strength: [
-    { value: "mass", label: "Набор массы" },
-    { value: "relief", label: "Рельеф" },
-    { value: "strength", label: "Сила" },
-    { value: "endurance", label: "Выносливость" },
+    { value: "mass", label: "Mass Gain" },
+    { value: "relief", label: "Definition" },
+    { value: "strength", label: "Strength" },
+    { value: "endurance", label: "Endurance" },
   ],
   cardio: [
-    { value: "endurance", label: "Выносливость" },
-    { value: "fat_loss", label: "Сжигание жира" },
-    { value: "recovery", label: "Восстановление" },
+    { value: "endurance", label: "Endurance" },
+    { value: "fat_loss", label: "Fat Loss" },
+    { value: "recovery", label: "Recovery" },
   ],
   yoga: [
-    { value: "flexibility", label: "Гибкость" },
-    { value: "strength", label: "Сила" },
-    { value: "relaxation", label: "Расслабление" },
-    { value: "balance", label: "Баланс" },
+    { value: "flexibility", label: "Flexibility" },
+    { value: "strength", label: "Strength" },
+    { value: "relaxation", label: "Relaxation" },
+    { value: "balance", label: "Balance" },
   ],
 }
 
 // Функция для получения метки подкатегории
 export function getSubcategoryLabel(category: string, value: string): string {
-  if (category === "Силовая") {
+  if (category === "Strength") {
     const allOptions = [
       ...strengthSubcategories.anatomical.options,
       ...strengthSubcategories.equipment.options,
@@ -175,7 +176,7 @@ export function getSubcategoryLabel(category: string, value: string): string {
     const found = allOptions.find((opt) => opt.value === value)
     return found?.label || ""
   }
-  if (category === "Кардио") {
+  if (category === "Cardio") {
     const allOptions = [
       ...cardioSubcategories.activity.options,
       ...cardioSubcategories.intensity.options,
@@ -183,7 +184,7 @@ export function getSubcategoryLabel(category: string, value: string): string {
     const found = allOptions.find((opt) => opt.value === value)
     return found?.label || ""
   }
-  if (category === "Йога") {
+  if (category === "Yoga") {
     const allOptions = [
       ...yogaSubcategories.style.options,
       ...yogaSubcategories.goal.options,
@@ -281,33 +282,35 @@ export function WorkoutForm({
   yogaFocus,
   setYogaFocus,
 }: WorkoutFormProps) {
-  // Получаем подкатегории для текущего типа тренировки
+  const t = useTranslations("logs")
+
+  // Get subcategories for current workout type
   const currentWorkoutSubcategories =
-    selectedCategory === "Силовая"
+    selectedCategory === "Strength"
       ? strengthSubcategories
-      : selectedCategory === "Кардио"
+      : selectedCategory === "Cardio"
         ? cardioSubcategories
-        : selectedCategory === "Йога"
+        : selectedCategory === "Yoga"
           ? yogaSubcategories
           : null
 
-  // Получаем инвентарь для текущего типа тренировки
+  // Get equipment for current workout type
   const currentEquipment =
-    selectedCategory === "Силовая"
+    selectedCategory === "Strength"
       ? equipmentOptions.strength
-      : selectedCategory === "Кардио"
+      : selectedCategory === "Cardio"
         ? equipmentOptions.cardio
-        : selectedCategory === "Йога"
+        : selectedCategory === "Yoga"
           ? equipmentOptions.yoga
           : []
 
-  // Получаем цели для текущего типа тренировки
+  // Get goals for current workout type
   const currentGoals =
-    selectedCategory === "Силовая"
+    selectedCategory === "Strength"
       ? goalOptions.strength
-      : selectedCategory === "Кардио"
+      : selectedCategory === "Cardio"
         ? goalOptions.cardio
-        : selectedCategory === "Йога"
+        : selectedCategory === "Yoga"
           ? goalOptions.yoga
           : []
 
@@ -317,15 +320,15 @@ export function WorkoutForm({
       {currentWorkoutSubcategories && (
         <Card>
           <CardHeader>
-            <CardTitle>Подкатегория</CardTitle>
+            <CardTitle>{t("workout.subcategory")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Подкатегории для Силовой тренировки */}
-            {selectedCategory === "Силовая" && (
+            {/* Subcategories for Strength */}
+            {selectedCategory === "Strength" && (
               <>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">
-                    {strengthSubcategories.anatomical.label}
+                    {t(`workout.strengthSubcategories.anatomical`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
                     {strengthSubcategories.anatomical.options.map((opt) => (
@@ -346,7 +349,7 @@ export function WorkoutForm({
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">
-                    {strengthSubcategories.equipment.label}
+                    {t(`workout.strengthSubcategories.equipment`)}
                   </Label>
                   <div className="grid grid-cols-2 gap-2">
                     {strengthSubcategories.equipment.options.map((opt) => (
@@ -368,12 +371,12 @@ export function WorkoutForm({
               </>
             )}
 
-            {/* Подкатегории для Кардио */}
-            {selectedCategory === "Кардио" && (
+            {/* Подкатегории для Cardio */}
+            {selectedCategory === "Cardio" && (
               <>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">
-                    {cardioSubcategories.activity.label}
+                    {t(`workout.cardioSubcategories.activity`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
                     {cardioSubcategories.activity.options.map((opt) => (
@@ -394,7 +397,7 @@ export function WorkoutForm({
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">
-                    {cardioSubcategories.intensity.label}
+                    {t(`workout.cardioSubcategories.byIntensity`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
                     {cardioSubcategories.intensity.options.map((opt) => (
@@ -416,12 +419,12 @@ export function WorkoutForm({
               </>
             )}
 
-            {/* Подкатегории для Йоги */}
-            {selectedCategory === "Йога" && (
+            {/* Subcategories for Yoga */}
+            {selectedCategory === "Yoga" && (
               <>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">
-                    {yogaSubcategories.style.label}
+                    {t(`workout.yogaSubcategories.style`)}
                   </Label>
                   <div className="grid grid-cols-2 gap-2">
                     {yogaSubcategories.style.options.map((opt) => (
@@ -442,7 +445,7 @@ export function WorkoutForm({
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">
-                    {yogaSubcategories.goal.label}
+                    {t(`workout.yogaSubcategories.byGoal`)}
                   </Label>
                   <div className="grid grid-cols-2 gap-2">
                     {yogaSubcategories.goal.options.map((opt) => (
@@ -463,7 +466,7 @@ export function WorkoutForm({
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">
-                    {yogaSubcategories.level.label}
+                    {t(`workout.yogaSubcategories.byLevel`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
                     {yogaSubcategories.level.options.map((opt) => (
@@ -491,12 +494,12 @@ export function WorkoutForm({
       {/* Параметры тренировки */}
       <Card>
         <CardHeader>
-          <CardTitle>Параметры тренировки</CardTitle>
+          <CardTitle>{t("workout.workoutType")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="duration">Длительность (мин)</Label>
+              <Label htmlFor="duration">{t("workout.duration")}</Label>
               <Input
                 id="duration"
                 type="number"
@@ -504,7 +507,7 @@ export function WorkoutForm({
               />
             </div>
             <div className="space-y-2">
-              <Label>Интенсивность</Label>
+              <Label>{t("workout.intensity")}</Label>
               <div className="relative">
                 <select
                   className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
@@ -520,11 +523,11 @@ export function WorkoutForm({
                   }}
                 >
                   <option value="" disabled>
-                    Выберите
+                    {t("workout.intensity")}
                   </option>
-                  <option value="low">Низкая</option>
-                  <option value="medium">Средняя</option>
-                  <option value="high">Высокая</option>
+                  <option value="low">{t("workout.intensityLevels.low")}</option>
+                  <option value="medium">{t("workout.intensityLevels.medium")}</option>
+                  <option value="high">{t("workout.intensityLevels.high")}</option>
                 </select>
                 <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
               </div>
@@ -534,18 +537,18 @@ export function WorkoutForm({
           {/* Инвентарь */}
           {currentEquipment.length > 0 && (
             <ComboboxSelect
-              label="Инвентарь"
+              label={t("workout.equipment")}
               options={currentEquipment}
               value={workoutEquipment}
               onChange={setWorkoutEquipment}
-              placeholder="Выберите инвентарь"
+              placeholder={t("workout.equipment")}
             />
           )}
 
           {/* Цель тренировки */}
           {currentGoals.length > 0 && (
             <div className="space-y-2">
-              <Label>Цель</Label>
+              <Label>{t("workout.goal")}</Label>
               <div className="relative">
                 <select
                   className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
@@ -559,7 +562,7 @@ export function WorkoutForm({
                   }}
                 >
                   <option value="" disabled>
-                    Выберите цель
+                    {t("workout.goal")}
                   </option>
                   {currentGoals.map((g) => (
                     <option key={g.value} value={g.value}>
@@ -577,32 +580,32 @@ export function WorkoutForm({
       {/* Дополнительные параметры */}
       <Card>
         <CardHeader>
-          <CardTitle>Дополнительные параметры</CardTitle>
+          <CardTitle>{t("common.optional")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Калории и дистанция */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="caloriesBurned">Сожжено калорий</Label>
+              <Label htmlFor="caloriesBurned">{t("workout.caloriesBurned")}</Label>
               <Input
                 id="caloriesBurned"
                 type="number"
-                placeholder="ккал"
+                placeholder={t("workout.placeholders.calories")}
                 value={caloriesBurned ?? ""}
                 onChange={(e) =>
                   setCaloriesBurned(e.target.value ? Number(e.target.value) : undefined)
                 }
               />
             </div>
-            {/* Дистанция - только для кардио */}
-            {selectedCategory === "Кардио" && (
+            {/* Distance - cardio only */}
+            {selectedCategory === "Cardio" && (
               <div className="space-y-2">
-                <Label htmlFor="distance">Дистанция (км)</Label>
+                <Label htmlFor="distance">{t("workout.distance")}</Label>
                 <Input
                   id="distance"
                   type="number"
                   step="0.1"
-                  placeholder="км"
+                  placeholder={t("workout.placeholders.distance")}
                   value={distance ?? ""}
                   onChange={(e) => setDistance(e.target.value ? Number(e.target.value) : undefined)}
                 />
@@ -613,11 +616,11 @@ export function WorkoutForm({
           {/* Пульс */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="heartRateAvg">Средний пульс</Label>
+              <Label htmlFor="heartRateAvg">{t("workout.heartRateAvg")}</Label>
               <Input
                 id="heartRateAvg"
                 type="number"
-                placeholder="уд/мин"
+                placeholder={t("workout.placeholders.avgPulse")}
                 value={heartRateAvg ?? ""}
                 onChange={(e) =>
                   setHeartRateAvg(e.target.value ? Number(e.target.value) : undefined)
@@ -625,11 +628,11 @@ export function WorkoutForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="heartRateMax">Макс. пульс</Label>
+              <Label htmlFor="heartRateMax">{t("workout.heartRateMax")}</Label>
               <Input
                 id="heartRateMax"
                 type="number"
-                placeholder="уд/мин"
+                placeholder={t("workout.placeholders.maxPulse")}
                 value={heartRateMax ?? ""}
                 onChange={(e) =>
                   setHeartRateMax(e.target.value ? Number(e.target.value) : undefined)
@@ -638,16 +641,16 @@ export function WorkoutForm({
             </div>
           </div>
 
-          {/* Упражнения, подходы, повторы и вес - только для силовой */}
-          {selectedCategory === "Силовая" && (
+          {/* Exercises, sets, reps and weight - strength only */}
+          {selectedCategory === "Strength" && (
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="exercisesCount">Кол-во упражнений</Label>
+                  <Label htmlFor="exercisesCount">{t("workout.exercisesCount")}</Label>
                   <Input
                     id="exercisesCount"
                     type="number"
-                    placeholder="шт"
+                    placeholder={t("workout.placeholders.count")}
                     value={exercisesCount ?? ""}
                     onChange={(e) =>
                       setExercisesCount(e.target.value ? Number(e.target.value) : undefined)
@@ -655,11 +658,11 @@ export function WorkoutForm({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="setsCount">Кол-во подходов</Label>
+                  <Label htmlFor="setsCount">{t("workout.setsCount")}</Label>
                   <Input
                     id="setsCount"
                     type="number"
-                    placeholder="шт"
+                    placeholder={t("workout.placeholders.count")}
                     value={setsCount ?? ""}
                     onChange={(e) =>
                       setSetsCount(e.target.value ? Number(e.target.value) : undefined)
@@ -669,11 +672,11 @@ export function WorkoutForm({
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="repsCount">Кол-во повторов</Label>
+                  <Label htmlFor="repsCount">{t("workout.repsCount")}</Label>
                   <Input
                     id="repsCount"
                     type="number"
-                    placeholder="шт"
+                    placeholder={t("workout.placeholders.count")}
                     value={repsCount ?? ""}
                     onChange={(e) =>
                       setRepsCount(e.target.value ? Number(e.target.value) : undefined)
@@ -681,12 +684,12 @@ export function WorkoutForm({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="totalWeight">Общий вес</Label>
+                  <Label htmlFor="totalWeight">{t("workout.totalWeight")}</Label>
                   <Input
                     id="totalWeight"
                     type="number"
                     step="0.1"
-                    placeholder="кг"
+                    placeholder={t("workout.placeholders.weight")}
                     value={totalWeight ?? ""}
                     onChange={(e) =>
                       setTotalWeight(e.target.value ? Number(e.target.value) : undefined)
@@ -697,17 +700,17 @@ export function WorkoutForm({
             </>
           )}
 
-          {/* Скорость, темп, раунды - только для кардио */}
-          {selectedCategory === "Кардио" && (
+          {/* Скорость, темп, раунды - только для cardio */}
+          {selectedCategory === "Cardio" && (
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="averageSpeed">Средняя скорость (км/ч)</Label>
+                  <Label htmlFor="averageSpeed">{t("workout.averageSpeed")}</Label>
                   <Input
                     id="averageSpeed"
                     type="number"
                     step="0.1"
-                    placeholder="км/ч"
+                    placeholder={t("workout.placeholders.speed")}
                     value={averageSpeed ?? ""}
                     onChange={(e) =>
                       setAverageSpeed(e.target.value ? Number(e.target.value) : undefined)
@@ -715,11 +718,11 @@ export function WorkoutForm({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="averagePace">Средний темп (мин/км)</Label>
+                  <Label htmlFor="averagePace">{t("workout.averagePace")}</Label>
                   <Input
                     id="averagePace"
                     type="text"
-                    placeholder="5:30"
+                    placeholder={t("workout.placeholders.pace")}
                     value={averagePace}
                     onChange={(e) => setAveragePace(e.target.value)}
                   />
@@ -727,7 +730,7 @@ export function WorkoutForm({
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="rounds">Кол-во раундов</Label>
+                  <Label htmlFor="rounds">{t("workout.rounds")}</Label>
                   <Input
                     id="rounds"
                     type="number"
@@ -744,7 +747,7 @@ export function WorkoutForm({
           {selectedCategory === "Йога" && (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Уровень</Label>
+                <Label>{t("workout.level")}</Label>
                 <div className="relative">
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
@@ -758,17 +761,19 @@ export function WorkoutForm({
                     }}
                   >
                     <option value="" disabled>
-                      Выберите уровень
+                      {t("workout.level")}
                     </option>
-                    <option value="beginner">Начинающий</option>
-                    <option value="intermediate">Продолжающий</option>
-                    <option value="advanced">Опытный</option>
+                    <option value="beginner">{t("workout.yogaSubcategories.beginner")}</option>
+                    <option value="intermediate">
+                      {t("workout.yogaSubcategories.intermediate")}
+                    </option>
+                    <option value="advanced">{t("workout.yogaSubcategories.advanced")}</option>
                   </select>
                   <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Фокус</Label>
+                <Label>{t("workout.focus")}</Label>
                 <div className="relative">
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
@@ -782,13 +787,13 @@ export function WorkoutForm({
                     }}
                   >
                     <option value="" disabled>
-                      Выберите фокус
+                      {t("workout.focus")}
                     </option>
-                    <option value="flexibility">Гибкость</option>
-                    <option value="strength">Сила</option>
-                    <option value="relaxation">Расслабление</option>
-                    <option value="meditation">Медитация</option>
-                    <option value="breathing">Дыхание</option>
+                    <option value="flexibility">{t("workout.goals.flexibility")}</option>
+                    <option value="strength">{t("workout.goals.strength")}</option>
+                    <option value="relaxation">{t("workout.goals.relaxation")}</option>
+                    <option value="meditation">{t("workout.yogaSubcategories.breathing")}</option>
+                    <option value="breathing">{t("workout.yogaSubcategories.breathing")}</option>
                   </select>
                   <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
                 </div>

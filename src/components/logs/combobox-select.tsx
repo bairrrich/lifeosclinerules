@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import { useTranslations } from "next-intl"
 import { ChevronDown, Plus } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,12 +20,13 @@ export function ComboboxSelect({
   options,
   value,
   onChange,
-  placeholder = "Выберите...",
+  placeholder,
 }: ComboboxSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [customValue, setCustomValue] = useState("")
   const [showCustomInput, setShowCustomInput] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const t = useTranslations("common")
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -50,7 +52,9 @@ export function ComboboxSelect({
             onClick={() => setIsOpen(!isOpen)}
             className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
-            <span className={value ? "" : "text-muted-foreground"}>{value || placeholder}</span>
+            <span className={value ? "" : "text-muted-foreground"}>
+              {value || placeholder || t("combobox.selectPlaceholder")}
+            </span>
             <ChevronDown className="h-4 w-4 opacity-50" />
           </button>
           {isOpen && (
@@ -82,7 +86,7 @@ export function ComboboxSelect({
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-primary hover:bg-accent"
                 >
                   <Plus className="h-4 w-4" />
-                  Добавить свой вариант
+                  {t("combobox.addCustom")}
                 </button>
               </div>
             </div>
@@ -93,7 +97,7 @@ export function ComboboxSelect({
           <Input
             value={customValue}
             onChange={(e) => setCustomValue(e.target.value)}
-            placeholder="Введите свой вариант"
+            placeholder={t("combobox.addNewPlaceholder")}
             className="flex-1"
           />
           <Button
@@ -104,7 +108,7 @@ export function ComboboxSelect({
               setShowCustomInput(false)
               setCustomValue("")
             }}
-            aria-label="Отмена"
+            aria-label={t("cancel")}
           >
             ✕
           </Button>
@@ -118,7 +122,7 @@ export function ComboboxSelect({
                 setCustomValue("")
               }
             }}
-            aria-label="Подтвердить"
+            aria-label={t("confirm")}
           >
             ✓
           </Button>

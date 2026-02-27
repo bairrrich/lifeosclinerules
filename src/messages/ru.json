@@ -1,0 +1,1969 @@
+{
+  "common": {
+    "title": "Life OS",
+    "description": "Единое приложение для учета питания, тренировок, финансов и многого другого",
+    "loading": "Загрузка...",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "add": "Добавить",
+    "back": "Назад",
+    "next": "Далее",
+    "previous": "Назад",
+    "close": "Закрыть",
+    "confirm": "Подтвердить",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "sort": "Сортировка",
+    "settings": "Настройки",
+    "profile": "Профиль",
+    "logout": "Выйти",
+    "language": "Язык",
+    "noData": "Нет данных",
+    "noResults": "Ничего не найдено",
+    "create": "Создать",
+    "update": "Обновить",
+    "remove": "Удалить",
+    "reset": "Сбросить",
+    "apply": "Применить",
+    "clear": "Очистить",
+    "selectAll": "Выбрать все",
+    "deselectAll": "Снять выделение",
+    "export": "Экспорт",
+    "import": "Импорт",
+    "download": "Скачать",
+    "upload": "Загрузить",
+    "yes": "Да",
+    "no": "Нет",
+    "ok": "ОК",
+    "done": "Готово",
+    "start": "Начать",
+    "finish": "Завершить",
+    "continue": "Продолжить",
+    "skip": "Пропустить",
+    "finishOnboarding": "Начать",
+    "required": "Обязательно",
+    "optional": "Необязательно",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "warning": "Предупреждение",
+    "info": "Информация",
+    "new": "Новая запись",
+    "main": "Основное",
+    "additional": "Дополнительно",
+    "copy": "Копировать",
+    "createdAt": "Создано",
+    "updatedAt": "Обновлено",
+    "grams": "граммы",
+    "notFound": "Не найдено",
+    "books": "Книги",
+    "records": "Записей",
+    "catalog": "Каталог",
+    "content": "Контент",
+    "recipes": "Рецептов",
+    "deleteDialog": {
+      "title": "Удалить запись?",
+      "description": "Это действие нельзя отменить. Запись «{title}» будет удалена навсегда."
+    },
+    "reminders": {
+      "title": "Напоминания",
+      "time": "Время напоминания",
+      "days": "Дни",
+      "daysOfWeek": {
+        "su": "Вс",
+        "mo": "Пн",
+        "tu": "Вт",
+        "we": "Ср",
+        "th": "Чт",
+        "fr": "Пт",
+        "sa": "Сб"
+      },
+      "pageHint": "Напоминание появится на странице напоминаний"
+    },
+    "colors": {
+      "red": "Красный",
+      "orange": "Оранжевый",
+      "yellow": "Жёлтый",
+      "green": "Зелёный",
+      "blue": "Синий",
+      "purple": "Фиолетовый",
+      "pink": "Розовый"
+    },
+    "combobox": {
+      "selectPlaceholder": "Выберите...",
+      "addNewPlaceholder": "Добавить новый...",
+      "searchPlaceholder": "Поиск...",
+      "nothingFound": "Ничего не найдено",
+      "addCustom": "Добавить свой вариант",
+      "addWithName": "Добавить \"{name}\"",
+      "selected": "выбрано",
+      "remove": "Удалить"
+    },
+    "addDialog": {
+      "addLog": "Добавить запись",
+      "addCatalog": "Добавить в каталог",
+      "addBook": "Добавить книгу",
+      "addRecipe": "Добавить рецепт",
+      "food": "Питание",
+      "workout": "Тренировка",
+      "finance": "Финансы",
+      "vitamins": "Витамины",
+      "medicine": "Лекарства",
+      "herbs": "Травы",
+      "cosmetics": "Косметика",
+      "products": "Продукты",
+      "book": "Книга",
+      "dish": "Блюдо",
+      "drink": "Напиток",
+      "cocktail": "Коктейль"
+    },
+    "pwa": {
+      "installTitle": "Установить Life OS",
+      "installDescription": "Работает офлайн и быстрее запускается",
+      "install": "Установить",
+      "dismiss": "Закрыть",
+      "notificationTitle": "Включить уведомления",
+      "notificationDescription": "Получайте напоминания о приёме лекарств и тренировках",
+      "enable": "Включить"
+    },
+    "email": "Email",
+    "password": "Пароль",
+    "login": "Войти",
+    "signup": "Зарегистрироваться",
+    "noAccountSignup": "Нет аккаунта? Зарегистрироваться",
+    "hasAccountLogin": "Уже есть аккаунт? Войти",
+    "records": "Записей",
+    "catalog": "Каталог",
+    "content": "Контент",
+    "logsByType": "Записи по типам",
+    "reading": "Читаю",
+    "completed": "Прочитано",
+    "planned": "Запланировано",
+    "exportError": "Ошибка экспорта",
+    "csvExported": "CSV файлы экспортированы",
+    "databaseNotEmpty": "База данных уже содержит данные. Сначала очистите данные.",
+    "duplicatesRemoved": "Удалено {count} дубликатов категорий",
+    "noDuplicates": "Дубликаты не найдены"
+  },
+  "navigation": {
+    "home": "Главная",
+    "analytics": "Аналитика",
+    "body": "Тело",
+    "books": "Книги",
+    "content": "Контент",
+    "goals": "Цели",
+    "habits": "Привычки",
+    "items": "Вещи",
+    "logs": "Логи",
+    "mood": "Настроение",
+    "recipes": "Рецепты",
+    "reminders": "Напоминания",
+    "settings": "Настройки",
+    "sleep": "Сон",
+    "templates": "Шаблоны",
+    "water": "Вода",
+    "food": "Питание",
+    "workout": "Тренировка",
+    "finance": "Финансы"
+  },
+  "language": {
+    "en": "Английский",
+    "ru": "Русский",
+    "select": "Выбрать язык"
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Добро пожаловать в Life OS",
+      "description": "Единое приложение для комплексного учёта жизненных показателей. Ведите записи о питании, тренировках, финансах и многом другом."
+    },
+    "trackers": {
+      "title": "Трекеры",
+      "description": "Отслеживайте воду, сон, настроение, измерения тела и привычки. Устанавливайте цели и следите за прогрессом.",
+      "nutrition": "Питание",
+      "workouts": "Тренировки",
+      "finance": "Финансы",
+      "water": "Вода"
+    },
+    "content": {
+      "title": "Контент",
+      "description": "Ведите библиотеку книг и коллекцию рецептов с автоматическим расчётом калорий.",
+      "books": "Книги",
+      "recipes": "Рецепты"
+    },
+    "offline": {
+      "title": "Работает офлайн",
+      "description": "Все данные хранятся локально на вашем устройстве. Приложение работает без интернета, а данные синхронизируются при появлении сети."
+    }
+  },
+  "home": {
+    "title": "Life OS",
+    "todayProgress": "Прогресс на сегодня",
+    "todayStats": "Статистика за сегодня",
+    "calories": "Ккал",
+    "minutes": "Мин",
+    "ml": "мл",
+    "expense": "Расход",
+    "quickActions": "Быстрые действия",
+    "trackers": "Трекеры",
+    "databaseStats": "Статистика базы",
+    "records": "Записей",
+    "catalog": "Каталог",
+    "books": "Книг",
+    "recipes": "Рецептов",
+    "recentActivity": "Последняя активность",
+    "noLogs": "Нет записей. Начните вести учёт!",
+    "streakWidget": {
+      "title": "Серии",
+      "currentStreak": "Текущая серия",
+      "days": "дней",
+      "noStreaks": "Нет активных серий",
+      "bestStreak": "Лучшая серия",
+      "completedToday": "Сегодня",
+      "habits": "привычек",
+      "totalCompletions": "выполнено"
+    }
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "loading": "Загрузка...",
+    "date": "Дата",
+    "common": {
+      "count": "Количество"
+    },
+    "period": {
+      "7days": "7 дн.",
+      "14days": "14 дн.",
+      "30days": "30 дн."
+    },
+    "summary": {
+      "calories": "Калории",
+      "workouts": "Тренировки",
+      "workoutDuration": "Длительность",
+      "income": "Доход",
+      "expense": "Расход",
+      "balance": "Баланс",
+      "avgPerDay": "ккал/день",
+      "avgPerWorkout": "мин/трен",
+      "vsPreviousPeriod": "vs прошлый период"
+    },
+    "food": {
+      "title": "Питание",
+      "caloriesByDay": "Калории по дням",
+      "macrosByDay": "БЖУ по дням",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "byCategory": "По категориям"
+    },
+    "workout": {
+      "title": "Тренировки",
+      "durationByDay": "Длительность тренировок (мин)",
+      "countByDay": "Количество тренировок",
+      "minutes": "Минуты",
+      "workouts": "Тренировки"
+    },
+    "finance": {
+      "title": "Финансы",
+      "incomeExpenseByDay": "Доход/Расход по дням",
+      "categoryDistribution": "Распределение по категориям",
+      "income": "Доход",
+      "expense": "Расход"
+    }
+  },
+  "settings": {
+    "title": "Настройки",
+    "tabs": {
+      "general": "Общие",
+      "logs": "Учёт",
+      "items": "Каталог",
+      "books": "Книги",
+      "recipes": "Рецепты"
+    },
+    "about": {
+      "title": "О приложении",
+      "description": "Life OS — единое приложение для учета различных аспектов жизни.",
+      "version": "Версия",
+      "technologies": "Технологии"
+    },
+    "theme": {
+      "title": "Тема",
+      "description": "Настройки внешнего вида приложения",
+      "light": "Светлая",
+      "dark": "Тёмная",
+      "system": "Системная"
+    },
+    "language": {
+      "title": "Язык",
+      "description": "Настройки языка интерфейса"
+    },
+    "dataStats": {
+      "title": "Статистика данных",
+      "description": "Обзор хранимых данных",
+      "totalLogs": "Всего записей",
+      "totalItems": "Всего вещей",
+      "totalContent": "Всего контента",
+      "foodLogs": "Записей питания",
+      "workoutLogs": "Записей тренировок",
+      "financeLogs": "Финансовых записей"
+    },
+    "sync": {
+      "title": "Синхронизация",
+      "description": "Настройки синхронизации данных",
+      "syncStatus": "Статус синхронизации",
+      "lastSync": "Последняя синхронизация",
+      "syncNow": "Синхронизировать",
+      "autoSync": "Автосинхронизация",
+      "syncEnabled": "Синхронизация включена",
+      "syncDisabled": "Синхронизация отключена",
+      "notConfigured": "Синхронизация не настроена. Добавьте ключи Supabase в файл .env.local",
+      "loginHint": "Войдите в аккаунт для синхронизации данных между устройствами",
+      "syncing": "Синхронизация...",
+      "synced": "Синхронизировано",
+      "syncError": "Ошибка синхронизации",
+      "ready": "Готово к синхронизации",
+      "never": "Никогда",
+      "pending": "Ожидают синхронизации",
+      "records": "записей",
+      "changes": "изменений",
+      "autoSyncHint": "💡 Синхронизация работает в фоне при наличии интернета",
+      "signupSuccess": "Проверьте email для подтверждения регистрации"
+    },
+    "backup": {
+      "title": "Резервное копирование",
+      "description": "Экспорт и импорт данных приложения",
+      "exportJson": "Экспорт JSON",
+      "importJson": "Импорт JSON",
+      "exporting": "Экспорт...",
+      "importing": "Импорт...",
+      "autoBackup": "Автобэкап",
+      "backupIntervals": {
+        "hourly": "Каждый час",
+        "every6Hours": "Каждые 6 часов",
+        "every12Hours": "Каждые 12 часов",
+        "daily": "Каждый день",
+        "weekly": "Каждую неделю"
+      },
+      "lastBackup": "Последний",
+      "csvExport": "Экспорт в CSV (для Excel)",
+      "logs": "Записи",
+      "items": "Каталог",
+      "books": "Книги",
+      "accounts": "Счета",
+      "clearAllData": "Очистить все данные",
+      "confirmImport": {
+        "title": "Подтвердите импорт",
+        "description": "Импорт данных может перезаписать существующие записи с такими же ID. Вы уверены, что хотите продолжить?"
+      }
+    },
+    "dangerZone": {
+      "title": "Опасная зона",
+      "description": "Необратимые действия",
+      "seedData": "Заполнить тестовыми данными",
+      "reseedData": "Пересоздать тестовые данные",
+      "cleanupDuplicates": "Очистить дубликаты категорий",
+      "clearAllData": "Очистить все данные",
+      "confirmClear": "Вы уверены? Все данные будут удалены без возможности восстановления!",
+      "confirmReseed": "Пересоздать базу данных? Все текущие данные будут удалены и заменены тестовыми!"
+    },
+    "accounts": {
+      "title": "Финансовые аккаунты",
+      "description": "Управление счетами и картами",
+      "noAccounts": "Нет созданных аккаунтов",
+      "addAccount": "Добавить аккаунт",
+      "name": "Название",
+      "type": "Тип",
+      "balance": "Баланс",
+      "currency": "Валюта",
+      "initialBalance": "Начальный баланс",
+      "accountTypes": {
+        "cash": "Наличные",
+        "card": "Карта",
+        "bank": "Счёт",
+        "deposit": "Вклад",
+        "investment": "Инвестиции",
+        "crypto": "Крипто"
+      }
+    },
+    "items": {
+      "title": "Каталог веществ",
+      "description": "Управление справочниками каталога",
+      "comingSoon": "Управление категориями и формами выпуска для каталога веществ будет доступно в следующей версии."
+    },
+    "books": {
+      "title": "Книги",
+      "description": "Управление справочниками для книг",
+      "totalBooks": "Всего книг",
+      "reading": "Читаю",
+      "completed": "Прочитано",
+      "comingSoon": "Управление жанрами, авторами и сериями будет доступно в следующей версии."
+    },
+    "recipes": {
+      "title": "Рецепты",
+      "description": "Управление справочниками для рецептов",
+      "totalRecipes": "Всего рецептов",
+      "otherContent": "Другой контент",
+      "comingSoon": "Управление ингредиентами и категориями рецептов будет доступно в следующей версии."
+    },
+    "categories": {
+      "title": "Категории",
+      "description": "Категории для записей учёта",
+      "noCategories": "Нет категорий",
+      "addCategory": "Добавить категорию",
+      "all": "Все",
+      "icon": "Иконка (emoji)",
+      "name": "Название",
+      "type": "Тип",
+      "categoryTypes": {
+        "food": "Питание",
+        "workout": "Тренировки",
+        "finance": "Финансы"
+      }
+    },
+    "units": {
+      "title": "Единицы измерения",
+      "description": "Справочник единиц измерения",
+      "noUnits": "Нет единиц измерения",
+      "addUnit": "Добавить единицу",
+      "name": "Название",
+      "abbreviation": "Сокращение",
+      "type": "Тип",
+      "unitTypes": {
+        "weight": "Вес",
+        "volume": "Объём",
+        "count": "Штуки",
+        "time": "Время",
+        "money": "Деньги"
+      }
+    },
+    "export": {
+      "description": "Экспортируйте свои данные для резервного копирования или анализа в других приложениях."
+    }
+  },
+  "books": {
+    "title": "Книги",
+    "addBook": "Добавить книгу",
+    "editBook": "Редактировать книгу",
+    "noBooks": "Пока нет книг",
+    "forms": {
+      "main": "Основное",
+      "authorAndEdition": "Автор и издание",
+      "characteristics": "Характеристики",
+      "isbnAndExternalIds": "ISBN и внешние ID",
+      "genresAndTags": "Жанры и теги",
+      "cover": "Обложка"
+    },
+    "fields": {
+      "title": "Название",
+      "subtitle": "Подзаголовок",
+      "description": "Описание",
+      "annotation": "Аннотация или краткое описание...",
+      "authors": "Автор(ы)",
+      "publishedYear": "Год издания",
+      "originalYear": "Год оригинала",
+      "publisher": "Издательство",
+      "format": "Формат",
+      "language": "Язык",
+      "pageCount": "Количество страниц",
+      "isbn10": "ISBN-10",
+      "isbn13": "ISBN-13",
+      "goodreadsId": "Goodreads ID",
+      "googleBooksId": "Google Books ID",
+      "genres": "Жанры",
+      "tags": "Теги",
+      "coverUrl": "URL обложки",
+      "addTag": "Добавить тег",
+      "newAuthor": "Имя нового автора...",
+      "newGenre": "Название нового жанра..."
+    },
+    "formats": {
+      "paperback": "Мягкая обложка",
+      "hardcover": "Твёрдая обложка",
+      "ebook": "Электронная книга",
+      "audiobook": "Аудиокнига"
+    },
+    "status": {
+      "planned": "Запланировано",
+      "reading": "Читаю",
+      "completed": "Прочитано",
+      "paused": "Приостановлено",
+      "dropped": "Брошено"
+    },
+    "userBook": {
+      "status": "Статус",
+      "rating": "Оценка",
+      "progress": "Прогресс",
+      "pages": "Страницы",
+      "percent": "Проценты",
+      "startedAt": "Начато",
+      "finishedAt": "Завершено",
+      "notes": "Личные заметки",
+      "isOwned": "В собственности",
+      "ownedFormat": "Формат владения",
+      "location": "Расположение",
+      "rereadCount": "Кол-во перечитываний"
+    },
+    "quotes": {
+      "title": "Цитаты",
+      "addQuote": "Добавить цитату",
+      "text": "Текст цитаты",
+      "page": "Страница",
+      "location": "Расположение"
+    },
+    "reviews": {
+      "title": "Рецензии",
+      "addReview": "Добавить рецензию",
+      "reviewTitle": "Заголовок рецензии",
+      "reviewText": "Текст рецензии"
+    },
+    "common": {
+      "loading": "Загрузка...",
+      "back": "Назад",
+      "delete": "Удалить",
+      "edit": "Редактировать",
+      "cancel": "Отмена"
+    },
+    "notFound": "Книга не найдена",
+    "details": "Детали",
+    "aboutBook": "О книге",
+    "categories": "Категории",
+    "inCollection": "В коллекции",
+    "createdAt": "Добавлено",
+    "fields": {
+      "pages": "стр."
+    },
+    "noNotes": "Нет заметок",
+    "quotes": {
+      "noQuotes": "Нет сохранённых цитат",
+      "page": "стр."
+    },
+    "deleteDialog": {
+      "title": "Удалить книгу?",
+      "description": "Это действие нельзя отменить. «{title}» будет удалено навсегда."
+    },
+    "list": {
+      "title": "Книги",
+      "stats": {
+        "total": "Всего",
+        "reading": "Читаю",
+        "completed": "Прочитано",
+        "planned": "В планах",
+        "paused": "Пауза"
+      },
+      "filters": {
+        "all": "Все",
+        "reading": "Читаю",
+        "planned": "Запланировано",
+        "completed": "Прочитано",
+        "paused": "Пауза"
+      },
+      "search": {
+        "placeholder": "Поиск по названию или автору..."
+      },
+      "empty": {
+        "library": "Библиотека пуста. Добавьте первую книгу!",
+        "noResults": "Книги не найдены"
+      },
+      "loading": "Загрузка...",
+      "progress": "Прогресс",
+      "pages": "стр."
+    },
+    "new": {
+      "title": "Новая книга",
+      "form": {
+        "bookDetails": "Метаданные книги",
+        "userProgress": "Пользовательские данные",
+        "quotes": "Цитаты"
+      },
+      "actions": {
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "saving": "Сохранение..."
+      },
+      "validation": {
+        "titleRequired": "Введите название книги"
+      },
+      "error": {
+        "failedToCreate": "Ошибка при создании книги"
+      }
+    },
+    "edit": {
+      "title": "Редактировать книгу",
+      "loading": "Загрузка...",
+      "validation": {
+        "titleRequired": "Введите название книги"
+      },
+      "error": {
+        "failedToUpdate": "Ошибка при сохранении книги",
+        "failedToDelete": "Ошибка при удалении книги"
+      },
+      "delete": {
+        "confirm": "Вы уверены, что хотите удалить эту книгу? Это действие нельзя отменить."
+      }
+    }
+  },
+  "recipes": {
+    "title": "Рецепты",
+    "addRecipe": "Добавить рецепт",
+    "editRecipe": "Редактировать рецепт",
+    "newRecipe": "Новый рецепт",
+    "noRecipes": "Пока нет рецептов",
+    "types": {
+      "food": "Рецепт блюда",
+      "drink": "Рецепт напитка",
+      "cocktail": "Рецепт коктейля"
+    },
+    "forms": {
+      "main": "Основное",
+      "dishParameters": "Параметры блюда",
+      "drinkParameters": "Параметры напитка",
+      "cocktailParameters": "Параметры коктейля",
+      "ingredients": "Ингредиенты",
+      "steps": "Шаги приготовления",
+      "recipeType": "Тип рецепта",
+      "additional": "Дополнительно"
+    },
+    "fields": {
+      "title": "Название рецепта",
+      "titlePlaceholder": "Название рецепта",
+      "description": "Описание",
+      "descriptionPlaceholder": "Краткое описание...",
+      "recipeType": "Тип рецепта",
+      "prepTime": "Время подготовки (мин)",
+      "cookTime": "Время приготовления (мин)",
+      "totalTime": "Общее время (мин)",
+      "servings": "Порции",
+      "servingUnit": "Единица",
+      "servingUnitPlaceholder": "порции",
+      "difficulty": "Сложность",
+      "cuisine": "Кухня",
+      "courseType": "Тип блюда",
+      "cookingMethod": "Способ приготовления",
+      "servingTemperature": "Температура подачи",
+      "spicyLevel": "Острота",
+      "dietary": "Диетические особенности",
+      "drinkType": "Тип напитка",
+      "base": "Основа",
+      "isCarbonated": "Газированный",
+      "volumeMl": "Объём (мл)",
+      "caffeineMg": "Кофеин (мг)",
+      "isAlcoholic": "Алкогольный",
+      "alcoholPercent": "Процент алкоголя",
+      "baseSpirit": "Базовый спирт",
+      "cocktailMethod": "Метод коктейля",
+      "glassType": "Тип бокала",
+      "iceType": "Тип льда",
+      "garnish": "Гарнир",
+      "color": "Цвет",
+      "tools": "Инструменты",
+      "nutrition": "Пищевая ценность",
+      "tags": "Теги",
+      "tagsPlaceholder": "теги через запятую"
+    },
+    "edit": {
+      "title": "Редактировать рецепт",
+      "loading": "Загрузка..."
+    },
+    "new": {
+      "title": "Новый рецепт"
+    },
+    "courseTypes": {
+      "breakfast": "Завтрак",
+      "lunch": "Обед",
+      "dinner": "Ужин",
+      "soup": "Суп",
+      "salad": "Салат",
+      "dessert": "Десерт",
+      "snack": "Перекус",
+      "sauce": "Соус",
+      "appetizer": "Закуска"
+    },
+    "cookingMethods": {
+      "bake": "Запекать",
+      "fry": "Жарить",
+      "boil": "Варить",
+      "steam": "На пару",
+      "grill": "Гриль",
+      "raw": "Без обработки",
+      "stew": "Тушить",
+      "roast": "Обжаривать"
+    },
+    "servingTemperatures": {
+      "hot": "Горячее",
+      "warm": "Тёплое",
+      "room": "Комнатной температуры",
+      "cold": "Холодное"
+    },
+    "spicyLevels": {
+      "none": "Нет",
+      "mild": "Слабо",
+      "medium": "Средне",
+      "hot": "Остро"
+    },
+    "dietaryOptions": {
+      "vegan": "Веган",
+      "vegetarian": "Вегетарианское",
+      "glutenFree": "Без глютена",
+      "keto": "Кето",
+      "lowCarb": "Низкоуглеводное",
+      "dairyFree": "Без молока",
+      "nutFree": "Без орехов",
+      "diabetic": "Диабетическое"
+    },
+    "difficulties": {
+      "easy": "Лёгкий",
+      "medium": "Средний",
+      "hard": "Сложный",
+      "pro": "Профи"
+    },
+    "drinkTypes": {
+      "tea": "Чай",
+      "coffee": "Кофе",
+      "smoothie": "Смузи",
+      "juice": "Сок",
+      "lemonade": "Лимонад",
+      "milkshake": "Молочный коктейль",
+      "compote": "Компот",
+      "cocoa": "Какао"
+    },
+    "ingredients": {
+      "addIngredient": "Добавить ингредиент",
+      "ingredientName": "Название ингредиента",
+      "amount": "Количество",
+      "unit": "Единица",
+      "optional": "Необязательно",
+      "note": "Заметка",
+      "substitute": "Замена",
+      "fromCatalog": "Из каталога",
+      "custom": "Свой",
+      "removeIngredient": "Удалить ингредиент",
+      "nutritionPer100": "Пищевая ценность на 100г",
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "empty": "Нет ингредиентов. Нажмите «Добавить» для создания.",
+      "calculate": "Рассчитать"
+    },
+    "steps": {
+      "addStep": "Добавить шаг",
+      "stepText": "Описание шага",
+      "timer": "Таймер (мин)",
+      "image": "Изображение",
+      "minutes": "минут",
+      "removeStep": "Удалить шаг",
+      "empty": "Нет шагов. Нажмите «Добавить шаг» для создания.",
+      "noInstructions": "Нет инструкций"
+    },
+    "common": {
+      "loading": "Загрузка...",
+      "back": "Назад",
+      "delete": "Удалить",
+      "edit": "Изменить",
+      "cancel": "Отмена",
+      "add": "Добавить"
+    },
+    "details": "Детали",
+    "notFound": "Рецепт не найден",
+    "nutrition": {
+      "title": "Пищевая ценность",
+      "calories": "ккал",
+      "protein": "белки",
+      "fat": "жиры",
+      "carbs": "углеводы",
+      "sugar": "сахар"
+    },
+    "cocktailDetails": {
+      "title": "Детали коктейля",
+      "base": "База",
+      "method": "Метод",
+      "glass": "Бокал",
+      "strength": "Крепость"
+    },
+    "createdAt": "Создано",
+    "updatedAt": "Обновлено",
+    "deleteDialog": {
+      "title": "Удалить рецепт?",
+      "description": "Это действие нельзя отменить. «{title}» будет удалено навсегда."
+    },
+    "list": {
+      "title": "Рецепты",
+      "stats": {
+        "total": "Всего",
+        "food": "Еда",
+        "drink": "Напитки",
+        "cocktail": "Коктейли"
+      },
+      "filters": {
+        "all": "Все",
+        "food": "Еда",
+        "drink": "Напитки",
+        "cocktail": "Коктейли"
+      },
+      "search": {
+        "placeholder": "Поиск по названию..."
+      },
+      "empty": {
+        "noRecipes": "Нет рецептов. Добавьте первый!",
+        "noResults": "Рецепты не найдены"
+      },
+      "loading": "Загрузка...",
+      "ingredients": "ингр.",
+      "minutes": "мин",
+      "calories": "ккал",
+      "servings": "порций"
+    }
+  },
+  "fab": {
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню",
+    "food": "Еда",
+    "workout": "Тренировка",
+    "finance": "Финансы",
+    "water": "Вода",
+    "sleep": "Сон",
+    "mood": "Настроение",
+    "measurements": "Измерения",
+    "habit": "Привычка",
+    "goal": "Цель",
+    "reminder": "Напоминание",
+    "book": "Книга",
+    "recipe": "Рецепт",
+    "vitamins": "Витамины",
+    "medicine": "Лекарства",
+    "herbs": "Травы",
+    "cosmetics": "Косметика",
+    "products": "Продукты"
+  },
+  "logs": {
+    "title": "Логи",
+    "addLog": "Добавить запись",
+    "editLog": "Редактировать запись",
+    "searchPlaceholder": "Поиск записей...",
+    "types": {
+      "food": "Питание",
+      "workout": "Тренировка",
+      "finance": "Финансы"
+    },
+    "stats": {
+      "total": "Всего"
+    },
+    "filters": {
+      "typeLabel": "Фильтры типов записей",
+      "all": "Все"
+    },
+    "empty": {
+      "noLogs": "Нет записей. Начните вести учёт!"
+    },
+    "common": {
+      "optional": "Необязательно",
+      "grams": "граммы"
+    },
+    "recipes": {
+      "nutrition": {
+        "title": "Пищевая ценность",
+        "calories": "Ккал",
+        "protein": "Белки",
+        "fat": "Жиры",
+        "carbs": "Углеводы",
+        "sugar": "Сахар"
+      }
+    },
+    "fields": {
+      "date": "Дата",
+      "time": "Время",
+      "title": "Название",
+      "category": "Категория",
+      "quantity": "Количество",
+      "unit": "Единица",
+      "value": "Значение",
+      "notes": "Заметки",
+      "tags": "Теги"
+    },
+    "edit": {
+      "title": "Редактировать: {type}",
+      "basic": "Основное",
+      "type": "Тип",
+      "additional": "Дополнительно",
+      "notesPlaceholder": "Ваши заметки...",
+      "tagsPlaceholder": "теги через запятую",
+      "cancel": "Отмена",
+      "saving": "Сохранение...",
+      "save": "Сохранить"
+    },
+    "food": {
+      "source": "Источник",
+      "sourceTypes": {
+        "custom": "Свой вариант",
+        "recipe": "Рецепты",
+        "product": "Продукты"
+      },
+      "dishName": "Название блюда",
+      "portionSize": "Размер порции (г)",
+      "calories": "Калории",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "selectRecipe": "Выберите рецепт",
+      "selectProduct": "Выберите продукт",
+      "productCategory": "Категория продуктов",
+      "product": "Продукт",
+      "noRecipes": "Нет сохранённых рецептов",
+      "addRecipeToContent": "Добавьте рецепты в раздел Контент"
+    },
+    "workout": {
+      "workoutType": "Тип тренировки",
+      "types": {
+        "strength": "Силовая",
+        "cardio": "Кардио",
+        "yoga": "Йога"
+      },
+      "subcategory": "Подкатегория",
+      "duration": "Длительность (мин)",
+      "intensity": "Интенсивность",
+      "intensityLevels": {
+        "low": "Низкая",
+        "medium": "Средняя",
+        "high": "Высокая"
+      },
+      "equipment": "Инвентарь",
+      "goal": "Цель",
+      "caloriesBurned": "Сожжено калорий",
+      "distance": "Дистанция (км)",
+      "heartRateAvg": "Средний пульс",
+      "heartRateMax": "Макс. пульс",
+      "exercisesCount": "Кол-во упражнений",
+      "setsCount": "Кол-во подходов",
+      "repsCount": "Кол-во повторов",
+      "totalWeight": "Общий вес (кг)",
+      "averageSpeed": "Средняя скорость (км/ч)",
+      "averagePace": "Средний темп (мин/км)",
+      "rounds": "Раунды",
+      "level": "Уровень",
+      "focus": "Фокус",
+      "strengthSubcategories": {
+        "anatomical": "По анатомическому принципу",
+        "equipment": "По типу оборудования",
+        "chest": "Грудь",
+        "back": "Спина",
+        "legs": "Ноги",
+        "shoulders": "Плечи",
+        "arms": "Руки",
+        "core": "Пресс (Кор)",
+        "freeWeights": "Свободные веса",
+        "machines": "Тренажеры",
+        "bodyweight": "С собственным весом",
+        "functional": "Функциональный тренинг"
+      },
+      "cardioSubcategories": {
+        "activity": "По типу активности",
+        "byIntensity": "По интенсивности",
+        "running": "Бег",
+        "walking": "Ходьба",
+        "cycling": "Велосипед",
+        "rowing": "Гребля",
+        "jumping": "Прыжки",
+        "liss": "LISS (низкоинтенсивное)",
+        "hiit": "HIIT (интервальное)",
+        "tabata": "Табата"
+      },
+      "yogaSubcategories": {
+        "style": "По стилю",
+        "byGoal": "По целям",
+        "byLevel": "По уровню",
+        "hatha": "Хатха-йога",
+        "vinyasa": "Виньяса-йога",
+        "ashtanga": "Аштанга-йога",
+        "kundalini": "Кундалини-йога",
+        "iyengar": "Айенгар-йога",
+        "stretching": "Стретчинг / Гибкость",
+        "power": "Силовая йога",
+        "relax": "Релакс / Восстановление",
+        "breathing": "Дыхание и медитация",
+        "beginner": "Для начинающих",
+        "intermediate": "Для продолжающих",
+        "advanced": "Для опытных"
+      },
+      "goals": {
+        "mass": "Набор массы",
+        "relief": "Рельеф",
+        "strength": "Сила",
+        "endurance": "Выносливость",
+        "flexibility": "Гибкость",
+        "relaxation": "Расслабление",
+        "balance": "Баланс",
+        "fatLoss": "Сжигание жира",
+        "recovery": "Восстановление"
+      },
+      "placeholders": {
+        "calories": "ккал",
+        "distance": "км",
+        "avgPulse": "уд/мин",
+        "maxPulse": "уд/мин",
+        "count": "шт",
+        "weight": "кг",
+        "speed": "км/ч",
+        "pace": "5:30"
+      }
+    },
+    "finance": {
+      "type": "Тип транзакции",
+      "types": {
+        "income": "Доход",
+        "expense": "Расход",
+        "transfer": "Перевод"
+      },
+      "amount": "Сумма",
+      "from": "Откуда",
+      "to": "Куда",
+      "account": "Аккаунт",
+      "noAccounts": "Нет доступных аккаунтов",
+      "createAccountInSettings": "Создайте аккаунт в настройках для ведения учёта финансов",
+      "category": "Категория",
+      "subcategory": "Подкатегория",
+      "item": "Товар/услуга",
+      "supplier": "Поставщик",
+      "accountTypes": {
+        "cash": "Наличные",
+        "card": "Карта",
+        "bank": "Счёт",
+        "deposit": "Вклад",
+        "investment": "Инвестиции",
+        "crypto": "Крипто"
+      }
+    }
+  },
+  "habits": {
+    "title": "Привычки",
+    "addHabit": "Добавить привычку",
+    "editHabit": "Редактировать привычку",
+    "noHabits": "Пока нет привычек",
+    "fields": {
+      "name": "Название привычки",
+      "type": "Тип",
+      "frequency": "Частота",
+      "reminderTime": "Время напоминания",
+      "isActive": "Активна",
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания",
+      "subtasks": "Подпривычки",
+      "color": "Цвет"
+    },
+    "types": {
+      "positive": "Делать",
+      "negative": "Не делать"
+    },
+    "typeDescriptions": {
+      "positive": "Привычка что-то делать",
+      "negative": "Привычка чего-то избегать"
+    },
+    "frequencies": {
+      "daily": "Ежедневно",
+      "weekly": "Еженедельно",
+      "custom": "Пользовательская"
+    },
+    "today": "Сегодня",
+    "completed": "Выполнено",
+    "skipped": "Пропуск",
+    "violation": "Нарушение",
+    "streak": "Серия",
+    "currentStreak": "Текущая серия",
+    "longestStreak": "Лучшая серия",
+    "days": "дней",
+    "day": "день",
+    "daysLeft": "дн. осталось",
+    "subtasksCount": "подпривычек",
+    "skip": "Пропустить",
+    "skipDialog": {
+      "title": "Пропустить сегодня?",
+      "reason": "Причина пропуска"
+    },
+    "skipReasons": {
+      "Забыл": "Забыл",
+      "Не было времени": "Не было времени",
+      "Болезнь": "Болезнь",
+      "Отпуск": "Отпуск",
+      "Погода": "Погода",
+      "Другое": "Другое"
+    },
+    "deleteConfirm": {
+      "title": "Удалить привычку?",
+      "message": "Вы уверены, что хотите удалить привычку \"{name}\"? Это действие нельзя отменить."
+    },
+    "actions": {
+      "markComplete": "Отметить как выполненное",
+      "markIncomplete": "Отметить как невыполненное",
+      "viewSubtasks": "Просмотреть подпривычки",
+      "skipHabit": "Пропустить привычку",
+      "addSubtask": "Добавить подпривычку",
+      "removeSubtask": "Удалить подпривычку"
+    },
+    "placeholders": {
+      "positive": "Например: Утренняя зарядка",
+      "negative": "Например: Не есть сладкое",
+      "addStep": "Добавить шаг..."
+    }
+  },
+  "goals": {
+    "title": "Цели",
+    "addGoal": "Добавить цель",
+    "editGoal": "Редактировать цель",
+    "noGoals": "Пока нет целей",
+    "fields": {
+      "type": "Тип цели",
+      "name": "Название",
+      "targetValue": "Целевое значение",
+      "currentValue": "Текущее значение",
+      "period": "Период",
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания",
+      "isActive": "Активна",
+      "unit": "Единица"
+    },
+    "types": {
+      "calories": "Калории",
+      "workout": "Тренировки",
+      "water": "Вода",
+      "sleep": "Сон",
+      "steps": "Шаги",
+      "weight": "Вес",
+      "finance": "Финансы"
+    },
+    "periods": {
+      "daily": "В день",
+      "weekly": "В неделю",
+      "monthly": "В месяц"
+    },
+    "progress": "Прогресс",
+    "completed": "Выполнено",
+    "completedToday": "Достигнуто сегодня",
+    "deleteConfirm": {
+      "title": "Удалить цель?",
+      "message": "Вы уверены, что хотите удалить цель \"{name}\"? Это действие нельзя отменить."
+    },
+    "placeholders": {
+      "caloriesPerDay": "Например: Калории в день"
+    }
+  },
+  "reminders": {
+    "title": "Напоминания",
+    "addReminder": "Добавить напоминание",
+    "editReminder": "Редактировать напоминание",
+    "noReminders": "Пока нет напоминаний",
+    "fields": {
+      "title": "Заголовок",
+      "message": "Сообщение",
+      "type": "Тип",
+      "time": "Время",
+      "days": "Дни",
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания",
+      "advanceMinutes": "Упреждение (мин)",
+      "repeatType": "Тип повтора",
+      "priority": "Приоритет",
+      "isActive": "Активно",
+      "sound": "Звук",
+      "vibration": "Вибрация",
+      "persistent": "Назойливый"
+    },
+    "types": {
+      "habit": "Привычка",
+      "medicine": "Лекарство",
+      "water": "Вода",
+      "workout": "Тренировка",
+      "food": "Еда",
+      "item": "Вещь",
+      "custom": "Пользовательское"
+    },
+    "priorities": {
+      "low": "Низкий",
+      "medium": "Средний",
+      "high": "Высокий",
+      "critical": "Критический"
+    },
+    "repeatTypes": {
+      "none": "Нет",
+      "daily": "Ежедневно",
+      "weekly": "Еженедельно",
+      "monthly": "Ежемесячно",
+      "custom": "Пользовательский",
+      "afterCompletion": "После выполнения"
+    },
+    "daysOfWeek": {
+      "sunday": "Вс",
+      "monday": "Пн",
+      "tuesday": "Вт",
+      "wednesday": "Ср",
+      "thursday": "Чт",
+      "friday": "Пт",
+      "saturday": "Сб"
+    },
+    "stats": {
+      "active": "Активных",
+      "today": "Сегодня",
+      "completed": "Выполнено",
+      "overdue": "Просрочено",
+      "total": "Всего"
+    },
+    "filters": {
+      "all": "Все",
+      "today": "Сегодня",
+      "active": "Активные",
+      "completed": "Выполненные",
+      "overdue": "Просроченные",
+      "inactive": "Отключённые"
+    },
+    "empty": {
+      "noReminders": "Нет напоминаний. Добавьте первое!",
+      "noCategory": "Нет напоминаний в этой категории"
+    },
+    "dialogs": {
+      "newTitle": "Новое напоминание",
+      "editTitle": "Редактировать напоминание",
+      "deleteTitle": "Удалить напоминание?",
+      "deleteConfirm": "Вы уверены, что хотите удалить напоминание \"{title}\"? Это действие нельзя отменить.",
+      "statsTitle": "Статистика: {title}"
+    },
+    "statsLabels": {
+      "streak": "Серия",
+      "best": "Лучшая",
+      "total": "Всего"
+    },
+    "history": "История",
+    "historyEmpty": "История пуста",
+    "completed": "Выполнено",
+    "snooze": "Через 5 мин",
+    "close": "Закрыть",
+    "testNotification": {
+      "button": "🧪 Тест уведомления",
+      "title": "Тестовое напоминание",
+      "message": "Это тестовое уведомление для проверки работы"
+    },
+    "advance": {
+      "onTime": "Вовремя",
+      "5minBefore": "За 5 мин",
+      "10minBefore": "За 10 мин",
+      "15minBefore": "За 15 мин",
+      "30minBefore": "За 30 мин",
+      "1hourBefore": "За 1 час",
+      "1dayBefore": "За 1 день"
+    },
+    "form": {
+      "type": "Тип",
+      "title": "Название",
+      "titlePlaceholder": "Название напоминания",
+      "message": "Сообщение",
+      "messagePlaceholder": "Дополнительная информация",
+      "time": "Время напоминания",
+      "date": "Дата",
+      "repeatType": "Повторяемость",
+      "repeatTypes": {
+        "none": "Без повтора",
+        "daily": "Ежедневно",
+        "weekly": "Еженедельно",
+        "monthly": "Ежемесячно",
+        "custom": "Кастомный интервал"
+      },
+      "daysOfWeek": "Дни недели",
+      "everyDay": "Каждый день",
+      "weekdays": "По будням",
+      "weekends": "Выиходные",
+      "monthDay": "Число месяца",
+      "monthDayLabel": "Каждое",
+      "monthDaySuffix": "число",
+      "monthDayHint": "Если в месяце меньше дней, напоминание сработает в последний день месяца",
+      "customInterval": "Каждые",
+      "onDays": "В какие дни",
+      "priority": "Приоритет",
+      "priorities": {
+        "low": "Низкий",
+        "medium": "Средний",
+        "high": "Высокий",
+        "critical": "Критичный"
+      },
+      "courseStart": "Начало курса",
+      "courseEnd": "Окончание курса",
+      "notificationSettings": "Настройки уведомлений",
+      "sound": "Звук",
+      "vibration": "Вибрация",
+      "persistent": "Назойливый режим (повторять пока не подтвердит)",
+      "addTime": "Добавить время",
+      "alsoRemindAt": "Также напомнить в:",
+      "dailyHint": "📅 Напоминание будет повторяться каждый день",
+      "itemSelect": "Элемент каталога",
+      "medicineSelect": "Лекарство/Витамин",
+      "selectPlaceholder": "Выберите...",
+      "hours": "часов",
+      "days": "дней",
+      "weeks": "недель",
+      "months": "месяцев",
+      "timeOfDay": {
+        "morning": "Утро",
+        "lunch": "Обед",
+        "evening": "Вечер",
+        "bedtime": "Перед сном"
+      }
+    }
+  },
+  "water": {
+    "title": "Вода",
+    "addWater": "Добавить воду",
+    "editWater": "Редактировать воду",
+    "todayIntake": "Потреблено сегодня",
+    "dailyGoal": "Дневная цель",
+    "unit": "мл",
+    "fields": {
+      "amount": "Количество (мл)",
+      "time": "Время",
+      "type": "Тип",
+      "note": "Заметка"
+    },
+    "types": {
+      "water": "Вода",
+      "tea": "Чай",
+      "coffee": "Кофе",
+      "other": "Другое"
+    },
+    "quickAdd": {
+      "glass": "Стакан (250мл)",
+      "cup": "Чашка (200мл)",
+      "bottle": "Бутылка (500мл)",
+      "liter": "Литр (1000мл)"
+    },
+    "goal": "Цель: {target} мл",
+    "goalReached": "🎉 Цель достигнута!",
+    "today": "Сегодня",
+    "add": "Добавить {amount} мл",
+    "delete": "Удалить запись",
+    "empty": {
+      "loading": "Загрузка...",
+      "noRecords": "Пока нет записей"
+    },
+    "reminder": {
+      "title": "Напоминания о воде",
+      "enabled": "Напоминания включены",
+      "disabled": "Напоминания выключены",
+      "enable": "Включить",
+      "disable": "Выключить",
+      "interval": "Интервал (минуты)",
+      "from": "С",
+      "to": "До",
+      "reminders": "Напоминания:",
+      "andMore": "и ещё {count}",
+      "permissionWarning": "Нажмите «Включить» и разрешите уведомления в браузере",
+      "permissionRequired": "Для работы напоминаний необходимо разрешить уведомления в браузере",
+      "waterReminderTitle": "Напоминание о воде",
+      "waterReminderMessage": "Пора выпить воды! (интервал {interval} мин)"
+    }
+  },
+  "sleep": {
+    "title": "Сон",
+    "addSleep": "Добавить сон",
+    "editSleep": "Редактировать сон",
+    "fields": {
+      "date": "Дата",
+      "startTime": "Время отхода ко сну",
+      "endTime": "Время пробуждения",
+      "duration": "Длительность",
+      "quality": "Качество",
+      "deepSleep": "Глубокий сон (мин)",
+      "remSleep": "REM сон (мин)",
+      "awake": "Время бодрствования (мин)",
+      "notes": "Заметки",
+      "factors": "Факторы"
+    },
+    "quality": {
+      "veryPoor": "Ужасно",
+      "poor": "Плохо",
+      "okay": "Нормально",
+      "good": "Хорошо",
+      "excellent": "Отлично"
+    },
+    "factors": {
+      "caffeine": "Кофеин",
+      "exercise": "Физическая активность",
+      "stress": "Стресс",
+      "alcohol": "Алкоголь"
+    },
+    "stats": {
+      "weekAverage": "Среднее за неделю",
+      "recordsCount": "Записей"
+    },
+    "weekChart": "Последние 7 дней",
+    "history": "История",
+    "dialogs": {
+      "addTitle": "Записать сон",
+      "editTitle": "Редактировать запись",
+      "deleteTitle": "Удалить запись?",
+      "deleteConfirm": "Вы уверены, что хотите удалить запись о сне? Это действие нельзя отменить.",
+      "dateLabel": "Дата",
+      "bedtimeLabel": "Лёг спать",
+      "wakeTimeLabel": "Проснулся",
+      "qualityLabel": "Качество сна",
+      "notesLabel": "Заметки",
+      "notesPlaceholder": "Снились сны, просыпался ночью...",
+      "duration": "Продолжительность",
+      "save": "Сохранить"
+    },
+    "empty": {
+      "loading": "Загрузка...",
+      "noRecords": "Нет записей",
+      "noSleep": "Нет записей о сне"
+    },
+    "edit": "Редактировать запись"
+  },
+  "mood": {
+    "title": "Настроение",
+    "addMood": "Добавить настроение",
+    "editMood": "Редактировать настроение",
+    "fields": {
+      "date": "Дата",
+      "mood": "Настроение",
+      "energy": "Энергия",
+      "stress": "Стресс",
+      "activities": "Активности",
+      "notes": "Заметки",
+      "factors": "Факторы"
+    },
+    "moods": {
+      "great": "Отличное",
+      "good": "Хорошее",
+      "okay": "Нормальное",
+      "bad": "Плохое",
+      "terrible": "Ужасное"
+    },
+    "levels": {
+      "veryLow": "Очень низкий",
+      "low": "Низкий",
+      "medium": "Средний",
+      "high": "Высокий",
+      "veryHigh": "Очень высокий"
+    },
+    "activities": {
+      "work": "Работа",
+      "exercise": "Спорт",
+      "social": "Общение",
+      "hobby": "Хобби",
+      "rest": "Отдых",
+      "shopping": "Покупки",
+      "reading": "Чтение",
+      "gaming": "Игры",
+      "cooking": "Готовка",
+      "walk": "Прогулка"
+    },
+    "factors": {
+      "sleep": "Сон",
+      "weather": "Погода",
+      "health": "Здоровье",
+      "work": "Работа"
+    },
+    "today": "Как ваше настроение сегодня?",
+    "last7Days": "Последние 7 дней",
+    "weekAverage": "Среднее за неделю",
+    "recordsCount": "Записей",
+    "history": "История",
+    "correlations": {
+      "title": "Корреляции с настроением",
+      "description": "Как различные факторы влияют на ваше настроение (на основе последних 14 дней)",
+      "sleep": "Сон",
+      "water": "Вода",
+      "workout": "Тренировки",
+      "noConnection": "Нет связи",
+      "strongPositive": "Сильная +",
+      "mediumPositive": "Средняя +",
+      "weakPositive": "Слабая +",
+      "strongNegative": "Сильная −",
+      "mediumNegative": "Средняя −",
+      "weakNegative": "Слабая −",
+      "tip": "💡 Положительная корреляция означает, что больше/лучше → лучше настроение"
+    },
+    "dialogs": {
+      "addTitle": "Как вы себя чувствуете?",
+      "editTitle": "Редактировать запись",
+      "deleteTitle": "Удалить запись?",
+      "deleteConfirm": "Вы уверены, что хотите удалить эту запись настроения? Это действие нельзя отменить.",
+      "save": "Сохранить",
+      "stressLabel": "Стресс (1 - низкий, 5 - высокий)",
+      "notesPlaceholder": "Что повлияло на настроение?"
+    },
+    "empty": {
+      "loading": "Загрузка...",
+      "noRecords": "Нет записей"
+    },
+    "edit": "Редактировать запись"
+  },
+  "body": {
+    "title": "Тело",
+    "addMeasurement": "Добавить измерение",
+    "editMeasurement": "Редактировать измерение",
+    "fields": {
+      "date": "Дата",
+      "type": "Тип",
+      "value": "Значение",
+      "unit": "Единица",
+      "notes": "Заметки"
+    },
+    "measurementTypes": {
+      "weight": "Вес",
+      "height": "Рост",
+      "bmi": "ИМТ",
+      "chest": "Грудь",
+      "waist": "Талия",
+      "hips": "Бёдра",
+      "neck": "Шея",
+      "biceps": "Бицепс",
+      "forearm": "Предплечье",
+      "thigh": "Бедро",
+      "calf": "Икра",
+      "bodyFat": "Процент жира",
+      "muscleMass": "Мышечная масса"
+    },
+    "bmi": {
+      "title": "BMI",
+      "underweight": "Недостаточный вес",
+      "normal": "Нормальный вес",
+      "overweight": "Избыточный вес",
+      "obese": "Ожирение",
+      "addHint": "Добавьте рост и вес для расчёта BMI"
+    },
+    "stats": {
+      "max": "Макс",
+      "avg": "Средн",
+      "min": "Мин",
+      "recordsCount": "записей"
+    },
+    "weightChart": "Вес за последний месяц",
+    "history": "История",
+    "dialogs": {
+      "addTitle": "Добавить измерение",
+      "editTitle": "Редактировать измерение",
+      "deleteTitle": "Удалить измерение?",
+      "deleteConfirm": "Вы уверены, что хотите удалить это измерение? Это действие нельзя отменить.",
+      "typeLabel": "Тип измерения",
+      "valueLabel": "Значение",
+      "notesLabel": "Заметки",
+      "notesPlaceholder": "Опционально"
+    },
+    "empty": {
+      "loading": "Загрузка...",
+      "noRecords": "Нет записей. Добавьте первое измерение!"
+    },
+    "edit": "Редактировать измерение"
+  },
+  "templates": {
+    "title": "Шаблоны",
+    "addTemplate": "Добавить шаблон",
+    "editTemplate": "Редактировать шаблон",
+    "noTemplates": "Пока нет шаблонов",
+    "fields": {
+      "name": "Название шаблона",
+      "type": "Тип",
+      "data": "Данные",
+      "isFavorite": "Избранное",
+      "useCount": "Кол-во использований"
+    },
+    "types": {
+      "food": "Питание",
+      "workout": "Тренировка",
+      "finance": "Финансы",
+      "water": "Вода",
+      "sleep": "С��н",
+      "mood": "Настроение"
+    },
+    "applyTemplate": "Применить шаблон",
+    "deleteTemplate": "Удалить шаблон",
+    "header": {
+      "title": "Шаблоны",
+      "subtitle": "Быстрые шаблоны для частых записей"
+    },
+    "actions": {
+      "create": "Создать шаблон",
+      "createFirst": "Создать первый шаблон",
+      "apply": "Применить",
+      "edit": "Редактировать шаблон",
+      "delete": "Удалить шаблон",
+      "addToFavorite": "Добавить в избранное",
+      "removeFromFavorite": "Удалить из избранного"
+    },
+    "empty": {
+      "loading": "Загрузка...",
+      "noTemplates": "Нет шаблонов",
+      "createHint": "Создайте шаблоны для быстрого добавления частых записей"
+    },
+    "sections": {
+      "favorite": "Избранное",
+      "usedCount": "Использований: {count}"
+    },
+    "dialogs": {
+      "createTitle": "Создать шаблон",
+      "editTitle": "Редактировать шаблон",
+      "deleteTitle": "Удалить шаблон?",
+      "deleteConfirm": "Вы уверены, что хотите удали��ь шаблон \"{name}\"? Это действие нельзя отменить.",
+      "nameLabel": "Название шаблона",
+      "namePlaceholder": "Например: Завтрак - овсянка",
+      "typeLabel": "Тип"
+    },
+    "apply": {
+      "title": "Применить шаблон",
+      "success": "Шаблон успешно применён!",
+      "stay": "Остаться",
+      "goToRecord": "Перейти к записи"
+    },
+    "noData": "Без данных",
+    "units": {
+      "kcal": "ккал",
+      "g": "г",
+      "min": "мин"
+    },
+    "moods": {
+      "great": "Отлич��о",
+      "good": "Хорошо",
+      "okay": "Нормально",
+      "bad": "Плохо",
+      "terrible": "Ужасно"
+    }
+  },
+  "items": {
+    "title": "Каталог",
+    "addItem": "Добавить элемент",
+    "editItem": "Редактировать элемент",
+    "noItems": "Пока нет элементов",
+    "list": {
+      "title": "Каталог",
+      "stats": {
+        "total": "Всего"
+      },
+      "filters": {
+        "all": "Все"
+      },
+      "searchPlaceholder": "Поиск по каталогу...",
+      "types": {
+        "vitamin": "Витамины",
+        "medicine": "Лекарства",
+        "herb": "Травы",
+        "cosmetic": "Косметика",
+        "product": "Продукты"
+      },
+      "empty": {
+        "noItems": "Каталог пуст. Добавьте первый элемент!"
+      }
+    },
+    "fields": {
+      "name": "Название",
+      "type": "Тип",
+      "category": "Категория",
+      "description": "Описание",
+      "usage": "Применение",
+      "benefits": "Преимущества",
+      "contraindications": "Противопоказания",
+      "dosage": "Дозировка",
+      "form": "Форма",
+      "manufacturer": "Производитель",
+      "composition": "Состав",
+      "storage": "Хранение",
+      "expiration": "Срок годности",
+      "calories": "Калории",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "servingSize": "Размер порции (г)"
+    },
+    "types": {
+      "vitamin": "Витамин",
+      "medicine": "Лекарство",
+      "herb": "Трава",
+      "cosmetic": "Косметика",
+      "product": "Продукт"
+    },
+    "catalog": {
+      "loading": "Загрузка...",
+      "notFound": "Элемент не найден"
+    },
+    "detail": {
+      "loading": "Загрузка...",
+      "notFound": "Элемент не найден",
+      "back": "Назад",
+      "usage": "Применение",
+      "health": "Здоровье",
+      "info": "Инфо",
+      "usageMethod": "Способ применения",
+      "dosage": "Дозировка",
+      "form": "Форма выпуска",
+      "benefits": "Польза",
+      "contraindications": "Противопоказания",
+      "manufacturer": "Производитель",
+      "expiration": "Срок годности",
+      "composition": "Состав",
+      "storage": "Условия хранения",
+      "notes": "Заметки",
+      "tags": "Теги",
+      "notSpecified": "Не указано",
+      "createReminder": "Создать напоминание",
+      "delete": "Удалить",
+      "edit": "Изменить",
+      "deleteDialogTitle": "Удалить элемент?",
+      "deleteDialogDescription": "Это действие нельзя отменить. «{name}» будет удалено навсегда.",
+      "reminderDialogTitle": "Создать напоминание",
+      "reminderDialogDescription": "Напоминание для: {name}",
+      "reminderTime": "Время",
+      "reminderDays": "Дни недели",
+      "reminderStartDate": "Начало курса",
+      "reminderEndDate": "Окончание курса",
+      "reminderDosageLabel": "Дозировка:",
+      "reminderCreate": "Создать",
+      "reminderCancel": "Отмена"
+    },
+    "new": {
+      "title": "Новый: {type}",
+      "basic": "Основное",
+      "usage": "Применение",
+      "health": "Здоровье",
+      "nutrition": "Пищевая ценность (на 100г)",
+      "additional": "Дополнительно",
+      "namePlaceholder": "Введите название",
+      "categoryPlaceholder": "Выберите категорию",
+      "descriptionPlaceholder": "Краткое описание...",
+      "usagePlaceholder": "Как использовать...",
+      "dosagePlaceholder": "Рекомендуемая дозировка",
+      "formPlaceholder": "Выберите форму выпуска",
+      "benefitsPlaceholder": "Полезные свойства...",
+      "contraindicationsPlaceholder": "Противопоказания и ограничения...",
+      "manufacturerPlaceholder": "Выберите производителя",
+      "compositionPlaceholder": "Состав продукта...",
+      "storagePlaceholder": "Температура, влажность...",
+      "notesPlaceholder": "Ваши заметки...",
+      "tagsPlaceholder": "теги через запятую",
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "servingSize": "Размер порции (г)"
+    },
+    "edit": {
+      "title": "Редактировать: {type}",
+      "loading": "Загрузка...",
+      "basic": "Основное",
+      "usage": "Применение",
+      "health": "Здоровье",
+      "nutrition": "Пищевая ценность (на 100г)",
+      "additional": "Дополнительно",
+      "namePlaceholder": "Введите название",
+      "categoryPlaceholder": "Выберите категорию",
+      "descriptionPlaceholder": "Краткое описание...",
+      "usagePlaceholder": "Как использовать...",
+      "dosagePlaceholder": "Рекомендуемая дозировка",
+      "formPlaceholder": "Выберите форму выпуска",
+      "benefitsPlaceholder": "Полезные свойства...",
+      "contraindicationsPlaceholder": "Противопоказания и ограничения...",
+      "manufacturerPlaceholder": "Выберите производителя",
+      "compositionPlaceholder": "Состав продукта...",
+      "storagePlaceholder": "Температура, влажность...",
+      "notesPlaceholder": "Ваши заметки...",
+      "tagsPlaceholder": "теги через запятую",
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "servingSize": "Размер порции (г)"
+    }
+  },
+  "content": {
+    "title": "Контент",
+    "addContent": "Добавить контент",
+    "editContent": "Редактировать контент",
+    "types": {
+      "book": "Книга",
+      "recipe": "Рецепт"
+    },
+    "new": {
+      "recipe": "Новый рецепт",
+      "book": "Новая книга",
+      "type": "Тип рецепта",
+      "basic": "Основное",
+      "title": "Название",
+      "titlePlaceholder": "Название рецепта",
+      "description": "Описание",
+      "descriptionPlaceholder": "Краткое описание...",
+      "servings": "Порции",
+      "servingUnit": "Единица",
+      "servingUnitPlaceholder": "порции",
+      "prepTime": "Подготовка (мин)",
+      "cookTime": "Приготовление (мин)",
+      "difficulty": "Сложность",
+      "difficulties": {
+        "easy": "Легко",
+        "medium": "Средне",
+        "hard": "Сложно"
+      },
+      "nutrition": "Пищевая ценность",
+      "calories": "Ккал",
+      "protein": "Белки (г)",
+      "fat": "Жиры (г)",
+      "carbs": "Углеводы (г)",
+      "sugar": "Сахар (г)",
+      "tags": "Теги",
+      "tagsPlaceholder": "теги через запятую",
+      "additional": "Дополнительно",
+      "actions": {
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "saving": "Сохранение..."
+      }
+    },
+    "view": {
+      "back": "Назад",
+      "loading": "Загрузка...",
+      "notFound": "Контент не найден",
+      "edit": "Изменить",
+      "delete": "Удалить",
+      "deleteConfirm": "Удалить {type}?",
+      "deleteDescription": "Это действие нельзя отменить. «{title}» будет удалено навсегда.",
+      "instructions": "Приготовление",
+      "details": "Детали",
+      "notes": "Заметки",
+      "noInstructions": "Нет инструкций",
+      "noContent": "Нет содержимого",
+      "ingredients": "Ингредиенты",
+      "optional": "(опц.)",
+      "nutrition": "Пищевая ценность",
+      "calories": "ккал",
+      "protein": "белки",
+      "fat": "жиры",
+      "carbs": "углеводы",
+      "sugar": "сахар",
+      "additional": "Дополнительно",
+      "courseType": "Тип блюда",
+      "cuisine": "Кухня",
+      "method": "Метод",
+      "cocktailDetails": "Детали коктейля",
+      "base": "База",
+      "glass": "Бокал",
+      "strength": "Крепость",
+      "drinkDetails": "Детали напитка",
+      "type": "Тип",
+      "caffeine": "Кофеин",
+      "volume": "Объём",
+      "createdAt": "Создано",
+      "updatedAt": "Обновлено",
+      "tags": "Теги"
+    },
+    "edit": {
+      "title": "Редактировать: {type}",
+      "loading": "Загрузка...",
+      "basic": "Основное",
+      "bookDetails": "О книге",
+      "notes": "Заметки",
+      "recipeType": "Тип рецепта",
+      "ingredients": "Ингредиенты",
+      "steps": "Шаги",
+      "nutrition": "Пищевая ценность",
+      "additional": "Дополнительно",
+      "actions": {
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "saving": "Сохранение..."
+      }
+    }
+  },
+  "errors": {
+    "generic": "Что-то пошло не так",
+    "notFound": "Не найдено",
+    "unauthorized": "Не авторизован",
+    "forbidden": "Доступ запрещён",
+    "serverError": "Ошибка сервера",
+    "networkError": "Ошибка сети",
+    "validationError": "Ошибка валидации",
+    "required": "Это поле обязательно",
+    "invalidEmail": "Неверный email",
+    "invalidDate": "Неверная дата",
+    "invalidNumber": "Неверное число",
+    "tooShort": "Слишком коротко",
+    "tooLong": "Слишком длинно",
+    "minValue": "Значение слишком мало",
+    "maxValue": "Значение слишком велико",
+    "duplicate": "Уже существует",
+    "loadFailed": "Не удалось загрузить данные",
+    "saveFailed": "Не удалось сохранить данные",
+    "deleteFailed": "Не удалось удалить",
+    "importFailed": "Ошибка импорта. Проверьте формат файла.",
+    "exportFailed": "Ошибка экспорта"
+  },
+  "loading": {
+    "data": "Загрузка данных...",
+    "saving": "Сохранение...",
+    "deleting": "Удаление...",
+    "importing": "Импорт...",
+    "exporting": "Экспорт...",
+    "syncing": "Синхронизация..."
+  },
+  "confirmations": {
+    "delete": "Вы уверены, что хотите удалить?",
+    "discard": "Отменить изменения?",
+    "logout": "Вы уверены, что хотите выйти?",
+    "clearData": "Все данные будут удалены. Продолжить?"
+  },
+  "empty": {
+    "noData": "Пока нет данных",
+    "noResults": "Результатов не найдено",
+    "noLogs": "Пока нет записей. Начните вести учёт!",
+    "noBooks": "Пока нет книг",
+    "noRecipes": "Пока нет рецептов",
+    "noHabits": "Пока нет привычек",
+    "noGoals": "Пока нет целей",
+    "noReminders": "Пока нет напоминаний",
+    "noTemplates": "Пока нет шаблонов",
+    "noItems": "Пока нет элементов"
+  },
+  "globalSearch": {
+    "placeholder": "Поиск... (Cmd+K)",
+    "noResults": "Ничего не найдено",
+    "navigate": "↑↓ для навигации",
+    "select": "Enter для выбора",
+    "close": "Esc для закрытия",
+    "quickActions": {
+      "addFood": "Добавить питание",
+      "addWorkout": "Добавить тренировку",
+      "addExpense": "Добавить расход",
+      "addBook": "Добавить книгу",
+      "addRecipe": "Добавить рецепт",
+      "logWater": "Записать воду",
+      "logSleep": "Записать сон",
+      "logMood": "Записать настроение",
+      "analytics": "Аналитика",
+      "settings": "Настройки"
+    }
+  },
+  "finance": {
+    "recurring": {
+      "title": "Повторяющиеся операции",
+      "add": "Добавить",
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "deleteConfirm": "Удалить повторяющуюся транзакцию?",
+      "form": {
+        "title": "Название",
+        "titlePlaceholder": "Аренда, Зарплата...",
+        "amount": "Сумма",
+        "frequency": "Периодичность",
+        "dayOfMonth": "День месяца",
+        "account": "Аккаунт",
+        "startDate": "Дата начала",
+        "save": "Сохранить",
+        "create": "Создать"
+      },
+      "frequency": {
+        "daily": "Ежедневно",
+        "weekly": "Еженедельно",
+        "biweekly": "Раз в 2 недели",
+        "monthly": "Ежемесячно",
+        "quarterly": "Ежеквартально",
+        "yearly": "Ежегодно"
+      },
+      "expense": "Расход",
+      "income": "Доход",
+      "empty": "Нет повторяющихся операций",
+      "loading": "Загрузка...",
+      "nextDue": "След"
+    }
+  }
+}

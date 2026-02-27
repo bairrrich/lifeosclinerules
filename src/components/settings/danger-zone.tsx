@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Trash2, Database } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -7,8 +8,11 @@ import { db } from "@/lib/db"
 import { seedDatabase, reseedDatabase, cleanupDuplicateCategories } from "@/lib/db/seed"
 
 export function DangerZone() {
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
+
   const handleClearData = async () => {
-    if (confirm("Вы уверены? Все данные будут удалены без возможности восстановления!")) {
+    if (confirm(t("dangerZone.confirmClear"))) {
       await Promise.all([
         db.logs.clear(),
         db.items.clear(),
@@ -31,14 +35,12 @@ export function DangerZone() {
     if (result) {
       window.location.reload()
     } else {
-      alert("База данных уже содержит данные. Сначала очистите данные.")
+      alert(tCommon("databaseNotEmpty"))
     }
   }
 
   const handleReseedData = async () => {
-    if (
-      confirm("Пересоздать базу данных? Все текущие данные будут удалены и заменены тестовыми!")
-    ) {
+    if (confirm(t("dangerZone.confirmReseed"))) {
       await reseedDatabase()
       window.location.reload()
     }
@@ -47,34 +49,34 @@ export function DangerZone() {
   const handleCleanupDuplicates = async () => {
     const count = await cleanupDuplicateCategories()
     if (count > 0) {
-      alert(`Удалено ${count} дубликатов категорий`)
+      alert(tCommon("duplicatesRemoved", { count }))
       window.location.reload()
     } else {
-      alert("Дубликаты не найдены")
+      alert(tCommon("noDuplicates"))
     }
   }
 
   return (
     <Card className="border-destructive">
       <CardHeader>
-        <CardTitle className="text-destructive">Опасная зона</CardTitle>
-        <CardDescription>Необратимые действия</CardDescription>
+        <CardTitle className="text-destructive">{t("dangerZone.title")}</CardTitle>
+        <CardDescription>{t("dangerZone.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
         <Button variant="outline" onClick={handleSeedData} className="w-full">
           <Database className="h-4 w-4 mr-2" />
-          Заполнить тестовыми данными
+          {t("dangerZone.seedData")}
         </Button>
         <Button variant="outline" onClick={handleReseedData} className="w-full">
           <Database className="h-4 w-4 mr-2" />
-          Пересоздать тестовые данные
+          {t("dangerZone.reseedData")}
         </Button>
         <Button variant="outline" onClick={handleCleanupDuplicates} className="w-full">
-          Очистить дубликаты категорий
+          {t("dangerZone.cleanupDuplicates")}
         </Button>
         <Button variant="destructive" onClick={handleClearData} className="w-full">
           <Trash2 className="h-4 w-4 mr-2" />
-          Очистить все данные
+          {t("dangerZone.clearAllData")}
         </Button>
       </CardContent>
     </Card>

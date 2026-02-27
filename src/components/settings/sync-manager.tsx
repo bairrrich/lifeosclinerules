@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Cloud, CloudOff, RefreshCw, Check, AlertCircle, Loader2, LogIn } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +11,8 @@ import { useSync, isSupabaseConfigured } from "@/lib/supabase/sync-service"
 import { getSupabaseClient } from "@/lib/supabase"
 
 export function SyncManager() {
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
   const { status, lastSyncAt, error, pendingChanges, isConfigured, sync, countPendingChanges } =
     useSync()
 
@@ -73,7 +76,7 @@ export function SyncManager() {
           password,
         })
         if (error) throw error
-        setAuthError("Проверьте email для подтверждения регистрации")
+        setAuthError(t("sync.signupSuccess"))
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -83,7 +86,7 @@ export function SyncManager() {
         setIsLoggedIn(true)
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Ошибка авторизации"
+      const message = err instanceof Error ? err.message : tCommon("error")
       setAuthError(message)
     } finally {
       setIsAuthLoading(false)
@@ -107,13 +110,11 @@ export function SyncManager() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CloudOff className="h-5 w-5" />
-            Облачная синхронизация
+            {t("sync.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Синхронизация не настроена. Добавьте ключи Supabase в файл .env.local
-          </p>
+          <p className="text-sm text-muted-foreground mb-4">{t("sync.notConfigured")}</p>
           <div className="bg-muted p-3 rounded-lg text-xs font-mono">
             <p>NEXT_PUBLIC_SUPABASE_URL=https://...</p>
             <p>NEXT_PUBLIC_SUPABASE_ANON_KEY=...</p>
@@ -130,17 +131,15 @@ export function SyncManager() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <LogIn className="h-5 w-5" />
-            Облачная синхронизация
+            {t("sync.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Войдите в аккаунт для синхронизации данных между устройствами
-          </p>
+          <p className="text-sm text-muted-foreground">{t("sync.loginHint")}</p>
 
           <form onSubmit={handleAuth} className="space-y-3">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{tCommon("email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -151,7 +150,7 @@ export function SyncManager() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Пароль</Label>
+              <Label htmlFor="password">{tCommon("password")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -172,7 +171,7 @@ export function SyncManager() {
             <div className="flex gap-2">
               <Button type="submit" disabled={isAuthLoading} className="flex-1">
                 {isAuthLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                {authMode === "login" ? "Войти" : "Зарегистрироваться"}
+                {authMode === "login" ? tCommon("login") : tCommon("signup")}
               </Button>
             </div>
           </form>
@@ -183,7 +182,7 @@ export function SyncManager() {
             onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
             className="w-full"
           >
-            {authMode === "login" ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти"}
+            {authMode === "login" ? tCommon("noAccountSignup") : tCommon("hasAccountLogin")}
           </Button>
         </CardContent>
       </Card>
@@ -196,10 +195,10 @@ export function SyncManager() {
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Cloud className="h-5 w-5" />
-            Облачная синхронизация
+            {t("sync.title")}
           </span>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
-            Выйти
+            {tCommon("logout")}
           </Button>
         </CardTitle>
       </CardHeader>
@@ -218,12 +217,12 @@ export function SyncManager() {
             )}
             <span className="text-sm">
               {isSyncing
-                ? "Синхронизация..."
+                ? t("sync.syncing")
                 : status === "success"
-                  ? "Синхронизировано"
+                  ? t("sync.synced")
                   : status === "error"
-                    ? "Ошибка синхронизации"
-                    : "Готово к синхронизации"}
+                    ? t("sync.syncError")
+                    : t("sync.ready")}
             </span>
           </div>
           <Button size="sm" onClick={handleSync} disabled={isSyncing} className="gap-2">
@@ -232,14 +231,14 @@ export function SyncManager() {
             ) : (
               <RefreshCw className="h-4 w-4" />
             )}
-            Синхронизировать
+            {t("sync.syncNow")}
           </Button>
         </div>
 
         {/* Info */}
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 bg-muted/50 rounded-lg">
-            <div className="text-xs text-muted-foreground mb-1">Последняя синхронизация</div>
+            <div className="text-xs text-muted-foreground mb-1">{t("sync.lastSync")}</div>
             <div className="text-sm font-medium">
               {lastSyncAt
                 ? new Date(lastSyncAt).toLocaleString("ru-RU", {
@@ -248,27 +247,27 @@ export function SyncManager() {
                     hour: "2-digit",
                     minute: "2-digit",
                   })
-                : "Никогда"}
+                : t("sync.never")}
             </div>
           </div>
           <div className="p-3 bg-muted/50 rounded-lg">
-            <div className="text-xs text-muted-foreground mb-1">Ожидают синхронизации</div>
-            <div className="text-sm font-medium">{pendingChanges} записей</div>
+            <div className="text-xs text-muted-foreground mb-1">{t("sync.pending")}</div>
+            <div className="text-sm font-medium">
+              {pendingChanges} {t("sync.records")}
+            </div>
           </div>
         </div>
 
         {/* Error */}
         {error && (
           <div className="p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
-            <p className="font-medium">Ошибка:</p>
+            <p className="font-medium">{tCommon("error")}:</p>
             <p className="text-xs mt-1">{error}</p>
           </div>
         )}
 
         {/* Auto-sync hint */}
-        <p className="text-xs text-muted-foreground">
-          💡 Синхронизация работает в фоне при наличии интернета
-        </p>
+        <p className="text-xs text-muted-foreground">{t("sync.autoSyncHint")}</p>
       </CardContent>
     </Card>
   )
@@ -278,6 +277,8 @@ export function SyncManager() {
 export function SyncIndicator() {
   const { status, pendingChanges, sync } = useSync()
   const isSyncing = status === "syncing"
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
 
   if (!isSupabaseConfigured()) {
     return (
@@ -285,7 +286,7 @@ export function SyncIndicator() {
         variant="ghost"
         size="icon"
         className="relative opacity-50"
-        aria-label="Синхронизация не настроена"
+        aria-label={t("sync.notConfigured")}
       >
         <CloudOff className="h-5 w-5" />
       </Button>
@@ -298,8 +299,12 @@ export function SyncIndicator() {
       size="icon"
       onClick={() => sync()}
       className="relative"
-      title={isSyncing ? "Синхронизация..." : `Синхронизировать (${pendingChanges} изменений)`}
-      aria-label={isSyncing ? "Синхронизация..." : "Синхронизировать"}
+      title={
+        isSyncing
+          ? t("sync.syncing")
+          : `${t("sync.syncNow")} (${pendingChanges} ${t("sync.changes")})`
+      }
+      aria-label={isSyncing ? t("sync.syncing") : t("sync.syncNow")}
     >
       {isSyncing ? <Loader2 className="h-5 w-5 animate-spin" /> : <RefreshCw className="h-5 w-5" />}
       {pendingChanges > 0 && !isSyncing && (

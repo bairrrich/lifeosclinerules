@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Plus, X, ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -26,6 +27,7 @@ interface RecipeIngredientsProps {
 }
 
 export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsProps) {
+  const t = useTranslations("recipes")
   const { units, isLoading, unitOptions } = useUnits()
 
   const addIngredient = () => {
@@ -64,17 +66,17 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">Ингредиенты</CardTitle>
+          <CardTitle className="text-base">{t("forms.ingredients")}</CardTitle>
           <Button type="button" variant="outline" size="sm" onClick={addIngredient}>
             <Plus className="h-4 w-4 mr-1" />
-            Добавить
+            {t("common.add")}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {ingredients.length === 0 ? (
           <div className="text-center py-4 text-muted-foreground text-sm">
-            Нет ингредиентов. Нажмите &laquo;Добавить&raquo; для создания.
+            {t("ingredients.empty")}
           </div>
         ) : (
           ingredients.map((ingredient, index) => (
@@ -87,7 +89,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                   {/* Название */}
                   <div className="col-span-6">
                     <Input
-                      placeholder="Название"
+                      placeholder={t("ingredients.ingredientName")}
                       value={ingredient.ingredient_name}
                       onChange={(e) => updateIngredient(index, "ingredient_name", e.target.value)}
                       className="h-9"
@@ -98,7 +100,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                   <div className="col-span-2">
                     <Input
                       type="number"
-                      placeholder="Кол-во"
+                      placeholder={t("ingredients.amount")}
                       value={ingredient.amount || ""}
                       onChange={(e) =>
                         updateIngredient(index, "amount", parseFloat(e.target.value) || 0)
@@ -156,7 +158,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                       size="icon"
                       className="h-9 w-9 text-destructive hover:text-destructive"
                       onClick={() => removeIngredient(index)}
-                      aria-label="Удалить ингредиент"
+                      aria-label={t("ingredients.removeIngredient")}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -167,13 +169,13 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                 <details className="group">
                   <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground flex items-center gap-1">
                     <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-180" />
-                    Пищевая ценность на 100г
+                    {t("ingredients.nutritionPer100")}
                   </summary>
                   <div className="grid grid-cols-4 gap-2 mt-2">
                     <div>
                       <Input
                         type="number"
-                        placeholder="Ккал"
+                        placeholder={t("ingredients.calories")}
                         value={ingredient.calories_per_100 || ""}
                         onChange={(e) =>
                           updateIngredient(
@@ -188,7 +190,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                     <div>
                       <Input
                         type="number"
-                        placeholder="Белки"
+                        placeholder={t("ingredients.protein")}
                         value={ingredient.protein_per_100 || ""}
                         onChange={(e) =>
                           updateIngredient(
@@ -204,7 +206,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                     <div>
                       <Input
                         type="number"
-                        placeholder="Жиры"
+                        placeholder={t("ingredients.fat")}
                         value={ingredient.fat_per_100 || ""}
                         onChange={(e) =>
                           updateIngredient(
@@ -220,7 +222,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                     <div>
                       <Input
                         type="number"
-                        placeholder="Угл."
+                        placeholder={t("ingredients.carbs")}
                         value={ingredient.carbs_per_100 || ""}
                         onChange={(e) =>
                           updateIngredient(
@@ -238,7 +240,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
 
                 {/* Примечание (опционально) */}
                 <Input
-                  placeholder="Примечание (свежий, мелко нарезать...)"
+                  placeholder={t("ingredients.note")}
                   value={ingredient.note || ""}
                   onChange={(e) => updateIngredient(index, "note", e.target.value)}
                   className="h-8 text-xs"
@@ -252,7 +254,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                     onChange={(e) => updateIngredient(index, "optional", e.target.checked)}
                     className="rounded"
                   />
-                  Опционально
+                  {t("ingredients.optional")}
                 </label>
               </div>
             </div>

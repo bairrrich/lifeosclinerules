@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -54,6 +55,7 @@ export function BookForm({
   onGenresChange,
   onChange,
 }: BookFormProps) {
+  const t = useTranslations("books")
   const [newTagName, setNewTagName] = useState("")
   const [tags, setTags] = useState<string[]>(data?.tags || [])
 
@@ -93,34 +95,34 @@ export function BookForm({
       {/* Основное */}
       <Card>
         <CardHeader>
-          <CardTitle>Основное</CardTitle>
+          <CardTitle>{t("forms.main")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Название *</Label>
+            <Label htmlFor="title">{t("fields.title")} *</Label>
             <Input
               id="title"
-              placeholder="Название книги"
+              placeholder={t("fields.title")}
               value={data?.title || ""}
               onChange={(e) => updateField("title", e.target.value)}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="subtitle">Подзаголовок</Label>
+            <Label htmlFor="subtitle">{t("fields.subtitle")}</Label>
             <Input
               id="subtitle"
-              placeholder="Подзаголовок книги"
+              placeholder={t("fields.subtitle")}
               value={data?.subtitle || ""}
               onChange={(e) => updateField("subtitle", e.target.value)}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Описание</Label>
+            <Label htmlFor="description">{t("fields.description")}</Label>
             <Textarea
               id="description"
-              placeholder="Аннотация или краткое описание..."
+              placeholder={t("fields.annotation")}
               value={data?.description || ""}
               onChange={(e) => updateField("description", e.target.value)}
               className="min-h-[100px]"
@@ -132,21 +134,21 @@ export function BookForm({
       {/* Автор и издание */}
       <Card>
         <CardHeader>
-          <CardTitle>Автор и издание</CardTitle>
+          <CardTitle>{t("forms.authorAndEdition")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <MultiCombobox
-            label="Автор(ы)"
+            label={t("fields.authors")}
             options={authorOptions}
             selectedIds={selectedAuthorIds}
             onChange={onAuthorsChange}
-            placeholder="Выберите авторов..."
-            addPlaceholder="Имя нового автора..."
+            placeholder={t("fields.authors")}
+            addPlaceholder={t("fields.newAuthor")}
           />
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="published_year">Год издания</Label>
+              <Label htmlFor="published_year">{t("fields.publishedYear")}</Label>
               <Input
                 id="published_year"
                 type="number"
@@ -161,7 +163,7 @@ export function BookForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="original_publication_year">Год оригинала</Label>
+              <Label htmlFor="original_publication_year">{t("fields.originalYear")}</Label>
               <Input
                 id="original_publication_year"
                 type="number"
@@ -178,10 +180,10 @@ export function BookForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="publisher">Издательство</Label>
+            <Label htmlFor="publisher">{t("fields.publisher")}</Label>
             <Input
               id="publisher"
-              placeholder="Издательство"
+              placeholder={t("fields.publisher")}
               value={data?.publisher || ""}
               onChange={(e) => updateField("publisher", e.target.value)}
             />
@@ -192,12 +194,12 @@ export function BookForm({
       {/* Характеристики */}
       <Card>
         <CardHeader>
-          <CardTitle>Характеристики</CardTitle>
+          <CardTitle>{t("forms.characteristics")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="format">Формат</Label>
+              <Label htmlFor="format">{t("fields.format")}</Label>
               <NativeSelect
                 id="format"
                 value={data?.format || "paperback"}
@@ -211,7 +213,7 @@ export function BookForm({
               </NativeSelect>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="language">Язык</Label>
+              <Label htmlFor="language">{t("fields.language")}</Label>
               <NativeSelect
                 id="language"
                 value={data?.language || "ru"}
@@ -227,7 +229,7 @@ export function BookForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="page_count">Количество страниц</Label>
+            <Label htmlFor="page_count">{t("fields.pageCount")}</Label>
             <Input
               id="page_count"
               type="number"
@@ -244,12 +246,12 @@ export function BookForm({
       {/* ISBN и внешние ID */}
       <Card>
         <CardHeader>
-          <CardTitle>ISBN и внешние ID</CardTitle>
+          <CardTitle>{t("forms.isbnAndExternalIds")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="isbn10">ISBN-10</Label>
+              <Label htmlFor="isbn10">{t("fields.isbn10")}</Label>
               <Input
                 id="isbn10"
                 placeholder="5171134567"
@@ -258,7 +260,7 @@ export function BookForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="isbn13">ISBN-13</Label>
+              <Label htmlFor="isbn13">{t("fields.isbn13")}</Label>
               <Input
                 id="isbn13"
                 placeholder="9785171134567"
@@ -270,7 +272,7 @@ export function BookForm({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="goodreads_id">Goodreads ID</Label>
+              <Label htmlFor="goodreads_id">{t("fields.goodreadsId")}</Label>
               <Input
                 id="goodreads_id"
                 placeholder="456789"
@@ -279,7 +281,7 @@ export function BookForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="google_books_id">Google Books ID</Label>
+              <Label htmlFor="google_books_id">{t("fields.googleBooksId")}</Label>
               <Input
                 id="google_books_id"
                 placeholder="ABC123"
@@ -294,23 +296,23 @@ export function BookForm({
       {/* Жанры и теги */}
       <Card>
         <CardHeader>
-          <CardTitle>Жанры и теги</CardTitle>
+          <CardTitle>{t("forms.genresAndTags")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <MultiCombobox
-            label="Жанры"
+            label={t("fields.genres")}
             options={genreOptions}
             selectedIds={selectedGenreIds}
             onChange={onGenresChange}
-            placeholder="Выберите жанры..."
-            addPlaceholder="Название нового жанра..."
+            placeholder={t("fields.genres")}
+            addPlaceholder={t("fields.newGenre")}
           />
 
           <div className="space-y-2">
-            <Label>Теги</Label>
+            <Label>{t("fields.tags")}</Label>
             <div className="flex gap-2">
               <Input
-                placeholder="Новый тег..."
+                placeholder={t("fields.addTag")}
                 value={newTagName}
                 onChange={(e) => setNewTagName(e.target.value)}
                 onKeyDown={(e) => {
@@ -325,7 +327,7 @@ export function BookForm({
                 variant="outline"
                 size="icon"
                 onClick={addTag}
-                aria-label="Добавить тег"
+                aria-label={t("fields.addTag")}
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -347,11 +349,11 @@ export function BookForm({
       {/* Обложка */}
       <Card>
         <CardHeader>
-          <CardTitle>Обложка</CardTitle>
+          <CardTitle>{t("forms.cover")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="cover_image_url">URL обложки</Label>
+            <Label htmlFor="cover_image_url">{t("fields.coverUrl")}</Label>
             <Input
               id="cover_image_url"
               placeholder="https://example.com/cover.jpg"

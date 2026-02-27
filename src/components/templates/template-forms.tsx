@@ -80,11 +80,11 @@ export const qualityOptions = [
 ]
 
 export const moodOptions = [
-  { value: "great", label: "Отлично", emoji: "😄" },
-  { value: "good", label: "Хорошо", emoji: "🙂" },
-  { value: "okay", label: "Нормально", emoji: "😐" },
-  { value: "bad", label: "Плохо", emoji: "😕" },
-  { value: "terrible", label: "Ужасно", emoji: "😢" },
+  { value: "great", label: "great", emoji: "😄" },
+  { value: "good", label: "good", emoji: "🙂" },
+  { value: "okay", label: "okay", emoji: "😐" },
+  { value: "bad", label: "bad", emoji: "😕" },
+  { value: "terrible", label: "terrible", emoji: "😢" },
 ]
 
 export const drinkTypeOptions = [

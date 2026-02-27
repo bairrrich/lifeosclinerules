@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Ruler, Plus, Edit2, Trash2 } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,8 @@ import { useSettings, unitTypes } from "./settings-context"
 import type { Unit } from "@/types"
 
 export function UnitsManager() {
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
   const { units, editingUnit, setEditingUnit, createUnit, updateUnitData, deleteUnitData } =
     useSettings()
 
@@ -39,7 +42,7 @@ export function UnitsManager() {
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm("Удалить единицу измерения?")) {
+    if (confirm(tCommon("delete"))) {
       await deleteUnitData(id)
     }
   }
@@ -78,9 +81,9 @@ export function UnitsManager() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Ruler className="h-5 w-5" />
-          Единицы измерения
+          {t("units.title")}
         </CardTitle>
-        <CardDescription>Справочник единиц измерения</CardDescription>
+        <CardDescription>{t("units.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Список единиц по группам */}
@@ -108,7 +111,7 @@ export function UnitsManager() {
                             <div className="grid grid-cols-2 gap-1">
                               <div className="space-y-1">
                                 <Label htmlFor={`edit-unit-name-${unit.id}`} className="sr-only">
-                                  Название
+                                  {t("units.name")}
                                 </Label>
                                 <Input
                                   id={`edit-unit-name-${unit.id}`}
@@ -116,13 +119,13 @@ export function UnitsManager() {
                                   onChange={(e) =>
                                     setEditingUnit({ ...editingUnit, name: e.target.value })
                                   }
-                                  placeholder="Название"
+                                  placeholder={t("units.name")}
                                   className="h-8"
                                 />
                               </div>
                               <div className="space-y-1">
                                 <Label htmlFor={`edit-unit-abbrev-${unit.id}`} className="sr-only">
-                                  Сокращение
+                                  {t("units.abbreviation")}
                                 </Label>
                                 <Input
                                   id={`edit-unit-abbrev-${unit.id}`}
@@ -130,14 +133,14 @@ export function UnitsManager() {
                                   onChange={(e) =>
                                     setEditingUnit({ ...editingUnit, abbreviation: e.target.value })
                                   }
-                                  placeholder="Сокращение"
+                                  placeholder={t("units.abbreviation")}
                                   className="h-8"
                                 />
                               </div>
                             </div>
                             <div className="space-y-1">
                               <Label htmlFor={`edit-unit-type-${unit.id}`} className="sr-only">
-                                Тип
+                                {t("units.type")}
                               </Label>
                               <select
                                 id={`edit-unit-type-${unit.id}`}
@@ -159,7 +162,7 @@ export function UnitsManager() {
                             </div>
                             <div className="flex gap-1">
                               <Button size="sm" className="h-7 text-xs" onClick={handleUpdate}>
-                                Сохранить
+                                {tCommon("save")}
                               </Button>
                               <Button
                                 size="sm"
@@ -167,7 +170,7 @@ export function UnitsManager() {
                                 className="h-7 text-xs"
                                 onClick={() => setEditingUnit(null)}
                               >
-                                Отмена
+                                {tCommon("cancel")}
                               </Button>
                             </div>
                           </div>
@@ -184,7 +187,7 @@ export function UnitsManager() {
                                 variant="ghost"
                                 className="h-7 w-7"
                                 onClick={() => setEditingUnit(unit)}
-                                aria-label="Редактировать"
+                                aria-label={tCommon("edit")}
                               >
                                 <Edit2 className="h-3 w-3" />
                               </Button>
@@ -193,7 +196,7 @@ export function UnitsManager() {
                                 variant="ghost"
                                 className="h-7 w-7"
                                 onClick={() => handleDelete(unit.id)}
-                                aria-label="Удалить"
+                                aria-label={tCommon("delete")}
                               >
                                 <Trash2 className="h-3 w-3 text-destructive" />
                               </Button>
@@ -208,38 +211,38 @@ export function UnitsManager() {
             })}
           </div>
         ) : (
-          <div className="text-sm text-muted-foreground text-center py-4">Нет единиц измерения</div>
+          <div className="text-sm text-muted-foreground text-center py-4">{t("units.noUnits")}</div>
         )}
 
         {/* Форма добавления */}
         <div className="p-3 rounded-xl border-2 border-dashed space-y-2">
-          <div className="text-sm font-medium">Добавить единицу</div>
+          <div className="text-sm font-medium">{t("units.addUnit")}</div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-1">
               <Label htmlFor="new-unit-name" className="sr-only">
-                Название
+                {t("units.name")}
               </Label>
               <Input
                 id="new-unit-name"
                 value={newUnit.name}
                 onChange={(e) => setNewUnit({ ...newUnit, name: e.target.value })}
-                placeholder="Название"
+                placeholder={t("units.name")}
               />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new-unit-abbrev" className="sr-only">
-                Сокращение
+                {t("units.abbreviation")}
               </Label>
               <Input
                 id="new-unit-abbrev"
                 value={newUnit.abbreviation}
                 onChange={(e) => setNewUnit({ ...newUnit, abbreviation: e.target.value })}
-                placeholder="Сокращение"
+                placeholder={t("units.abbreviation")}
               />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new-unit-type" className="sr-only">
-                Тип
+                {t("units.type")}
               </Label>
               <select
                 id="new-unit-type"
@@ -260,7 +263,7 @@ export function UnitsManager() {
             disabled={!newUnit.name.trim() || !newUnit.abbreviation.trim()}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Добавить
+            {tCommon("add")}
           </Button>
         </div>
       </CardContent>

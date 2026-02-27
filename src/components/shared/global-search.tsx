@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/lib/navigation"
+import { useTranslations } from "next-intl"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { db, initializeDatabase } from "@/lib/db"
@@ -67,6 +68,7 @@ const quickActions = [
 
 export function GlobalSearch() {
   const router = useRouter()
+  const t = useTranslations("globalSearch")
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchResult[]>([])
@@ -246,7 +248,7 @@ export function GlobalSearch() {
         <div className="flex items-center border-b px-3">
           <Search className="h-4 w-4 text-muted-foreground mr-2" />
           <Input
-            placeholder="Поиск... (Cmd+K)"
+            placeholder={t("placeholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-0"
@@ -260,7 +262,7 @@ export function GlobalSearch() {
         {/* Results */}
         <div className="max-h-[400px] overflow-y-auto">
           {results.length === 0 && query.length > 0 && !isLoading && (
-            <div className="py-8 text-center text-muted-foreground">Ничего не найдено</div>
+            <div className="py-8 text-center text-muted-foreground">{t("noResults")}</div>
           )}
 
           {results.map((result, index) => (
@@ -287,9 +289,9 @@ export function GlobalSearch() {
 
         {/* Footer */}
         <div className="border-t px-4 py-2 text-xs text-muted-foreground flex justify-between">
-          <span>↑↓ для навигации</span>
-          <span>Enter для выбора</span>
-          <span>Esc для закрытия</span>
+          <span>{t("navigate")}</span>
+          <span>{t("select")}</span>
+          <span>{t("close")}</span>
         </div>
       </DialogContent>
     </Dialog>

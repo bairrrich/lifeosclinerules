@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
+import { useTranslations } from "next-intl"
 import { Bell, X, Check, Clock } from "@/lib/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -23,6 +24,7 @@ export function ReminderNotification({
   const [notifications, setNotifications] = useState<ActiveNotification[]>([])
   const lastCheckedMinuteRef = useRef<string>("")
   const isMountedRef = useRef(true)
+  const t = useTranslations("common")
 
   // Удалить уведомление
   const dismissNotification = useCallback((id: string) => {
@@ -247,7 +249,7 @@ export function ReminderNotification({
                       size="icon"
                       className="h-5 w-5 ml-auto"
                       onClick={() => dismissNotification(notification.id)}
-                      aria-label="Закрыть уведомление"
+                      aria-label={t("close")}
                     >
                       <X className="h-3 w-3" />
                     </Button>
@@ -264,11 +266,11 @@ export function ReminderNotification({
               <div className="flex gap-2 mt-3">
                 <Button size="sm" className="flex-1" onClick={() => handleComplete(notification)}>
                   <Check className="h-4 w-4 mr-1" />
-                  Выполнено
+                  {t("done")}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleSnooze(notification)}>
                   <Clock className="h-4 w-4 mr-1" />
-                  Через 5 мин
+                  {t("reminders.snooze")}
                 </Button>
               </div>
             </CardContent>

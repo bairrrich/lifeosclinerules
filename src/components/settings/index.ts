@@ -1,5 +1,13 @@
-export { SettingsProvider, useSettings, accountTypes, unitTypes, logTypeLabels, itemTypeLabels } from "./settings-context"
+export {
+  SettingsProvider,
+  useSettings,
+  accountTypes,
+  unitTypes,
+  logTypeLabels,
+  itemTypeLabels,
+} from "./settings-context"
 export { ThemeSwitcher } from "./theme-switcher"
+export { LanguageSwitcher } from "./language-switcher"
 export { DataStats } from "./data-stats"
 export { BackupManager } from "./backup-manager"
 export { ExportManager } from "./export-manager"

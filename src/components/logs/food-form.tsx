@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ComboboxSelect } from "./combobox-select"
+import { useTranslations } from "next-intl"
 import { db, getAllEntities } from "@/lib/db"
 import type { Content, Item, RecipeContentExtended } from "@/types"
 import { ContentType, ItemType } from "@/types"
@@ -17,8 +18,8 @@ import { ContentType, ItemType } from "@/types"
 // ============================================
 
 const baseLogSchema = z.object({
-  date: z.string().min(1, "Выберите дату"),
-  time: z.string().min(1, "Выберите время"),
+  date: z.string().min(1, "Date required"),
+  time: z.string().min(1, "Time required"),
   title: z.string().optional(),
   category_id: z.string().optional(),
   quantity: z.number().optional(),
@@ -207,6 +208,8 @@ interface FoodFormProps {
 // ============================================
 
 export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
+  const t = useTranslations("logs")
+
   // Состояния для выбора источника
   const [sourceType, setSourceType] = useState<string>("custom")
 
@@ -306,7 +309,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
     <>
       {/* Выбор источника */}
       <div className="space-y-2">
-        <Label>Источник</Label>
+        <Label>{t("food.source")}</Label>
         <div className="grid grid-cols-3 gap-2">
           {foodSourceTypes.map((source) => {
             const Icon = source.icon
@@ -336,7 +339,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                 }`}
               >
                 <Icon className="h-5 w-5" />
-                {source.label}
+                {t(`food.sourceTypes.${source.value}`)}
               </button>
             )
           })}
@@ -347,21 +350,21 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
       {sourceType === "custom" && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="customTitle">Название блюда *</Label>
+            <Label htmlFor="customTitle">{t("food.dishName")} *</Label>
             <Input
               id="customTitle"
-              placeholder="Введите название"
+              placeholder={t("food.dishName")}
               value={customTitle}
               onChange={(e) => setCustomTitle(e.target.value)}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="customPortion">Размер порции (г)</Label>
+            <Label htmlFor="customPortion">{t("food.portionSize")}</Label>
             <Input
               id="customPortion"
               type="number"
-              placeholder="граммы"
+              placeholder={t("common.grams")}
               value={customPortionSize ?? ""}
               onChange={(e) =>
                 setCustomPortionSize(e.target.value ? Number(e.target.value) : undefined)
@@ -375,7 +378,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
       {sourceType === "recipe" && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Выберите рецепт</Label>
+            <Label>{t("food.selectRecipe")}</Label>
             {recipes.length > 0 ? (
               <div className="relative">
                 <select
@@ -390,7 +393,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                   }}
                 >
                   <option value="" disabled>
-                    Выберите рецепт
+                    {t("food.selectRecipe")}
                   </option>
                   {recipes.map((recipe) => (
                     <option key={recipe.id} value={recipe.id}>
@@ -403,8 +406,8 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             ) : (
               <div className="rounded-xl border border-dashed p-4 text-center text-muted-foreground">
                 <ChefHat className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Нет сохранённых рецептов</p>
-                <p className="text-xs mt-1">Добавьте рецепты в раздел Контент</p>
+                <p className="text-sm">{t("food.noRecipes")}</p>
+                <p className="text-xs mt-1">{t("food.addRecipeToContent")}</p>
               </div>
             )}
           </div>
@@ -414,19 +417,19 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
               <CardContent className="pt-4">
                 <div className="grid grid-cols-4 gap-2 text-center text-sm">
                   <div>
-                    <p className="text-muted-foreground">Ккал</p>
+                    <p className="text-muted-foreground">{t("food.calories")}</p>
                     <p className="font-medium">{selectedRecipe.calories || 0}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Белки</p>
+                    <p className="text-muted-foreground">{t("food.protein")}</p>
                     <p className="font-medium">{selectedRecipe.protein || 0}г</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Жиры</p>
+                    <p className="text-muted-foreground">{t("food.fat")}</p>
                     <p className="font-medium">{selectedRecipe.fat || 0}г</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Угл.</p>
+                    <p className="text-muted-foreground">{t("food.carbs")}</p>
                     <p className="font-medium">{selectedRecipe.carbs || 0}г</p>
                   </div>
                 </div>
@@ -443,7 +446,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
           {products.length > 0 ? (
             <>
               <div className="space-y-2">
-                <Label>Продукт из каталога</Label>
+                <Label>{t("food.selectProduct")}</Label>
                 <div className="relative">
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -457,7 +460,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                     }}
                   >
                     <option value="" disabled>
-                      Выберите продукт
+                      {t("food.selectProduct")}
                     </option>
                     {products.map((product) => (
                       <option key={product.id} value={product.id}>
@@ -474,19 +477,19 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                   <CardContent className="pt-4">
                     <div className="grid grid-cols-4 gap-2 text-center text-sm">
                       <div>
-                        <p className="text-muted-foreground">Ккал</p>
+                        <p className="text-muted-foreground">{t("food.calories")}</p>
                         <p className="font-medium">{selectedProduct.calories || 0}</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Белки</p>
+                        <p className="text-muted-foreground">{t("food.protein")}</p>
                         <p className="font-medium">{selectedProduct.protein || 0}г</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Жиры</p>
+                        <p className="text-muted-foreground">{t("food.fat")}</p>
                         <p className="font-medium">{selectedProduct.fat || 0}г</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Угл.</p>
+                        <p className="text-muted-foreground">{t("food.carbs")}</p>
                         <p className="font-medium">{selectedProduct.carbs || 0}г</p>
                       </div>
                     </div>
@@ -498,23 +501,23 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             /* Если нет продуктов в каталоге, показываем справочник */
             <>
               <ComboboxSelect
-                label="Категория продуктов"
+                label={t("food.productCategory")}
                 options={Object.keys(foodProducts)}
                 value={productCategory}
                 onChange={(value) => {
                   setProductCategory(value)
                   setProductSubcategory("")
                 }}
-                placeholder="Выберите категорию"
+                placeholder={t("food.productCategory")}
               />
 
               {productCategory && (
                 <ComboboxSelect
-                  label="Продукт"
+                  label={t("food.product")}
                   options={currentSubcategories}
                   value={productSubcategory}
                   onChange={setProductSubcategory}
-                  placeholder="Выберите продукт"
+                  placeholder={t("food.product")}
                 />
               )}
 
@@ -523,25 +526,25 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                   <CardContent className="pt-4">
                     <div className="grid grid-cols-4 gap-2 text-center text-sm">
                       <div>
-                        <p className="text-muted-foreground">Ккал</p>
+                        <p className="text-muted-foreground">{t("food.calories")}</p>
                         <p className="font-medium">
                           {foodProducts[productCategory]?.[productSubcategory]?.calories || 0}
                         </p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Белки</p>
+                        <p className="text-muted-foreground">{t("food.protein")}</p>
                         <p className="font-medium">
                           {foodProducts[productCategory]?.[productSubcategory]?.protein || 0}г
                         </p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Жиры</p>
+                        <p className="text-muted-foreground">{t("food.fat")}</p>
                         <p className="font-medium">
                           {foodProducts[productCategory]?.[productSubcategory]?.fat || 0}г
                         </p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground">Угл.</p>
+                        <p className="text-muted-foreground">{t("food.carbs")}</p>
                         <p className="font-medium">
                           {foodProducts[productCategory]?.[productSubcategory]?.carbs || 0}г
                         </p>
@@ -558,13 +561,13 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
       {/* КБЖУ */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Пищевая ценность</CardTitle>
+          <CardTitle className="text-base">{t("recipes.nutrition.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="calories" className="text-xs">
-                Ккал
+                {t("food.calories")}
               </Label>
               <Input
                 id="calories"
@@ -575,7 +578,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="protein" className="text-xs">
-                Белки
+                {t("food.protein")}
               </Label>
               <Input
                 id="protein"
@@ -587,7 +590,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="fat" className="text-xs">
-                Жиры
+                {t("food.fat")}
               </Label>
               <Input
                 id="fat"
@@ -599,7 +602,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="carbs" className="text-xs">
-                Углеводы
+                {t("food.carbs")}
               </Label>
               <Input
                 id="carbs"

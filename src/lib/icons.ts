@@ -22,6 +22,7 @@ export { default as Home } from "lucide-react/dist/esm/icons/home"
 export { default as Filter } from "lucide-react/dist/esm/icons/filter"
 export { default as List } from "lucide-react/dist/esm/icons/list"
 export { default as User } from "lucide-react/dist/esm/icons/user"
+export { default as Globe } from "lucide-react/dist/esm/icons/globe"
 
 // Actions
 export { default as Save } from "lucide-react/dist/esm/icons/save"

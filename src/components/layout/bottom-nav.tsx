@@ -1,51 +1,47 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname } from "@/lib/navigation"
+import { Link } from "@/lib/navigation"
 import { LayoutDashboard, ClipboardList, Package, BookOpen, ChefHat, BarChart3 } from "@/lib/icons"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 
 const navItems = [
   {
     href: "/",
-    label: "Главная",
+    translationKey: "home",
     icon: LayoutDashboard,
-    shortLabel: "Главная",
   },
   {
     href: "/logs",
-    label: "Учёт",
+    translationKey: "logs",
     icon: ClipboardList,
-    shortLabel: "Учёт",
   },
   {
     href: "/items",
-    label: "Каталог",
+    translationKey: "items",
     icon: Package,
-    shortLabel: "Каталог",
   },
   {
     href: "/books",
-    label: "Книги",
+    translationKey: "books",
     icon: BookOpen,
-    shortLabel: "Книги",
   },
   {
     href: "/recipes",
-    label: "Рецепты",
+    translationKey: "recipes",
     icon: ChefHat,
-    shortLabel: "Рецепты",
   },
   {
     href: "/analytics",
-    label: "Аналитика",
+    translationKey: "analytics",
     icon: BarChart3,
-    shortLabel: "Статист.",
   },
 ]
 
 export function BottomNav() {
   const pathname = usePathname()
+  const t = useTranslations("navigation")
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-2">
@@ -69,7 +65,7 @@ export function BottomNav() {
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
                 <span className="text-[10px] sm:text-xs font-medium truncate max-w-full">
-                  {item.shortLabel}
+                  {t(item.translationKey)}
                 </span>
               </Link>
             )

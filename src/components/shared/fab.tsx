@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/lib/navigation"
+import { useTranslations } from "next-intl"
 import {
   Plus,
   X,
@@ -34,131 +35,132 @@ interface FabAction {
   action?: "mood" | "navigate"
 }
 
-const actions: FabAction[] = [
-  {
-    icon: <Utensils className="h-5 w-5" />,
-    label: "Еда",
-    href: "/logs/food/new",
-    color: "bg-orange-500",
-    action: "navigate",
-  },
-  {
-    icon: <Dumbbell className="h-5 w-5" />,
-    label: "Тренировка",
-    href: "/logs/workout/new",
-    color: "bg-purple-500",
-    action: "navigate",
-  },
-  {
-    icon: <Wallet className="h-5 w-5" />,
-    label: "Финансы",
-    href: "/logs/finance/new",
-    color: "bg-green-500",
-    action: "navigate",
-  },
-  {
-    icon: <Droplets className="h-5 w-5" />,
-    label: "Вода",
-    href: "/water?add=true",
-    color: "bg-blue-500",
-    action: "navigate",
-  },
-  {
-    icon: <Moon className="h-5 w-5" />,
-    label: "Сон",
-    href: "/sleep?add=true",
-    color: "bg-indigo-500",
-    action: "navigate",
-  },
-  {
-    icon: <Smile className="h-5 w-5" />,
-    label: "Настроение",
-    color: "bg-pink-500",
-    action: "mood",
-  },
-  {
-    icon: <Ruler className="h-5 w-5" />,
-    label: "Измерения",
-    href: "/body?add=true",
-    color: "bg-cyan-500",
-    action: "navigate",
-  },
-  {
-    icon: <Flame className="h-5 w-5" />,
-    label: "Привычка",
-    href: "/habits?add=true",
-    color: "bg-rose-500",
-    action: "navigate",
-  },
-  {
-    icon: <Target className="h-5 w-5" />,
-    label: "Цель",
-    href: "/goals?add=true",
-    color: "bg-emerald-500",
-    action: "navigate",
-  },
-  {
-    icon: <Bell className="h-5 w-5" />,
-    label: "Напоминание",
-    href: "/reminders?add=true",
-    color: "bg-yellow-500",
-    action: "navigate",
-  },
-  {
-    icon: <BookOpen className="h-5 w-5" />,
-    label: "Книга",
-    href: "/books/new",
-    color: "bg-amber-500",
-    action: "navigate",
-  },
-  {
-    icon: <ChefHat className="h-5 w-5" />,
-    label: "Рецепт",
-    href: "/recipes/new",
-    color: "bg-red-500",
-    action: "navigate",
-  },
-  {
-    icon: <HeartPulse className="h-5 w-5" />,
-    label: "Витамины",
-    href: "/items/vitamin/new",
-    color: "bg-lime-500",
-    action: "navigate",
-  },
-  {
-    icon: <Pill className="h-5 w-5" />,
-    label: "Лекарства",
-    href: "/items/medicine/new",
-    color: "bg-teal-500",
-    action: "navigate",
-  },
-  {
-    icon: <Leaf className="h-5 w-5" />,
-    label: "Травы",
-    href: "/items/herb/new",
-    color: "bg-green-600",
-    action: "navigate",
-  },
-  {
-    icon: <Sparkles className="h-5 w-5" />,
-    label: "Косметика",
-    href: "/items/cosmetic/new",
-    color: "bg-fuchsia-500",
-    action: "navigate",
-  },
-  {
-    icon: <ShoppingBag className="h-5 w-5" />,
-    label: "Продукты",
-    href: "/items/product/new",
-    color: "bg-amber-600",
-    action: "navigate",
-  },
-]
-
 export function FAB() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMoodDialogOpen, setIsMoodDialogOpen] = useState(false)
   const router = useRouter()
+  const t = useTranslations("fab")
+
+  const actions = [
+    {
+      icon: <Utensils className="h-5 w-5" />,
+      label: t("food"),
+      href: "/logs/food/new",
+      color: "bg-orange-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Dumbbell className="h-5 w-5" />,
+      label: t("workout"),
+      href: "/logs/workout/new",
+      color: "bg-purple-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Wallet className="h-5 w-5" />,
+      label: t("finance"),
+      href: "/logs/finance/new",
+      color: "bg-green-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Droplets className="h-5 w-5" />,
+      label: t("water"),
+      href: "/water?add=true",
+      color: "bg-blue-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Moon className="h-5 w-5" />,
+      label: t("sleep"),
+      href: "/sleep?add=true",
+      color: "bg-indigo-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Smile className="h-5 w-5" />,
+      label: t("mood"),
+      color: "bg-pink-500",
+      action: "mood" as const,
+    },
+    {
+      icon: <Ruler className="h-5 w-5" />,
+      label: t("measurements"),
+      href: "/body?add=true",
+      color: "bg-cyan-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Flame className="h-5 w-5" />,
+      label: t("habit"),
+      href: "/habits?add=true",
+      color: "bg-rose-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Target className="h-5 w-5" />,
+      label: t("goal"),
+      href: "/goals?add=true",
+      color: "bg-emerald-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Bell className="h-5 w-5" />,
+      label: t("reminder"),
+      href: "/reminders?add=true",
+      color: "bg-yellow-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <BookOpen className="h-5 w-5" />,
+      label: t("book"),
+      href: "/books/new",
+      color: "bg-amber-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <ChefHat className="h-5 w-5" />,
+      label: t("recipe"),
+      href: "/recipes/new",
+      color: "bg-red-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <HeartPulse className="h-5 w-5" />,
+      label: t("vitamins"),
+      href: "/items/vitamin/new",
+      color: "bg-lime-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Pill className="h-5 w-5" />,
+      label: t("medicine"),
+      href: "/items/medicine/new",
+      color: "bg-teal-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Leaf className="h-5 w-5" />,
+      label: t("herbs"),
+      href: "/items/herb/new",
+      color: "bg-green-600",
+      action: "navigate" as const,
+    },
+    {
+      icon: <Sparkles className="h-5 w-5" />,
+      label: t("cosmetics"),
+      href: "/items/cosmetic/new",
+      color: "bg-fuchsia-500",
+      action: "navigate" as const,
+    },
+    {
+      icon: <ShoppingBag className="h-5 w-5" />,
+      label: t("products"),
+      href: "/items/product/new",
+      color: "bg-amber-600",
+      action: "navigate" as const,
+    },
+  ]
 
   const handleAction = (action: FabAction) => {
     setIsOpen(false)
@@ -208,7 +210,7 @@ export function FAB() {
             isOpen ? "bg-destructive rotate-45" : "bg-primary"
           }`}
           onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
+          aria-label={isOpen ? t("closeMenu") : t("openMenu")}
         >
           {isOpen ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
         </Button>

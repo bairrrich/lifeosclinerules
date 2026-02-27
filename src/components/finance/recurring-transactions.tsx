@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Plus, Trash2, Edit, Calendar, Wallet, TrendingDown, TrendingUp, Repeat } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,16 +18,8 @@ import { db, initializeDatabase } from "@/lib/db"
 import type { RecurringTransaction, Account } from "@/types"
 import { cn } from "@/lib/utils"
 
-const frequencyLabels: Record<string, string> = {
-  daily: "Ежедневно",
-  weekly: "Еженедельно",
-  biweekly: "Раз в 2 недели",
-  monthly: "Ежемесячно",
-  quarterly: "Ежеквартально",
-  yearly: "Ежегодно",
-}
-
 export function RecurringTransactions() {
+  const t = useTranslations("finance.recurring")
   const [recurring, setRecurring] = useState<RecurringTransaction[]>([])
   const [accounts, setAccounts] = useState<Account[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -213,7 +206,7 @@ export function RecurringTransactions() {
   }
 
   async function deleteRecurring(id: string) {
-    if (!confirm("Удалить повторяющуюся транзакцию?")) return
+    if (!confirm(t("deleteConfirm"))) return
     await db.recurringTransactions.delete(id)
     loadData()
   }
@@ -231,7 +224,7 @@ export function RecurringTransactions() {
   }
 
   if (isLoading) {
-    return <div className="text-center py-4 text-muted-foreground">Загрузка...</div>
+    return <div className="text-center py-4 text-muted-foreground">{t("loading")}</div>
   }
 
   return (
@@ -240,20 +233,18 @@ export function RecurringTransactions() {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <Repeat className="h-5 w-5" />
-          Повторяющиеся операции
+          {t("title")}
         </h2>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
               <Plus className="h-4 w-4 mr-1" />
-              Добавить
+              {t("add")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>
-                {editingId ? "Редактировать" : "Новая повторяющаяся операция"}
-              </DialogTitle>
+              <DialogTitle>{editingId ? t("edit") : t("title")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
               {/* Type */}
@@ -264,7 +255,7 @@ export function RecurringTransactions() {
                   onClick={() => setType("expense")}
                 >
                   <TrendingDown className="h-4 w-4 mr-1" />
-                  Расход
+                  {t("expense")}
                 </Button>
                 <Button
                   variant={type === "income" ? "default" : "outline"}
@@ -272,15 +263,15 @@ export function RecurringTransactions() {
                   onClick={() => setType("income")}
                 >
                   <TrendingUp className="h-4 w-4 mr-1" />
-                  Доход
+                  {t("income")}
                 </Button>
               </div>
 
               {/* Title */}
               <div className="space-y-2">
-                <Label>Название</Label>
+                <Label>{t("form.title")}</Label>
                 <Input
-                  placeholder="Аренда, Зарплата..."
+                  placeholder={t("form.titlePlaceholder")}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
@@ -288,7 +279,7 @@ export function RecurringTransactions() {
 
               {/* Amount */}
               <div className="space-y-2">
-                <Label>Сумма</Label>
+                <Label>{t("form.amount")}</Label>
                 <Input
                   type="number"
                   placeholder="0"
@@ -299,16 +290,16 @@ export function RecurringTransactions() {
 
               {/* Frequency */}
               <div className="space-y-2">
-                <Label>Периодичность</Label>
+                <Label>{t("form.frequency")}</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  {Object.entries(frequencyLabels).map(([key, label]) => (
+                  {["daily", "weekly", "biweekly", "monthly", "quarterly", "yearly"].map((key) => (
                     <Button
                       key={key}
                       variant={frequency === key ? "default" : "outline"}
                       size="sm"
                       onClick={() => setFrequency(key as typeof frequency)}
                     >
-                      {label}
+                      {t(`frequency.${key}`)}
                     </Button>
                   ))}
                 </div>
@@ -317,7 +308,7 @@ export function RecurringTransactions() {
               {/* Day of Month (for monthly) */}
               {frequency === "monthly" && (
                 <div className="space-y-2">
-                  <Label>День месяца</Label>
+                  <Label>{t("form.dayOfMonth")}</Label>
                   <Input
                     type="number"
                     min="1"
@@ -332,7 +323,7 @@ export function RecurringTransactions() {
               {/* Account */}
               {accounts.length > 0 && (
                 <div className="space-y-2">
-                  <Label>Аккаунт</Label>
+                  <Label>{t("form.account")}</Label>
                   <select
                     className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
                     value={accountId}
@@ -349,7 +340,7 @@ export function RecurringTransactions() {
 
               {/* Start Date */}
               <div className="space-y-2">
-                <Label>Дата начала</Label>
+                <Label>{t("form.startDate")}</Label>
                 <Input
                   type="date"
                   value={startDate}
@@ -359,7 +350,7 @@ export function RecurringTransactions() {
 
               {/* Save */}
               <Button className="w-full" onClick={saveRecurring}>
-                {editingId ? "Сохранить" : "Создать"}
+                {editingId ? t("form.save") : t("form.create")}
               </Button>
             </div>
           </DialogContent>
@@ -369,9 +360,7 @@ export function RecurringTransactions() {
       {/* List */}
       {recurring.length === 0 ? (
         <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            Нет повторяющихся операций
-          </CardContent>
+          <CardContent className="py-8 text-center text-muted-foreground">{t("empty")}</CardContent>
         </Card>
       ) : (
         <div className="space-y-2">
@@ -398,7 +387,7 @@ export function RecurringTransactions() {
                     <div className="font-medium truncate">{item.title}</div>
                     <div className="text-sm text-muted-foreground flex items-center gap-2">
                       <Calendar className="h-3 w-3" />
-                      {frequencyLabels[item.frequency]} • След: {nextDue}
+                      {t(`frequency.${item.frequency}`)} • {t("nextDue")}: {nextDue}
                     </div>
                   </div>
                   <div className="text-right">
@@ -418,7 +407,7 @@ export function RecurringTransactions() {
                       variant="ghost"
                       size="icon"
                       onClick={() => editRecurring(item)}
-                      aria-label="Редактировать транзакцию"
+                      aria-label={t("edit")}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -426,7 +415,7 @@ export function RecurringTransactions() {
                       variant="ghost"
                       size="icon"
                       onClick={() => deleteRecurring(item.id)}
-                      aria-label="Удалить транзакцию"
+                      aria-label={t("delete")}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

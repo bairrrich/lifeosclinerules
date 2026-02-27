@@ -1,12 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 import { Flame, Trophy, Target, TrendingUp } from "@/lib/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Streak, Habit, HabitLog } from "@/types"
 
 export function StreakWidget() {
+  const t = useTranslations("home.streakWidget")
   const [isLoading, setIsLoading] = useState(true)
   const [streaks, setStreaks] = useState<Streak[]>([])
   const [habits, setHabits] = useState<Habit[]>([])
@@ -73,7 +75,7 @@ export function StreakWidget() {
             </div>
             <div>
               <div className="text-2xl font-bold">{totalCurrentStreak}</div>
-              <div className="text-xs text-muted-foreground">Дней серий</div>
+              <div className="text-xs text-muted-foreground">{t("days")}</div>
             </div>
           </div>
 
@@ -83,7 +85,7 @@ export function StreakWidget() {
             </div>
             <div>
               <div className="text-2xl font-bold">{bestStreak}</div>
-              <div className="text-xs text-muted-foreground">Лучшая серия</div>
+              <div className="text-xs text-muted-foreground">{t("bestStreak")}</div>
             </div>
           </div>
         </div>
@@ -91,7 +93,7 @@ export function StreakWidget() {
         {/* Progress today */}
         <div className="mb-3">
           <div className="flex items-center justify-between text-sm mb-1">
-            <span className="text-muted-foreground">Сегодня</span>
+            <span className="text-muted-foreground">{t("completedToday")}</span>
             <span className="font-medium">
               {completedToday}/{activeHabits}
             </span>
@@ -134,11 +136,15 @@ export function StreakWidget() {
         <div className="flex items-center justify-between mt-3 pt-3 border-t text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Target className="h-3 w-3" />
-            <span>{activeHabits} привычек</span>
+            <span>
+              {activeHabits} {t("habits")}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <TrendingUp className="h-3 w-3" />
-            <span>{totalCompletions} выполнено</span>
+            <span>
+              {totalCompletions} {t("totalCompletions")}
+            </span>
           </div>
         </div>
       </CardContent>

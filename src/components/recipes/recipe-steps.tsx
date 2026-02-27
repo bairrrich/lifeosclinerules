@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Plus, X, Clock } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -18,6 +19,7 @@ interface RecipeStepsProps {
 }
 
 export function RecipeSteps({ steps, onChange }: RecipeStepsProps) {
+  const t = useTranslations("recipes")
   const addStep = () => {
     const newStep: StepItem = {
       id: `temp-${Date.now()}`,
@@ -64,18 +66,16 @@ export function RecipeSteps({ steps, onChange }: RecipeStepsProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">Приготовление</CardTitle>
+          <CardTitle className="text-base">{t("forms.steps")}</CardTitle>
           <Button type="button" variant="outline" size="sm" onClick={addStep}>
             <Plus className="h-4 w-4 mr-1" />
-            Добавить шаг
+            {t("steps.addStep")}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {steps.length === 0 ? (
-          <div className="text-center py-4 text-muted-foreground text-sm">
-            Нет шагов. Нажмите &laquo;Добавить шаг&raquo; для создания.
-          </div>
+          <div className="text-center py-4 text-muted-foreground text-sm">{t("steps.empty")}</div>
         ) : (
           steps.map((step, index) => (
             <div key={step.id || index} className="flex gap-2 p-3 rounded-lg bg-muted/30 border">
@@ -121,7 +121,7 @@ export function RecipeSteps({ steps, onChange }: RecipeStepsProps) {
               {/* Содержимое шага */}
               <div className="flex-1 space-y-2">
                 <Textarea
-                  placeholder="Описание шага..."
+                  placeholder={t("steps.stepText")}
                   value={step.text}
                   onChange={(e) => updateStep(index, "text", e.target.value)}
                   className="min-h-[60px] resize-none"
@@ -132,7 +132,7 @@ export function RecipeSteps({ steps, onChange }: RecipeStepsProps) {
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <Input
                     type="number"
-                    placeholder="Время (мин)"
+                    placeholder={t("steps.timer")}
                     value={step.timer_min || ""}
                     onChange={(e) =>
                       updateStep(index, "timer_min", parseInt(e.target.value) || undefined)
@@ -140,7 +140,7 @@ export function RecipeSteps({ steps, onChange }: RecipeStepsProps) {
                     className="w-24 h-8 text-xs"
                     min={0}
                   />
-                  <span className="text-xs text-muted-foreground">минут</span>
+                  <span className="text-xs text-muted-foreground">{t("steps.minutes")}</span>
                 </div>
               </div>
 
@@ -151,7 +151,7 @@ export function RecipeSteps({ steps, onChange }: RecipeStepsProps) {
                 size="icon"
                 className="h-9 w-9 text-destructive hover:text-destructive shrink-0"
                 onClick={() => removeStep(index)}
-                aria-label="Удалить шаг"
+                aria-label={t("steps.removeStep")}
               >
                 <X className="h-4 w-4" />
               </Button>

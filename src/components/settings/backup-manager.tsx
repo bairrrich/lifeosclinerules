@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import {
   Download,
   Upload,
@@ -32,21 +33,24 @@ const AUTO_BACKUP_ENABLED_KEY = "life-os-auto-backup-enabled"
 const AUTO_BACKUP_INTERVAL_KEY = "life-os-auto-backup-interval"
 const LAST_BACKUP_KEY = "life-os-last-backup"
 
-// Интервалы автобэкапа в часах
-const BACKUP_INTERVALS = [
-  { value: 1, label: "Каждый час" },
-  { value: 6, label: "Каждые 6 часов" },
-  { value: 12, label: "Каждые 12 часов" },
-  { value: 24, label: "Каждый день" },
-  { value: 168, label: "Каждую неделю" },
-]
-
 export function BackupManager() {
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
+
   const [isExporting, setIsExporting] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const [showConfirmImport, setShowConfirmImport] = useState(false)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null)
+
+  // Интервалы автобэкапа в часах
+  const BACKUP_INTERVALS = [
+    { value: 1, label: t("backup.backupIntervals.hourly") },
+    { value: 6, label: t("backup.backupIntervals.every6Hours") },
+    { value: 12, label: t("backup.backupIntervals.every12Hours") },
+    { value: 24, label: t("backup.backupIntervals.daily") },
+    { value: 168, label: t("backup.backupIntervals.weekly") },
+  ]
 
   // Автоматический бэкап
   const [autoBackupEnabled, setAutoBackupEnabled] = useState(false)
@@ -219,10 +223,10 @@ export function BackupManager() {
       a.click()
       URL.revokeObjectURL(url)
 
-      showToast("success", "Данные успешно экспортированы")
+      showToast("success", tCommon("success"))
     } catch (error) {
       console.error("Export failed:", error)
-      showToast("error", "Ошибка при экспорте данных")
+      showToast("error", tCommon("error"))
     } finally {
       setIsExporting(false)
     }
@@ -251,7 +255,7 @@ export function BackupManager() {
       }
 
       if (data.length === 0) {
-        showToast("error", "Нет данных для экспорта")
+        showToast("error", tCommon("noData"))
         return
       }
 
@@ -292,10 +296,10 @@ export function BackupManager() {
       a.click()
       URL.revokeObjectURL(url)
 
-      showToast("success", `${tableName} экспортирован в CSV`)
+      showToast("success", `${tableName} ${tCommon("export")}`)
     } catch (error) {
       console.error("CSV export failed:", error)
-      showToast("error", "Ошибка при экспорте CSV")
+      showToast("error", tCommon("error"))
     }
   }
 
@@ -370,11 +374,11 @@ export function BackupManager() {
         }
       )
 
-      showToast("success", "Данные успешно импортированы")
+      showToast("success", tCommon("success"))
       setTimeout(() => window.location.reload(), 1000)
     } catch (error) {
       console.error("Import failed:", error)
-      showToast("error", "Ошибка импорта. Проверьте формат файла.")
+      showToast("error", tCommon("error"))
     } finally {
       setIsImporting(false)
       setPendingFile(null)
@@ -383,7 +387,7 @@ export function BackupManager() {
 
   // Очистка всех данных
   const handleClearAll = async () => {
-    if (!confirm("Вы уверены? Все данные будут удалены без возможности восстановления!")) return
+    if (!confirm(t("dangerZone.confirmClear"))) return
 
     try {
       await Promise.all([
@@ -407,11 +411,11 @@ export function BackupManager() {
         db.recipeSteps.clear(),
       ])
 
-      showToast("success", "Все данные удалены")
+      showToast("success", tCommon("success"))
       window.location.reload()
     } catch (error) {
       console.error("Clear failed:", error)
-      showToast("error", "Ошибка при очистке данных")
+      showToast("error", tCommon("error"))
     }
   }
 
@@ -421,9 +425,9 @@ export function BackupManager() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileJson className="h-5 w-5" />
-            Резервное копирование
+            {t("backup.title")}
           </CardTitle>
-          <CardDescription>Экспорт и импорт данных приложения</CardDescription>
+          <CardDescription>{t("backup.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Основные действия */}
@@ -435,7 +439,7 @@ export function BackupManager() {
               className="flex-1"
             >
               <Download className="h-4 w-4 mr-2" />
-              {isExporting ? "Экспорт..." : "Экспорт JSON"}
+              {isExporting ? t("backup.exporting") : t("backup.exportJson")}
             </Button>
             <Button
               variant="outline"
@@ -444,7 +448,7 @@ export function BackupManager() {
               className="flex-1"
             >
               <Upload className="h-4 w-4 mr-2" />
-              {isImporting ? "Импорт..." : "Импорт JSON"}
+              {isImporting ? t("backup.importing") : t("backup.importJson")}
             </Button>
           </div>
 
@@ -453,7 +457,7 @@ export function BackupManager() {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                <Label className="text-sm font-medium">Автобэкап</Label>
+                <Label className="text-sm font-medium">{t("backup.autoBackup")}</Label>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -483,7 +487,7 @@ export function BackupManager() {
                 {lastBackup && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <RefreshCw className="h-3 w-3" />
-                    Последний: {new Date(lastBackup).toLocaleString("ru-RU")}
+                    {t("backup.lastBackup")}: {new Date(lastBackup).toLocaleString("ru-RU")}
                   </div>
                 )}
               </div>
@@ -492,7 +496,7 @@ export function BackupManager() {
 
           {/* CSV экспорт */}
           <div className="pt-2 border-t">
-            <p className="text-sm text-muted-foreground mb-2">Экспорт в CSV (для Excel):</p>
+            <p className="text-sm text-muted-foreground mb-2">{t("backup.csvExport")}:</p>
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="ghost"
@@ -501,7 +505,7 @@ export function BackupManager() {
                 className="text-xs"
               >
                 <FileSpreadsheet className="h-3 w-3 mr-1" />
-                Записи
+                {t("backup.logs")}
               </Button>
               <Button
                 variant="ghost"
@@ -510,7 +514,7 @@ export function BackupManager() {
                 className="text-xs"
               >
                 <FileSpreadsheet className="h-3 w-3 mr-1" />
-                Каталог
+                {t("backup.items")}
               </Button>
               <Button
                 variant="ghost"
@@ -519,7 +523,7 @@ export function BackupManager() {
                 className="text-xs"
               >
                 <FileSpreadsheet className="h-3 w-3 mr-1" />
-                Книги
+                {t("backup.books")}
               </Button>
               <Button
                 variant="ghost"
@@ -528,7 +532,7 @@ export function BackupManager() {
                 className="text-xs"
               >
                 <FileSpreadsheet className="h-3 w-3 mr-1" />
-                Счета
+                {t("backup.accounts")}
               </Button>
             </div>
           </div>
@@ -537,7 +541,7 @@ export function BackupManager() {
           <div className="pt-2 border-t">
             <Button variant="destructive" size="sm" onClick={handleClearAll} className="w-full">
               <Trash2 className="h-4 w-4 mr-2" />
-              Очистить все данные
+              {t("backup.clearAllData")}
             </Button>
           </div>
         </CardContent>
@@ -549,20 +553,17 @@ export function BackupManager() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
-              Подтвердите импорт
+              {t("backup.confirmImport.title")}
             </DialogTitle>
-            <DialogDescription>
-              Импорт данных может перезаписать существующие записи с такими же ID. Вы уверены, что
-              хотите продолжить?
-            </DialogDescription>
+            <DialogDescription>{t("backup.confirmImport.description")}</DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setShowConfirmImport(false)}>
-              Отмена
+              {tCommon("cancel")}
             </Button>
             <Button onClick={confirmImport}>
               <Upload className="h-4 w-4 mr-2" />
-              Импортировать
+              {tCommon("import")}
             </Button>
           </DialogFooter>
         </DialogContent>
