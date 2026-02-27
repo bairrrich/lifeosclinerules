@@ -1,18 +1,28 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { Plus, Scale, Ruler, TrendingDown, TrendingUp, Settings, Activity } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
+import {
+  FormActions,
+  CreateFormActions,
+  DeleteConfirmActions,
+} from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { BodyMeasurement, BodyMeasurementType } from "@/types"
 
-const measurementTypes: { type: BodyMeasurementType; label: string; unit: string; icon: typeof Scale }[] = [
+const measurementTypes: {
+  type: BodyMeasurementType
+  label: string
+  unit: string
+  icon: typeof Scale
+}[] = [
   { type: "height", label: "Рост", unit: "см", icon: Ruler },
   { type: "weight", label: "Вес", unit: "кг", icon: Scale },
   { type: "waist", label: "Талия", unit: "см", icon: Ruler },
@@ -25,6 +35,15 @@ const measurementTypes: { type: BodyMeasurementType; label: string; unit: string
 ]
 
 export default function BodyPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Загрузка...</div>}>
+      <BodyContent />
+    </Suspense>
+  )
+}
+
+function BodyContent() {
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(true)
   const [measurements, setMeasurements] = useState<BodyMeasurement[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -38,6 +57,12 @@ export default function BodyPage() {
   useEffect(() => {
     loadData()
   }, [])
+
+  useEffect(() => {
+    if (searchParams.get("add") === "true") {
+      setIsAddDialogOpen(true)
+    }
+  }, [searchParams])
 
   async function loadData() {
     try {
@@ -55,7 +80,7 @@ export default function BodyPage() {
     if (!value || isNaN(Number(value))) return
 
     const typeConfig = measurementTypes.find((t) => t.type === selectedType)
-    
+
     await createEntity(db.bodyMeasurements, {
       date: new Date().toISOString(),
       type: selectedType,
@@ -73,7 +98,7 @@ export default function BodyPage() {
     if (!editingMeasurement || !value || isNaN(Number(value))) return
 
     const typeConfig = measurementTypes.find((t) => t.type === selectedType)
-    
+
     await updateEntity(db.bodyMeasurements, editingMeasurement.id, {
       type: selectedType,
       value: Number(value),
@@ -122,12 +147,14 @@ export default function BodyPage() {
     return typeMeasurements[1]
   }
 
-  function getChange(type: BodyMeasurementType): { value: number; trend: "up" | "down" | "same" } | null {
+  function getChange(
+    type: BodyMeasurementType
+  ): { value: number; trend: "up" | "down" | "same" } | null {
     const latest = getLatestMeasurement(type)
     const previous = getPreviousMeasurement(type)
-    
+
     if (!latest || !previous) return null
-    
+
     const diff = latest.value - previous.value
     return {
       value: Math.abs(diff),
@@ -139,19 +166,18 @@ export default function BodyPage() {
     return measurements.filter((m) => m.type === type).slice(0, 30)
   }
 
-  // BMI Calculation
   function calculateBMI(): { value: number; category: string; color: string } | null {
     const height = getLatestMeasurement("height")
     const weight = getLatestMeasurement("weight")
-    
+
     if (!height || !weight) return null
-    
-    const heightM = height.value / 100 // см в метры
+
+    const heightM = height.value / 100
     const bmi = weight.value / (heightM * heightM)
-    
+
     let category: string
     let color: string
-    
+
     if (bmi < 18.5) {
       category = "Недостаточный вес"
       color = "text-blue-500"
@@ -165,20 +191,21 @@ export default function BodyPage() {
       category = "Ожирение"
       color = "text-red-500"
     }
-    
+
     return { value: Math.round(bmi * 10) / 10, category, color }
   }
 
-  // Statistics for all types
-  function getStats(type: BodyMeasurementType): { min: number; max: number; avg: number; count: number } | null {
+  function getStats(
+    type: BodyMeasurementType
+  ): { min: number; max: number; avg: number; count: number } | null {
     const typeMeasurements = getMeasurementsByType(type)
     if (typeMeasurements.length === 0) return null
-    
-    const values = typeMeasurements.map(m => m.value)
+
+    const values = typeMeasurements.map((m) => m.value)
     return {
       min: Math.min(...values),
       max: Math.max(...values),
-      avg: Math.round(values.reduce((a, b) => a + b, 0) / values.length * 10) / 10,
+      avg: Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10,
       count: values.length,
     }
   }
@@ -195,7 +222,7 @@ export default function BodyPage() {
             {bmi ? (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/10`}>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/10">
                     <Activity className={`h-7 w-7 ${bmi.color}`} />
                   </div>
                   <div>
@@ -204,11 +231,10 @@ export default function BodyPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`text-lg font-medium ${bmi.color}`}>
-                    {bmi.category}
-                  </div>
+                  <div className={`text-lg font-medium ${bmi.color}`}>{bmi.category}</div>
                   <div className="text-sm text-muted-foreground">
-                    {getLatestMeasurement("height")?.value} см / {getLatestMeasurement("weight")?.value} кг
+                    {getLatestMeasurement("height")?.value} см /{" "}
+                    {getLatestMeasurement("weight")?.value} кг
                   </div>
                 </div>
               </div>
@@ -221,23 +247,29 @@ export default function BodyPage() {
           </CardContent>
         </Card>
 
-        {/* Quick Stats - All Types */}
+        {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-2">
-          {measurementTypes.map(({ type, label, unit, icon: Icon }) => {
-            const latest = getLatestMeasurement(type)
-            const change = getChange(type)
+          {measurementTypes.map((item) => {
+            const latest = getLatestMeasurement(item.type)
+            const change = getChange(item.type)
 
             return (
-              <Card key={type}>
+              <Card key={item.type}>
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between mb-1">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    <item.icon className="h-4 w-4 text-muted-foreground" />
                     {change && (
-                      <div className={`flex items-center gap-1 text-xs ${
-                        type === "body_fat" 
-                          ? (change.trend === "down" ? "text-green-500" : "text-red-500")
-                          : (change.trend === "down" ? "text-red-500" : "text-green-500")
-                      }`}>
+                      <div
+                        className={`flex items-center gap-1 text-xs ${
+                          item.type === "body_fat"
+                            ? change.trend === "down"
+                              ? "text-green-500"
+                              : "text-red-500"
+                            : change.trend === "down"
+                              ? "text-red-500"
+                              : "text-green-500"
+                        }`}
+                      >
                         {change.trend === "up" ? (
                           <TrendingUp className="h-3 w-3" />
                         ) : (
@@ -247,27 +279,25 @@ export default function BodyPage() {
                       </div>
                     )}
                   </div>
-                  <div className="text-xl font-bold">
-                    {latest ? `${latest.value}` : "-"}
-                  </div>
-                  <div className="text-xs text-muted-foreground">{label}</div>
+                  <div className="text-xl font-bold">{latest ? `${latest.value}` : "-"}</div>
+                  <div className="text-xs text-muted-foreground">{item.label}</div>
                 </CardContent>
               </Card>
             )
           })}
         </div>
 
-        {/* Detailed Stats for Each Type */}
-        {measurementTypes.map(({ type, label, unit, icon: Icon }) => {
-          const stats = getStats(type)
+        {/* Detailed Stats */}
+        {measurementTypes.map((item) => {
+          const stats = getStats(item.type)
           if (!stats || stats.count < 2) return null
 
           return (
-            <Card key={`stats-${type}`}>
+            <Card key={`stats-${item.type}`}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <Icon className="h-4 w-4 text-muted-foreground" />
-                  <h3 className="font-medium">{label}</h3>
+                  <item.icon className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="font-medium">{item.label}</h3>
                   <span className="text-xs text-muted-foreground ml-auto">
                     {stats.count} записей
                   </span>
@@ -297,21 +327,24 @@ export default function BodyPage() {
             <CardContent className="p-4">
               <h3 className="font-medium mb-3">Вес за последний месяц</h3>
               <div className="flex items-end justify-between h-24 gap-1">
-                {weightMeasurements.slice(0, 14).reverse().map((m, i) => {
-                  const minWeight = Math.min(...weightMeasurements.map((w) => w.value))
-                  const maxWeight = Math.max(...weightMeasurements.map((w) => w.value))
-                  const range = maxWeight - minWeight || 1
-                  const height = ((m.value - minWeight) / range) * 80 + 20
+                {weightMeasurements
+                  .slice(0, 14)
+                  .reverse()
+                  .map((m, i) => {
+                    const minWeight = Math.min(...weightMeasurements.map((w) => w.value))
+                    const maxWeight = Math.max(...weightMeasurements.map((w) => w.value))
+                    const range = maxWeight - minWeight || 1
+                    const height = ((m.value - minWeight) / range) * 80 + 20
 
-                  return (
-                    <div key={i} className="flex-1 flex flex-col items-center">
-                      <div
-                        className="w-full bg-blue-500 rounded-t transition-all"
-                        style={{ height: `${height}%` }}
-                      />
-                    </div>
-                  )
-                })}
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center">
+                        <div
+                          className="w-full bg-blue-500 rounded-t transition-all"
+                          style={{ height: `${height}%` }}
+                        />
+                      </div>
+                    )
+                  })}
               </div>
               <div className="flex justify-between text-xs text-muted-foreground mt-2">
                 <span>{weightMeasurements[weightMeasurements.length - 1]?.value || "-"} кг</span>
@@ -321,7 +354,7 @@ export default function BodyPage() {
           </Card>
         )}
 
-        {/* All Measurements */}
+        {/* History */}
         <div>
           <h2 className="text-lg font-semibold mb-3">История</h2>
           {isLoading ? (
@@ -337,26 +370,26 @@ export default function BodyPage() {
               </CardContent>
             </Card>
           ) : (
-            measurementTypes.map(({ type, label, unit, icon: Icon }) => {
-              const typeMeasurements = getMeasurementsByType(type)
+            measurementTypes.map((item) => {
+              const typeMeasurements = getMeasurementsByType(item.type)
               if (typeMeasurements.length === 0) return null
 
               return (
-                <div key={type} className="mb-4">
+                <div key={item.type} className="mb-4">
                   <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
-                    <Icon className="h-4 w-4" />
-                    {label}
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
                   </h3>
                   <div className="flex flex-col gap-1">
                     {typeMeasurements.slice(0, 5).map((m) => (
                       <Card key={m.id} className="group">
                         <CardContent className="p-3 flex items-center justify-between">
                           <div>
-                            <span className="font-medium">{m.value} {m.unit}</span>
+                            <span className="font-medium">
+                              {m.value} {m.unit}
+                            </span>
                             {m.notes && (
-                              <span className="text-sm text-muted-foreground ml-2">
-                                {m.notes}
-                              </span>
+                              <span className="text-sm text-muted-foreground ml-2">{m.notes}</span>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
@@ -395,15 +428,15 @@ export default function BodyPage() {
               <div className="space-y-2">
                 <Label>Тип измерения</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  {measurementTypes.map(({ type, label, icon: Icon }) => (
+                  {measurementTypes.map((item) => (
                     <Button
-                      key={type}
-                      variant={selectedType === type ? "default" : "outline"}
+                      key={item.type}
+                      variant={selectedType === item.type ? "default" : "outline"}
                       className="flex flex-col items-center py-2 h-auto"
-                      onClick={() => setSelectedType(type)}
+                      onClick={() => setSelectedType(item.type)}
                     >
-                      <Icon className="h-4 w-4 mb-1" />
-                      <span className="text-xs">{label}</span>
+                      <item.icon className="h-4 w-4 mb-1" />
+                      <span className="text-xs">{item.label}</span>
                     </Button>
                   ))}
                 </div>
@@ -455,15 +488,15 @@ export default function BodyPage() {
               <div className="space-y-2">
                 <Label>Тип измерения</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  {measurementTypes.map(({ type, label, icon: Icon }) => (
+                  {measurementTypes.map((item) => (
                     <Button
-                      key={type}
-                      variant={selectedType === type ? "default" : "outline"}
+                      key={item.type}
+                      variant={selectedType === item.type ? "default" : "outline"}
                       className="flex flex-col items-center py-2 h-auto"
-                      onClick={() => setSelectedType(type)}
+                      onClick={() => setSelectedType(item.type)}
                     >
-                      <Icon className="h-4 w-4 mb-1" />
-                      <span className="text-xs">{label}</span>
+                      <item.icon className="h-4 w-4 mb-1" />
+                      <span className="text-xs">{item.label}</span>
                     </Button>
                   ))}
                 </div>
@@ -506,7 +539,7 @@ export default function BodyPage() {
           </DialogContent>
         </Dialog>
 
-        {/* Delete Confirmation Dialog */}
+        {/* Delete Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogContent>
             <DialogHeader>

@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { Moon, Plus, Settings } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
@@ -8,7 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
+import {
+  FormActions,
+  CreateFormActions,
+  DeleteConfirmActions,
+} from "@/components/shared/form-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { SleepLog } from "@/types"
 
@@ -29,6 +34,15 @@ const qualityColors: Record<number, string> = {
 }
 
 export default function SleepPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Загрузка...</div>}>
+      <SleepContent />
+    </Suspense>
+  )
+}
+
+function SleepContent() {
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(true)
   const [sleepLogs, setSleepLogs] = useState<SleepLog[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -47,6 +61,13 @@ export default function SleepPage() {
     loadData()
   }, [])
 
+  // Открыть диалог добавления если передан параметр add=true
+  useEffect(() => {
+    if (searchParams.get("add") === "true") {
+      setIsAddDialogOpen(true)
+    }
+  }, [searchParams])
+
   async function loadData() {
     try {
       await initializeDatabase()
@@ -62,20 +83,20 @@ export default function SleepPage() {
   function calculateDuration(start: string, end: string): number {
     const [startH, startM] = start.split(":").map(Number)
     const [endH, endM] = end.split(":").map(Number)
-    
+
     let startMinutes = startH * 60 + startM
     let endMinutes = endH * 60 + endM
-    
+
     if (endMinutes < startMinutes) {
       endMinutes += 24 * 60
     }
-    
+
     return endMinutes - startMinutes
   }
 
   async function addSleepLog() {
     const duration = calculateDuration(formData.start_time, formData.end_time)
-    
+
     await createEntity(db.sleepLogs, {
       date: formData.date,
       start_time: formData.start_time,
@@ -92,9 +113,9 @@ export default function SleepPage() {
 
   async function updateSleepLog() {
     if (!editingLog) return
-    
+
     const duration = calculateDuration(formData.start_time, formData.end_time)
-    
+
     await updateEntity(db.sleepLogs, editingLog.id, {
       date: formData.date,
       start_time: formData.start_time,
@@ -112,9 +133,9 @@ export default function SleepPage() {
 
   async function deleteSleepLog() {
     if (!editingLog) return
-    
+
     await deleteEntity(db.sleepLogs, editingLog.id)
-    
+
     setIsDeleteDialogOpen(false)
     setIsEditDialogOpen(false)
     setEditingLog(null)
@@ -167,11 +188,15 @@ export default function SleepPage() {
             {lastNight ? (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10`}>
+                  <div
+                    className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10`}
+                  >
                     <Moon className={`h-7 w-7 ${qualityColors[lastNight.quality]}`} />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{formatDuration(lastNight.duration_min)}</div>
+                    <div className="text-2xl font-bold">
+                      {formatDuration(lastNight.duration_min)}
+                    </div>
                     <div className="text-sm text-muted-foreground">
                       {lastNight.start_time} → {lastNight.end_time}
                     </div>
@@ -215,22 +240,29 @@ export default function SleepPage() {
             <CardContent className="p-4">
               <h3 className="font-medium mb-3">Последние 7 дней</h3>
               <div className="flex items-end justify-between h-24 gap-1">
-                {sleepLogs.slice(0, 7).reverse().map((log, i) => {
-                  const height = Math.min(100, (log.duration_min / 480) * 100)
-                  return (
-                    <div key={i} className="flex-1 flex flex-col items-center">
-                      <div
-                        className={`w-full rounded-t transition-all ${
-                          log.quality >= 4 ? "bg-green-500" : log.quality >= 3 ? "bg-yellow-500" : "bg-red-500"
-                        }`}
-                        style={{ height: `${height}%` }}
-                      />
-                      <span className="text-xs text-muted-foreground mt-1">
-                        {new Date(log.date).toLocaleDateString("ru-RU", { weekday: "short" })}
-                      </span>
-                    </div>
-                  )
-                })}
+                {sleepLogs
+                  .slice(0, 7)
+                  .reverse()
+                  .map((log, i) => {
+                    const height = Math.min(100, (log.duration_min / 480) * 100)
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center">
+                        <div
+                          className={`w-full rounded-t transition-all ${
+                            log.quality >= 4
+                              ? "bg-green-500"
+                              : log.quality >= 3
+                                ? "bg-yellow-500"
+                                : "bg-red-500"
+                          }`}
+                          style={{ height: `${height}%` }}
+                        />
+                        <span className="text-xs text-muted-foreground mt-1">
+                          {new Date(log.date).toLocaleDateString("ru-RU", { weekday: "short" })}
+                        </span>
+                      </div>
+                    )
+                  })}
               </div>
             </CardContent>
           </Card>
@@ -256,7 +288,9 @@ export default function SleepPage() {
               {sleepLogs.slice(0, 10).map((log) => (
                 <Card key={log.id} className="group">
                   <CardContent className="p-3 flex items-center gap-3">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10`}>
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10`}
+                    >
                       <Moon className={`h-5 w-5 ${qualityColors[log.quality]}`} />
                     </div>
                     <div className="flex-1">
@@ -267,17 +301,16 @@ export default function SleepPage() {
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium">
-                        {new Date(log.date).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
+                        {new Date(log.date).toLocaleDateString("ru-RU", {
+                          day: "numeric",
+                          month: "short",
+                        })}
                       </div>
                       <div className={`text-xs ${qualityColors[log.quality]}`}>
                         {qualityLabels[log.quality]}
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => openEditDialog(log)}
-                    >
+                    <Button variant="ghost" size="icon" onClick={() => openEditDialog(log)}>
                       <Settings className="h-4 w-4" />
                     </Button>
                   </CardContent>
@@ -354,7 +387,8 @@ export default function SleepPage() {
               </div>
 
               <div className="text-center text-muted-foreground">
-                Продолжительность: {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
+                Продолжительность:{" "}
+                {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
               </div>
             </div>
             <CreateFormActions
@@ -432,7 +466,8 @@ export default function SleepPage() {
               </div>
 
               <div className="text-center text-muted-foreground">
-                Продолжительность: {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
+                Продолжительность:{" "}
+                {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
               </div>
             </div>
             <FormActions

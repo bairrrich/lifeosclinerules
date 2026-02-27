@@ -1,23 +1,45 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Plus, Bell, Trash2, Clock, CheckCircle2, Filter, BarChart3, X, Check, AlertTriangle } from "lucide-react"
+import { useEffect, useState, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
+import {
+  Plus,
+  Bell,
+  Trash2,
+  Clock,
+  CheckCircle2,
+  Filter,
+  BarChart3,
+  X,
+  Check,
+  AlertTriangle,
+} from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
+import {
+  FormActions,
+  CreateFormActions,
+  DeleteConfirmActions,
+} from "@/components/shared/form-actions"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
-import { ReminderForm, ReminderCard, reminderTypesConfig, getDefaultFormData, type ReminderFormData } from "@/components/reminders"
+import {
+  ReminderForm,
+  ReminderCard,
+  reminderTypesConfig,
+  getDefaultFormData,
+  type ReminderFormData,
+} from "@/components/reminders"
 import { toast } from "@/components/ui/toast"
 import type { Reminder, ReminderType, ReminderPriority, ReminderLog } from "@/types"
 
 // Функция для тестового показа уведомления
 function TestNotification() {
   const [showTest, setShowTest] = useState(false)
-  
+
   const testReminder: Reminder = {
     id: "test-" + Date.now(),
     title: "Тестовое напоминание",
@@ -90,6 +112,15 @@ type SmartFilter = "all" | "today" | "active" | "completed" | "inactive" | "over
 const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 
 export default function RemindersPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Загрузка...</div>}>
+      <RemindersContent />
+    </Suspense>
+  )
+}
+
+function RemindersContent() {
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(true)
   const [reminders, setReminders] = useState<Reminder[]>([])
   const [smartFilter, setSmartFilter] = useState<SmartFilter>("all")
@@ -100,12 +131,19 @@ export default function RemindersPage() {
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null)
   const [selectedReminderForStats, setSelectedReminderForStats] = useState<Reminder | null>(null)
   const [reminderLogs, setReminderLogs] = useState<ReminderLog[]>([])
-  
+
   const [formData, setFormData] = useState(getDefaultFormData())
 
   useEffect(() => {
     loadData()
   }, [])
+
+  // Открыть диалог добавления если передан параметр add=true
+  useEffect(() => {
+    if (searchParams.get("add") === "true") {
+      setIsAddDialogOpen(true)
+    }
+  }, [searchParams])
 
   async function loadData() {
     try {
@@ -201,7 +239,7 @@ export default function RemindersPage() {
   async function completeReminder(reminder: Reminder) {
     const now = new Date().toISOString()
     const today = now.split("T")[0]
-    
+
     // Проверяем лимит выполнений на сегодня
     const todayLogs = await db.reminderLogs
       .where("reminder_id")
@@ -211,16 +249,16 @@ export default function RemindersPage() {
         return logDate === today && log.action === "completed"
       })
       .toArray()
-    
+
     // Максимальное количество выполнений = основное время + дополнительные времена
     const maxCompletionsPerDay = 1 + ((reminder as any).times?.length || 0)
-    
+
     if (todayLogs.length >= maxCompletionsPerDay) {
       // Лимит достигнут - показываем уведомление
       toast.info(`Уже выполнено ${maxCompletionsPerDay}/${maxCompletionsPerDay} раз(а) сегодня`)
       return
     }
-    
+
     // Создаём лог выполнения
     await createEntity(db.reminderLogs, {
       reminder_id: reminder.id,
@@ -232,7 +270,7 @@ export default function RemindersPage() {
     // Обновляем серию
     let newStreak = (reminder.streak || 0) + 1
     let newLongestStreak = Math.max(reminder.longest_streak || 0, newStreak)
-    
+
     await updateEntity(db.reminders, reminder.id, {
       last_completed_at: now,
       streak: newStreak,
@@ -252,11 +290,8 @@ export default function RemindersPage() {
   }
 
   async function showReminderStats(reminder: Reminder) {
-    const logs = await db.reminderLogs
-      .where("reminder_id")
-      .equals(reminder.id)
-      .toArray()
-    
+    const logs = await db.reminderLogs.where("reminder_id").equals(reminder.id).toArray()
+
     setSelectedReminderForStats(reminder)
     setReminderLogs(logs.sort((a, b) => b.triggered_at.localeCompare(a.triggered_at)))
     setIsStatsDialogOpen(true)
@@ -296,11 +331,11 @@ export default function RemindersPage() {
   // Проверка, просрочено ли напоминание
   function isOverdue(reminder: Reminder): boolean {
     if (!reminder.is_active) return false
-    
+
     const now = new Date()
     const todayStr = now.toISOString().split("T")[0]
     const currentTime = now.toTimeString().slice(0, 5)
-    
+
     // Для одиночных напоминаний (без повтора)
     if (reminder.repeat_type === "none" && (reminder as any).date) {
       const reminderDate = (reminder as any).date
@@ -312,7 +347,7 @@ export default function RemindersPage() {
       }
       return false
     }
-    
+
     // Для повторяющихся напоминаний - проверяем было ли выполнено сегодня
     if (reminder.days.includes(now.getDay())) {
       // Если время уже прошло и не выполнено сегодня
@@ -320,7 +355,7 @@ export default function RemindersPage() {
         return true
       }
     }
-    
+
     return false
   }
 
@@ -329,7 +364,7 @@ export default function RemindersPage() {
     const today = new Date()
     const todayDay = today.getDay()
     const todayStr = today.toISOString().split("T")[0]
-    
+
     switch (smartFilter) {
       case "today":
         // Активные напоминания на сегодня (по дню недели или дате)
@@ -354,14 +389,17 @@ export default function RemindersPage() {
   })
 
   // Группировка по типу
-  const groupedReminders = filteredReminders.reduce((acc, reminder) => {
-    const type = reminder.type
-    if (!acc[type]) {
-      acc[type] = []
-    }
-    acc[type].push(reminder)
-    return acc
-  }, {} as Record<ReminderType, Reminder[]>)
+  const groupedReminders = filteredReminders.reduce(
+    (acc, reminder) => {
+      const type = reminder.type
+      if (!acc[type]) {
+        acc[type] = []
+      }
+      acc[type].push(reminder)
+      return acc
+    },
+    {} as Record<ReminderType, Reminder[]>
+  )
 
   // Статистика
   const stats = {
@@ -421,7 +459,7 @@ export default function RemindersPage() {
               </div>
             </CardContent>
           </Card>
-          <Card 
+          <Card
             className={stats.overdue > 0 ? "border-red-500 cursor-pointer" : ""}
             onClick={() => stats.overdue > 0 && setSmartFilter("overdue")}
           >
@@ -499,15 +537,13 @@ export default function RemindersPage() {
         {/* Reminders List */}
         {isLoading ? (
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         ) : filteredReminders.length === 0 ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
-              {smartFilter === "all" 
-                ? "Нет напоминаний. Добавьте первое!" 
+              {smartFilter === "all"
+                ? "Нет напоминаний. Добавьте первое!"
                 : "Нет напоминаний в этой категории"}
             </CardContent>
           </Card>
@@ -516,8 +552,8 @@ export default function RemindersPage() {
             {Object.entries(groupedReminders).map(([type, typeReminders]) => (
               <div key={type}>
                 <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  <span>{reminderTypesConfig.find(t => t.type === type)?.icon}</span>
-                  <span>{reminderTypesConfig.find(t => t.type === type)?.label || type}</span>
+                  <span>{reminderTypesConfig.find((t) => t.type === type)?.icon}</span>
+                  <span>{reminderTypesConfig.find((t) => t.type === type)?.label || type}</span>
                   <Badge variant="secondary" className="ml-2">
                     {typeReminders.length}
                   </Badge>
@@ -577,7 +613,8 @@ export default function RemindersPage() {
               <DialogTitle>Удалить напоминание?</DialogTitle>
             </DialogHeader>
             <p className="py-4 text-muted-foreground">
-              Вы уверены, что хотите удалить напоминание "{editingReminder?.title}"? Это действие нельзя отменить.
+              Вы уверены, что хотите удалить напоминание "{editingReminder?.title}"? Это действие
+              нельзя отменить.
             </p>
             <DeleteConfirmActions
               onCancel={() => setIsDeleteDialogOpen(false)}
@@ -621,14 +658,14 @@ export default function RemindersPage() {
                   </Card>
                 </div>
               )}
-              
+
               {reminderLogs.length > 0 ? (
                 <div>
                   <h3 className="font-medium mb-2">История</h3>
                   <div className="max-h-60 overflow-y-auto space-y-1">
                     {reminderLogs.slice(0, 20).map((log) => (
-                      <div 
-                        key={log.id} 
+                      <div
+                        key={log.id}
                         className="flex items-center justify-between text-sm p-2 rounded bg-muted"
                       >
                         <span>
@@ -647,9 +684,7 @@ export default function RemindersPage() {
                   </div>
                 </div>
               ) : (
-                <p className="text-muted-foreground text-center py-4">
-                  История пуста
-                </p>
+                <p className="text-muted-foreground text-center py-4">История пуста</p>
               )}
             </div>
           </DialogContent>

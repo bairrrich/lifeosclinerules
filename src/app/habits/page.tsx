@@ -1,15 +1,27 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { Plus, Flame, Check, X, Settings, Clock, AlertCircle, ListChecks } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
+import {
+  FormActions,
+  CreateFormActions,
+  DeleteConfirmActions,
+} from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { db, initializeDatabase, createEntity, updateEntity, deleteEntity, updateStreak } from "@/lib/db"
+import {
+  db,
+  initializeDatabase,
+  createEntity,
+  updateEntity,
+  deleteEntity,
+  updateStreak,
+} from "@/lib/db"
 import type { Habit, HabitLog, Streak, HabitSubtask } from "@/types"
 
 const habitColors = [
@@ -27,14 +39,7 @@ const habitTypes = [
   { value: "negative", label: "Не делать", description: "Привычка чего-то избегать", icon: "✗" },
 ]
 
-const skipReasons = [
-  "Забыл",
-  "Не было времени",
-  "Болезнь",
-  "Отпуск",
-  "Погода",
-  "Другое",
-]
+const skipReasons = ["Забыл", "Не было времени", "Болезнь", "Отпуск", "Погода", "Другое"]
 
 const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
 
@@ -43,6 +48,15 @@ function generateId(): string {
 }
 
 export default function HabitsPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Загрузка...</div>}>
+      <HabitsContent />
+    </Suspense>
+  )
+}
+
+function HabitsContent() {
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(true)
   const [habits, setHabits] = useState<Habit[]>([])
   const [habitLogs, setHabitLogs] = useState<HabitLog[]>([])
@@ -68,11 +82,18 @@ export default function HabitsPage() {
     loadData()
   }, [])
 
+  // Открыть диалог добавления если передан параметр add=true
+  useEffect(() => {
+    if (searchParams.get("add") === "true") {
+      setIsAddDialogOpen(true)
+    }
+  }, [searchParams])
+
   async function loadData() {
     try {
       await initializeDatabase()
       const [habitsData, logsData, streaksData] = await Promise.all([
-        db.habits.toArray().then(h => h.filter(habit => habit.is_active)),
+        db.habits.toArray().then((h) => h.filter((habit) => habit.is_active)),
         db.habitLogs.toArray(),
         db.streaks.toArray(),
       ])
@@ -127,15 +148,15 @@ export default function HabitsPage() {
 
   async function deleteHabit() {
     if (!editingHabit) return
-    
+
     await deleteEntity(db.habits, editingHabit.id)
-    
-    const relatedLogs = habitLogs.filter(l => l.habit_id === editingHabit.id)
+
+    const relatedLogs = habitLogs.filter((l) => l.habit_id === editingHabit.id)
     for (const log of relatedLogs) {
       await db.habitLogs.delete(log.id)
     }
-    
-    const relatedStreaks = streaks.filter(s => s.habit_id === editingHabit.id)
+
+    const relatedStreaks = streaks.filter((s) => s.habit_id === editingHabit.id)
     for (const streak of relatedStreaks) {
       await db.streaks.delete(streak.id)
     }
@@ -161,7 +182,7 @@ export default function HabitsPage() {
   function openEditDialog(habit: Habit) {
     setEditingHabit(habit)
     setNewHabitName(habit.name)
-    const colorIndex = habitColors.findIndex(c => habit.color?.includes(c.bg))
+    const colorIndex = habitColors.findIndex((c) => habit.color?.includes(c.bg))
     setSelectedColor(colorIndex >= 0 ? colorIndex : 0)
     setStartDate(habit.start_date || new Date().toISOString().split("T")[0])
     setEndDate(habit.end_date || "")
@@ -172,9 +193,7 @@ export default function HabitsPage() {
 
   async function toggleHabit(habitId: string) {
     const today = new Date().toISOString().split("T")[0]
-    const existingLog = habitLogs.find(
-      (l) => l.habit_id === habitId && l.date.startsWith(today)
-    )
+    const existingLog = habitLogs.find((l) => l.habit_id === habitId && l.date.startsWith(today))
 
     if (existingLog) {
       await db.habitLogs.update(existingLog.id, {
@@ -224,10 +243,10 @@ export default function HabitsPage() {
   }
 
   async function toggleSubtask(habitId: string, subtaskId: string) {
-    const habit = habits.find(h => h.id === habitId)
+    const habit = habits.find((h) => h.id === habitId)
     if (!habit || !habit.subtasks) return
 
-    const updatedSubtasks = habit.subtasks.map(st =>
+    const updatedSubtasks = habit.subtasks.map((st) =>
       st.id === subtaskId ? { ...st, completed: !st.completed } : st
     )
 
@@ -240,12 +259,15 @@ export default function HabitsPage() {
 
   function addSubtask() {
     if (!newSubtaskTitle.trim()) return
-    setSubtasks([...subtasks, { id: generateId(), title: newSubtaskTitle.trim(), completed: false }])
+    setSubtasks([
+      ...subtasks,
+      { id: generateId(), title: newSubtaskTitle.trim(), completed: false },
+    ])
     setNewSubtaskTitle("")
   }
 
   function removeSubtask(id: string) {
-    setSubtasks(subtasks.filter(st => st.id !== id))
+    setSubtasks(subtasks.filter((st) => st.id !== id))
   }
 
   function getStreak(habitId: string): Streak | undefined {
@@ -254,7 +276,7 @@ export default function HabitsPage() {
 
   function getTodayLog(habitId: string): HabitLog | undefined {
     const today = new Date().toISOString().split("T")[0]
-    return habitLogs.find(l => l.habit_id === habitId && l.date.startsWith(today))
+    return habitLogs.find((l) => l.habit_id === habitId && l.date.startsWith(today))
   }
 
   function isHabitCompletedToday(habitId: string): boolean {
@@ -262,16 +284,30 @@ export default function HabitsPage() {
     return log?.completed ?? false
   }
 
-  function getWeekCompletion(habitId: string): { date: string; completed: boolean; skipped: boolean; isToday: boolean; isWeekend: boolean }[] {
-    const result: { date: string; completed: boolean; skipped: boolean; isToday: boolean; isWeekend: boolean }[] = []
+  function getWeekCompletion(
+    habitId: string
+  ): {
+    date: string
+    completed: boolean
+    skipped: boolean
+    isToday: boolean
+    isWeekend: boolean
+  }[] {
+    const result: {
+      date: string
+      completed: boolean
+      skipped: boolean
+      isToday: boolean
+      isWeekend: boolean
+    }[] = []
     const today = new Date()
     const dayOfWeek = (today.getDay() + 6) % 7
-    
+
     for (let i = 0; i < 7; i++) {
       const date = new Date(today)
       date.setDate(today.getDate() - dayOfWeek + i)
       const dateStr = date.toISOString().split("T")[0]
-      const log = habitLogs.find(l => l.habit_id === habitId && l.date.startsWith(dateStr))
+      const log = habitLogs.find((l) => l.habit_id === habitId && l.date.startsWith(dateStr))
       result.push({
         date: dateStr,
         completed: log?.completed ?? false,
@@ -326,9 +362,7 @@ export default function HabitsPage() {
 
         {isLoading ? (
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         ) : habits.length === 0 ? (
           <Card>
@@ -345,7 +379,7 @@ export default function HabitsPage() {
               const weekCompletion = getWeekCompletion(habit.id)
               const daysSinceStart = getDaysSinceStart(habit)
               const daysUntilEnd = getDaysUntilEnd(habit)
-              const completedSubtasks = habit.subtasks?.filter(st => st.completed).length || 0
+              const completedSubtasks = habit.subtasks?.filter((st) => st.completed).length || 0
               const totalSubtasks = habit.subtasks?.length || 0
               const isNegativeHabit = habit.habit_type === "negative"
 
@@ -396,7 +430,9 @@ export default function HabitsPage() {
                             </span>
                           )}
                           {daysUntilEnd !== null && (
-                            <span className={`text-xs ${daysUntilEnd <= 7 ? "text-orange-500" : ""}`}>
+                            <span
+                              className={`text-xs ${daysUntilEnd <= 7 ? "text-orange-500" : ""}`}
+                            >
                               • {daysUntilEnd > 0 ? `${daysUntilEnd} дн. осталось` : "Завершена"}
                             </span>
                           )}
@@ -429,11 +465,7 @@ export default function HabitsPage() {
                             <AlertCircle className="h-4 w-4 text-orange-500" />
                           </Button>
                         )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEditDialog(habit)}
-                        >
+                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(habit)}>
                           <Settings className="h-4 w-4" />
                         </Button>
                       </div>
@@ -443,7 +475,9 @@ export default function HabitsPage() {
                     <div className="flex justify-between">
                       {weekCompletion.map((day, i) => (
                         <div key={i} className="flex flex-col items-center gap-1">
-                          <span className={`text-xs ${day.isWeekend ? "text-orange-500/70" : "text-muted-foreground"}`}>
+                          <span
+                            className={`text-xs ${day.isWeekend ? "text-orange-500/70" : "text-muted-foreground"}`}
+                          >
                             {dayNames[i]}
                           </span>
                           <div
@@ -451,12 +485,12 @@ export default function HabitsPage() {
                               day.completed
                                 ? "bg-green-500 text-white"
                                 : day.skipped
-                                ? "bg-orange-500/30 text-orange-500"
-                                : day.isToday
-                                ? "border-2 border-dashed border-muted-foreground/30"
-                                : day.isWeekend
-                                ? "bg-orange-500/10"
-                                : "bg-muted"
+                                  ? "bg-orange-500/30 text-orange-500"
+                                  : day.isToday
+                                    ? "border-2 border-dashed border-muted-foreground/30"
+                                    : day.isWeekend
+                                      ? "bg-orange-500/10"
+                                      : "bg-muted"
                             }`}
                           >
                             {day.completed && <Check className="h-4 w-4" />}
@@ -483,7 +517,11 @@ export default function HabitsPage() {
                 <Label htmlFor="name">Название</Label>
                 <Input
                   id="name"
-                  placeholder={habitType === "positive" ? "Например: Утренняя зарядка" : "Например: Не есть сладкое"}
+                  placeholder={
+                    habitType === "positive"
+                      ? "Например: Утренняя зарядка"
+                      : "Например: Не есть сладкое"
+                  }
                   value={newHabitName}
                   onChange={(e) => setNewHabitName(e.target.value)}
                 />
@@ -497,8 +535,8 @@ export default function HabitsPage() {
                       type="button"
                       onClick={() => setHabitType(type.value as "positive" | "negative")}
                       className={`p-3 rounded-lg border-2 text-left transition-colors ${
-                        habitType === type.value 
-                          ? "border-primary bg-primary/5" 
+                        habitType === type.value
+                          ? "border-primary bg-primary/5"
                           : "border-muted hover:border-muted-foreground/50"
                       }`}
                     >
@@ -544,7 +582,7 @@ export default function HabitsPage() {
                   />
                 </div>
               </div>
-              
+
               {/* Subtasks */}
               <div className="space-y-2">
                 <Label>Подпривычки (чек-лист)</Label>
@@ -610,8 +648,8 @@ export default function HabitsPage() {
                       type="button"
                       onClick={() => setHabitType(type.value as "positive" | "negative")}
                       className={`p-3 rounded-lg border-2 text-left transition-colors ${
-                        habitType === type.value 
-                          ? "border-primary bg-primary/5" 
+                        habitType === type.value
+                          ? "border-primary bg-primary/5"
                           : "border-muted hover:border-muted-foreground/50"
                       }`}
                     >
@@ -657,7 +695,7 @@ export default function HabitsPage() {
                   />
                 </div>
               </div>
-              
+
               {/* Subtasks */}
               <div className="space-y-2">
                 <Label>Подпривычки</Label>
@@ -746,9 +784,11 @@ export default function HabitsPage() {
                   }`}
                   onClick={() => toggleSubtask(viewingSubtasks.id, st.id)}
                 >
-                  <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
-                    st.completed ? "border-green-500 bg-green-500" : "border-muted-foreground"
-                  }`}>
+                  <div
+                    className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
+                      st.completed ? "border-green-500 bg-green-500" : "border-muted-foreground"
+                    }`}
+                  >
                     {st.completed && <Check className="h-4 w-4 text-white" />}
                   </div>
                   <span className={st.completed ? "line-through text-muted-foreground" : ""}>
@@ -767,7 +807,8 @@ export default function HabitsPage() {
               <DialogTitle>Удалить привычку?</DialogTitle>
             </DialogHeader>
             <p className="py-4 text-muted-foreground">
-              Вы уверены, что хотите удалить привычку "{editingHabit?.name}"? Это действие нельзя отменить.
+              Вы уверены, что хотите удалить привычку "{editingHabit?.name}"? Это действие нельзя
+              отменить.
             </p>
             <DeleteConfirmActions
               onCancel={() => setIsDeleteDialogOpen(false)}

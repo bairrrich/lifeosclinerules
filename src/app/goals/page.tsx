@@ -1,19 +1,27 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { Plus, Target, Check, Settings, Trash2, ChevronDown } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
+import {
+  FormActions,
+  CreateFormActions,
+  DeleteConfirmActions,
+} from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { Goal, GoalType, GoalPeriod } from "@/types"
 
-const goalTypeConfig: Record<GoalType, { label: string; icon: string; defaultTarget: number; units: string[] }> = {
+const goalTypeConfig: Record<
+  GoalType,
+  { label: string; icon: string; defaultTarget: number; units: string[] }
+> = {
   calories: { label: "Калории", icon: "🔥", defaultTarget: 2000, units: ["ккал"] },
   workout: { label: "Тренировки", icon: "💪", defaultTarget: 30, units: ["мин", "ч", "шт"] },
   water: { label: "Вода", icon: "💧", defaultTarget: 2000, units: ["мл", "л"] },
@@ -29,9 +37,26 @@ const periodLabels: Record<GoalPeriod, string> = {
   monthly: "В месяц",
 }
 
-const allGoalTypes: GoalType[] = ["calories", "workout", "water", "sleep", "steps", "weight", "finance"]
+const allGoalTypes: GoalType[] = [
+  "calories",
+  "workout",
+  "water",
+  "sleep",
+  "steps",
+  "weight",
+  "finance",
+]
 
 export default function GoalsPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Загрузка...</div>}>
+      <GoalsContent />
+    </Suspense>
+  )
+}
+
+function GoalsContent() {
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(true)
   const [goals, setGoals] = useState<Goal[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -51,10 +76,17 @@ export default function GoalsPage() {
     loadData()
   }, [])
 
+  // Открыть диалог добавления если передан параметр add=true
+  useEffect(() => {
+    if (searchParams.get("add") === "true") {
+      openAddDialog()
+    }
+  }, [searchParams])
+
   async function loadData() {
     try {
       await initializeDatabase()
-      const goalsData = await db.goals.toArray().then(g => g.filter(goal => goal.is_active))
+      const goalsData = await db.goals.toArray().then((g) => g.filter((goal) => goal.is_active))
       setGoals(goalsData)
     } catch (error) {
       console.error("Failed to load goals:", error)
@@ -130,7 +162,7 @@ export default function GoalsPage() {
 
   async function deleteGoal() {
     if (!editingGoal) return
-    
+
     await deleteEntity(db.goals, editingGoal.id)
     setIsDeleteDialogOpen(false)
     setIsEditDialogOpen(false)
@@ -175,9 +207,7 @@ export default function GoalsPage() {
         {/* Goals List */}
         {isLoading ? (
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         ) : goals.length === 0 ? (
           <Card>
@@ -193,10 +223,7 @@ export default function GoalsPage() {
               const config = goalTypeConfig[goal.type]
 
               return (
-                <Card
-                  key={goal.id}
-                  className={isCompleted ? "border-green-500/30" : ""}
-                >
+                <Card key={goal.id} className={isCompleted ? "border-green-500/30" : ""}>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -209,16 +236,10 @@ export default function GoalsPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEditDialog(goal)}
-                        >
+                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(goal)}>
                           <Settings className="h-4 w-4" />
                         </Button>
-                        {isCompleted && (
-                          <Check className="h-5 w-5 text-green-500" />
-                        )}
+                        {isCompleted && <Check className="h-5 w-5 text-green-500" />}
                       </div>
                     </div>
 
@@ -253,10 +274,7 @@ export default function GoalsPage() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label>Тип цели</Label>
-                <Tabs
-                  value={formData.type}
-                  onValueChange={(v) => handleTypeChange(v as GoalType)}
-                >
+                <Tabs value={formData.type} onValueChange={(v) => handleTypeChange(v as GoalType)}>
                   <TabsList className="grid grid-cols-4 h-auto">
                     {allGoalTypes.map((type) => (
                       <TabsTrigger key={type} value={type} className="text-lg py-2">
@@ -354,10 +372,7 @@ export default function GoalsPage() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label>Тип цели</Label>
-                <Tabs
-                  value={formData.type}
-                  onValueChange={(v) => handleTypeChange(v as GoalType)}
-                >
+                <Tabs value={formData.type} onValueChange={(v) => handleTypeChange(v as GoalType)}>
                   <TabsList className="grid grid-cols-4 h-auto">
                     {allGoalTypes.map((type) => (
                       <TabsTrigger key={type} value={type} className="text-lg py-2">
@@ -454,7 +469,8 @@ export default function GoalsPage() {
               <DialogTitle>Удалить цель?</DialogTitle>
             </DialogHeader>
             <p className="py-4 text-muted-foreground">
-              Вы уверены, что хотите удалить цель "{editingGoal?.name}"? Это действие нельзя отменить.
+              Вы уверены, что хотите удалить цель "{editingGoal?.name}"? Это действие нельзя
+              отменить.
             </p>
             <DeleteConfirmActions
               onCancel={() => setIsDeleteDialogOpen(false)}
