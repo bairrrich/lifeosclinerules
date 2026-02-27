@@ -4,10 +4,20 @@ import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { 
-  ArrowLeft, Pencil, Trash2, Star, User, Calendar, 
-  FileText, BookOpen, Quote, MapPin, Clock, Tag
-} from "lucide-react"
+import {
+  ArrowLeft,
+  Pencil,
+  Trash2,
+  Star,
+  User,
+  Calendar,
+  FileText,
+  BookOpen,
+  Quote,
+  MapPin,
+  Clock,
+  Tag,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -45,17 +55,17 @@ export default function BookDetailPage() {
     async function loadData() {
       try {
         await initializeDatabase()
-        
+
         // Загружаем книгу
         const bookData = await db.books.get(bookId)
         if (!bookData) {
           setIsLoading(false)
           return
         }
-        
+
         // Загружаем пользовательские данные
         const userBook = await db.userBooks.where("book_id").equals(bookId).first()
-        
+
         // Загружаем авторов
         const bookAuthors = await db.bookAuthors.where("book_id").equals(bookId).toArray()
         const authors = await db.authors.toArray()
@@ -63,20 +73,20 @@ export default function BookDetailPage() {
           .sort((a, b) => a.order - b.order)
           .map((ba) => authors.find((a) => a.id === ba.author_id))
           .filter(Boolean) as Author[]
-        
+
         // Загружаем цитаты
         let quotesList: BookQuote[] = []
         if (userBook) {
           quotesList = await db.bookQuotes.where("user_book_id").equals(userBook.id).toArray()
         }
-        
+
         // Загружаем жанры
         const bookGenres = await db.bookGenres.where("book_id").equals(bookId).toArray()
         const genres = await db.genres.toArray()
         const genresList = bookGenres
           .map((bg) => genres.find((g) => g.id === bg.genre_id))
           .filter(Boolean) as Genre[]
-        
+
         setBook({
           ...bookData,
           userBook,
@@ -95,23 +105,23 @@ export default function BookDetailPage() {
 
   const handleDelete = async () => {
     if (!book) return
-    
+
     try {
       // Удаляем пользовательские данные
       if (book.userBook) {
         await db.userBooks.delete(book.userBook.id)
         await db.bookQuotes.where("user_book_id").equals(book.userBook.id).delete()
       }
-      
+
       // Удаляем связи с авторами
       await db.bookAuthors.where("book_id").equals(bookId).delete()
-      
+
       // Удаляем связи с жанрами
       await db.bookGenres.where("book_id").equals(bookId).delete()
-      
+
       // Удаляем книгу
       await db.books.delete(bookId)
-      
+
       router.push("/books")
     } catch (error) {
       console.error("Failed to delete book:", error)
@@ -127,16 +137,19 @@ export default function BookDetailPage() {
   }
 
   // Вычисляем прогресс
-  const progressPercent = book?.userBook?.progress_percent ?? 
-    (book?.userBook?.progress_pages && book?.page_count 
-      ? Math.round((book.userBook.progress_pages / book.page_count) * 100) 
+  const progressPercent =
+    book?.userBook?.progress_percent ??
+    (book?.userBook?.progress_pages && book?.page_count
+      ? Math.round((book.userBook.progress_pages / book.page_count) * 100)
       : 0)
 
   if (isLoading) {
     return (
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -146,7 +159,11 @@ export default function BookDetailPage() {
     return (
       <AppLayout title="Не найдено">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Книга не найдена</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              Книга не найдена
+            </CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -156,7 +173,8 @@ export default function BookDetailPage() {
     <AppLayout title={book.title}>
       <div className="container mx-auto px-4 py-6 space-y-4">
         <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4 mr-2" />Назад
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Назад
         </Button>
 
         {/* Заголовок */}
@@ -177,21 +195,19 @@ export default function BookDetailPage() {
                   <BookOpen className="h-10 w-10 text-muted-foreground" />
                 )}
               </div>
-              
+
               {/* Информация */}
               <div className="flex-1 min-w-0">
                 <h1 className="text-xl font-semibold">{book.title}</h1>
-                {book.subtitle && (
-                  <p className="text-sm text-muted-foreground">{book.subtitle}</p>
-                )}
-                
+                {book.subtitle && <p className="text-sm text-muted-foreground">{book.subtitle}</p>}
+
                 {book.authorsList && book.authorsList.length > 0 && (
                   <div className="flex items-center gap-1 mt-1 text-sm">
                     <User className="h-4 w-4 text-muted-foreground" />
                     <span>{book.authorsList.map((a) => a.name).join(", ")}</span>
                   </div>
                 )}
-                
+
                 <div className="flex items-center gap-2 mt-2">
                   {book.userBook?.status && (
                     <Badge className={statusColors[book.userBook.status]}>
@@ -205,7 +221,7 @@ export default function BookDetailPage() {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Прогресс бар */}
                 {book.userBook?.status === "reading" && (
                   <div className="mt-3">
@@ -260,14 +276,14 @@ export default function BookDetailPage() {
                     </div>
                   )}
                 </div>
-                
+
                 {book.publisher && (
                   <div className="text-sm">
                     <span className="text-muted-foreground">Издательство: </span>
                     <span>{book.publisher}</span>
                   </div>
                 )}
-                
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-muted-foreground">Формат: </span>
@@ -278,7 +294,7 @@ export default function BookDetailPage() {
                     <span>{book.language}</span>
                   </div>
                 </div>
-                
+
                 {book.isbn13 && (
                   <div className="text-sm">
                     <span className="text-muted-foreground">ISBN-13: </span>
@@ -392,9 +408,7 @@ export default function BookDetailPage() {
                         <Quote className="h-4 w-4 text-muted-foreground mb-2" />
                         <p className="text-sm italic">{quote.text}</p>
                         {quote.page && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            — стр. {quote.page}
-                          </p>
+                          <p className="text-xs text-muted-foreground mt-2">— стр. {quote.page}</p>
                         )}
                       </div>
                     </CardContent>
@@ -413,12 +427,18 @@ export default function BookDetailPage() {
 
         {/* Действия */}
         <div className="flex gap-4">
-          <Button variant="destructive" className="flex-1" onClick={() => setShowDeleteDialog(true)}>
-            <Trash2 className="h-4 w-4 mr-2" />Удалить
+          <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Удалить
           </Button>
           <Link href={`/books/${bookId}/edit`} className="flex-1">
             <Button className="w-full">
-              <Pencil className="h-4 w-4 mr-2" />Изменить
+              <Pencil className="h-4 w-4 mr-2" />
+              Изменить
             </Button>
           </Link>
         </div>
@@ -432,8 +452,12 @@ export default function BookDetailPage() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Отмена</Button>
-              <Button variant="destructive" onClick={handleDelete}>Удалить</Button>
+              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                Отмена
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Удалить
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

@@ -1,18 +1,39 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Smile, Meh, Frown, Plus, Battery, Brain, Settings, Droplet, Moon, Dumbbell, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import {
+  Smile,
+  Meh,
+  Frown,
+  Plus,
+  Battery,
+  Brain,
+  Settings,
+  Droplet,
+  Moon,
+  Dumbbell,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
+import {
+  FormActions,
+  CreateFormActions,
+  DeleteConfirmActions,
+} from "@/components/shared/form-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { MoodLog, MoodType } from "@/types"
 
-const moodConfig: Record<MoodType, { label: string; icon: typeof Smile; color: string; emoji: string }> = {
+const moodConfig: Record<
+  MoodType,
+  { label: string; icon: typeof Smile; color: string; emoji: string }
+> = {
   great: { label: "Отлично", icon: Smile, color: "text-green-500", emoji: "😄" },
   good: { label: "Хорошо", icon: Smile, color: "text-lime-500", emoji: "🙂" },
   okay: { label: "Нормально", icon: Meh, color: "text-yellow-500", emoji: "😐" },
@@ -21,8 +42,16 @@ const moodConfig: Record<MoodType, { label: string; icon: typeof Smile; color: s
 }
 
 const activityOptions = [
-  "work", "exercise", "social", "hobby", "rest", 
-  "shopping", "reading", "gaming", "cooking", "walk"
+  "work",
+  "exercise",
+  "social",
+  "hobby",
+  "rest",
+  "shopping",
+  "reading",
+  "gaming",
+  "cooking",
+  "walk",
 ]
 
 const activityLabels: Record<string, string> = {
@@ -68,7 +97,7 @@ export default function MoodPage() {
       await initializeDatabase()
       const logs = await db.moodLogs.orderBy("date").reverse().limit(30).toArray()
       setMoodLogs(logs)
-      
+
       await calculateCorrelations(logs)
     } catch (error) {
       console.error("Failed to load mood data:", error)
@@ -84,7 +113,11 @@ export default function MoodPage() {
     }
 
     const moodValues: Record<MoodType, number> = {
-      great: 5, good: 4, okay: 3, bad: 2, terrible: 1,
+      great: 5,
+      good: 4,
+      okay: 3,
+      bad: 2,
+      terrible: 1,
     }
 
     const last14Days = logs.slice(0, 14)
@@ -97,16 +130,16 @@ export default function MoodPage() {
     function pearsonCorrelation(x: number[], y: number[]): number {
       const n = x.length
       if (n < 3) return 0
-      
+
       const sumX = x.reduce((a, b) => a + b, 0)
       const sumY = y.reduce((a, b) => a + b, 0)
       const sumXY = x.reduce((total, xi, i) => total + xi * y[i], 0)
       const sumX2 = x.reduce((total, xi) => total + xi * xi, 0)
       const sumY2 = y.reduce((total, yi) => total + yi * yi, 0)
-      
+
       const numerator = n * sumXY - sumX * sumY
       const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY))
-      
+
       if (denominator === 0) return 0
       return numerator / denominator
     }
@@ -117,8 +150,8 @@ export default function MoodPage() {
       const prevDate = new Date(date)
       prevDate.setDate(prevDate.getDate() - 1)
       const prevDateStr = prevDate.toISOString().split("T")[0]
-      
-      const sleep = sleepLogs.find(s => s.date.startsWith(prevDateStr))
+
+      const sleep = sleepLogs.find((s) => s.date.startsWith(prevDateStr))
       if (sleep && sleep.duration_min) {
         sleepData.push({ mood: moodValues[log.mood], sleep: sleep.duration_min / 60 })
       }
@@ -128,7 +161,7 @@ export default function MoodPage() {
     for (const log of last14Days) {
       const date = log.date.split("T")[0]
       const dayWater = waterLogs
-        .filter(w => w.date.startsWith(date))
+        .filter((w) => w.date.startsWith(date))
         .reduce((sum, w) => sum + w.amount_ml, 0)
       if (dayWater > 0) {
         waterData.push({ mood: moodValues[log.mood], water: dayWater / 1000 })
@@ -138,7 +171,7 @@ export default function MoodPage() {
     const workoutData: { mood: number; workout: number }[] = []
     for (const log of last14Days) {
       const date = log.date.split("T")[0]
-      const dayWorkouts = workoutLogs.filter(w => w.date.startsWith(date))
+      const dayWorkouts = workoutLogs.filter((w) => w.date.startsWith(date))
       const workoutMin = dayWorkouts.reduce((sum, w) => {
         const metadata = w.metadata as { duration?: number } | undefined
         return sum + (metadata?.duration || 0)
@@ -146,15 +179,27 @@ export default function MoodPage() {
       workoutData.push({ mood: moodValues[log.mood], workout: workoutMin })
     }
 
-    const sleepCorr = sleepData.length >= 3 
-      ? pearsonCorrelation(sleepData.map(d => d.sleep), sleepData.map(d => d.mood))
-      : 0
-    const waterCorr = waterData.length >= 3
-      ? pearsonCorrelation(waterData.map(d => d.water), waterData.map(d => d.mood))
-      : 0
-    const workoutCorr = workoutData.length >= 3
-      ? pearsonCorrelation(workoutData.map(d => d.workout), workoutData.map(d => d.mood))
-      : 0
+    const sleepCorr =
+      sleepData.length >= 3
+        ? pearsonCorrelation(
+            sleepData.map((d) => d.sleep),
+            sleepData.map((d) => d.mood)
+          )
+        : 0
+    const waterCorr =
+      waterData.length >= 3
+        ? pearsonCorrelation(
+            waterData.map((d) => d.water),
+            waterData.map((d) => d.mood)
+          )
+        : 0
+    const workoutCorr =
+      workoutData.length >= 3
+        ? pearsonCorrelation(
+            workoutData.map((d) => d.workout),
+            workoutData.map((d) => d.mood)
+          )
+        : 0
 
     function formatCorrelation(value: number): { label: string; trend: "up" | "down" | "neutral" } {
       const absValue = Math.abs(value)
@@ -259,7 +304,11 @@ export default function MoodPage() {
   const getMoodAverage = (logs: MoodLog[]): string => {
     if (logs.length === 0) return "-"
     const moodValues: Record<MoodType, number> = {
-      great: 5, good: 4, okay: 3, bad: 2, terrible: 1,
+      great: 5,
+      good: 4,
+      okay: 3,
+      bad: 2,
+      terrible: 1,
     }
     const avg = logs.reduce((sum, log) => sum + moodValues[log.mood], 0) / logs.length
     if (avg >= 4.5) return "😄"
@@ -294,11 +343,15 @@ export default function MoodPage() {
                 </div>
                 <div className="flex gap-4">
                   <div className="text-center">
-                    <Battery className={`h-5 w-5 mx-auto mb-1 ${todayMood.energy >= 3 ? "text-green-500" : "text-orange-500"}`} />
+                    <Battery
+                      className={`h-5 w-5 mx-auto mb-1 ${todayMood.energy >= 3 ? "text-green-500" : "text-orange-500"}`}
+                    />
                     <span className="text-sm">{todayMood.energy}/5</span>
                   </div>
                   <div className="text-center">
-                    <Brain className={`h-5 w-5 mx-auto mb-1 ${todayMood.stress <= 3 ? "text-green-500" : "text-red-500"}`} />
+                    <Brain
+                      className={`h-5 w-5 mx-auto mb-1 ${todayMood.stress <= 3 ? "text-green-500" : "text-red-500"}`}
+                    />
                     <span className="text-sm">{todayMood.stress}/5</span>
                   </div>
                 </div>
@@ -367,9 +420,15 @@ export default function MoodPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{correlations.sleep.label}</span>
-                    {correlations.sleep.trend === "up" && <TrendingUp className="h-4 w-4 text-green-500" />}
-                    {correlations.sleep.trend === "down" && <TrendingDown className="h-4 w-4 text-red-500" />}
-                    {correlations.sleep.trend === "neutral" && <Minus className="h-4 w-4 text-muted-foreground" />}
+                    {correlations.sleep.trend === "up" && (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    )}
+                    {correlations.sleep.trend === "down" && (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    {correlations.sleep.trend === "neutral" && (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
                   </div>
                 </div>
 
@@ -380,9 +439,15 @@ export default function MoodPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{correlations.water.label}</span>
-                    {correlations.water.trend === "up" && <TrendingUp className="h-4 w-4 text-green-500" />}
-                    {correlations.water.trend === "down" && <TrendingDown className="h-4 w-4 text-red-500" />}
-                    {correlations.water.trend === "neutral" && <Minus className="h-4 w-4 text-muted-foreground" />}
+                    {correlations.water.trend === "up" && (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    )}
+                    {correlations.water.trend === "down" && (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    {correlations.water.trend === "neutral" && (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
                   </div>
                 </div>
 
@@ -393,9 +458,15 @@ export default function MoodPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{correlations.workout.label}</span>
-                    {correlations.workout.trend === "up" && <TrendingUp className="h-4 w-4 text-green-500" />}
-                    {correlations.workout.trend === "down" && <TrendingDown className="h-4 w-4 text-red-500" />}
-                    {correlations.workout.trend === "neutral" && <Minus className="h-4 w-4 text-muted-foreground" />}
+                    {correlations.workout.trend === "up" && (
+                      <TrendingUp className="h-4 w-4 text-green-500" />
+                    )}
+                    {correlations.workout.trend === "down" && (
+                      <TrendingDown className="h-4 w-4 text-red-500" />
+                    )}
+                    {correlations.workout.trend === "neutral" && (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
                   </div>
                 </div>
               </div>
@@ -411,11 +482,15 @@ export default function MoodPage() {
           <h2 className="text-lg font-semibold mb-3">История</h2>
           {isLoading ? (
             <Card>
-              <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+              <CardContent className="p-4 text-center text-muted-foreground">
+                Загрузка...
+              </CardContent>
             </Card>
           ) : moodLogs.length === 0 ? (
             <Card>
-              <CardContent className="p-4 text-center text-muted-foreground">Нет записей</CardContent>
+              <CardContent className="p-4 text-center text-muted-foreground">
+                Нет записей
+              </CardContent>
             </Card>
           ) : (
             <div className="flex flex-col gap-2">
@@ -428,8 +503,12 @@ export default function MoodPage() {
                         <div className="flex items-center gap-3">
                           <span className="font-medium">{moodConfig[log.mood].label}</span>
                           <div className="flex gap-2 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1"><Battery className="h-3 w-3" /> {log.energy}</span>
-                            <span className="flex items-center gap-1"><Brain className="h-3 w-3" /> {log.stress}</span>
+                            <span className="flex items-center gap-1">
+                              <Battery className="h-3 w-3" /> {log.energy}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Brain className="h-3 w-3" /> {log.stress}
+                            </span>
                           </div>
                         </div>
                         {log.activities && log.activities.length > 0 && (
@@ -437,10 +516,15 @@ export default function MoodPage() {
                             {log.activities.map((a) => activityLabels[a] || a).join(", ")}
                           </div>
                         )}
-                        {log.notes && <div className="text-sm text-muted-foreground mt-1">{log.notes}</div>}
+                        {log.notes && (
+                          <div className="text-sm text-muted-foreground mt-1">{log.notes}</div>
+                        )}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {new Date(log.date).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
+                        {new Date(log.date).toLocaleDateString("ru-RU", {
+                          day: "numeric",
+                          month: "short",
+                        })}
                       </div>
                       <Button variant="ghost" size="icon" onClick={() => openEditDialog(log)}>
                         <Settings className="h-4 w-4" />
@@ -456,7 +540,9 @@ export default function MoodPage() {
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Как вы себя чувствуете?</DialogTitle></DialogHeader>
+            <DialogHeader>
+              <DialogTitle>Как вы себя чувствуете?</DialogTitle>
+            </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label>Настроение</Label>
@@ -476,19 +562,37 @@ export default function MoodPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="flex items-center gap-2"><Battery className="h-4 w-4" /> Энергия</Label>
+                <Label className="flex items-center gap-2">
+                  <Battery className="h-4 w-4" /> Энергия
+                </Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((e) => (
-                    <Button key={e} variant={formData.energy === e ? "default" : "outline"} onClick={() => setFormData({ ...formData, energy: e })} className="flex-1">{e}</Button>
+                    <Button
+                      key={e}
+                      variant={formData.energy === e ? "default" : "outline"}
+                      onClick={() => setFormData({ ...formData, energy: e })}
+                      className="flex-1"
+                    >
+                      {e}
+                    </Button>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="flex items-center gap-2"><Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)</Label>
+                <Label className="flex items-center gap-2">
+                  <Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)
+                </Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((s) => (
-                    <Button key={s} variant={formData.stress === s ? "default" : "outline"} onClick={() => setFormData({ ...formData, stress: s })} className="flex-1">{s}</Button>
+                    <Button
+                      key={s}
+                      variant={formData.stress === s ? "default" : "outline"}
+                      onClick={() => setFormData({ ...formData, stress: s })}
+                      className="flex-1"
+                    >
+                      {s}
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -497,7 +601,12 @@ export default function MoodPage() {
                 <Label>Активности</Label>
                 <div className="flex flex-wrap gap-2">
                   {activityOptions.map((activity) => (
-                    <Button key={activity} variant={formData.activities.includes(activity) ? "default" : "outline"} size="sm" onClick={() => toggleActivity(activity)}>
+                    <Button
+                      key={activity}
+                      variant={formData.activities.includes(activity) ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => toggleActivity(activity)}
+                    >
                       {activityLabels[activity]}
                     </Button>
                   ))}
@@ -506,17 +615,28 @@ export default function MoodPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="notes">Заметки</Label>
-                <Input id="notes" value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} placeholder="Что повлияло на настроение?" />
+                <Input
+                  id="notes"
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Что повлияло на настроение?"
+                />
               </div>
             </div>
-            <CreateFormActions onCancel={() => setIsAddDialogOpen(false)} onSave={addMoodLog} saveText="Сохранить" />
+            <CreateFormActions
+              onCancel={() => setIsAddDialogOpen(false)}
+              onSave={addMoodLog}
+              saveText="Сохранить"
+            />
           </DialogContent>
         </Dialog>
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Редактировать запись</DialogTitle></DialogHeader>
+            <DialogHeader>
+              <DialogTitle>Редактировать запись</DialogTitle>
+            </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label>Настроение</Label>
@@ -536,19 +656,37 @@ export default function MoodPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="flex items-center gap-2"><Battery className="h-4 w-4" /> Энергия</Label>
+                <Label className="flex items-center gap-2">
+                  <Battery className="h-4 w-4" /> Энергия
+                </Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((e) => (
-                    <Button key={e} variant={formData.energy === e ? "default" : "outline"} onClick={() => setFormData({ ...formData, energy: e })} className="flex-1">{e}</Button>
+                    <Button
+                      key={e}
+                      variant={formData.energy === e ? "default" : "outline"}
+                      onClick={() => setFormData({ ...formData, energy: e })}
+                      className="flex-1"
+                    >
+                      {e}
+                    </Button>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="flex items-center gap-2"><Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)</Label>
+                <Label className="flex items-center gap-2">
+                  <Brain className="h-4 w-4" /> Стресс (1 - низкий, 5 - высокий)
+                </Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((s) => (
-                    <Button key={s} variant={formData.stress === s ? "default" : "outline"} onClick={() => setFormData({ ...formData, stress: s })} className="flex-1">{s}</Button>
+                    <Button
+                      key={s}
+                      variant={formData.stress === s ? "default" : "outline"}
+                      onClick={() => setFormData({ ...formData, stress: s })}
+                      className="flex-1"
+                    >
+                      {s}
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -557,7 +695,12 @@ export default function MoodPage() {
                 <Label>Активности</Label>
                 <div className="flex flex-wrap gap-2">
                   {activityOptions.map((activity) => (
-                    <Button key={activity} variant={formData.activities.includes(activity) ? "default" : "outline"} size="sm" onClick={() => toggleActivity(activity)}>
+                    <Button
+                      key={activity}
+                      variant={formData.activities.includes(activity) ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => toggleActivity(activity)}
+                    >
                       {activityLabels[activity]}
                     </Button>
                   ))}
@@ -566,19 +709,37 @@ export default function MoodPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="edit-notes">Заметки</Label>
-                <Input id="edit-notes" value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} placeholder="Что повлияло на настроение?" />
+                <Input
+                  id="edit-notes"
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Что повлияло на настроение?"
+                />
               </div>
             </div>
-            <FormActions type="dialog" showDelete onDelete={() => setIsDeleteDialogOpen(true)} onCancel={() => setIsEditDialogOpen(false)} onSave={updateMoodLog} />
+            <FormActions
+              type="dialog"
+              showDelete
+              onDelete={() => setIsDeleteDialogOpen(true)}
+              onCancel={() => setIsEditDialogOpen(false)}
+              onSave={updateMoodLog}
+            />
           </DialogContent>
         </Dialog>
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Удалить запись?</DialogTitle></DialogHeader>
-            <p className="py-4 text-muted-foreground">Вы уверены, что хотите удалить запись о настроении? Это действие нельзя отменить.</p>
-            <DeleteConfirmActions onCancel={() => setIsDeleteDialogOpen(false)} onConfirm={deleteMoodLog} />
+            <DialogHeader>
+              <DialogTitle>Удалить запись?</DialogTitle>
+            </DialogHeader>
+            <p className="py-4 text-muted-foreground">
+              Вы уверены, что хотите удалить запись о настроении? Это действие нельзя отменить.
+            </p>
+            <DeleteConfirmActions
+              onCancel={() => setIsDeleteDialogOpen(false)}
+              onConfirm={deleteMoodLog}
+            />
           </DialogContent>
         </Dialog>
       </div>

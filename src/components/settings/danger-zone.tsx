@@ -1,6 +1,6 @@
 "use client"
 
-import { Trash2, Database } from "lucide-react"
+import { Trash2, Database } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
@@ -36,7 +36,9 @@ export function DangerZone() {
   }
 
   const handleReseedData = async () => {
-    if (confirm("Пересоздать базу данных? Все текущие данные будут удалены и заменены тестовыми!")) {
+    if (
+      confirm("Пересоздать базу данных? Все текущие данные будут удалены и заменены тестовыми!")
+    ) {
       await reseedDatabase()
       window.location.reload()
     }

@@ -4,12 +4,23 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { db, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import { LogType, ContentType, ItemType } from "@/types"
 import type { Account, Category, Unit } from "@/types"
-import type { LucideIcon } from "lucide-react"
-import { 
-  Banknote, CreditCard, Landmark, TrendingUp, LineChart, Bitcoin,
-  UtensilsCrossed, Dumbbell, Wallet,
-  Pill, Bandage, Leaf, Sparkles, Apple
-} from "lucide-react"
+import type { LucideIcon } from "@/lib/icons"
+import {
+  Banknote,
+  CreditCard,
+  Landmark,
+  TrendingUp,
+  LineChart,
+  Bitcoin,
+  UtensilsCrossed,
+  Dumbbell,
+  Wallet,
+  Pill,
+  Bandage,
+  Leaf,
+  Sparkles,
+  Apple,
+} from "@/lib/icons"
 
 // Типы аккаунтов с иконками
 export const accountTypes: { value: Account["type"]; label: string; icon: LucideIcon }[] = [
@@ -66,7 +77,7 @@ interface SettingsContextType {
   accounts: Account[]
   categories: Category[]
   units: Unit[]
-  
+
   // Редактирование
   editingAccount: Account | null
   setEditingAccount: (account: Account | null) => void
@@ -74,22 +85,22 @@ interface SettingsContextType {
   setEditingCategory: (category: Category | null) => void
   editingUnit: Unit | null
   setEditingUnit: (unit: Unit | null) => void
-  
+
   // CRUD аккаунты
   createAccount: (data: Partial<Account>) => Promise<void>
   updateAccountData: (id: string, data: Partial<Account>) => Promise<void>
   deleteAccountData: (id: string) => Promise<void>
-  
+
   // CRUD категории
   createCategory: (data: Partial<Category>) => Promise<void>
   updateCategoryData: (id: string, data: Partial<Category>) => Promise<void>
   deleteCategoryData: (id: string) => Promise<void>
-  
+
   // CRUD единицы
   createUnit: (data: Partial<Unit>) => Promise<void>
   updateUnitData: (id: string, data: Partial<Unit>) => Promise<void>
   deleteUnitData: (id: string) => Promise<void>
-  
+
   // Перезагрузка
   reloadStats: () => Promise<void>
   reloadAccounts: () => Promise<void>
@@ -101,7 +112,7 @@ const SettingsContext = createContext<SettingsContextType | null>(null)
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false)
-  
+
   const [stats, setStats] = useState({
     logs: 0,
     items: 0,
@@ -115,41 +126,45 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     booksCompleted: 0,
     booksPlanned: 0,
   })
-  
+
   const [accounts, setAccounts] = useState<Account[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [units, setUnits] = useState<Unit[]>([])
-  
+
   const [editingAccount, setEditingAccount] = useState<Account | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [editingUnit, setEditingUnit] = useState<Unit | null>(null)
 
   const reloadStats = async () => {
-    const [
-      logs, items, content, books,
-      foodLogs, workoutLogs, financeLogs,
+    const [logs, items, content, books, foodLogs, workoutLogs, financeLogs, recipes, userBooks] =
+      await Promise.all([
+        db.logs.count(),
+        db.items.count(),
+        db.content.count(),
+        db.books.count(),
+        db.logs.where("type").equals(LogType.FOOD).count(),
+        db.logs.where("type").equals(LogType.WORKOUT).count(),
+        db.logs.where("type").equals(LogType.FINANCE).count(),
+        db.content.where("type").equals(ContentType.RECIPE).count(),
+        db.userBooks.toArray(),
+      ])
+
+    const booksReading = userBooks.filter((b) => b.status === "reading").length
+    const booksCompleted = userBooks.filter((b) => b.status === "completed").length
+    const booksPlanned = userBooks.filter((b) => b.status === "planned").length
+
+    setStats({
+      logs,
+      items,
+      content,
+      books,
+      foodLogs,
+      workoutLogs,
+      financeLogs,
       recipes,
-      userBooks
-    ] = await Promise.all([
-      db.logs.count(),
-      db.items.count(),
-      db.content.count(),
-      db.books.count(),
-      db.logs.where("type").equals(LogType.FOOD).count(),
-      db.logs.where("type").equals(LogType.WORKOUT).count(),
-      db.logs.where("type").equals(LogType.FINANCE).count(),
-      db.content.where("type").equals(ContentType.RECIPE).count(),
-      db.userBooks.toArray(),
-    ])
-    
-    const booksReading = userBooks.filter(b => b.status === "reading").length
-    const booksCompleted = userBooks.filter(b => b.status === "completed").length
-    const booksPlanned = userBooks.filter(b => b.status === "planned").length
-    
-    setStats({ 
-      logs, items, content, books,
-      foodLogs, workoutLogs, financeLogs,
-      recipes, booksReading, booksCompleted, booksPlanned 
+      booksReading,
+      booksCompleted,
+      booksPlanned,
     })
   }
 
@@ -157,12 +172,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const accs = await db.accounts.toArray()
     setAccounts(accs)
   }
-  
+
   const reloadCategories = async () => {
     const cats = await db.categories.toArray()
     setCategories(cats)
   }
-  
+
   const reloadUnits = async () => {
     const u = await db.units.toArray()
     setUnits(u)
@@ -171,12 +186,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const init = async () => {
       setMounted(true)
-      await Promise.all([
-        reloadStats(),
-        reloadAccounts(),
-        reloadCategories(),
-        reloadUnits(),
-      ])
+      await Promise.all([reloadStats(), reloadAccounts(), reloadCategories(), reloadUnits()])
     }
     init()
   }, [])
@@ -233,32 +243,34 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SettingsContext.Provider value={{
-      mounted,
-      stats,
-      accounts,
-      categories,
-      units,
-      editingAccount,
-      setEditingAccount,
-      editingCategory,
-      setEditingCategory,
-      editingUnit,
-      setEditingUnit,
-      createAccount,
-      updateAccountData,
-      deleteAccountData,
-      createCategory,
-      updateCategoryData,
-      deleteCategoryData,
-      createUnit,
-      updateUnitData,
-      deleteUnitData,
-      reloadStats,
-      reloadAccounts,
-      reloadCategories,
-      reloadUnits,
-    }}>
+    <SettingsContext.Provider
+      value={{
+        mounted,
+        stats,
+        accounts,
+        categories,
+        units,
+        editingAccount,
+        setEditingAccount,
+        editingCategory,
+        setEditingCategory,
+        editingUnit,
+        setEditingUnit,
+        createAccount,
+        updateAccountData,
+        deleteAccountData,
+        createCategory,
+        updateCategoryData,
+        deleteCategoryData,
+        createUnit,
+        updateUnitData,
+        deleteUnitData,
+        reloadStats,
+        reloadAccounts,
+        reloadCategories,
+        reloadUnits,
+      }}
+    >
       {children}
     </SettingsContext.Provider>
   )

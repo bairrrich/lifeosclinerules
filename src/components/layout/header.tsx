@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Menu, Settings } from "lucide-react"
+import { Menu, Settings } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 
 interface HeaderProps {

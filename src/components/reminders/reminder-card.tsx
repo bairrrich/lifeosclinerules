@@ -2,7 +2,18 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Bell, BellOff, Clock, Calendar, Settings, Check, X, ChevronRight, Flame, CheckCircle2 } from "lucide-react"
+import {
+  Bell,
+  BellOff,
+  Clock,
+  Calendar,
+  Settings,
+  Check,
+  X,
+  ChevronRight,
+  Flame,
+  CheckCircle2,
+} from "@/lib/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -22,11 +33,11 @@ interface ReminderCardProps {
 export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: ReminderCardProps) {
   const router = useRouter()
   const [completedToday, setCompletedToday] = useState(0)
-  
+
   // Максимальное количество выполнений = основное время + дополнительные времена
   const maxCompletionsPerDay = 1 + ((reminder as any).times?.length || 0)
   const isLimitReached = completedToday >= maxCompletionsPerDay
-  
+
   // Загружаем количество выполнений за сегодня
   useEffect(() => {
     async function loadTodayCompletions() {
@@ -43,14 +54,14 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
     }
     loadTodayCompletions()
   }, [reminder.id, reminder.last_completed_at])
-  
+
   const typeConfig = reminderTypesConfig.find((t) => t.type === reminder.type)
   const priorityConf = priorityConfig.find((p) => p.value === reminder.priority)
 
   // Формируем отображение повторяемости
   const getRepeatDisplay = () => {
     const repeatType = reminder.repeat_type || "none"
-    
+
     switch (repeatType) {
       case "none":
         return "Один раз"
@@ -58,11 +69,13 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
         return "Каждый день"
       case "weekly":
         if (reminder.days.length === 7) return "Каждый день"
-        if (reminder.days.length === 5 && !reminder.days.includes(0) && !reminder.days.includes(6)) return "По будням"
-        if (reminder.days.length === 2 && reminder.days.includes(0) && reminder.days.includes(6)) return "По выходным"
+        if (reminder.days.length === 5 && !reminder.days.includes(0) && !reminder.days.includes(6))
+          return "По будням"
+        if (reminder.days.length === 2 && reminder.days.includes(0) && reminder.days.includes(6))
+          return "По выходным"
         return reminder.days.map((d) => dayNames[d]).join(", ")
       case "monthly":
-        return `Каждое ${((reminder as any).monthly_day || 1)}-е число`
+        return `Каждое ${(reminder as any).monthly_day || 1}-е число`
       case "custom":
         const interval = reminder.repeat_interval || 1
         const unit = (reminder as any).custom_unit || "days"
@@ -101,7 +114,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
   }
 
   return (
-    <Card 
+    <Card
       className={`group ${!reminder.is_active ? "opacity-60" : ""} ${
         isOverdue() ? "border-destructive" : ""
       }`}
@@ -110,11 +123,11 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
         <div className="flex items-start gap-3">
           {/* Иконка типа */}
           <div className="text-2xl mt-1">{typeConfig?.icon || "🔔"}</div>
-          
+
           {/* Основной контент */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span 
+              <span
                 className={`font-medium truncate ${
                   reminder.related_id ? "cursor-pointer hover:text-primary" : ""
                 }`}
@@ -125,16 +138,18 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               {/* Приоритет */}
               <span className={`w-2 h-2 rounded-full ${priorityConf?.color}`} />
             </div>
-            
+
             {/* Время и повторяемость */}
             <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
               <Clock className="h-3 w-3" />
               <span>{reminder.time}</span>
               {reminder.advance_minutes && reminder.advance_minutes > 0 && (
                 <span className="text-xs">
-                  (за {reminder.advance_minutes >= 60 
-                    ? `${reminder.advance_minutes / 60} ч` 
-                    : `${reminder.advance_minutes} мин`})
+                  (за{" "}
+                  {reminder.advance_minutes >= 60
+                    ? `${reminder.advance_minutes / 60} ч`
+                    : `${reminder.advance_minutes} мин`}
+                  )
                 </span>
               )}
               <span className="text-xs">• {repeatDisplay}</span>
@@ -142,9 +157,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
 
             {/* Сообщение */}
             {reminder.message && (
-              <p className="text-xs text-muted-foreground mt-1 truncate">
-                {reminder.message}
-              </p>
+              <p className="text-xs text-muted-foreground mt-1 truncate">{reminder.message}</p>
             )}
 
             {/* Даты курса */}
@@ -152,16 +165,28 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                 <Calendar className="h-3 w-3" />
                 {reminder.start_date && (
-                  <span>с {new Date(reminder.start_date).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}</span>
+                  <span>
+                    с{" "}
+                    {new Date(reminder.start_date).toLocaleDateString("ru-RU", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </span>
                 )}
                 {reminder.end_date && (
-                  <span>по {new Date(reminder.end_date).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}</span>
+                  <span>
+                    по{" "}
+                    {new Date(reminder.end_date).toLocaleDateString("ru-RU", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </span>
                 )}
               </div>
             )}
 
             {/* Статистика */}
-            {(reminder.streak !== undefined && reminder.streak > 0) && (
+            {reminder.streak !== undefined && reminder.streak > 0 && (
               <div className="flex items-center gap-1 mt-2">
                 <Flame className="h-3 w-3 text-orange-500" />
                 <span className="text-xs font-medium text-orange-500">
@@ -220,14 +245,18 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               onClick={() => onComplete(reminder)}
               disabled={isLimitReached}
               title={isLimitReached ? "Лимит выполнений достигнут" : "Выполнено"}
+              aria-label={isLimitReached ? "Лимит выполнений достигнут" : "Выполнено"}
             >
-              <Check className={`h-4 w-4 ${isLimitReached ? "text-muted-foreground" : "text-green-500"}`} />
+              <Check
+                className={`h-4 w-4 ${isLimitReached ? "text-muted-foreground" : "text-green-500"}`}
+              />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleActive}
               title={reminder.is_active ? "Отключить" : "Включить"}
+              aria-label={reminder.is_active ? "Отключить напоминание" : "Включить напоминание"}
             >
               {reminder.is_active ? (
                 <Bell className="h-4 w-4 text-blue-500" />
@@ -240,6 +269,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               size="icon"
               onClick={() => onEdit(reminder)}
               title="Настройки"
+              aria-label="Настройки напоминания"
             >
               <Settings className="h-4 w-4" />
             </Button>

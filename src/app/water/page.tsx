@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Minus, Droplet, Coffee, CupSoda, GlassWater, Settings } from "lucide-react"
+import { Plus, Minus, Droplet, Coffee, CupSoda, GlassWater, Settings } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -34,12 +34,12 @@ export default function WaterPage() {
     try {
       await initializeDatabase()
       const today = new Date().toISOString().split("T")[0]
-      
+
       const [logs, goals] = await Promise.all([
         db.waterLogs.where("date").startsWith(today).toArray(),
         db.goals.where("type").equals("water").first(),
       ])
-      
+
       setTodayLogs(logs)
       setGoal(goals || null)
     } catch (error) {
@@ -51,7 +51,7 @@ export default function WaterPage() {
 
   async function addWater(amount: number, type: string) {
     const now = new Date()
-    
+
     await createEntity(db.waterLogs, {
       date: now.toISOString().split("T")[0],
       amount_ml: amount,
@@ -126,17 +126,17 @@ export default function WaterPage() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <Droplet className={`h-8 w-8 mb-1 ${progress >= 100 ? "text-green-500" : "text-blue-500"}`} />
+                  <Droplet
+                    className={`h-8 w-8 mb-1 ${progress >= 100 ? "text-green-500" : "text-blue-500"}`}
+                  />
                   <span className="text-3xl font-bold">{totalMl}</span>
                   <span className="text-sm text-muted-foreground">мл</span>
                 </div>
               </div>
-              
+
               {goal && (
                 <div className="mt-4 text-center">
-                  <p className="text-muted-foreground">
-                    Цель: {goal.target_value} мл
-                  </p>
+                  <p className="text-muted-foreground">Цель: {goal.target_value} мл</p>
                   {progress >= 100 && (
                     <p className="text-green-500 font-medium mt-1">🎉 Цель достигнута!</p>
                   )}
@@ -216,7 +216,9 @@ export default function WaterPage() {
                 return (
                   <Card key={log.id} className="group">
                     <CardContent className="p-3 flex items-center gap-3">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10`}>
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10`}
+                      >
                         <IconComponent className={`h-5 w-5 ${drinkType.color}`} />
                       </div>
                       <div className="flex-1">

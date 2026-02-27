@@ -13,7 +13,7 @@ import {
   X,
   Check,
   AlertTriangle,
-} from "lucide-react"
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Battery, Brain } from "lucide-react"
+import { Battery, Brain } from "@/lib/icons"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

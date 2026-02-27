@@ -19,7 +19,7 @@ import {
   Bell,
   Copy,
   TrendingUp,
-} from "lucide-react"
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { StatCardSkeleton, ListSkeleton } from "@/components/ui/skeleton"

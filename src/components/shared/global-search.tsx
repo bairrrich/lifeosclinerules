@@ -2,10 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Log, Book, Content } from "@/types"
@@ -21,7 +18,7 @@ import {
   Smile,
   Flame,
   Target,
-} from "lucide-react"
+} from "@/lib/icons"
 import { cn } from "@/lib/utils"
 
 interface SearchResult {
@@ -34,7 +31,10 @@ interface SearchResult {
   subtitle?: string
 }
 
-const typeConfig: Record<string, { icon: React.ElementType; color: string; href: string; label: string }> = {
+const typeConfig: Record<
+  string,
+  { icon: React.ElementType; color: string; href: string; label: string }
+> = {
   food: { icon: Utensils, color: "text-orange-500", href: "/logs/food", label: "Питание" },
   workout: { icon: Dumbbell, color: "text-blue-500", href: "/logs/workout", label: "Тренировка" },
   finance: { icon: Wallet, color: "text-green-500", href: "/logs/finance", label: "Финансы" },
@@ -49,7 +49,12 @@ const typeConfig: Record<string, { icon: React.ElementType; color: string; href:
 
 const quickActions = [
   { title: "Добавить питание", href: "/logs/food/new", icon: Utensils, color: "text-orange-500" },
-  { title: "Добавить тренировку", href: "/logs/workout/new", icon: Dumbbell, color: "text-blue-500" },
+  {
+    title: "Добавить тренировку",
+    href: "/logs/workout/new",
+    icon: Dumbbell,
+    color: "text-blue-500",
+  },
   { title: "Добавить расход", href: "/logs/finance/new", icon: Wallet, color: "text-green-500" },
   { title: "Добавить книгу", href: "/books/new", icon: BookOpen, color: "text-amber-500" },
   { title: "Добавить рецепт", href: "/recipes/new", icon: ChefHat, color: "text-rose-500" },
@@ -75,7 +80,7 @@ export function GlobalSearch() {
         e.preventDefault()
         setOpen(true)
       }
-      
+
       // Навигация по результатам
       if (open) {
         if (e.key === "ArrowDown") {
@@ -132,15 +137,18 @@ export function GlobalSearch() {
     setIsLoading(true)
     try {
       await initializeDatabase()
-      
+
       const lowerQuery = searchQuery.toLowerCase()
       const searchResults: SearchResult[] = []
 
       // Ищем в логах
       const logs = await db.logs
-        .filter((log: Log) => 
-          !!(log.title?.toLowerCase().includes(lowerQuery) ||
-          log.notes?.toLowerCase().includes(lowerQuery))
+        .filter(
+          (log: Log) =>
+            !!(
+              log.title?.toLowerCase().includes(lowerQuery) ||
+              log.notes?.toLowerCase().includes(lowerQuery)
+            )
         )
         .limit(5)
         .toArray()
@@ -154,15 +162,13 @@ export function GlobalSearch() {
           href: `/logs/${log.type}/${log.id}`,
           icon: config.icon,
           color: config.color,
-          subtitle: `${config.label} • ${new Date(log.date).toLocaleDateString('ru-RU')}`,
+          subtitle: `${config.label} • ${new Date(log.date).toLocaleDateString("ru-RU")}`,
         })
       })
 
       // Ищем в книгах
       const books = await db.books
-        .filter((book: Book) => 
-          !!(book.title?.toLowerCase().includes(lowerQuery))
-        )
+        .filter((book: Book) => !!book.title?.toLowerCase().includes(lowerQuery))
         .limit(5)
         .toArray()
 
@@ -182,9 +188,7 @@ export function GlobalSearch() {
       const recipes = await db.content
         .where("type")
         .equals("recipe")
-        .filter((item: Content) => 
-          !!(item.title?.toLowerCase().includes(lowerQuery))
-        )
+        .filter((item: Content) => !!item.title?.toLowerCase().includes(lowerQuery))
         .limit(5)
         .toArray()
 
@@ -202,8 +206,8 @@ export function GlobalSearch() {
 
       // Ищем в привычках
       const habits = await db.habits
-        .filter((habit: { name: string; id: string }) => 
-          !!(habit.name?.toLowerCase().includes(lowerQuery))
+        .filter(
+          (habit: { name: string; id: string }) => !!habit.name?.toLowerCase().includes(lowerQuery)
         )
         .limit(3)
         .toArray()
@@ -256,11 +260,9 @@ export function GlobalSearch() {
         {/* Results */}
         <div className="max-h-[400px] overflow-y-auto">
           {results.length === 0 && query.length > 0 && !isLoading && (
-            <div className="py-8 text-center text-muted-foreground">
-              Ничего не найдено
-            </div>
+            <div className="py-8 text-center text-muted-foreground">Ничего не найдено</div>
           )}
-          
+
           {results.map((result, index) => (
             <button
               key={`${result.type}-${result.id}`}

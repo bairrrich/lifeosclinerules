@@ -1,6 +1,6 @@
 "use client"
 
-import { Book } from "lucide-react"
+import { Book } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useSettings } from "./settings-context"
 
@@ -31,7 +31,7 @@ export function BooksManager() {
             <div className="text-xs text-muted-foreground">Прочитано</div>
           </div>
         </div>
-        
+
         <p className="text-sm text-muted-foreground">
           Управление жанрами, авторами и сериями будет доступно в следующей версии.
         </p>

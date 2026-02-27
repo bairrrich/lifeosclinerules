@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Plus, X, Bell } from "lucide-react"
+import { Plus, X, Bell } from "@/lib/icons"
 import { db } from "@/lib/db"
 import type { ReminderType, ReminderPriority, ReminderRepeatType, Item } from "@/types"
 
@@ -98,7 +98,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
 
   useEffect(() => {
     if (formData.related_id && items.length > 0) {
-      const item = items.find(i => i.id === formData.related_id)
+      const item = items.find((i) => i.id === formData.related_id)
       setSelectedItem(item || null)
     }
   }, [formData.related_id, items])
@@ -126,7 +126,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
   function handleRepeatTypeChange(repeatType: ReminderRepeatType) {
     setFormData((prev) => {
       const updates: Partial<ReminderFormProps["formData"]> = { repeat_type: repeatType }
-      
+
       // Автоматически настраиваем дни в зависимости от типа
       if (repeatType === "daily") {
         // Ежедневно - все дни
@@ -140,13 +140,13 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
         // Ежемесячно - текущее число
         updates.monthly_day = prev.monthly_day || new Date().getDate()
       }
-      
+
       return { ...prev, ...updates }
     })
   }
 
   function handleItemSelect(itemId: string) {
-    const item = items.find(i => i.id === itemId)
+    const item = items.find((i) => i.id === itemId)
     if (item) {
       setSelectedItem(item)
       setFormData((prev) => ({
@@ -160,11 +160,13 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
   }
 
   // Проверяем, нужно ли показывать выбор дней
-  const showDaysSelector = formData.repeat_type === "weekly" || 
+  const showDaysSelector =
+    formData.repeat_type === "weekly" ||
     (formData.repeat_type === "custom" && formData.custom_unit === "weeks")
 
   // Проверяем, нужно ли показывать выбор числа месяца
-  const showMonthlyDaySelector = formData.repeat_type === "monthly" ||
+  const showMonthlyDaySelector =
+    formData.repeat_type === "monthly" ||
     (formData.repeat_type === "custom" && formData.custom_unit === "months")
 
   return (
@@ -179,7 +181,14 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               type="button"
               variant={formData.type === type ? "default" : "outline"}
               className="flex flex-col items-center gap-1 h-auto py-2"
-              onClick={() => setFormData((prev) => ({ ...prev, type, related_id: undefined, related_type: undefined }))}
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  type,
+                  related_id: undefined,
+                  related_type: undefined,
+                }))
+              }
             >
               <span className="text-lg">{icon}</span>
               <span className="text-xs">{label}</span>
@@ -243,15 +252,15 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                 const currentTime = formData.time
                 const times = formData.times || [currentTime]
                 if (!times.includes(currentTime)) {
-                  setFormData((prev) => ({ 
-                    ...prev, 
-                    times: [...times, currentTime].sort() 
+                  setFormData((prev) => ({
+                    ...prev,
+                    times: [...times, currentTime].sort(),
                   }))
                 } else {
                   // Добавляем инпут для нового времени
-                  setFormData((prev) => ({ 
-                    ...prev, 
-                    times: [...times, "12:00"].sort() 
+                  setFormData((prev) => ({
+                    ...prev,
+                    times: [...times, "12:00"].sort(),
                   }))
                 }
               }}
@@ -262,7 +271,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             </Button>
           )}
         </div>
-        
+
         {/* Дата, время и упреждение в одной строке */}
         <div className="flex gap-2">
           <Input
@@ -281,7 +290,9 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             <select
               className="h-10 pl-8 pr-2 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer"
               value={formData.advance_minutes}
-              onChange={(e) => setFormData((prev) => ({ ...prev, advance_minutes: Number(e.target.value) }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, advance_minutes: Number(e.target.value) }))
+              }
               title="Напомнить"
             >
               {advanceOptions.map((opt) => (
@@ -295,7 +306,9 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
         </div>
 
         {/* Быстрый выбор времени суток */}
-        {(formData.repeat_type === "daily" || formData.repeat_type === "weekly" || formData.repeat_type === "none") && (
+        {(formData.repeat_type === "daily" ||
+          formData.repeat_type === "weekly" ||
+          formData.repeat_type === "none") && (
           <div className="grid grid-cols-4 gap-1">
             {timeOfDayOptions.map(({ time, label }) => (
               <Button
@@ -313,43 +326,47 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
         )}
 
         {/* Дополнительные времена (для ежедневного/еженедельного режима) */}
-        {(formData.repeat_type === "daily" || formData.repeat_type === "weekly") && formData.times && formData.times.length > 0 && (
-          <div className="space-y-2 mt-2">
-            <p className="text-xs text-muted-foreground">
-              Также напомнить в:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {formData.times.map((t, idx) => (
-                <Badge key={idx} variant="secondary" className="flex items-center gap-1 px-2 py-1">
-                  <Input
-                    type="time"
-                    value={t}
-                    onChange={(e) => {
-                      const newTimes = [...formData.times]
-                      newTimes[idx] = e.target.value
-                      setFormData((prev) => ({ ...prev, times: newTimes.sort() }))
-                    }}
-                    className="w-24 h-6 text-xs border-0 p-0 bg-transparent"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-4 w-4 p-0"
-                    onClick={() => {
-                      setFormData((prev) => ({ 
-                        ...prev, 
-                        times: prev.times?.filter((_, i) => i !== idx) 
-                      }))
-                    }}
+        {(formData.repeat_type === "daily" || formData.repeat_type === "weekly") &&
+          formData.times &&
+          formData.times.length > 0 && (
+            <div className="space-y-2 mt-2">
+              <p className="text-xs text-muted-foreground">Также напомнить в:</p>
+              <div className="flex flex-wrap gap-2">
+                {formData.times.map((t, idx) => (
+                  <Badge
+                    key={idx}
+                    variant="secondary"
+                    className="flex items-center gap-1 px-2 py-1"
                   >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </Badge>
-              ))}
+                    <Input
+                      type="time"
+                      value={t}
+                      onChange={(e) => {
+                        const newTimes = [...formData.times]
+                        newTimes[idx] = e.target.value
+                        setFormData((prev) => ({ ...prev, times: newTimes.sort() }))
+                      }}
+                      className="w-24 h-6 text-xs border-0 p-0 bg-transparent"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-4 w-4 p-0"
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          times: prev.times?.filter((_, i) => i !== idx),
+                        }))
+                      }}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
 
       {/* Повторяемость - основной переключатель */}
@@ -401,7 +418,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       </div>
 
       {/* Дополнительные настройки в зависимости от типа повторения */}
-      
+
       {/* Ежедневно - пояснение */}
       {formData.repeat_type === "daily" && (
         <div className="p-3 rounded-lg bg-muted/50 text-sm text-muted-foreground">
@@ -468,10 +485,12 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               max={31}
               className="w-20"
               value={formData.monthly_day || new Date().getDate()}
-              onChange={(e) => setFormData((prev) => ({ 
-                ...prev, 
-                monthly_day: Math.min(31, Math.max(1, Number(e.target.value))) 
-              }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  monthly_day: Math.min(31, Math.max(1, Number(e.target.value))),
+                }))
+              }
             />
             <span className="text-sm text-muted-foreground">число</span>
           </div>
@@ -492,18 +511,22 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
               max={365}
               className="w-20"
               value={formData.repeat_interval}
-              onChange={(e) => setFormData((prev) => ({ 
-                ...prev, 
-                repeat_interval: Math.max(1, Number(e.target.value)) 
-              }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  repeat_interval: Math.max(1, Number(e.target.value)),
+                }))
+              }
             />
             <select
               className="h-10 px-3 rounded-md border border-input bg-background"
               value={formData.custom_unit || "days"}
-              onChange={(e) => setFormData((prev) => ({ 
-                ...prev, 
-                custom_unit: e.target.value as "days" | "weeks" | "months"
-              }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  custom_unit: e.target.value as "days" | "weeks" | "months",
+                }))
+              }
             >
               {customIntervalUnits.map((unit) => (
                 <option key={unit.value} value={unit.value}>
@@ -563,10 +586,12 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                   max={31}
                   className="w-20"
                   value={formData.monthly_day || new Date().getDate()}
-                  onChange={(e) => setFormData((prev) => ({ 
-                    ...prev, 
-                    monthly_day: Math.min(31, Math.max(1, Number(e.target.value))) 
-                  }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      monthly_day: Math.min(31, Math.max(1, Number(e.target.value))),
+                    }))
+                  }
                 />
                 <span className="text-sm text-muted-foreground">число</span>
               </div>
@@ -583,7 +608,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             type="button"
             variant="outline"
             className="text-xs"
-            style={formData.priority === "low" ? { backgroundColor: '#6b7280', color: 'white', borderColor: '#6b7280' } : {}}
+            style={
+              formData.priority === "low"
+                ? { backgroundColor: "#6b7280", color: "white", borderColor: "#6b7280" }
+                : {}
+            }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "low" }))}
           >
             Низкий
@@ -592,7 +621,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             type="button"
             variant="outline"
             className="text-xs"
-            style={formData.priority === "medium" ? { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' } : {}}
+            style={
+              formData.priority === "medium"
+                ? { backgroundColor: "#3b82f6", color: "white", borderColor: "#3b82f6" }
+                : {}
+            }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "medium" }))}
           >
             Средний
@@ -601,7 +634,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             type="button"
             variant="outline"
             className="text-xs"
-            style={formData.priority === "high" ? { backgroundColor: '#f97316', color: 'white', borderColor: '#f97316' } : {}}
+            style={
+              formData.priority === "high"
+                ? { backgroundColor: "#f97316", color: "white", borderColor: "#f97316" }
+                : {}
+            }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "high" }))}
           >
             Высокий
@@ -610,7 +647,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             type="button"
             variant="outline"
             className="text-xs"
-            style={formData.priority === "critical" ? { backgroundColor: '#ef4444', color: 'white', borderColor: '#ef4444' } : {}}
+            style={
+              formData.priority === "critical"
+                ? { backgroundColor: "#ef4444", color: "white", borderColor: "#ef4444" }
+                : {}
+            }
             onClick={() => setFormData((prev) => ({ ...prev, priority: "critical" }))}
           >
             Критичный

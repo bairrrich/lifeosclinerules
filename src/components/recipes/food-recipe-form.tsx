@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown } from "lucide-react"
+import { ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -41,9 +41,21 @@ export const servingTemperatures: { value: ServingTemperature; label: string }[]
 ]
 
 export const cuisines = [
-  "Русская", "Итальянская", "Французская", "Японская", "Китайская",
-  "Корейская", "Тайская", "Индийская", "Мексиканская", "Грузинская",
-  "Узбекская", "Арабская", "Средиземноморская", "Американская", "Другая"
+  "Русская",
+  "Итальянская",
+  "Французская",
+  "Японская",
+  "Китайская",
+  "Корейская",
+  "Тайская",
+  "Индийская",
+  "Мексиканская",
+  "Грузинская",
+  "Узбекская",
+  "Арабская",
+  "Средиземноморская",
+  "Американская",
+  "Другая",
 ]
 
 export const dietaryOptions = [
@@ -71,14 +83,20 @@ interface FoodRecipeFormProps {
 // ============================================
 
 export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
-  const updateField = <K extends keyof FoodRecipeMetadata>(field: K, value: FoodRecipeMetadata[K]) => {
+  const updateField = <K extends keyof FoodRecipeMetadata>(
+    field: K,
+    value: FoodRecipeMetadata[K]
+  ) => {
     onChange({ ...metadata, [field]: value })
   }
 
   const toggleCookingMethod = (method: CookingMethod) => {
     const current = metadata.cooking_method || []
     if (current.includes(method)) {
-      updateField("cooking_method", current.filter(m => m !== method))
+      updateField(
+        "cooking_method",
+        current.filter((m) => m !== method)
+      )
     } else {
       updateField("cooking_method", [...current, method])
     }
@@ -87,7 +105,10 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
   const toggleDietary = (option: string) => {
     const current = metadata.dietary || []
     if (current.includes(option)) {
-      updateField("dietary", current.filter(d => d !== option))
+      updateField(
+        "dietary",
+        current.filter((d) => d !== option)
+      )
     } else {
       updateField("dietary", [...current, option])
     }
@@ -106,17 +127,23 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               value={metadata.course_type || ""}
-              onChange={(e) => updateField("course_type", e.target.value as CourseType || undefined)}
+              onChange={(e) =>
+                updateField("course_type", (e.target.value as CourseType) || undefined)
+              }
               style={{
-                backgroundImage: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
+                backgroundImage: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
               }}
             >
-              <option value="" disabled>Выберите тип</option>
+              <option value="" disabled>
+                Выберите тип
+              </option>
               {courseTypes.map((ct) => (
-                <option key={ct.value} value={ct.value}>{ct.label}</option>
+                <option key={ct.value} value={ct.value}>
+                  {ct.label}
+                </option>
               ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
@@ -132,15 +159,17 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
               value={metadata.cuisine || ""}
               onChange={(e) => updateField("cuisine", e.target.value || undefined)}
               style={{
-                backgroundImage: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
+                backgroundImage: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
               }}
             >
               <option value="">Не указана</option>
               {cuisines.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />

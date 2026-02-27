@@ -1,7 +1,7 @@
 "use client"
 
 import { create } from "zustand"
-import { X, CheckCircle, AlertCircle, Info } from "lucide-react"
+import { X, CheckCircle, AlertCircle, Info } from "@/lib/icons"
 
 export type ToastType = "success" | "error" | "info"
 
@@ -25,7 +25,7 @@ export const useToast = create<ToastStore>((set) => ({
     set((state) => ({
       toasts: [...state.toasts, { id, message, type, duration }],
     }))
-    
+
     // Автоудаление
     setTimeout(() => {
       set((state) => ({
@@ -76,15 +76,10 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
   }
 
   return (
-    <div
-      className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-lg bg-background/95 backdrop-blur border shadow-md animate-in slide-in-from-bottom-2 fade-in duration-200"
-    >
+    <div className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-lg bg-background/95 backdrop-blur border shadow-md animate-in slide-in-from-bottom-2 fade-in duration-200">
       {icons[toast.type]}
       <p className="flex-1 text-xs">{toast.message}</p>
-      <button
-        onClick={onClose}
-        className="p-0.5 rounded hover:bg-muted"
-      >
+      <button onClick={onClose} className="p-0.5 rounded hover:bg-muted">
         <X className="h-3 w-3 text-muted-foreground" />
       </button>
     </div>

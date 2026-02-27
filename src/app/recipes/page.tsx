@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { 
-  ChefHat, Plus, Search, Star, Clock, Flame, 
-  Coffee, Martini, Users
-} from "lucide-react"
+import { ChefHat, Plus, Search, Star, Clock, Flame, Coffee, Martini, Users } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -40,11 +37,11 @@ export default function RecipesPage() {
     async function loadData() {
       try {
         await initializeDatabase()
-        
+
         // Загружаем рецепты из content
         const allContent = await db.content.toArray()
         const recipesOnly = allContent.filter((c) => c.type === "recipe") as RecipeContentExtended[]
-        
+
         // Загружаем ингредиенты и шаги для каждого рецепта
         const recipesWithDetails: RecipeWithDetails[] = await Promise.all(
           recipesOnly.map(async (recipe) => {
@@ -52,12 +49,9 @@ export default function RecipesPage() {
               .where("recipe_id")
               .equals(recipe.id)
               .sortBy("order")
-            
-            const steps = await db.recipeSteps
-              .where("recipe_id")
-              .equals(recipe.id)
-              .sortBy("order")
-            
+
+            const steps = await db.recipeSteps.where("recipe_id").equals(recipe.id).sortBy("order")
+
             return {
               ...recipe,
               ingredientsList: ingredients,
@@ -65,7 +59,7 @@ export default function RecipesPage() {
             }
           })
         )
-        
+
         setRecipes(recipesWithDetails)
       } catch (error) {
         console.error("Failed to load recipes:", error)
@@ -78,11 +72,12 @@ export default function RecipesPage() {
 
   // Фильтрация
   const filteredRecipes = recipes.filter((recipe) => {
-    const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch =
+      recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    
+
     const matchesType = activeType === "all" || recipe.recipe_type === activeType
-    
+
     return matchesSearch && matchesType
   })
 
@@ -97,19 +92,27 @@ export default function RecipesPage() {
   // Иконка по типу
   const getTypeIcon = (type: RecipeType) => {
     switch (type) {
-      case RecipeType.FOOD: return ChefHat
-      case RecipeType.DRINK: return Coffee
-      case RecipeType.COCKTAIL: return Martini
-      default: return ChefHat
+      case RecipeType.FOOD:
+        return ChefHat
+      case RecipeType.DRINK:
+        return Coffee
+      case RecipeType.COCKTAIL:
+        return Martini
+      default:
+        return ChefHat
     }
   }
 
   const getTypeColor = (type: RecipeType) => {
     switch (type) {
-      case RecipeType.FOOD: return "bg-orange-500/10 text-orange-500"
-      case RecipeType.DRINK: return "bg-blue-500/10 text-blue-500"
-      case RecipeType.COCKTAIL: return "bg-purple-500/10 text-purple-500"
-      default: return "bg-gray-500/10 text-gray-500"
+      case RecipeType.FOOD:
+        return "bg-orange-500/10 text-orange-500"
+      case RecipeType.DRINK:
+        return "bg-blue-500/10 text-blue-500"
+      case RecipeType.COCKTAIL:
+        return "bg-purple-500/10 text-purple-500"
+      default:
+        return "bg-gray-500/10 text-gray-500"
     }
   }
 
@@ -143,7 +146,11 @@ export default function RecipesPage() {
         >
           <TabsList className="grid grid-cols-4 w-full h-auto">
             {recipeTypeFilters.map((filter) => (
-              <TabsTrigger key={filter.value} value={filter.value} className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+              <TabsTrigger
+                key={filter.value}
+                value={filter.value}
+                className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+              >
                 <filter.icon className="h-4 w-4 sm:mr-1" />
                 <span className="hidden sm:inline">{filter.label}</span>
                 <span className="sm:hidden text-[10px]">{filter.label.slice(0, 4)}</span>
@@ -166,16 +173,12 @@ export default function RecipesPage() {
         {/* Список рецептов */}
         {isLoading ? (
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         ) : filteredRecipes.length === 0 ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
-              {recipes.length === 0
-                ? "Нет рецептов. Добавьте первый!"
-                : "Рецепты не найдены"}
+              {recipes.length === 0 ? "Нет рецептов. Добавьте первый!" : "Рецепты не найдены"}
             </CardContent>
           </Card>
         ) : (
@@ -183,17 +186,19 @@ export default function RecipesPage() {
             {filteredRecipes.map((recipe) => {
               const TypeIcon = getTypeIcon(recipe.recipe_type || "food")
               const typeColor = getTypeColor(recipe.recipe_type || "food")
-              
+
               return (
                 <Link key={recipe.id} href={`/recipes/${recipe.id}`}>
                   <Card className="hover:bg-accent transition-colors">
                     <CardContent className="p-4">
                       <div className="flex gap-3">
                         {/* Иконка типа */}
-                        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${typeColor}`}>
+                        <div
+                          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${typeColor}`}
+                        >
                           <TypeIcon className="h-6 w-6" />
                         </div>
-                        
+
                         {/* Контент */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
@@ -212,7 +217,7 @@ export default function RecipesPage() {
                               </div>
                             )}
                           </div>
-                          
+
                           {/* Мета информация */}
                           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                             {recipe.total_time_min && (
@@ -246,7 +251,6 @@ export default function RecipesPage() {
             })}
           </div>
         )}
-
       </div>
     </AppLayout>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Cloud, CloudOff, RefreshCw, Check, AlertCircle, Loader2, LogIn } from "lucide-react"
+import { Cloud, CloudOff, RefreshCw, Check, AlertCircle, Loader2, LogIn } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"

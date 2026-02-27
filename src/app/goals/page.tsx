@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { Plus, Target, Check, Settings, Trash2, ChevronDown } from "lucide-react"
+import { Plus, Target, Check, Settings, Trash2, ChevronDown } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

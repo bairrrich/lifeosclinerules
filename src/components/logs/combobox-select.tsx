@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { ChevronDown, Plus } from "lucide-react"
+import { ChevronDown, Plus } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,12 +14,12 @@ interface ComboboxSelectProps {
   placeholder?: string
 }
 
-export function ComboboxSelect({ 
-  label, 
-  options, 
-  value, 
-  onChange, 
-  placeholder = "Выберите..." 
+export function ComboboxSelect({
+  label,
+  options,
+  value,
+  onChange,
+  placeholder = "Выберите...",
 }: ComboboxSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [customValue, setCustomValue] = useState("")
@@ -33,10 +33,10 @@ export function ComboboxSelect({
       }
     }
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside)
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [isOpen])
 
@@ -50,9 +50,7 @@ export function ComboboxSelect({
             onClick={() => setIsOpen(!isOpen)}
             className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
-            <span className={value ? "" : "text-muted-foreground"}>
-              {value || placeholder}
-            </span>
+            <span className={value ? "" : "text-muted-foreground"}>{value || placeholder}</span>
             <ChevronDown className="h-4 w-4 opacity-50" />
           </button>
           {isOpen && (
@@ -106,6 +104,7 @@ export function ComboboxSelect({
               setShowCustomInput(false)
               setCustomValue("")
             }}
+            aria-label="Отмена"
           >
             ✕
           </Button>
@@ -119,6 +118,7 @@ export function ComboboxSelect({
                 setCustomValue("")
               }
             }}
+            aria-label="Подтвердить"
           >
             ✓
           </Button>

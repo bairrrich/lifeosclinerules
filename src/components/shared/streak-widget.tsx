@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Flame, Trophy, Target, TrendingUp } from "lucide-react"
+import { Flame, Trophy, Target, TrendingUp } from "@/lib/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Streak, Habit, HabitLog } from "@/types"
@@ -39,14 +39,14 @@ export function StreakWidget() {
 
   // Calculate stats
   const totalCurrentStreak = streaks.reduce((sum, s) => sum + s.current_streak, 0)
-  const bestStreak = Math.max(...streaks.map(s => s.longest_streak), 0)
-  const totalCompletions = habitLogs.filter(l => l.completed).length
+  const bestStreak = Math.max(...streaks.map((s) => s.longest_streak), 0)
+  const totalCompletions = habitLogs.filter((l) => l.completed).length
   const activeHabits = habits.length
 
   // Get top streak habits
   const topStreaks = habits
-    .map(habit => {
-      const streak = streaks.find(s => s.habit_id === habit.id)
+    .map((habit) => {
+      const streak = streaks.find((s) => s.habit_id === habit.id)
       return {
         habit,
         streak: streak?.current_streak || 0,
@@ -57,9 +57,7 @@ export function StreakWidget() {
 
   // Check if any habit completed today
   const today = new Date().toISOString().split("T")[0]
-  const completedToday = habitLogs.filter(
-    l => l.date.startsWith(today) && l.completed
-  ).length
+  const completedToday = habitLogs.filter((l) => l.date.startsWith(today) && l.completed).length
 
   if (activeHabits === 0) {
     return null
@@ -78,7 +76,7 @@ export function StreakWidget() {
               <div className="text-xs text-muted-foreground">Дней серий</div>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-amber-500/10">
               <Trophy className="h-5 w-5 text-amber-500" />
@@ -94,10 +92,12 @@ export function StreakWidget() {
         <div className="mb-3">
           <div className="flex items-center justify-between text-sm mb-1">
             <span className="text-muted-foreground">Сегодня</span>
-            <span className="font-medium">{completedToday}/{activeHabits}</span>
+            <span className="font-medium">
+              {completedToday}/{activeHabits}
+            </span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-500"
               style={{ width: `${activeHabits > 0 ? (completedToday / activeHabits) * 100 : 0}%` }}
             />
@@ -109,11 +109,15 @@ export function StreakWidget() {
           <div className="space-y-2">
             {topStreaks.map((item, index) => (
               <div key={item.habit.id} className="flex items-center gap-2">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                  index === 0 ? "bg-amber-500 text-white" :
-                  index === 1 ? "bg-gray-300 text-gray-700" :
-                  "bg-amber-700 text-white"
-                }`}>
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                    index === 0
+                      ? "bg-amber-500 text-white"
+                      : index === 1
+                        ? "bg-gray-300 text-gray-700"
+                        : "bg-amber-700 text-white"
+                  }`}
+                >
                   {index + 1}
                 </div>
                 <span className="flex-1 text-sm truncate">{item.habit.name}</span>

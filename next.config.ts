@@ -1,9 +1,20 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
   // Отключаем статическую генерацию для динамических страниц
   output: "standalone",
+  // Оптимизация импортов пакетов для tree-shaking
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-progress",
+      "@radix-ui/react-label",
+    ],
+  },
   // Принудительно отключаем кэширование
   onDemandEntries: {
     maxInactiveAge: 0,
@@ -33,8 +44,8 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

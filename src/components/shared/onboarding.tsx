@@ -14,7 +14,7 @@ import {
   ChevronRight,
   ChevronLeft,
   X,
-} from "lucide-react"
+} from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { db } from "@/lib/db"

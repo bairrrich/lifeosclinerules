@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { Plus, Flame, Check, X, Settings, Clock, AlertCircle, ListChecks } from "lucide-react"
+import { Plus, Flame, Check, X, Settings, Clock, AlertCircle, ListChecks } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -284,9 +284,7 @@ function HabitsContent() {
     return log?.completed ?? false
   }
 
-  function getWeekCompletion(
-    habitId: string
-  ): {
+  function getWeekCompletion(habitId: string): {
     date: string
     completed: boolean
     skipped: boolean
@@ -392,6 +390,9 @@ function HabitsContent() {
                         size="icon"
                         className={`h-12 w-12 rounded-full ${isCompleted ? "bg-green-500 hover:bg-green-600" : ""}`}
                         onClick={() => toggleHabit(habit.id)}
+                        aria-label={
+                          isCompleted ? "Отметить как невыполненное" : "Отметить как выполненное"
+                        }
                       >
                         {isCompleted ? (
                           <Check className="h-6 w-6" />
@@ -449,6 +450,7 @@ function HabitsContent() {
                             variant="ghost"
                             size="icon"
                             onClick={() => setViewingSubtasks(habit)}
+                            aria-label="Просмотреть подпривычки"
                           >
                             <ListChecks className="h-4 w-4" />
                           </Button>
@@ -461,11 +463,17 @@ function HabitsContent() {
                               setSkippingHabit(habit)
                               setIsSkipDialogOpen(true)
                             }}
+                            aria-label="Пропустить привычку"
                           >
                             <AlertCircle className="h-4 w-4 text-orange-500" />
                           </Button>
                         )}
-                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(habit)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditDialog(habit)}
+                          aria-label="Редактировать привычку"
+                        >
                           <Settings className="h-4 w-4" />
                         </Button>
                       </div>
@@ -607,6 +615,7 @@ function HabitsContent() {
                           size="icon"
                           className="h-6 w-6"
                           onClick={() => removeSubtask(st.id)}
+                          aria-label="Удалить подпривычку"
                         >
                           <X className="h-3 w-3" />
                         </Button>
@@ -706,7 +715,7 @@ function HabitsContent() {
                     onChange={(e) => setNewSubtaskTitle(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && addSubtask()}
                   />
-                  <Button type="button" onClick={addSubtask}>
+                  <Button type="button" onClick={addSubtask} aria-label="Добавить подпривычку">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -720,6 +729,7 @@ function HabitsContent() {
                           size="icon"
                           className="h-6 w-6"
                           onClick={() => removeSubtask(st.id)}
+                          aria-label="Удалить подпривычку"
                         >
                           <X className="h-3 w-3" />
                         </Button>

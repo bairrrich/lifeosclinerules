@@ -1,6 +1,6 @@
 "use client"
 
-import { Book, ChefHat, BookOpen, CheckCircle, Bookmark } from "lucide-react"
+import { Book, ChefHat, BookOpen, CheckCircle, Bookmark } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useSettings, logTypeLabels } from "./settings-context"
 import { LogType } from "@/types"
@@ -30,7 +30,7 @@ export function DataStats() {
             <div className="text-xs text-muted-foreground">Контент</div>
           </div>
         </div>
-        
+
         {/* Детализация по логам */}
         <div className="space-y-2">
           <div className="text-sm font-medium text-muted-foreground">Записи по типам</div>
@@ -40,7 +40,11 @@ export function DataStats() {
                 <Icon className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <div className="font-semibold">
-                    {type === LogType.FOOD ? stats.foodLogs : type === LogType.WORKOUT ? stats.workoutLogs : stats.financeLogs}
+                    {type === LogType.FOOD
+                      ? stats.foodLogs
+                      : type === LogType.WORKOUT
+                        ? stats.workoutLogs
+                        : stats.financeLogs}
                   </div>
                   <div className="text-xs text-muted-foreground">{label}</div>
                 </div>
@@ -48,7 +52,7 @@ export function DataStats() {
             ))}
           </div>
         </div>
-        
+
         {/* Книги и рецепты */}
         <div className="space-y-2">
           <div className="text-sm font-medium text-muted-foreground">Контент</div>
@@ -68,7 +72,7 @@ export function DataStats() {
               </div>
             </div>
           </div>
-          
+
           {/* Статусы книг */}
           {stats.books > 0 && (
             <div className="flex gap-4 text-xs text-muted-foreground mt-1">

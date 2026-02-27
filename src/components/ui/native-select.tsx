@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
@@ -17,10 +17,10 @@ const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
             className
           )}
           style={{
-            backgroundImage: 'none',
-            WebkitAppearance: 'none',
-            MozAppearance: 'none',
-            appearance: 'none',
+            backgroundImage: "none",
+            WebkitAppearance: "none",
+            MozAppearance: "none",
+            appearance: "none",
           }}
           {...props}
         >

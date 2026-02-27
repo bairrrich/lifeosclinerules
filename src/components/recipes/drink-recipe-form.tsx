@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown } from "lucide-react"
+import { ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -22,8 +22,16 @@ export const drinkTypes = [
 ]
 
 export const drinkBases = [
-  "Вода", "Молоко", "Сливки", "Сок", "Чай", "Кофе",
-  "Йогурт", "Кефир", "Растительное молоко", "Другое"
+  "Вода",
+  "Молоко",
+  "Сливки",
+  "Сок",
+  "Чай",
+  "Кофе",
+  "Йогурт",
+  "Кефир",
+  "Растительное молоко",
+  "Другое",
 ]
 
 export const servingTemperatures: { value: ServingTemperature; label: string }[] = [
@@ -48,7 +56,10 @@ interface DrinkRecipeFormProps {
 // ============================================
 
 export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
-  const updateField = <K extends keyof DrinkRecipeMetadata>(field: K, value: DrinkRecipeMetadata[K]) => {
+  const updateField = <K extends keyof DrinkRecipeMetadata>(
+    field: K,
+    value: DrinkRecipeMetadata[K]
+  ) => {
     onChange({ ...metadata, [field]: value })
   }
 
@@ -65,17 +76,26 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               value={metadata.drink_type || ""}
-              onChange={(e) => updateField("drink_type", e.target.value as DrinkRecipeMetadata['drink_type'] || undefined)}
+              onChange={(e) =>
+                updateField(
+                  "drink_type",
+                  (e.target.value as DrinkRecipeMetadata["drink_type"]) || undefined
+                )
+              }
               style={{
-                backgroundImage: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
+                backgroundImage: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
               }}
             >
-              <option value="" disabled>Выберите тип</option>
+              <option value="" disabled>
+                Выберите тип
+              </option>
               {drinkTypes.map((dt) => (
-                <option key={dt.value} value={dt.value}>{dt.label}</option>
+                <option key={dt.value} value={dt.value}>
+                  {dt.label}
+                </option>
               ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
@@ -91,15 +111,17 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
               value={metadata.base || ""}
               onChange={(e) => updateField("base", e.target.value || undefined)}
               style={{
-                backgroundImage: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
+                backgroundImage: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
               }}
             >
               <option value="">Не указана</option>
               {drinkBases.map((b) => (
-                <option key={b} value={b}>{b}</option>
+                <option key={b} value={b}>
+                  {b}
+                </option>
               ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />

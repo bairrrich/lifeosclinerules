@@ -3,36 +3,40 @@
 ## Технологический стек
 
 ### Frontend Framework
-| Технология | Версия | Назначение |
-|------------|--------|------------|
-| Next.js | 16.1.6 | React фреймворк с App Router |
-| React | 19.2.3 | UI библиотека |
-| TypeScript | 5.x | Типизация |
+
+| Технология | Версия | Назначение                   |
+| ---------- | ------ | ---------------------------- |
+| Next.js    | 16.1.6 | React фреймворк с App Router |
+| React      | 19.2.3 | UI библиотека                |
+| TypeScript | 5.x    | Типизация                    |
 
 ### Styling
-| Технология | Версия | Назначение |
-|------------|--------|------------|
-| TailwindCSS | 4.x | Utility-first CSS |
-| shadcn/ui | latest | UI компоненты |
-| Radix UI | various | Headless UI примитивы |
-| lucide-react | 0.575.0 | Иконки |
+
+| Технология   | Версия  | Назначение            |
+| ------------ | ------- | --------------------- |
+| TailwindCSS  | 4.x     | Utility-first CSS     |
+| shadcn/ui    | latest  | UI компоненты         |
+| Radix UI     | various | Headless UI примитивы |
+| lucide-react | 0.575.0 | Иконки                |
 
 ### Data & State
-| Технология | Версия | Назначение |
-|------------|--------|------------|
-| Dexie | 4.3.0 | IndexedDB wrapper |
-| Zustand | 5.0.11 | State management |
-| React Hook Form | 7.71.2 | Формы |
-| Zod | 4.3.6 | Валидация схем |
+
+| Технология      | Версия | Назначение        |
+| --------------- | ------ | ----------------- |
+| Dexie           | 4.3.0  | IndexedDB wrapper |
+| Zustand         | 5.0.11 | State management  |
+| React Hook Form | 7.71.2 | Формы             |
+| Zod             | 4.3.6  | Валидация схем    |
 
 ### Utilities
-| Технология | Версия | Назначение |
-|------------|--------|------------|
-| date-fns | 4.1.0 | Работа с датами |
-| recharts | 3.7.0 | Графики |
-| clsx | 2.1.1 | Условные классы |
-| tailwind-merge | 3.5.0 | Merge Tailwind классов |
-| class-variance-authority | 0.7.1 | Варианты компонентов |
+
+| Технология               | Версия | Назначение             |
+| ------------------------ | ------ | ---------------------- |
+| date-fns                 | 4.1.0  | Работа с датами        |
+| recharts                 | 3.7.0  | Графики                |
+| clsx                     | 2.1.1  | Условные классы        |
+| tailwind-merge           | 3.5.0  | Merge Tailwind классов |
+| class-variance-authority | 0.7.1  | Варианты компонентов   |
 
 ## Настройка разработки
 
@@ -49,13 +53,13 @@
 
 ### Конфигурационные файлы
 
-| Файл | Назначение |
-|------|------------|
-| `next.config.ts` | Конфигурация Next.js |
-| `tsconfig.json` | Настройки TypeScript |
+| Файл                 | Назначение                     |
+| -------------------- | ------------------------------ |
+| `next.config.ts`     | Конфигурация Next.js           |
+| `tsconfig.json`      | Настройки TypeScript           |
 | `tailwind.config.ts` | Настройки Tailwind (в postcss) |
-| `eslint.config.mjs` | Настройки ESLint |
-| `components.json` | Конфигурация shadcn/ui |
+| `eslint.config.mjs`  | Настройки ESLint               |
+| `components.json`    | Конфигурация shadcn/ui         |
 
 ### Пакетный менеджер
 
@@ -70,15 +74,18 @@ pnpm dev        # Запуск разработки
 ## Технические ограничения
 
 ### Browser Support
+
 - Современные браузеры с поддержкой IndexedDB
 - ES2022+ features
 - CSS Grid и Flexbox
 
 ### Storage Limits
+
 - IndexedDB: зависит от браузера (обычно ~50MB+)
 - localStorage: ~5MB (для настроек)
 
 ### Performance Considerations
+
 - React 19 Compiler включен
 - Turbopack для разработки
 - Dynamic imports для code splitting
@@ -129,8 +136,8 @@ pnpm dev        # Запуск разработки
 ```typescript
 // Определение таблицы
 class LifeOSDatabase extends Dexie {
-  logs!: EntityTable<Log, 'id'>
-  items!: EntityTable<Item, 'id'>
+  logs!: EntityTable<Log, "id">
+  items!: EntityTable<Item, "id">
   // ...
 }
 
@@ -138,7 +145,7 @@ class LifeOSDatabase extends Dexie {
 await db.logs.add({ ...data, ...createBaseEntity() })
 
 // Запрос по индексу
-await db.logs.where('type').equals('food').toArray()
+await db.logs.where("type").equals("food").toArray()
 ```
 
 ### Zustand Store
@@ -151,7 +158,7 @@ export const useStore = create<State>()(
       state: initialValue,
       action: (value) => set({ state: value }),
     }),
-    { name: 'storage-key' }
+    { name: "storage-key" }
   )
 )
 
@@ -164,14 +171,14 @@ const { state, action } = useStore()
 ```typescript
 // Схема валидации
 const schema = z.object({
-  title: z.string().min(1, 'Обязательно'),
+  title: z.string().min(1, "Обязательно"),
   date: z.date(),
 })
 
 // Форма
 const form = useForm({
   resolver: zodResolver(schema),
-  defaultValues: { title: '', date: new Date() },
+  defaultValues: { title: "", date: new Date() },
 })
 ```
 
@@ -199,6 +206,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 ```
 
 Примеры:
+
 - `@/components/ui/button`
 - `@/lib/db`
 - `@/types`
@@ -207,6 +215,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 ## Сборка и деплой
 
 ### Development
+
 ```bash
 pnpm dev
 # → http://localhost:3000
@@ -214,6 +223,7 @@ pnpm dev
 ```
 
 ### Production Build
+
 ```bash
 pnpm build
 # → Создает .next/ директорию
@@ -221,9 +231,52 @@ pnpm build
 ```
 
 ### Production Start
+
 ```bash
 pnpm start
 # → Запускает production сервер
+```
+
+### Оптимизация сборок
+
+В `next.config.ts` настроено `optimizePackageImports`:
+
+```typescript
+experimental: {
+  optimizePackageImports: [
+    "lucide-react",
+    "@radix-ui/react-dialog",
+    "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-tabs",
+    "@radix-ui/react-progress",
+    "@radix-ui/react-label",
+  ],
+}
+```
+
+**Эффект:**
+
+- 15-70% быстрее dev boot
+- 28% быстрее production builds
+- Автоматический tree-shaking для пакетов
+
+### Icon Imports паттерн
+
+Для оптимального tree-shaking используется централизованный файл:
+
+```typescript
+// ✅ Правильно
+import { Menu, Settings, Plus } from "@/lib/icons"
+
+// ❌ Избегать (до оптимизации Next.js)
+import { Menu, Settings, Plus } from "lucide-react"
+```
+
+`src/lib/icons.ts` экспортирует 140+ иконок с прямыми импортами:
+
+```typescript
+export { default as Menu } from "lucide-react/dist/esm/icons/menu"
+export { default as Settings } from "lucide-react/dist/esm/icons/settings"
 ```
 
 ## CSS и темизация
@@ -252,8 +305,9 @@ pnpm start
 
 ```typescript
 // Типичные классы
-"rounded-2xl"        // Скругление карточек
-"border"             // Границы вместо теней
-"hover:bg-accent"    // Hover эффекты
-"text-muted-foreground"  // Вторичный текст
-"bg-primary/10"      // Полупрозрачный фон
+"rounded-2xl" // Скругление карточек
+"border" // Границы вместо теней
+"hover:bg-accent" // Hover эффекты
+"text-muted-foreground" // Вторичный текст
+"bg-primary/10" // Полупрозрачный фон
+```

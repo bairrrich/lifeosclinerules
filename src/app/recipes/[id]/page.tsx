@@ -3,10 +3,20 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { 
-  ArrowLeft, Pencil, Trash2, Tag, Star, Clock, 
-  Flame, Users, ChefHat, Coffee, Martini, Timer
-} from "lucide-react"
+import {
+  ArrowLeft,
+  Pencil,
+  Trash2,
+  Tag,
+  Star,
+  Clock,
+  Flame,
+  Users,
+  ChefHat,
+  Coffee,
+  Martini,
+  Timer,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -58,21 +68,18 @@ export default function RecipeDetailPage() {
       try {
         await initializeDatabase()
         const contentData = await db.content.get(id)
-        
+
         if (contentData && contentData.type === "recipe") {
           setRecipe(contentData as RecipeContentExtended)
-          
+
           // Загружаем ингредиенты и шаги
           const recipeIngredients = await db.recipeIngredientItems
             .where("recipe_id")
             .equals(id)
             .sortBy("order")
           setIngredients(recipeIngredients)
-          
-          const recipeSteps = await db.recipeSteps
-            .where("recipe_id")
-            .equals(id)
-            .sortBy("order")
+
+          const recipeSteps = await db.recipeSteps.where("recipe_id").equals(id).sortBy("order")
           setSteps(recipeSteps)
         }
       } catch (error) {
@@ -90,7 +97,7 @@ export default function RecipeDetailPage() {
       // Удаляем связанные данные
       await db.recipeIngredientItems.where("recipe_id").equals(id).delete()
       await db.recipeSteps.where("recipe_id").equals(id).delete()
-      
+
       await deleteEntity(db.content, recipe.id)
       router.push("/recipes")
     } catch (error) {
@@ -110,7 +117,9 @@ export default function RecipeDetailPage() {
     return (
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -120,7 +129,11 @@ export default function RecipeDetailPage() {
     return (
       <AppLayout title="Не найдено">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Рецепт не найден</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              Рецепт не найден
+            </CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -132,7 +145,8 @@ export default function RecipeDetailPage() {
     <AppLayout title="Рецепт">
       <div className="container mx-auto px-4 py-6 space-y-4">
         <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4 mr-2" />Назад
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Назад
         </Button>
 
         {/* Summary Card */}
@@ -173,13 +187,13 @@ export default function RecipeDetailPage() {
               {recipe.servings && (
                 <div className="flex items-center gap-2 text-sm">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  <span>{recipe.servings} {recipe.serving_unit || "порций"}</span>
+                  <span>
+                    {recipe.servings} {recipe.serving_unit || "порций"}
+                  </span>
                 </div>
               )}
               {recipe.difficulty && (
-                <Badge variant="secondary">
-                  {difficultyLabels[recipe.difficulty]}
-                </Badge>
+                <Badge variant="secondary">{difficultyLabels[recipe.difficulty]}</Badge>
               )}
             </div>
           </CardContent>
@@ -239,7 +253,9 @@ export default function RecipeDetailPage() {
                       <li key={ing.id || i} className="flex items-center justify-between text-sm">
                         <span>
                           {ing.ingredient_name}
-                          {ing.optional && <span className="text-muted-foreground ml-1">(опц.)</span>}
+                          {ing.optional && (
+                            <span className="text-muted-foreground ml-1">(опц.)</span>
+                          )}
                         </span>
                         <span className="text-muted-foreground">
                           {ing.amount} {ing.unit}
@@ -339,7 +355,8 @@ export default function RecipeDetailPage() {
                     <div className="flex flex-wrap gap-2">
                       {recipe.tags.map((tag, i) => (
                         <Badge key={i} variant="secondary">
-                          <Tag className="h-3 w-3 mr-1" />{tag}
+                          <Tag className="h-3 w-3 mr-1" />
+                          {tag}
                         </Badge>
                       ))}
                     </div>
@@ -352,12 +369,18 @@ export default function RecipeDetailPage() {
 
         {/* Actions */}
         <div className="flex gap-4">
-          <Button variant="destructive" className="flex-1" onClick={() => setShowDeleteDialog(true)}>
-            <Trash2 className="h-4 w-4 mr-2" />Удалить
+          <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Удалить
           </Button>
           <Link href={`/recipes/${id}/edit`} className="flex-1">
             <Button className="w-full">
-              <Pencil className="h-4 w-4 mr-2" />Изменить
+              <Pencil className="h-4 w-4 mr-2" />
+              Изменить
             </Button>
           </Link>
         </div>
@@ -371,8 +394,12 @@ export default function RecipeDetailPage() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Отмена</Button>
-              <Button variant="destructive" onClick={handleDelete}>Удалить</Button>
+              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                Отмена
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Удалить
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

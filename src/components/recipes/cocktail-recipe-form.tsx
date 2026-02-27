@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, Plus, X } from "lucide-react"
+import { ChevronDown, Plus, X } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -44,24 +44,64 @@ export const iceTypes: { value: IceType; label: string }[] = [
 ]
 
 export const baseSpirits = [
-  "Водка", "Джин", "Ром белый", "Ром тёмный", "Текила", "Виски", 
-  "Бурбон", "Коньяк", "Бренди", "Ликёр", "Абсент", "Другое"
+  "Водка",
+  "Джин",
+  "Ром белый",
+  "Ром тёмный",
+  "Текила",
+  "Виски",
+  "Бурбон",
+  "Коньяк",
+  "Бренди",
+  "Ликёр",
+  "Абсент",
+  "Другое",
 ]
 
 export const ibaCategories = [
-  "The Unforgettables", "Contemporary Classics", "New Era Drinks",
-  "Текила", "Водка", "Джин", "Ром", "Виски", "Бренди", "Ликёр"
+  "The Unforgettables",
+  "Contemporary Classics",
+  "New Era Drinks",
+  "Текила",
+  "Водка",
+  "Джин",
+  "Ром",
+  "Виски",
+  "Бренди",
+  "Ликёр",
 ]
 
 export const cocktailTools = [
-  "Шейкер", "Шейкер Бостон", "Джиггер", "Мадлер", "Барная ложка",
-  "Стрейнер", "Фильтр Хоторн", "Сайзер", "Пестик", "Конус", "Другое"
+  "Шейкер",
+  "Шейкер Бостон",
+  "Джиггер",
+  "Мадлер",
+  "Барная ложка",
+  "Стрейнер",
+  "Фильтр Хоторн",
+  "Сайзер",
+  "Пестик",
+  "Конус",
+  "Другое",
 ]
 
 export const garnishOptions = [
-  "Лимон", "Лайм", "Апельсин", "Грейпфрут", "Мята", "Базилик",
-  "Оливки", "Вишня", "Ананас", "Клубника", "Сахарный ободок", "Соль",
-  "Цедра лимона", "Цедра апельсина", "Огурец", "Другое"
+  "Лимон",
+  "Лайм",
+  "Апельсин",
+  "Грейпфрут",
+  "Мята",
+  "Базилик",
+  "Оливки",
+  "Вишня",
+  "Ананас",
+  "Клубника",
+  "Сахарный ободок",
+  "Соль",
+  "Цедра лимона",
+  "Цедра апельсина",
+  "Огурец",
+  "Другое",
 ]
 
 // ============================================
@@ -78,14 +118,20 @@ interface CocktailRecipeFormProps {
 // ============================================
 
 export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormProps) {
-  const updateField = <K extends keyof CocktailRecipeMetadata>(field: K, value: CocktailRecipeMetadata[K]) => {
+  const updateField = <K extends keyof CocktailRecipeMetadata>(
+    field: K,
+    value: CocktailRecipeMetadata[K]
+  ) => {
     onChange({ ...metadata, [field]: value })
   }
 
-  const toggleArrayItem = (field: 'garnish' | 'tools', item: string) => {
+  const toggleArrayItem = (field: "garnish" | "tools", item: string) => {
     const current = metadata[field] || []
     if (current.includes(item)) {
-      updateField(field, current.filter(i => i !== item))
+      updateField(
+        field,
+        current.filter((i) => i !== item)
+      )
     } else {
       updateField(field, [...current, item])
     }
@@ -138,7 +184,9 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                 min={0}
                 max={80}
                 value={metadata.alcohol_percent || ""}
-                onChange={(e) => updateField("alcohol_percent", parseFloat(e.target.value) || undefined)}
+                onChange={(e) =>
+                  updateField("alcohol_percent", parseFloat(e.target.value) || undefined)
+                }
               />
             </div>
 
@@ -151,15 +199,17 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                   value={metadata.base_spirit || ""}
                   onChange={(e) => updateField("base_spirit", e.target.value || undefined)}
                   style={{
-                    backgroundImage: 'none',
-                    WebkitAppearance: 'none',
-                    MozAppearance: 'none',
-                    appearance: 'none',
+                    backgroundImage: "none",
+                    WebkitAppearance: "none",
+                    MozAppearance: "none",
+                    appearance: "none",
                   }}
                 >
                   <option value="">Не указан</option>
                   {baseSpirits.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
                 <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
@@ -175,15 +225,17 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                   value={metadata.iba_category || ""}
                   onChange={(e) => updateField("iba_category", e.target.value || undefined)}
                   style={{
-                    backgroundImage: 'none',
-                    WebkitAppearance: 'none',
-                    MozAppearance: 'none',
-                    appearance: 'none',
+                    backgroundImage: "none",
+                    WebkitAppearance: "none",
+                    MozAppearance: "none",
+                    appearance: "none",
                   }}
                 >
                   <option value="">Не указана</option>
                   {ibaCategories.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
                   ))}
                 </select>
                 <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
@@ -221,17 +273,21 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               value={metadata.glass_type || ""}
-              onChange={(e) => updateField("glass_type", e.target.value as GlassType || undefined)}
+              onChange={(e) =>
+                updateField("glass_type", (e.target.value as GlassType) || undefined)
+              }
               style={{
-                backgroundImage: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
+                backgroundImage: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
               }}
             >
               <option value="">Не указан</option>
               {glassTypes.map((gt) => (
-                <option key={gt.value} value={gt.value}>{gt.label}</option>
+                <option key={gt.value} value={gt.value}>
+                  {gt.label}
+                </option>
               ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
@@ -278,7 +334,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
               <button
                 key={g}
                 type="button"
-                onClick={() => toggleArrayItem('garnish', g)}
+                onClick={() => toggleArrayItem("garnish", g)}
                 className={`px-2 py-1.5 text-xs rounded-lg border transition-colors ${
                   metadata.garnish?.includes(g)
                     ? "bg-primary text-primary-foreground border-primary"
@@ -299,7 +355,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
               <button
                 key={t}
                 type="button"
-                onClick={() => toggleArrayItem('tools', t)}
+                onClick={() => toggleArrayItem("tools", t)}
                 className={`px-2 py-1.5 text-xs rounded-lg border transition-colors ${
                   metadata.tools?.includes(t)
                     ? "bg-primary text-primary-foreground border-primary"

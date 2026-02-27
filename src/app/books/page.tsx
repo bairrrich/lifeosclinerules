@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { 
-  BookOpen, Plus, Search, Star, Calendar, 
-  FileText, TrendingUp
-} from "lucide-react"
+import { BookOpen, Plus, Search, Star, Calendar, FileText, TrendingUp } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -40,17 +37,17 @@ export default function BooksPage() {
     async function loadData() {
       try {
         await initializeDatabase()
-        
+
         // Загружаем книги
         const allBooks = await db.books.toArray()
-        
+
         // Загружаем пользовательские данные
         const userBooks = await db.userBooks.toArray()
-        
+
         // Загружаем авторов
         const authors = await db.authors.toArray()
         const bookAuthors = await db.bookAuthors.toArray()
-        
+
         // Объединяем данные
         const booksWithDetails: BookWithDetails[] = allBooks.map((book) => {
           const ub = userBooks.find((ub) => ub.book_id === book.id)
@@ -58,14 +55,14 @@ export default function BooksPage() {
           const authorsList = baList
             .map((ba) => authors.find((a) => a.id === ba.author_id))
             .filter(Boolean) as Author[]
-          
+
           return {
             ...book,
             userBook: ub,
             authorsList,
           }
         })
-        
+
         setBooks(booksWithDetails)
       } catch (error) {
         console.error("Failed to load books:", error)
@@ -78,11 +75,12 @@ export default function BooksPage() {
 
   // Фильтрация
   const filteredBooks = books.filter((book) => {
-    const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       book.authorsList?.some((a) => a.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    
+
     const matchesStatus = activeStatus === "all" || book.userBook?.status === activeStatus
-    
+
     return matchesSearch && matchesStatus
   })
 
@@ -137,7 +135,11 @@ export default function BooksPage() {
         >
           <TabsList className="grid grid-cols-5 w-full h-auto">
             {statusFilters.map((filter) => (
-              <TabsTrigger key={filter.value} value={filter.value} className="text-xs sm:text-sm px-1 sm:px-3 py-2">
+              <TabsTrigger
+                key={filter.value}
+                value={filter.value}
+                className="text-xs sm:text-sm px-1 sm:px-3 py-2"
+              >
                 <span className="hidden sm:inline">{filter.label}</span>
                 <span className="sm:hidden text-[10px]">{filter.label.slice(0, 4)}</span>
               </TabsTrigger>
@@ -159,16 +161,12 @@ export default function BooksPage() {
         {/* Список книг */}
         {isLoading ? (
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         ) : filteredBooks.length === 0 ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
-              {books.length === 0
-                ? "Библиотека пуста. Добавьте первую книгу!"
-                : "Книги не найдены"}
+              {books.length === 0 ? "Библиотека пуста. Добавьте первую книгу!" : "Книги не найдены"}
             </CardContent>
           </Card>
         ) : (
@@ -190,7 +188,7 @@ export default function BooksPage() {
                           <BookOpen className="h-6 w-6 text-muted-foreground" />
                         )}
                       </div>
-                      
+
                       {/* Контент */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
@@ -216,7 +214,7 @@ export default function BooksPage() {
                             )}
                           </div>
                         </div>
-                        
+
                         {/* Мета информация */}
                         <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                           {book.published_year && (
@@ -232,12 +230,13 @@ export default function BooksPage() {
                             </div>
                           )}
                           {/* Прогресс для читаемых книг */}
-                          {book.userBook?.status === "reading" && book.userBook.progress_percent && (
-                            <div className="flex items-center gap-1">
-                              <TrendingUp className="h-3 w-3" />
-                              <span>{book.userBook.progress_percent}%</span>
-                            </div>
-                          )}
+                          {book.userBook?.status === "reading" &&
+                            book.userBook.progress_percent && (
+                              <div className="flex items-center gap-1">
+                                <TrendingUp className="h-3 w-3" />
+                                <span>{book.userBook.progress_percent}%</span>
+                              </div>
+                            )}
                         </div>
                       </div>
                     </div>
@@ -247,7 +246,6 @@ export default function BooksPage() {
             ))}
           </div>
         )}
-
       </div>
     </AppLayout>
   )

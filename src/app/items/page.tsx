@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Pill, Bandage, Leaf, Sparkles, Package, Search, LucideIcon } from "lucide-react"
+import { Pill, Bandage, Leaf, Sparkles, Package, Search } from "@/lib/icons"
+import type { LucideIcon } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -131,7 +132,11 @@ export default function ItemsPage() {
               <span className="sm:hidden">Все</span>
             </TabsTrigger>
             {itemTypes.map((it) => (
-              <TabsTrigger key={it.type} value={it.type} className="text-xs sm:text-sm px-1 sm:px-3 py-2">
+              <TabsTrigger
+                key={it.type}
+                value={it.type}
+                className="text-xs sm:text-sm px-1 sm:px-3 py-2"
+              >
                 <it.icon className="h-4 w-4 sm:mr-1" />
                 <span className="hidden sm:inline">{it.label}</span>
                 <span className="sm:hidden text-[10px]">{it.label.slice(0, 4)}</span>
@@ -154,16 +159,12 @@ export default function ItemsPage() {
         {/* Items List */}
         {isLoading ? (
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         ) : filteredItems.length === 0 ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
-              {items.length === 0
-                ? "Каталог пуст. Добавьте первый элемент!"
-                : "Ничего не найдено"}
+              {items.length === 0 ? "Каталог пуст. Добавьте первый элемент!" : "Ничего не найдено"}
             </CardContent>
           </Card>
         ) : (

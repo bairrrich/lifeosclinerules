@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Bell } from "lucide-react"
+import { ArrowLeft, Bell } from "@/lib/icons"
 import { CreateFormActions } from "@/components/shared/form-actions"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,12 +15,12 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, createEntity, initializeDatabase, getCategoriesByType } from "@/lib/db"
-import { 
-  FoodForm, 
-  WorkoutForm, 
-  FinanceForm, 
-  categoryColors, 
-  financeTypeColors, 
+import {
+  FoodForm,
+  WorkoutForm,
+  FinanceForm,
+  categoryColors,
+  financeTypeColors,
   typeLabels,
   foodCategoryOrder,
   workoutCategoryOrder,
@@ -28,7 +28,19 @@ import {
   financeCategories,
   suppliers,
 } from "@/components/logs"
-import type { LogType, Category, FoodMetadata, WorkoutMetadata, FinanceMetadata, FinanceType, Account, StrengthSubcategory, CardioSubcategory, YogaSubcategory, WorkoutGoal } from "@/types"
+import type {
+  LogType,
+  Category,
+  FoodMetadata,
+  WorkoutMetadata,
+  FinanceMetadata,
+  FinanceType,
+  Account,
+  StrengthSubcategory,
+  CardioSubcategory,
+  YogaSubcategory,
+  WorkoutGoal,
+} from "@/types"
 
 // Form schemas
 const baseLogSchema = z.object({
@@ -61,13 +73,16 @@ const financeSchema = baseLogSchema.extend({
   account_id: z.string().optional(),
 })
 
-type FormData = z.infer<typeof foodSchema> | z.infer<typeof workoutSchema> | z.infer<typeof financeSchema>
+type FormData =
+  | z.infer<typeof foodSchema>
+  | z.infer<typeof workoutSchema>
+  | z.infer<typeof financeSchema>
 
 export default function NewLogPage() {
   const router = useRouter()
   const params = useParams()
   const type = params.type as LogType
-  
+
   const [categories, setCategories] = useState<Category[]>([])
   const [accounts, setAccounts] = useState<Account[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -75,18 +90,18 @@ export default function NewLogPage() {
   const [financeType, setFinanceType] = useState<string>("expense")
   const [selectedAccountId, setSelectedAccountId] = useState<string>("")
   const [targetAccountId, setTargetAccountId] = useState<string>("")
-  
+
   // Состояния для зависимых списков финансов
   const [financeCategory, setFinanceCategory] = useState("")
   const [financeSubcategory, setFinanceSubcategory] = useState("")
   const [financeItem, setFinanceItem] = useState("")
   const [financeSupplier, setFinanceSupplier] = useState("")
-  
+
   // Ошибки валидации
   const [categoryError, setCategoryError] = useState("")
   const [accountError, setAccountError] = useState("")
   const [unitError, setUnitError] = useState("")
-  
+
   // Состояния для тренировок
   const [workoutSubcategory, setWorkoutSubcategory] = useState<string>("")
   const [workoutEquipment, setWorkoutEquipment] = useState<string>("")
@@ -109,14 +124,12 @@ export default function NewLogPage() {
   const [createReminder, setCreateReminder] = useState(false)
   const [reminderTime, setReminderTime] = useState("09:00")
   const [reminderDays, setReminderDays] = useState<number[]>([1, 2, 3, 4, 5]) // По будням по умолчанию
-  
+
   const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 
   function toggleReminderDay(day: number) {
-    setReminderDays(prev => 
-      prev.includes(day) 
-        ? prev.filter(d => d !== day) 
-        : [...prev, day].sort()
+    setReminderDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day].sort()
     )
   }
 
@@ -129,9 +142,7 @@ export default function NewLogPage() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(
-      type === "food" ? foodSchema :
-      type === "workout" ? workoutSchema :
-      financeSchema
+      type === "food" ? foodSchema : type === "workout" ? workoutSchema : financeSchema
     ),
     defaultValues: {
       date: new Date().toISOString().split("T")[0],
@@ -141,37 +152,37 @@ export default function NewLogPage() {
   })
 
   // Получаем текущую категорию тренировки
-  const selectedWorkoutCategory = categories.find(c => c.id === selectedCategoryId)?.name || ""
+  const selectedWorkoutCategory = categories.find((c) => c.id === selectedCategoryId)?.name || ""
 
   useEffect(() => {
     async function loadData() {
       await initializeDatabase()
       const cats = await getCategoriesByType(type)
-      
+
       // Сортируем категории в нужном порядке
       let sortedCats = cats
       if (type === "food") {
         const orderCats = foodCategoryOrder
-          .map(name => cats.find(c => c.name === name))
+          .map((name) => cats.find((c) => c.name === name))
           .filter(Boolean) as Category[]
-        const remainingCats = cats.filter(c => !foodCategoryOrder.includes(c.name))
+        const remainingCats = cats.filter((c) => !foodCategoryOrder.includes(c.name))
         sortedCats = [...orderCats, ...remainingCats]
       } else if (type === "workout") {
         const orderCats = workoutCategoryOrder
-          .map(name => cats.find(c => c.name === name))
+          .map((name) => cats.find((c) => c.name === name))
           .filter(Boolean) as Category[]
-        const remainingCats = cats.filter(c => !workoutCategoryOrder.includes(c.name))
+        const remainingCats = cats.filter((c) => !workoutCategoryOrder.includes(c.name))
         sortedCats = [...orderCats, ...remainingCats]
       }
-      
+
       setCategories(sortedCats)
-      
+
       if (sortedCats.length > 0) {
         const defaultCat = sortedCats[0]
         setSelectedCategoryId(defaultCat.id)
         setValue("category_id", defaultCat.id)
       }
-      
+
       // Загружаем аккаунты для финансов
       if (type === "finance") {
         const accs = await db.accounts.toArray()
@@ -193,14 +204,14 @@ export default function NewLogPage() {
         return
       }
       setCategoryError("")
-      
+
       if (!selectedAccountId) {
         setAccountError("Выберите аккаунт")
         return
       }
       setAccountError("")
     }
-    
+
     // Проверяем единицу измерения если указано количество
     const quantity = data.quantity
     const unit = watch("unit")
@@ -209,11 +220,11 @@ export default function NewLogPage() {
       return
     }
     setUnitError("")
-    
+
     setIsLoading(true)
     try {
       const dateTime = `${data.date}T${data.time}:00`
-      
+
       // Формируем title
       let title = data.title || ""
       if (type === "finance") {
@@ -231,7 +242,7 @@ export default function NewLogPage() {
           title = selectedWorkoutCategory
         }
       }
-      
+
       const baseData = {
         type,
         date: dateTime,
@@ -259,7 +270,11 @@ export default function NewLogPage() {
         metadata = {
           duration: workoutData.duration,
           intensity: workoutData.intensity,
-          subcategory: workoutSubcategory as StrengthSubcategory | CardioSubcategory | YogaSubcategory | undefined,
+          subcategory: workoutSubcategory as
+            | StrengthSubcategory
+            | CardioSubcategory
+            | YogaSubcategory
+            | undefined,
           equipment: workoutEquipment || undefined,
           goal: workoutGoal as WorkoutGoal | undefined,
           calories_burned: caloriesBurned,
@@ -273,8 +288,14 @@ export default function NewLogPage() {
           average_speed: averageSpeed,
           average_pace: averagePace || undefined,
           rounds: rounds,
-          level: yogaLevel as 'beginner' | 'intermediate' | 'advanced' | undefined,
-          focus: yogaFocus as 'flexibility' | 'strength' | 'relaxation' | 'meditation' | 'breathing' | undefined,
+          level: yogaLevel as "beginner" | "intermediate" | "advanced" | undefined,
+          focus: yogaFocus as
+            | "flexibility"
+            | "strength"
+            | "relaxation"
+            | "meditation"
+            | "breathing"
+            | undefined,
         }
       } else if (type === "finance") {
         const financeData = data as z.infer<typeof financeSchema>
@@ -286,7 +307,13 @@ export default function NewLogPage() {
           item: financeItem,
           supplier: financeSupplier,
           target_account_id: financeType === "transfer" ? targetAccountId : undefined,
-        } as FinanceMetadata & { category?: string; subcategory?: string; item?: string; supplier?: string; target_account_id?: string }
+        } as FinanceMetadata & {
+          category?: string
+          subcategory?: string
+          item?: string
+          supplier?: string
+          target_account_id?: string
+        }
       }
 
       const logId = await createEntity(db.logs, {
@@ -296,10 +323,8 @@ export default function NewLogPage() {
 
       // Создаём напоминание если нужно
       if (createReminder && (type === "food" || type === "workout")) {
-        const reminderTitle = type === "food" 
-          ? `Приём пищи: ${title}`
-          : `Тренировка: ${title}`
-        
+        const reminderTitle = type === "food" ? `Приём пищи: ${title}` : `Тренировка: ${title}`
+
         await createEntity(db.reminders, {
           type: type as "food" | "workout",
           title: reminderTitle,
@@ -322,9 +347,9 @@ export default function NewLogPage() {
       // Обновляем балансы аккаунтов
       if (type === "finance" && data.value) {
         const amount = data.value
-        
+
         if (financeType === "income" && selectedAccountId) {
-          const account = accounts.find(a => a.id === selectedAccountId)
+          const account = accounts.find((a) => a.id === selectedAccountId)
           if (account) {
             await db.accounts.update(selectedAccountId, {
               balance: account.balance + amount,
@@ -332,7 +357,7 @@ export default function NewLogPage() {
             })
           }
         } else if (financeType === "expense" && selectedAccountId) {
-          const account = accounts.find(a => a.id === selectedAccountId)
+          const account = accounts.find((a) => a.id === selectedAccountId)
           if (account) {
             await db.accounts.update(selectedAccountId, {
               balance: account.balance - amount,
@@ -340,8 +365,8 @@ export default function NewLogPage() {
             })
           }
         } else if (financeType === "transfer" && selectedAccountId && targetAccountId) {
-          const fromAccount = accounts.find(a => a.id === selectedAccountId)
-          const toAccount = accounts.find(a => a.id === targetAccountId)
+          const fromAccount = accounts.find((a) => a.id === selectedAccountId)
+          const toAccount = accounts.find((a) => a.id === targetAccountId)
           if (fromAccount && toAccount) {
             await Promise.all([
               db.accounts.update(selectedAccountId, {
@@ -375,27 +400,18 @@ export default function NewLogPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Основное</CardTitle>
                 <div className="flex items-center gap-2">
-                  <Input
-                    type="date"
-                    className="w-auto"
-                    {...register("date")}
-                  />
-                  <Input
-                    type="time"
-                    className="w-auto"
-                    {...register("time")}
-                  />
+                  <Input type="date" className="w-auto" {...register("date")} />
+                  <Input type="time" className="w-auto" {...register("time")} />
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-
               {/* Tabs для категорий питания и тренировок */}
               {(type === "food" || type === "workout") && categories.length > 0 && (
                 <div className="space-y-2">
                   <Label>Тип</Label>
-                  <Tabs 
-                    value={selectedCategoryId} 
+                  <Tabs
+                    value={selectedCategoryId}
                     onValueChange={(value) => {
                       setSelectedCategoryId(value)
                       setValue("category_id", value)
@@ -407,10 +423,13 @@ export default function NewLogPage() {
                       }
                     }}
                   >
-                    <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}>
+                    <TabsList
+                      className="grid w-full"
+                      style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}
+                    >
                       {categories.map((cat) => (
-                        <TabsTrigger 
-                          key={cat.id} 
+                        <TabsTrigger
+                          key={cat.id}
                           value={cat.id}
                           className={categoryColors[cat.name] || ""}
                         >
@@ -426,8 +445,8 @@ export default function NewLogPage() {
               {type === "finance" && (
                 <div className="space-y-2">
                   <Label>Тип</Label>
-                  <Tabs 
-                    value={financeType} 
+                  <Tabs
+                    value={financeType}
                     onValueChange={(value) => {
                       setFinanceType(value)
                       setValue("finance_type", value as "income" | "expense" | "transfer")
@@ -440,9 +459,15 @@ export default function NewLogPage() {
                     }}
                   >
                     <TabsList className="grid grid-cols-3">
-                      <TabsTrigger value="income" className={financeTypeColors["income"]}>Доход</TabsTrigger>
-                      <TabsTrigger value="expense" className={financeTypeColors["expense"]}>Расход</TabsTrigger>
-                      <TabsTrigger value="transfer" className={financeTypeColors["transfer"]}>Перевод</TabsTrigger>
+                      <TabsTrigger value="income" className={financeTypeColors["income"]}>
+                        Доход
+                      </TabsTrigger>
+                      <TabsTrigger value="expense" className={financeTypeColors["expense"]}>
+                        Расход
+                      </TabsTrigger>
+                      <TabsTrigger value="transfer" className={financeTypeColors["transfer"]}>
+                        Перевод
+                      </TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </div>
@@ -451,9 +476,9 @@ export default function NewLogPage() {
               {/* Food Form */}
               {type === "food" && (
                 <FoodForm
-                  register={register as Parameters<typeof FoodForm>[0]['register']}
-                  watch={watch as Parameters<typeof FoodForm>[0]['watch']}
-                  setValue={setValue as Parameters<typeof FoodForm>[0]['setValue']}
+                  register={register as Parameters<typeof FoodForm>[0]["register"]}
+                  watch={watch as Parameters<typeof FoodForm>[0]["watch"]}
+                  setValue={setValue as Parameters<typeof FoodForm>[0]["setValue"]}
                   errors={errors as Record<string, { message?: string }>}
                 />
               )}
@@ -461,9 +486,9 @@ export default function NewLogPage() {
               {/* Finance Form */}
               {type === "finance" && (
                 <FinanceForm
-                  register={register as Parameters<typeof FinanceForm>[0]['register']}
-                  watch={watch as Parameters<typeof FinanceForm>[0]['watch']}
-                  setValue={setValue as Parameters<typeof FinanceForm>[0]['setValue']}
+                  register={register as Parameters<typeof FinanceForm>[0]["register"]}
+                  watch={watch as Parameters<typeof FinanceForm>[0]["watch"]}
+                  setValue={setValue as Parameters<typeof FinanceForm>[0]["setValue"]}
                   errors={errors as Record<string, { message?: string }>}
                   accounts={accounts}
                   financeType={financeType}
@@ -486,9 +511,9 @@ export default function NewLogPage() {
               {/* Workout Form */}
               {type === "workout" && (
                 <WorkoutForm
-                  register={register as Parameters<typeof WorkoutForm>[0]['register']}
-                  watch={watch as Parameters<typeof WorkoutForm>[0]['watch']}
-                  setValue={setValue as Parameters<typeof WorkoutForm>[0]['setValue']}
+                  register={register as Parameters<typeof WorkoutForm>[0]["register"]}
+                  watch={watch as Parameters<typeof WorkoutForm>[0]["watch"]}
+                  setValue={setValue as Parameters<typeof WorkoutForm>[0]["setValue"]}
                   selectedCategory={selectedWorkoutCategory}
                   workoutSubcategory={workoutSubcategory}
                   setWorkoutSubcategory={setWorkoutSubcategory}
@@ -535,19 +560,11 @@ export default function NewLogPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="notes">Заметки</Label>
-                <Textarea
-                  id="notes"
-                  placeholder="Ваши заметки..."
-                  {...register("notes")}
-                />
+                <Textarea id="notes" placeholder="Ваши заметки..." {...register("notes")} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="tags">Теги</Label>
-                <Input
-                  id="tags"
-                  placeholder="теги через запятую"
-                  {...register("tags")}
-                />
+                <Input id="tags" placeholder="теги через запятую" {...register("tags")} />
               </div>
             </CardContent>
           </Card>

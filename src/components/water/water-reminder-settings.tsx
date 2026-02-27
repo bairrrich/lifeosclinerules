@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Bell, BellOff, Clock, Droplet } from "lucide-react"
+import { Bell, BellOff, Clock, Droplet } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -34,7 +34,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
         .equals("water")
         .filter((r) => r.title === "Напоминание о воде")
         .first()
-      
+
       if (existing) {
         setReminder(existing)
         setIsEnabled(existing.is_active)
@@ -111,17 +111,17 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
     const times: string[] = []
     const [startHour, startMin] = startTime.split(":").map(Number)
     const [endHour, endMin] = endTime.split(":").map(Number)
-    
+
     let currentMinutes = startHour * 60 + startMin
     const endMinutes = endHour * 60 + endMin
-    
+
     while (currentMinutes <= endMinutes) {
       const hours = Math.floor(currentMinutes / 60)
       const mins = currentMinutes % 60
       times.push(`${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`)
       currentMinutes += interval
     }
-    
+
     return times
   }
 
@@ -142,7 +142,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
     } else {
       setEndTime(value)
     }
-    
+
     if (isEnabled && reminder) {
       await db.reminders.update(reminder.id, {
         time: field === "start" ? value : reminder.time,
@@ -176,11 +176,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
               {isEnabled ? "Напоминания включены" : "Напоминания выключены"}
             </span>
           </div>
-          <Button
-            variant={isEnabled ? "default" : "outline"}
-            size="sm"
-            onClick={toggleReminder}
-          >
+          <Button variant={isEnabled ? "default" : "outline"} size="sm" onClick={toggleReminder}>
             {isEnabled ? "Выключить" : "Включить"}
           </Button>
         </div>

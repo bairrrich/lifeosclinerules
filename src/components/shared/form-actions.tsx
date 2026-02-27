@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Save, Trash2 } from "lucide-react"
+import { ArrowLeft, Save, Trash2 } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 
 interface FormActionsProps {
@@ -28,7 +28,7 @@ interface FormActionsProps {
 
 /**
  * Переиспользуемый компонент для кнопок действий формы
- * 
+ *
  * Использование:
  * - type="page": Для отдельных страниц редактирования (кнопка назад + удалить + отмена + сохранить)
  * - type="dialog": Для диалогов (удалить + отмена + сохранить)
@@ -48,22 +48,13 @@ export function FormActions({
   if (type === "page") {
     return (
       <div className="flex justify-between gap-4">
-        <Button
-          type="button"
-          variant="destructive"
-          onClick={onDelete}
-          disabled={isDeleting}
-        >
+        <Button type="button" variant="destructive" onClick={onDelete} disabled={isDeleting}>
           <Trash2 className="h-4 w-4 mr-2" />
           {isDeleting ? "Удаление..." : deleteText}
         </Button>
         <div className="flex gap-2">
           {showBackButton && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-            >
+            <Button type="button" variant="outline" onClick={onCancel}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Отмена
             </Button>
@@ -83,29 +74,16 @@ export function FormActions({
   return (
     <div className="flex justify-between gap-4 sm:justify-end sm:gap-2">
       {showDelete && (
-        <Button
-          type="button"
-          variant="destructive"
-          onClick={onDelete}
-          disabled={isDeleting}
-        >
+        <Button type="button" variant="destructive" onClick={onDelete} disabled={isDeleting}>
           <Trash2 className="h-4 w-4" />
         </Button>
       )}
       <div className="flex gap-2 ml-auto">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="outline" onClick={onCancel}>
           Отмена
         </Button>
         {onSave && (
-          <Button
-            type="button"
-            onClick={onSave}
-            disabled={isSaving}
-          >
+          <Button type="button" onClick={onSave} disabled={isSaving}>
             {isSaving ? "Сохранение..." : saveText}
           </Button>
         )}
@@ -128,19 +106,10 @@ export function DeleteConfirmActions({
 }) {
   return (
     <div className="flex justify-end gap-2">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onCancel}
-      >
+      <Button type="button" variant="outline" onClick={onCancel}>
         Отмена
       </Button>
-      <Button
-        type="button"
-        variant="destructive"
-        onClick={onConfirm}
-        disabled={isLoading}
-      >
+      <Button type="button" variant="destructive" onClick={onConfirm} disabled={isLoading}>
         {isLoading ? "Удаление..." : "Удалить"}
       </Button>
     </div>
@@ -163,19 +132,11 @@ export function CreateFormActions({
 }) {
   return (
     <div className="flex justify-end gap-2">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onCancel}
-      >
+      <Button type="button" variant="outline" onClick={onCancel}>
         Отмена
       </Button>
       {onSave && (
-        <Button
-          type="button"
-          onClick={onSave}
-          disabled={isSaving}
-        >
+        <Button type="button" onClick={onSave} disabled={isSaving}>
           {isSaving ? "Создание..." : saveText}
         </Button>
       )}

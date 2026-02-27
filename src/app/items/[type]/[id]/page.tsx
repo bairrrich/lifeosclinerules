@@ -3,7 +3,17 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Pencil, Trash2, Tag, Calendar, Package, AlertTriangle, Bell, Plus } from "lucide-react"
+import {
+  ArrowLeft,
+  Pencil,
+  Trash2,
+  Tag,
+  Calendar,
+  Package,
+  AlertTriangle,
+  Bell,
+  Plus,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -85,7 +95,7 @@ export default function ItemDetailPage() {
 
   const handleCreateReminder = async () => {
     if (!item) return
-    
+
     await createEntity(db.reminders, {
       type: typeToReminderType[type] || "item",
       title: item.name,
@@ -105,16 +115,14 @@ export default function ItemDetailPage() {
       longest_streak: 0,
       total_completed: 0,
     })
-    
+
     setShowReminderDialog(false)
     router.push("/reminders")
   }
 
   const toggleReminderDay = (day: number) => {
-    setReminderDays(prev => 
-      prev.includes(day) 
-        ? prev.filter(d => d !== day) 
-        : [...prev, day].sort()
+    setReminderDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day].sort()
     )
   }
 
@@ -133,9 +141,7 @@ export default function ItemDetailPage() {
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         </div>
       </AppLayout>
@@ -179,9 +185,7 @@ export default function ItemDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            {item.description && (
-              <p className="text-muted-foreground">{item.description}</p>
-            )}
+            {item.description && <p className="text-muted-foreground">{item.description}</p>}
           </CardContent>
         </Card>
 
@@ -369,9 +373,7 @@ export default function ItemDetailPage() {
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Создать напоминание</DialogTitle>
-              <DialogDescription>
-                Напоминание для: {item.name}
-              </DialogDescription>
+              <DialogDescription>Напоминание для: {item.name}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
@@ -383,7 +385,7 @@ export default function ItemDetailPage() {
                   onChange={(e) => setReminderTime(e.target.value)}
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Дни недели</label>
                 <div className="grid grid-cols-7 gap-1">

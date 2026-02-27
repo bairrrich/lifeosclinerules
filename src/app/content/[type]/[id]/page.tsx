@@ -3,10 +3,21 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { 
-  ArrowLeft, Pencil, Trash2, Tag, Star, Clock, User, 
-  Flame, Users, ChefHat, Coffee, Martini, Timer
-} from "lucide-react"
+import {
+  ArrowLeft,
+  Pencil,
+  Trash2,
+  Tag,
+  Star,
+  Clock,
+  User,
+  Flame,
+  Users,
+  ChefHat,
+  Coffee,
+  Martini,
+  Timer,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -21,7 +32,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { db, getEntityById, deleteEntity } from "@/lib/db"
-import type { Content, ContentType, BookMetadata, RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
+import type {
+  Content,
+  ContentType,
+  BookMetadata,
+  RecipeContentExtended,
+  RecipeIngredientItem,
+  RecipeStep,
+} from "@/types"
 
 const typeLabels: Record<ContentType, string> = {
   book: "Книга",
@@ -75,7 +93,7 @@ export default function ContentDetailPage() {
       try {
         const contentData = await getEntityById(db.content, id)
         setContent(contentData || null)
-        
+
         // Загружаем ингредиенты и шаги для рецепта
         if (contentData && contentData.type === "recipe") {
           const recipeIngredients = await db.recipeIngredientItems
@@ -83,11 +101,8 @@ export default function ContentDetailPage() {
             .equals(id)
             .sortBy("order")
           setIngredients(recipeIngredients)
-          
-          const recipeSteps = await db.recipeSteps
-            .where("recipe_id")
-            .equals(id)
-            .sortBy("order")
+
+          const recipeSteps = await db.recipeSteps.where("recipe_id").equals(id).sortBy("order")
           setSteps(recipeSteps)
         }
       } catch (error) {
@@ -107,7 +122,7 @@ export default function ContentDetailPage() {
         await db.recipeIngredientItems.where("recipe_id").equals(id).delete()
         await db.recipeSteps.where("recipe_id").equals(id).delete()
       }
-      
+
       await deleteEntity(db.content, content.id)
       router.push("/content")
     } catch (error) {
@@ -127,7 +142,9 @@ export default function ContentDetailPage() {
     return (
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -137,7 +154,11 @@ export default function ContentDetailPage() {
     return (
       <AppLayout title="Не найдено">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Контент не найден</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              Контент не найден
+            </CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -145,16 +166,17 @@ export default function ContentDetailPage() {
 
   // Для книг
   const bookMetadata = type === "book" ? (content as { metadata?: BookMetadata }).metadata : null
-  
+
   // Для рецептов
-  const recipe = type === "recipe" ? content as RecipeContentExtended : null
+  const recipe = type === "recipe" ? (content as RecipeContentExtended) : null
   const recipeType = recipe?.recipe_type || "food"
 
   return (
     <AppLayout title={typeLabels[type]}>
       <div className="container mx-auto px-4 py-6 space-y-4">
         <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4 mr-2" />Назад
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Назад
         </Button>
 
         {/* Summary Card */}
@@ -171,9 +193,7 @@ export default function ContentDetailPage() {
                       {recipeTypeLabels[recipeType]}
                     </Badge>
                   )}
-                  {!recipe && (
-                    <Badge className={typeColors[type]}>{typeLabels[type]}</Badge>
-                  )}
+                  {!recipe && <Badge className={typeColors[type]}>{typeLabels[type]}</Badge>}
                 </div>
                 <CardTitle className="text-xl">{content.title}</CardTitle>
                 {content.description && (
@@ -201,19 +221,13 @@ export default function ContentDetailPage() {
                   </div>
                 )}
                 {bookMetadata.status && (
-                  <Badge variant="secondary">
-                    {bookStatusLabels[bookMetadata.status]}
-                  </Badge>
+                  <Badge variant="secondary">{bookStatusLabels[bookMetadata.status]}</Badge>
                 )}
                 {bookMetadata.year && (
-                  <div className="text-sm text-muted-foreground">
-                    Год: {bookMetadata.year}
-                  </div>
+                  <div className="text-sm text-muted-foreground">Год: {bookMetadata.year}</div>
                 )}
                 {bookMetadata.pages && (
-                  <div className="text-sm text-muted-foreground">
-                    {bookMetadata.pages} стр.
-                  </div>
+                  <div className="text-sm text-muted-foreground">{bookMetadata.pages} стр.</div>
                 )}
               </div>
             )}
@@ -230,13 +244,13 @@ export default function ContentDetailPage() {
                 {recipe.servings && (
                   <div className="flex items-center gap-2 text-sm">
                     <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{recipe.servings} {recipe.serving_unit || "порций"}</span>
+                    <span>
+                      {recipe.servings} {recipe.serving_unit || "порций"}
+                    </span>
                   </div>
                 )}
                 {recipe.difficulty && (
-                  <Badge variant="secondary">
-                    {difficultyLabels[recipe.difficulty]}
-                  </Badge>
+                  <Badge variant="secondary">{difficultyLabels[recipe.difficulty]}</Badge>
                 )}
               </div>
             )}
@@ -294,7 +308,7 @@ export default function ContentDetailPage() {
                 </CardContent>
               </Card>
             )}
-            
+
             {type === "book" && (
               <Card>
                 <CardContent className="p-4">
@@ -321,7 +335,9 @@ export default function ContentDetailPage() {
                       <li key={ing.id || i} className="flex items-center justify-between text-sm">
                         <span>
                           {ing.ingredient_name}
-                          {ing.optional && <span className="text-muted-foreground ml-1">(опц.)</span>}
+                          {ing.optional && (
+                            <span className="text-muted-foreground ml-1">(опц.)</span>
+                          )}
                         </span>
                         <span className="text-muted-foreground">
                           {ing.amount} {ing.unit}
@@ -400,7 +416,9 @@ export default function ContentDetailPage() {
                   {recipe.food_metadata.dietary && recipe.food_metadata.dietary.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {recipe.food_metadata.dietary.map((d, i) => (
-                        <Badge key={i} variant="secondary" className="text-xs">{d}</Badge>
+                        <Badge key={i} variant="secondary" className="text-xs">
+                          {d}
+                        </Badge>
                       ))}
                     </div>
                   )}
@@ -504,7 +522,8 @@ export default function ContentDetailPage() {
                     <div className="flex flex-wrap gap-2">
                       {content.tags.map((tag, i) => (
                         <Badge key={i} variant="secondary">
-                          <Tag className="h-3 w-3 mr-1" />{tag}
+                          <Tag className="h-3 w-3 mr-1" />
+                          {tag}
                         </Badge>
                       ))}
                     </div>
@@ -517,12 +536,18 @@ export default function ContentDetailPage() {
 
         {/* Actions */}
         <div className="flex gap-4">
-          <Button variant="destructive" className="flex-1" onClick={() => setShowDeleteDialog(true)}>
-            <Trash2 className="h-4 w-4 mr-2" />Удалить
+          <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Удалить
           </Button>
           <Link href={`/content/${type}/${id}/edit`} className="flex-1">
             <Button className="w-full">
-              <Pencil className="h-4 w-4 mr-2" />Изменить
+              <Pencil className="h-4 w-4 mr-2" />
+              Изменить
             </Button>
           </Link>
         </div>
@@ -536,8 +561,12 @@ export default function ContentDetailPage() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Отмена</Button>
-              <Button variant="destructive" onClick={handleDelete}>Удалить</Button>
+              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                Отмена
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Удалить
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

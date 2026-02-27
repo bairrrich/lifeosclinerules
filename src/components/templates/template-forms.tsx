@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown } from "@/lib/icons"
 import type { Template } from "@/types"
 
 // ============================================
@@ -54,7 +54,12 @@ export interface MoodTemplateData {
   notes?: string
 }
 
-export type TemplateData = FoodTemplateData | WorkoutTemplateData | WaterTemplateData | SleepTemplateData | MoodTemplateData
+export type TemplateData =
+  | FoodTemplateData
+  | WorkoutTemplateData
+  | WaterTemplateData
+  | SleepTemplateData
+  | MoodTemplateData
 
 // ============================================
 // Константы
@@ -129,7 +134,9 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
           type="number"
           placeholder="граммы"
           value={data.portion_size ?? ""}
-          onChange={(e) => onChange({ ...data, portion_size: e.target.value ? Number(e.target.value) : undefined })}
+          onChange={(e) =>
+            onChange({ ...data, portion_size: e.target.value ? Number(e.target.value) : undefined })
+          }
         />
       </div>
 
@@ -145,7 +152,12 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
                 type="number"
                 placeholder="0"
                 value={data.calories ?? ""}
-                onChange={(e) => onChange({ ...data, calories: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({
+                    ...data,
+                    calories: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -155,7 +167,12 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
                 step="0.1"
                 placeholder="0"
                 value={data.protein ?? ""}
-                onChange={(e) => onChange({ ...data, protein: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({
+                    ...data,
+                    protein: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -165,7 +182,9 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
                 step="0.1"
                 placeholder="0"
                 value={data.fat ?? ""}
-                onChange={(e) => onChange({ ...data, fat: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({ ...data, fat: e.target.value ? Number(e.target.value) : undefined })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -175,7 +194,9 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
                 step="0.1"
                 placeholder="0"
                 value={data.carbs ?? ""}
-                onChange={(e) => onChange({ ...data, carbs: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({ ...data, carbs: e.target.value ? Number(e.target.value) : undefined })
+                }
               />
             </div>
           </div>
@@ -213,7 +234,9 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
             type="number"
             placeholder="мин"
             value={data.duration ?? ""}
-            onChange={(e) => onChange({ ...data, duration: e.target.value ? Number(e.target.value) : undefined })}
+            onChange={(e) =>
+              onChange({ ...data, duration: e.target.value ? Number(e.target.value) : undefined })
+            }
           />
         </div>
         <div className="space-y-2">
@@ -222,12 +245,21 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm"
               value={data.intensity || ""}
-              onChange={(e) => onChange({ ...data, intensity: e.target.value as "low" | "medium" | "high" || undefined })}
-              style={{ backgroundImage: 'none', WebkitAppearance: 'none', appearance: 'none' }}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  intensity: (e.target.value as "low" | "medium" | "high") || undefined,
+                })
+              }
+              style={{ backgroundImage: "none", WebkitAppearance: "none", appearance: "none" }}
             >
-              <option value="" disabled>Выберите</option>
+              <option value="" disabled>
+                Выберите
+              </option>
               {intensityOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
               ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
@@ -242,7 +274,12 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
             type="number"
             placeholder="ккал"
             value={data.calories_burned ?? ""}
-            onChange={(e) => onChange({ ...data, calories_burned: e.target.value ? Number(e.target.value) : undefined })}
+            onChange={(e) =>
+              onChange({
+                ...data,
+                calories_burned: e.target.value ? Number(e.target.value) : undefined,
+              })
+            }
           />
         </div>
         <div className="space-y-2">
@@ -267,7 +304,12 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
                 type="number"
                 placeholder="шт"
                 value={data.exercises_count ?? ""}
-                onChange={(e) => onChange({ ...data, exercises_count: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({
+                    ...data,
+                    exercises_count: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -276,7 +318,12 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
                 type="number"
                 placeholder="шт"
                 value={data.sets_count ?? ""}
-                onChange={(e) => onChange({ ...data, sets_count: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({
+                    ...data,
+                    sets_count: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -285,7 +332,12 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
                 type="number"
                 placeholder="шт"
                 value={data.reps_count ?? ""}
-                onChange={(e) => onChange({ ...data, reps_count: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({
+                    ...data,
+                    reps_count: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -295,7 +347,12 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
                 step="0.1"
                 placeholder="кг"
                 value={data.total_weight ?? ""}
-                onChange={(e) => onChange({ ...data, total_weight: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  onChange({
+                    ...data,
+                    total_weight: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
           </div>
@@ -341,7 +398,9 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
           type="number"
           placeholder="Свое значение"
           value={!waterAmounts.includes(data.amount_ml) ? data.amount_ml : ""}
-          onChange={(e) => onChange({ ...data, amount_ml: e.target.value ? Number(e.target.value) : 250 })}
+          onChange={(e) =>
+            onChange({ ...data, amount_ml: e.target.value ? Number(e.target.value) : 250 })
+          }
           className="mt-2"
         />
       </div>
@@ -419,7 +478,7 @@ export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
           ))}
         </div>
         <p className="text-sm text-muted-foreground text-center">
-          {qualityOptions.find(o => o.value === (data.quality || 3))?.label}
+          {qualityOptions.find((o) => o.value === (data.quality || 3))?.label}
         </p>
       </div>
 

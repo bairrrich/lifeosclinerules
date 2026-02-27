@@ -3,7 +3,22 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Pencil, Trash2, Calendar, Tag, Flame, Timer, Heart, Weight, Repeat, Dumbbell, MapPin, Gauge, Copy } from "lucide-react"
+import {
+  ArrowLeft,
+  Pencil,
+  Trash2,
+  Calendar,
+  Tag,
+  Flame,
+  Timer,
+  Heart,
+  Weight,
+  Repeat,
+  Dumbbell,
+  MapPin,
+  Gauge,
+  Copy,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -18,7 +33,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { db, getEntityById, deleteEntity, createEntity } from "@/lib/db"
-import type { Log, LogType, Category, WorkoutMetadata, StrengthSubcategory, CardioSubcategory, YogaSubcategory } from "@/types"
+import type {
+  Log,
+  LogType,
+  Category,
+  WorkoutMetadata,
+  StrengthSubcategory,
+  CardioSubcategory,
+  YogaSubcategory,
+} from "@/types"
 
 const typeLabels: Record<LogType, string> = {
   food: "Питание",
@@ -34,9 +57,9 @@ const typeColors: Record<LogType, string> = {
 
 // Цвета для категорий тренировок
 const workoutCategoryColors: Record<string, string> = {
-  "Силовая": "bg-red-500/10 text-red-500",
-  "Кардио": "bg-blue-500/10 text-blue-500",
-  "Йога": "bg-emerald-500/10 text-emerald-500",
+  Силовая: "bg-red-500/10 text-red-500",
+  Кардио: "bg-blue-500/10 text-blue-500",
+  Йога: "bg-emerald-500/10 text-emerald-500",
 }
 
 // Метки интенсивности
@@ -163,7 +186,7 @@ export default function LogDetailPage() {
     try {
       const today = new Date().toISOString().split("T")[0]
       const currentTime = new Date().toTimeString().slice(0, 5)
-      
+
       await createEntity(db.logs, {
         type: log.type,
         title: log.title,
@@ -176,7 +199,7 @@ export default function LogDetailPage() {
         notes: log.notes,
         tags: log.tags,
       })
-      
+
       router.push("/logs")
     } catch (error) {
       console.error("Failed to copy log:", error)
@@ -196,9 +219,7 @@ export default function LogDetailPage() {
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         </div>
       </AppLayout>
@@ -246,7 +267,12 @@ export default function LogDetailPage() {
     if (!log.metadata) return []
 
     if (type === "food") {
-      const m = log.metadata as { calories?: number; protein?: number; fat?: number; carbs?: number }
+      const m = log.metadata as {
+        calories?: number
+        protein?: number
+        fat?: number
+        carbs?: number
+      }
       return [
         { label: "Калории", value: m.calories ? `${m.calories} ккал` : "-" },
         { label: "Белки", value: m.protein ? `${m.protein} г` : "-" },
@@ -258,10 +284,10 @@ export default function LogDetailPage() {
       const m = log.metadata as WorkoutMetadata
       const categoryName = category?.name || ""
       const workoutType = getWorkoutType(categoryName)
-      
+
       // Базовые метрики
       const items: { label: string; value: string }[] = []
-      
+
       if (m.duration) {
         items.push({ label: "Длительность", value: `${m.duration} мин` })
       }
@@ -269,7 +295,10 @@ export default function LogDetailPage() {
         items.push({ label: "Интенсивность", value: intensityLabels[m.intensity] || m.intensity })
       }
       if (m.subcategory) {
-        items.push({ label: "Подкатегория", value: getSubcategoryLabel(m.subcategory, categoryName) })
+        items.push({
+          label: "Подкатегория",
+          value: getSubcategoryLabel(m.subcategory, categoryName),
+        })
       }
       if (m.equipment) {
         const equipmentStr = Array.isArray(m.equipment) ? m.equipment.join(", ") : m.equipment
@@ -281,7 +310,7 @@ export default function LogDetailPage() {
       if (m.calories_burned) {
         items.push({ label: "Сожжено калорий", value: `${m.calories_burned} ккал` })
       }
-      
+
       // Специфические метрики для силовой
       if (workoutType === "strength") {
         if (m.exercises_count) {
@@ -297,7 +326,7 @@ export default function LogDetailPage() {
           items.push({ label: "Общий вес", value: `${m.total_weight} кг` })
         }
       }
-      
+
       // Специфические метрики для кардио
       if (workoutType === "cardio") {
         if (m.distance) {
@@ -313,7 +342,7 @@ export default function LogDetailPage() {
           items.push({ label: "Раундов", value: `${m.rounds}` })
         }
       }
-      
+
       // Специфические метрики для йоги
       if (workoutType === "yoga") {
         if (m.level) {
@@ -323,7 +352,7 @@ export default function LogDetailPage() {
           items.push({ label: "Фокус", value: focusLabels[m.focus] || m.focus })
         }
       }
-      
+
       // Пульс (общий для всех типов)
       if (m.heart_rate_avg) {
         items.push({ label: "Средний пульс", value: `${m.heart_rate_avg} уд/мин` })
@@ -331,14 +360,12 @@ export default function LogDetailPage() {
       if (m.heart_rate_max) {
         items.push({ label: "Макс. пульс", value: `${m.heart_rate_max} уд/мин` })
       }
-      
+
       return items
     }
     if (type === "finance") {
       const m = log.metadata as { finance_type?: string }
-      return [
-        { label: "Тип", value: m.finance_type === "income" ? "Доход" : "Расход" },
-      ]
+      return [{ label: "Тип", value: m.finance_type === "income" ? "Доход" : "Расход" }]
     }
     return []
   }
@@ -346,11 +373,11 @@ export default function LogDetailPage() {
   // Компонент для отображения метрик с иконками
   const WorkoutMetricsCards = () => {
     if (type !== "workout" || !log.metadata) return null
-    
+
     const m = log.metadata as WorkoutMetadata
     const categoryName = category?.name || ""
     const workoutType = getWorkoutType(categoryName)
-    
+
     return (
       <>
         {/* Карточка основных параметров */}
@@ -401,102 +428,104 @@ export default function LogDetailPage() {
         </Card>
 
         {/* Карточка для силовых метрик */}
-        {workoutType === "strength" && (m.exercises_count || m.sets_count || m.reps_count || m.total_weight) && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Dumbbell className="h-4 w-4" />
-                Силовые показатели
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                {m.exercises_count && (
-                  <div className="flex items-center gap-2">
-                    <Dumbbell className="h-4 w-4 text-red-500" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Упражнений</p>
-                      <p className="font-medium text-lg">{m.exercises_count}</p>
+        {workoutType === "strength" &&
+          (m.exercises_count || m.sets_count || m.reps_count || m.total_weight) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Dumbbell className="h-4 w-4" />
+                  Силовые показатели
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {m.exercises_count && (
+                    <div className="flex items-center gap-2">
+                      <Dumbbell className="h-4 w-4 text-red-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Упражнений</p>
+                        <p className="font-medium text-lg">{m.exercises_count}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {m.sets_count && (
-                  <div className="flex items-center gap-2">
-                    <Repeat className="h-4 w-4 text-blue-500" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Подходов</p>
-                      <p className="font-medium text-lg">{m.sets_count}</p>
+                  )}
+                  {m.sets_count && (
+                    <div className="flex items-center gap-2">
+                      <Repeat className="h-4 w-4 text-blue-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Подходов</p>
+                        <p className="font-medium text-lg">{m.sets_count}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {m.reps_count && (
-                  <div className="flex items-center gap-2">
-                    <Repeat className="h-4 w-4 text-green-500" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Повторов</p>
-                      <p className="font-medium text-lg">{m.reps_count}</p>
+                  )}
+                  {m.reps_count && (
+                    <div className="flex items-center gap-2">
+                      <Repeat className="h-4 w-4 text-green-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Повторов</p>
+                        <p className="font-medium text-lg">{m.reps_count}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {m.total_weight && (
-                  <div className="flex items-center gap-2">
-                    <Weight className="h-4 w-4 text-purple-500" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Общий вес</p>
-                      <p className="font-medium text-lg">{m.total_weight} кг</p>
+                  )}
+                  {m.total_weight && (
+                    <div className="flex items-center gap-2">
+                      <Weight className="h-4 w-4 text-purple-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Общий вес</p>
+                        <p className="font-medium text-lg">{m.total_weight} кг</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
         {/* Карточка для кардио метрик */}
-        {workoutType === "cardio" && (m.distance || m.average_speed || m.average_pace || m.rounds) && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Кардио показатели
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                {m.distance && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-blue-500" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Дистанция</p>
-                      <p className="font-medium text-lg">{m.distance} км</p>
+        {workoutType === "cardio" &&
+          (m.distance || m.average_speed || m.average_pace || m.rounds) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Кардио показатели
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {m.distance && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-blue-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Дистанция</p>
+                        <p className="font-medium text-lg">{m.distance} км</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {m.average_speed && (
-                  <div className="flex items-center gap-2">
-                    <Gauge className="h-4 w-4 text-green-500" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Скорость</p>
-                      <p className="font-medium text-lg">{m.average_speed} км/ч</p>
+                  )}
+                  {m.average_speed && (
+                    <div className="flex items-center gap-2">
+                      <Gauge className="h-4 w-4 text-green-500" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Скорость</p>
+                        <p className="font-medium text-lg">{m.average_speed} км/ч</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {m.average_pace && (
-                  <div>
-                    <p className="text-xs text-muted-foreground">Темп</p>
-                    <p className="font-medium text-lg">{m.average_pace} мин/км</p>
-                  </div>
-                )}
-                {m.rounds && (
-                  <div>
-                    <p className="text-xs text-muted-foreground">Раундов</p>
-                    <p className="font-medium text-lg">{m.rounds}</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                  )}
+                  {m.average_pace && (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Темп</p>
+                      <p className="font-medium text-lg">{m.average_pace} мин/км</p>
+                    </div>
+                  )}
+                  {m.rounds && (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Раундов</p>
+                      <p className="font-medium text-lg">{m.rounds}</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
         {/* Карточка пульса */}
         {(m.heart_rate_avg || m.heart_rate_max) && (
@@ -541,7 +570,9 @@ export default function LogDetailPage() {
             <CardContent>
               <div className="flex flex-wrap gap-2">
                 {(Array.isArray(m.equipment) ? m.equipment : [m.equipment]).map((eq, i) => (
-                  <Badge key={i} variant="outline">{eq}</Badge>
+                  <Badge key={i} variant="outline">
+                    {eq}
+                  </Badge>
                 ))}
               </div>
             </CardContent>
@@ -668,16 +699,10 @@ export default function LogDetailPage() {
 
         {/* Actions */}
         <div className="grid grid-cols-3 gap-2">
-          <Button
-            variant="destructive"
-            onClick={() => setShowDeleteDialog(true)}
-          >
+          <Button variant="destructive" onClick={() => setShowDeleteDialog(true)}>
             <Trash2 className="h-4 w-4" />
           </Button>
-          <Button
-            variant="outline"
-            onClick={handleCopy}
-          >
+          <Button variant="outline" onClick={handleCopy}>
             <Copy className="h-4 w-4 mr-2" />
             Копировать
           </Button>
@@ -695,7 +720,8 @@ export default function LogDetailPage() {
             <DialogHeader>
               <DialogTitle>Удалить запись?</DialogTitle>
               <DialogDescription>
-                Это действие нельзя отменить. Запись &laquo;{log.title}&raquo; будет удалена навсегда.
+                Это действие нельзя отменить. Запись &laquo;{log.title}&raquo; будет удалена
+                навсегда.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

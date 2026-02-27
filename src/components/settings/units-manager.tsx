@@ -1,22 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import { Ruler, Plus, Edit2, Trash2 } from "lucide-react"
+import { Ruler, Plus, Edit2, Trash2 } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useSettings, unitTypes } from "./settings-context"
 import type { Unit } from "@/types"
 
 export function UnitsManager() {
-  const {
-    units,
-    editingUnit,
-    setEditingUnit,
-    createUnit,
-    updateUnitData,
-    deleteUnitData,
-  } = useSettings()
+  const { units, editingUnit, setEditingUnit, createUnit, updateUnitData, deleteUnitData } =
+    useSettings()
 
   const [newUnit, setNewUnit] = useState({
     name: "",
@@ -50,17 +45,20 @@ export function UnitsManager() {
   }
 
   // Группируем единицы по типу
-  const groupedUnits = units.reduce((acc, unit) => {
-    if (!acc[unit.type]) {
-      acc[unit.type] = []
-    }
-    acc[unit.type].push(unit)
-    return acc
-  }, {} as Record<Unit["type"], Unit[]>)
+  const groupedUnits = units.reduce(
+    (acc, unit) => {
+      if (!acc[unit.type]) {
+        acc[unit.type] = []
+      }
+      acc[unit.type].push(unit)
+      return acc
+    },
+    {} as Record<Unit["type"], Unit[]>
+  )
 
   // Получаем название типа на русском
   const getTypeLabel = (type: Unit["type"]) => {
-    return unitTypes.find(t => t.value === type)?.label || type
+    return unitTypes.find((t) => t.value === type)?.label || type
   }
 
   // Получаем иконку для типа
@@ -98,9 +96,7 @@ export function UnitsManager() {
                   <div className="flex items-center gap-2 px-1">
                     <span className="text-lg">{getTypeIcon(typeInfo.value as Unit["type"])}</span>
                     <span className="font-medium text-sm">{typeInfo.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      ({groupUnits.length})
-                    </span>
+                    <span className="text-xs text-muted-foreground">({groupUnits.length})</span>
                   </div>
 
                   {/* Единицы группы */}
@@ -110,33 +106,67 @@ export function UnitsManager() {
                         {editingUnit?.id === unit.id ? (
                           <div className="space-y-2">
                             <div className="grid grid-cols-2 gap-1">
-                              <Input
-                                value={editingUnit.name}
-                                onChange={(e) => setEditingUnit({ ...editingUnit, name: e.target.value })}
-                                placeholder="Название"
-                                className="h-8"
-                              />
-                              <Input
-                                value={editingUnit.abbreviation}
-                                onChange={(e) => setEditingUnit({ ...editingUnit, abbreviation: e.target.value })}
-                                placeholder="Сокращение"
-                                className="h-8"
-                              />
+                              <div className="space-y-1">
+                                <Label htmlFor={`edit-unit-name-${unit.id}`} className="sr-only">
+                                  Название
+                                </Label>
+                                <Input
+                                  id={`edit-unit-name-${unit.id}`}
+                                  value={editingUnit.name}
+                                  onChange={(e) =>
+                                    setEditingUnit({ ...editingUnit, name: e.target.value })
+                                  }
+                                  placeholder="Название"
+                                  className="h-8"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label htmlFor={`edit-unit-abbrev-${unit.id}`} className="sr-only">
+                                  Сокращение
+                                </Label>
+                                <Input
+                                  id={`edit-unit-abbrev-${unit.id}`}
+                                  value={editingUnit.abbreviation}
+                                  onChange={(e) =>
+                                    setEditingUnit({ ...editingUnit, abbreviation: e.target.value })
+                                  }
+                                  placeholder="Сокращение"
+                                  className="h-8"
+                                />
+                              </div>
                             </div>
-                            <select
-                              className="flex h-8 rounded-lg border border-input bg-background px-2 py-1 text-xs w-full"
-                              value={editingUnit.type}
-                              onChange={(e) => setEditingUnit({ ...editingUnit, type: e.target.value as Unit["type"] })}
-                            >
-                              {unitTypes.map((t) => (
-                                <option key={t.value} value={t.value}>{t.label}</option>
-                              ))}
-                            </select>
+                            <div className="space-y-1">
+                              <Label htmlFor={`edit-unit-type-${unit.id}`} className="sr-only">
+                                Тип
+                              </Label>
+                              <select
+                                id={`edit-unit-type-${unit.id}`}
+                                className="flex h-8 rounded-lg border border-input bg-background px-2 py-1 text-xs w-full"
+                                value={editingUnit.type}
+                                onChange={(e) =>
+                                  setEditingUnit({
+                                    ...editingUnit,
+                                    type: e.target.value as Unit["type"],
+                                  })
+                                }
+                              >
+                                {unitTypes.map((t) => (
+                                  <option key={t.value} value={t.value}>
+                                    {t.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
                             <div className="flex gap-1">
                               <Button size="sm" className="h-7 text-xs" onClick={handleUpdate}>
                                 Сохранить
                               </Button>
-                              <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setEditingUnit(null)}>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 text-xs"
+                                onClick={() => setEditingUnit(null)}
+                              >
                                 Отмена
                               </Button>
                             </div>
@@ -144,13 +174,27 @@ export function UnitsManager() {
                         ) : (
                           <div className="flex items-center justify-between">
                             <div>
-                              <div className="font-medium">{unit.name} ({unit.abbreviation})</div>
+                              <div className="font-medium">
+                                {unit.name} ({unit.abbreviation})
+                              </div>
                             </div>
                             <div className="flex gap-1">
-                              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditingUnit(unit)}>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7"
+                                onClick={() => setEditingUnit(unit)}
+                                aria-label="Редактировать"
+                              >
                                 <Edit2 className="h-3 w-3" />
                               </Button>
-                              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleDelete(unit.id)}>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7"
+                                onClick={() => handleDelete(unit.id)}
+                                aria-label="Удалить"
+                              >
                                 <Trash2 className="h-3 w-3 text-destructive" />
                               </Button>
                             </div>
@@ -164,36 +208,57 @@ export function UnitsManager() {
             })}
           </div>
         ) : (
-          <div className="text-sm text-muted-foreground text-center py-4">
-            Нет единиц измерения
-          </div>
+          <div className="text-sm text-muted-foreground text-center py-4">Нет единиц измерения</div>
         )}
 
         {/* Форма добавления */}
         <div className="p-3 rounded-xl border-2 border-dashed space-y-2">
           <div className="text-sm font-medium">Добавить единицу</div>
           <div className="grid grid-cols-3 gap-2">
-            <Input
-              value={newUnit.name}
-              onChange={(e) => setNewUnit({ ...newUnit, name: e.target.value })}
-              placeholder="Название"
-            />
-            <Input
-              value={newUnit.abbreviation}
-              onChange={(e) => setNewUnit({ ...newUnit, abbreviation: e.target.value })}
-              placeholder="Сокращение"
-            />
-            <select
-              className="flex h-10 rounded-xl border border-input bg-background px-3 py-2 text-sm"
-              value={newUnit.type}
-              onChange={(e) => setNewUnit({ ...newUnit, type: e.target.value as Unit["type"] })}
-            >
-              {unitTypes.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
-              ))}
-            </select>
+            <div className="space-y-1">
+              <Label htmlFor="new-unit-name" className="sr-only">
+                Название
+              </Label>
+              <Input
+                id="new-unit-name"
+                value={newUnit.name}
+                onChange={(e) => setNewUnit({ ...newUnit, name: e.target.value })}
+                placeholder="Название"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="new-unit-abbrev" className="sr-only">
+                Сокращение
+              </Label>
+              <Input
+                id="new-unit-abbrev"
+                value={newUnit.abbreviation}
+                onChange={(e) => setNewUnit({ ...newUnit, abbreviation: e.target.value })}
+                placeholder="Сокращение"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="new-unit-type" className="sr-only">
+                Тип
+              </Label>
+              <select
+                id="new-unit-type"
+                className="flex h-10 rounded-xl border border-input bg-background px-3 py-2 text-sm"
+                value={newUnit.type}
+                onChange={(e) => setNewUnit({ ...newUnit, type: e.target.value as Unit["type"] })}
+              >
+                {unitTypes.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <Button onClick={handleCreate} disabled={!newUnit.name.trim() || !newUnit.abbreviation.trim()}>
+          <Button
+            onClick={handleCreate}
+            disabled={!newUnit.name.trim() || !newUnit.abbreviation.trim()}
+          >
             <Plus className="h-4 w-4 mr-2" />
             Добавить
           </Button>

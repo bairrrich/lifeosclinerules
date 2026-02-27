@@ -1,12 +1,18 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, Trash2, Edit, Calendar, Wallet, TrendingDown, TrendingUp, Repeat } from "lucide-react"
+import { Plus, Trash2, Edit, Calendar, Wallet, TrendingDown, TrendingUp, Repeat } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { db, initializeDatabase } from "@/lib/db"
 import type { RecurringTransaction, Account } from "@/types"
 import { cn } from "@/lib/utils"
@@ -32,7 +38,9 @@ export function RecurringTransactions() {
   const [amount, setAmount] = useState("")
   const [type, setType] = useState<"income" | "expense">("expense")
   const [category, setCategory] = useState("")
-  const [frequency, setFrequency] = useState<"monthly" | "weekly" | "daily" | "biweekly" | "quarterly" | "yearly">("monthly")
+  const [frequency, setFrequency] = useState<
+    "monthly" | "weekly" | "daily" | "biweekly" | "quarterly" | "yearly"
+  >("monthly")
   const [dayOfMonth, setDayOfMonth] = useState("1")
   const [accountId, setAccountId] = useState("")
   const [startDate, setStartDate] = useState(new Date().toISOString().split("T")[0])
@@ -63,13 +71,13 @@ export function RecurringTransactions() {
   function calculateNextDue(recurring: RecurringTransaction): string {
     const now = new Date()
     const start = new Date(recurring.start_date)
-    
+
     if (start > now) {
       return recurring.start_date
     }
 
     let next = new Date(start)
-    
+
     switch (recurring.frequency) {
       case "daily":
         while (next <= now) {
@@ -104,7 +112,7 @@ export function RecurringTransactions() {
         }
         break
     }
-    
+
     return next.toISOString().split("T")[0]
   }
 
@@ -148,13 +156,13 @@ export function RecurringTransactions() {
   function calculateNextDueForNew(): string {
     const now = new Date()
     const start = new Date(startDate)
-    
+
     if (start > now) {
       return startDate
     }
 
     let next = new Date(start)
-    
+
     switch (frequency) {
       case "monthly":
         const day = parseInt(dayOfMonth) || 1
@@ -187,7 +195,7 @@ export function RecurringTransactions() {
         }
         break
     }
-    
+
     return next.toISOString().split("T")[0]
   }
 
@@ -374,10 +382,12 @@ export function RecurringTransactions() {
             return (
               <Card key={item.id}>
                 <CardContent className="p-3 flex items-center gap-3">
-                  <div className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-xl",
-                    item.type === "expense" ? "bg-red-500/10" : "bg-green-500/10"
-                  )}>
+                  <div
+                    className={cn(
+                      "flex h-10 w-10 items-center justify-center rounded-xl",
+                      item.type === "expense" ? "bg-red-500/10" : "bg-green-500/10"
+                    )}
+                  >
                     {item.type === "expense" ? (
                       <TrendingDown className="h-5 w-5 text-red-500" />
                     ) : (
@@ -392,22 +402,23 @@ export function RecurringTransactions() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={cn(
-                      "font-medium",
-                      item.type === "expense" ? "text-red-500" : "text-green-500"
-                    )}>
+                    <div
+                      className={cn(
+                        "font-medium",
+                        item.type === "expense" ? "text-red-500" : "text-green-500"
+                      )}
+                    >
                       {item.type === "expense" ? "-" : "+"}
                       {item.amount.toLocaleString()} ₽
                     </div>
-                    {account && (
-                      <div className="text-xs text-muted-foreground">{account.name}</div>
-                    )}
+                    {account && <div className="text-xs text-muted-foreground">{account.name}</div>}
                   </div>
                   <div className="flex gap-1">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => editRecurring(item)}
+                      aria-label="Редактировать транзакцию"
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -415,6 +426,7 @@ export function RecurringTransactions() {
                       variant="ghost"
                       size="icon"
                       onClick={() => deleteRecurring(item.id)}
+                      aria-label="Удалить транзакцию"
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

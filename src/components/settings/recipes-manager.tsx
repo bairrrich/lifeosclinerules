@@ -1,6 +1,6 @@
 "use client"
 
-import { ChefHat } from "lucide-react"
+import { ChefHat } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useSettings } from "./settings-context"
 
@@ -27,7 +27,7 @@ export function RecipesManager() {
             <div className="text-xs text-muted-foreground">Другой контент</div>
           </div>
         </div>
-        
+
         <p className="text-sm text-muted-foreground">
           Управление ингредиентами и категориями рецептов будет доступно в следующей версии.
         </p>

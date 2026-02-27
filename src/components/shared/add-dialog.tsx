@@ -1,12 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Utensils,
@@ -21,7 +16,7 @@ import {
   ChefHat,
   Coffee,
   Martini,
-} from "lucide-react"
+} from "@/lib/icons"
 
 // Types for different categories
 type LogType = "food" | "workout" | "finance"
@@ -29,30 +24,89 @@ type ItemType = "vitamin" | "medicine" | "herb" | "cosmetic" | "product"
 
 // Options for logs
 const logOptions = [
-  { type: "food" as LogType, label: "Питание", icon: Utensils, color: "bg-orange-500/10 text-orange-500" },
-  { type: "workout" as LogType, label: "Тренировка", icon: Dumbbell, color: "bg-blue-500/10 text-blue-500" },
-  { type: "finance" as LogType, label: "Финансы", icon: Wallet, color: "bg-green-500/10 text-green-500" },
+  {
+    type: "food" as LogType,
+    label: "Питание",
+    icon: Utensils,
+    color: "bg-orange-500/10 text-orange-500",
+  },
+  {
+    type: "workout" as LogType,
+    label: "Тренировка",
+    icon: Dumbbell,
+    color: "bg-blue-500/10 text-blue-500",
+  },
+  {
+    type: "finance" as LogType,
+    label: "Финансы",
+    icon: Wallet,
+    color: "bg-green-500/10 text-green-500",
+  },
 ]
 
 // Options for items
 const itemOptions = [
-  { type: "vitamin" as ItemType, label: "Витамины", icon: Pill, color: "bg-purple-500/10 text-purple-500" },
-  { type: "medicine" as ItemType, label: "Лекарства", icon: Bandage, color: "bg-red-500/10 text-red-500" },
+  {
+    type: "vitamin" as ItemType,
+    label: "Витамины",
+    icon: Pill,
+    color: "bg-purple-500/10 text-purple-500",
+  },
+  {
+    type: "medicine" as ItemType,
+    label: "Лекарства",
+    icon: Bandage,
+    color: "bg-red-500/10 text-red-500",
+  },
   { type: "herb" as ItemType, label: "Травы", icon: Leaf, color: "bg-green-500/10 text-green-500" },
-  { type: "cosmetic" as ItemType, label: "Косметика", icon: Sparkles, color: "bg-pink-500/10 text-pink-500" },
-  { type: "product" as ItemType, label: "Продукты", icon: Package, color: "bg-yellow-500/10 text-yellow-500" },
+  {
+    type: "cosmetic" as ItemType,
+    label: "Косметика",
+    icon: Sparkles,
+    color: "bg-pink-500/10 text-pink-500",
+  },
+  {
+    type: "product" as ItemType,
+    label: "Продукты",
+    icon: Package,
+    color: "bg-yellow-500/10 text-yellow-500",
+  },
 ]
 
 // Options for books
 const bookOptions = [
-  { type: "book", label: "Книга", icon: BookOpen, color: "bg-blue-500/10 text-blue-500", route: "/books/new" },
+  {
+    type: "book",
+    label: "Книга",
+    icon: BookOpen,
+    color: "bg-blue-500/10 text-blue-500",
+    route: "/books/new",
+  },
 ]
 
 // Options for recipes
 const recipeOptions = [
-  { type: "food", label: "Блюдо", icon: ChefHat, color: "bg-orange-500/10 text-orange-500", route: "/recipes/new?type=food" },
-  { type: "drink", label: "Напиток", icon: Coffee, color: "bg-blue-500/10 text-blue-500", route: "/recipes/new?type=drink" },
-  { type: "cocktail", label: "Коктейль", icon: Martini, color: "bg-purple-500/10 text-purple-500", route: "/recipes/new?type=cocktail" },
+  {
+    type: "food",
+    label: "Блюдо",
+    icon: ChefHat,
+    color: "bg-orange-500/10 text-orange-500",
+    route: "/recipes/new?type=food",
+  },
+  {
+    type: "drink",
+    label: "Напиток",
+    icon: Coffee,
+    color: "bg-blue-500/10 text-blue-500",
+    route: "/recipes/new?type=drink",
+  },
+  {
+    type: "cocktail",
+    label: "Коктейль",
+    icon: Martini,
+    color: "bg-purple-500/10 text-purple-500",
+    route: "/recipes/new?type=cocktail",
+  },
 ]
 
 type CategoryType = "logs" | "items" | "books" | "recipes"
@@ -98,7 +152,7 @@ export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
 
   const handleSelect = (type: string) => {
     onOpenChange(false)
-    
+
     if (category === "logs") {
       router.push(`/logs/${type}/new`)
     } else if (category === "items") {
@@ -119,7 +173,11 @@ export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className={category === "recipes" ? "grid grid-cols-3 gap-3 mt-2" : "grid grid-cols-2 gap-3 mt-2"}>
+        <div
+          className={
+            category === "recipes" ? "grid grid-cols-3 gap-3 mt-2" : "grid grid-cols-2 gap-3 mt-2"
+          }
+        >
           {options.map((option) => (
             <Card
               key={option.type}
@@ -127,7 +185,9 @@ export function AddDialog({ open, onOpenChange, category }: AddDialogProps) {
               onClick={() => handleSelect(option.type)}
             >
               <CardContent className="p-4 flex flex-col items-center gap-2">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${option.color}`}>
+                <div
+                  className={`flex h-12 w-12 items-center justify-center rounded-xl ${option.color}`}
+                >
                   {"icon" in option && <option.icon className="h-6 w-6" />}
                 </div>
                 <span className="font-medium text-sm">{option.label}</span>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { Plus, Scale, Ruler, TrendingDown, TrendingUp, Settings, Activity } from "lucide-react"
+import { Plus, Scale, Ruler, TrendingDown, TrendingUp, Settings, Activity } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

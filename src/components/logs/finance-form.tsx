@@ -2,7 +2,7 @@
 
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form"
 import { z } from "zod"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ComboboxSelect } from "./combobox-select"
@@ -36,51 +36,83 @@ export type FinanceFormData = z.infer<typeof financeSchema>
 // ============================================
 
 // Финансовые категории по типам
-export const financeCategories: Record<string, Record<string, { subcategories: Record<string, string[]> }>> = {
+export const financeCategories: Record<
+  string,
+  Record<string, { subcategories: Record<string, string[]> }>
+> = {
   income: {
-    "Зарплата": { subcategories: { "Основная": [], "Премия": [], "Надбавка": [] } },
-    "Фриланс": { subcategories: { "Разработка": [], "Дизайн": [], "Консультации": [] } },
-    "Инвестиции": { subcategories: { "Дивиденды": [], "Проценты": [], "Купоны": [] } },
-    "Прочее": { subcategories: { "Подарки": [], "Возврат": [], "Другое": [] } },
+    Зарплата: { subcategories: { Основная: [], Премия: [], Надбавка: [] } },
+    Фриланс: { subcategories: { Разработка: [], Дизайн: [], Консультации: [] } },
+    Инвестиции: { subcategories: { Дивиденды: [], Проценты: [], Купоны: [] } },
+    Прочее: { subcategories: { Подарки: [], Возврат: [], Другое: [] } },
   },
   expense: {
-    "Продукты": { subcategories: { 
-      "Молочные": ["Молоко", "Сыр", "Творог", "Сметана", "Кефир", "Йогурт", "Масло сливочное"],
-      "Мясо": ["Говядина", "Свинина", "Баранина", "Курица", "Индейка", "Утка"],
-      "Рыба": ["Форель", "Сельдь", "Лосось", "Треска", "Карп", "Судак", "Скумбрия"],
-      "Овощи": ["Картофель", "Морковь", "Лук", "Свекла", "Огурцы", "Помидоры", "Капуста", "Перец"],
-      "Фрукты": ["Яблоки", "Бананы", "Апельсины", "Мандарины", "Груши", "Виноград", "Киви"],
-      "Ягоды": ["Клубника", "Малина", "Черника", "Смородина", "Вишня", "Клюква"],
-      "Крупы": ["Рис", "Гречка", "Овсянка", "Манка", "Пшено", "Перловка"],
-      "Хлеб": ["Белый хлеб", "Чёрный хлеб", "Батон", "Булочки", "Лаваш"],
-      "Напитки": ["Чай", "Кофе", "Соки", "Вода", "Газировка", "Квас"],
-      "Бакалея": ["Макароны", "Сахар", "Соль", "Мука", "Масло растительное", "Уксус"],
-      "Кондитерские": ["Шоколад", "Конфеты", "Печенье", "Торты", "Мёд", "Варенье"],
-      "Заморозка": ["Пельмени", "Вареники", "Овощная смесь", "Ягоды замороженные", "Мороженое"]
-    } },
-    "Транспорт": { subcategories: { "Такси": ["Яндекс.Такси", "Uber", "Ситимобил"], "Общественный": ["Метро", "Автобус", "Трамвай"], "Топливо": ["Лукойл", "Газпром", "Роснефть"] } },
-    "Развлечения": { subcategories: { "Кино": [], "Концерты": [], "Кафе/Рестораны": [], "Подписки": ["Netflix", "Яндекс.Плюс", "YouTube Premium"] } },
-    "Здоровье": { subcategories: { "Аптека": ["Аптека.ру", "Ригла", "Живика"], "Врач": [], "Спортзал": [] } },
-    "Одежда": { subcategories: { "Обувь": [], "Верхняя одежда": [], "Повседневное": [] } },
-    "Жильё": { subcategories: { "Аренда": [], "Коммунальные": [], "Ремонт": [] } },
-    "Связь": { subcategories: { "Мобильная": ["МТС", "Билайн", "Мегафон", "Tele2"], "Интернет": ["Ростелеком", "Дом.ру"], "ТВ": [] } },
-    "Образование": { subcategories: { "Курсы": [], "Книги": [], "Репетитор": [] } },
-    "Прочее": { subcategories: { "Подарки": [], "Бытовое": [], "Другое": [] } },
+    Продукты: {
+      subcategories: {
+        Молочные: ["Молоко", "Сыр", "Творог", "Сметана", "Кефир", "Йогурт", "Масло сливочное"],
+        Мясо: ["Говядина", "Свинина", "Баранина", "Курица", "Индейка", "Утка"],
+        Рыба: ["Форель", "Сельдь", "Лосось", "Треска", "Карп", "Судак", "Скумбрия"],
+        Овощи: ["Картофель", "Морковь", "Лук", "Свекла", "Огурцы", "Помидоры", "Капуста", "Перец"],
+        Фрукты: ["Яблоки", "Бананы", "Апельсины", "Мандарины", "Груши", "Виноград", "Киви"],
+        Ягоды: ["Клубника", "Малина", "Черника", "Смородина", "Вишня", "Клюква"],
+        Крупы: ["Рис", "Гречка", "Овсянка", "Манка", "Пшено", "Перловка"],
+        Хлеб: ["Белый хлеб", "Чёрный хлеб", "Батон", "Булочки", "Лаваш"],
+        Напитки: ["Чай", "Кофе", "Соки", "Вода", "Газировка", "Квас"],
+        Бакалея: ["Макароны", "Сахар", "Соль", "Мука", "Масло растительное", "Уксус"],
+        Кондитерские: ["Шоколад", "Конфеты", "Печенье", "Торты", "Мёд", "Варенье"],
+        Заморозка: ["Пельмени", "Вареники", "Овощная смесь", "Ягоды замороженные", "Мороженое"],
+      },
+    },
+    Транспорт: {
+      subcategories: {
+        Такси: ["Яндекс.Такси", "Uber", "Ситимобил"],
+        Общественный: ["Метро", "Автобус", "Трамвай"],
+        Топливо: ["Лукойл", "Газпром", "Роснефть"],
+      },
+    },
+    Развлечения: {
+      subcategories: {
+        Кино: [],
+        Концерты: [],
+        "Кафе/Рестораны": [],
+        Подписки: ["Netflix", "Яндекс.Плюс", "YouTube Premium"],
+      },
+    },
+    Здоровье: {
+      subcategories: { Аптека: ["Аптека.ру", "Ригла", "Живика"], Врач: [], Спортзал: [] },
+    },
+    Одежда: { subcategories: { Обувь: [], "Верхняя одежда": [], Повседневное: [] } },
+    Жильё: { subcategories: { Аренда: [], Коммунальные: [], Ремонт: [] } },
+    Связь: {
+      subcategories: {
+        Мобильная: ["МТС", "Билайн", "Мегафон", "Tele2"],
+        Интернет: ["Ростелеком", "Дом.ру"],
+        ТВ: [],
+      },
+    },
+    Образование: { subcategories: { Курсы: [], Книги: [], Репетитор: [] } },
+    Прочее: { subcategories: { Подарки: [], Бытовое: [], Другое: [] } },
   },
   transfer: {
-    "Перевод": { subcategories: { "На карту": ["Сбербанк", "Тинькофф", "Альфа"], "На счёт": [], "В наличные": [] } },
-    "Пополнение": { subcategories: { "С карты": ["Сбербанк", "Тинькофф", "Альфа"], "Наличными": [] } },
+    Перевод: {
+      subcategories: {
+        "На карту": ["Сбербанк", "Тинькофф", "Альфа"],
+        "На счёт": [],
+        "В наличные": [],
+      },
+    },
+    Пополнение: { subcategories: { "С карты": ["Сбербанк", "Тинькофф", "Альфа"], Наличными: [] } },
   },
 }
 
 // Поставщики по категориям
 export const suppliers: Record<string, string[]> = {
-  "Продукты": ["Магнит", "Пятёрочка", "Азбука Вкуса", "Перекрёсток", "Яндекс.Еда", "Самокат"],
-  "Транспорт": ["Яндекс.Такси", "Uber", "Ситимобил", "Лукойл", "Газпром"],
-  "Развлечения": ["Netflix", "Яндекс.Плюс", "YouTube Premium", "Кинотеатр"],
-  "Здоровье": ["Аптека.ру", "Ригла", "Живика", "Горздрав"],
-  "Связь": ["МТС", "Билайн", "Мегафон", "Tele2", "Ростелеком"],
-  "default": [],
+  Продукты: ["Магнит", "Пятёрочка", "Азбука Вкуса", "Перекрёсток", "Яндекс.Еда", "Самокат"],
+  Транспорт: ["Яндекс.Такси", "Uber", "Ситимобил", "Лукойл", "Газпром"],
+  Развлечения: ["Netflix", "Яндекс.Плюс", "YouTube Premium", "Кинотеатр"],
+  Здоровье: ["Аптека.ру", "Ригла", "Живика", "Горздрав"],
+  Связь: ["МТС", "Билайн", "Мегафон", "Tele2", "Ростелеком"],
+  default: [],
 }
 
 // Типы аккаунтов с иконками
@@ -146,19 +178,23 @@ export function FinanceForm({
 }: FinanceFormProps) {
   // Получаем категории для текущего типа финансов
   const currentFinanceCategories = Object.keys(financeCategories[financeType] || {})
-  
+
   // Получаем подкатегории для выбранной категории
-  const currentSubcategories = financeCategory && financeCategories[financeType]?.[financeCategory]
-    ? Object.keys(financeCategories[financeType][financeCategory].subcategories)
-    : []
-  
+  const currentSubcategories =
+    financeCategory && financeCategories[financeType]?.[financeCategory]
+      ? Object.keys(financeCategories[financeType][financeCategory].subcategories)
+      : []
+
   // Получаем товары/услуги для выбранной подкатегории
-  const currentItems = financeCategory && financeSubcategory && financeCategories[financeType]?.[financeCategory]?.subcategories[financeSubcategory]
-    ? financeCategories[financeType][financeCategory].subcategories[financeSubcategory]
-    : []
-  
+  const currentItems =
+    financeCategory &&
+    financeSubcategory &&
+    financeCategories[financeType]?.[financeCategory]?.subcategories[financeSubcategory]
+      ? financeCategories[financeType][financeCategory].subcategories[financeSubcategory]
+      : []
+
   // Получаем поставщиков для категории
-  const currentSuppliers = financeCategory ? (suppliers[financeCategory] || suppliers["default"]) : []
+  const currentSuppliers = financeCategory ? suppliers[financeCategory] || suppliers["default"] : []
 
   return (
     <>
@@ -173,9 +209,7 @@ export function FinanceForm({
           className="text-center text-lg font-medium"
           {...register("value", { valueAsNumber: true })}
         />
-        {errors.value && (
-          <p className="text-sm text-destructive">{errors.value.message}</p>
-        )}
+        {errors.value && <p className="text-sm text-destructive">{errors.value.message}</p>}
       </div>
 
       {/* Выбор аккаунта */}
@@ -191,15 +225,16 @@ export function FinanceForm({
                 setValue("account_id", e.target.value)
               }}
               style={{
-                backgroundImage: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
+                backgroundImage: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
               }}
             >
               {accounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
-                  {accountTypeLabels[acc.type] || acc.type} • {acc.name} ({acc.balance.toLocaleString()} ₽)
+                  {accountTypeLabels[acc.type] || acc.type} • {acc.name} (
+                  {acc.balance.toLocaleString()} ₽)
                 </option>
               ))}
             </select>
@@ -231,18 +266,23 @@ export function FinanceForm({
               value={targetAccountId}
               onChange={(e) => setTargetAccountId(e.target.value)}
               style={{
-                backgroundImage: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
+                backgroundImage: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
               }}
             >
-              <option value="" disabled>Выберите аккаунт</option>
-              {accounts.filter(acc => acc.id !== selectedAccountId).map((acc) => (
-                <option key={acc.id} value={acc.id}>
-                  {accountTypeLabels[acc.type] || acc.type} • {acc.name} ({acc.balance.toLocaleString()} ₽)
-                </option>
-              ))}
+              <option value="" disabled>
+                Выберите аккаунт
+              </option>
+              {accounts
+                .filter((acc) => acc.id !== selectedAccountId)
+                .map((acc) => (
+                  <option key={acc.id} value={acc.id}>
+                    {accountTypeLabels[acc.type] || acc.type} • {acc.name} (
+                    {acc.balance.toLocaleString()} ₽)
+                  </option>
+                ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
           </div>
@@ -262,7 +302,7 @@ export function FinanceForm({
         }}
         placeholder="Выберите категорию"
       />
-      
+
       <ComboboxSelect
         label="Подкатегория"
         options={currentSubcategories}
@@ -273,7 +313,7 @@ export function FinanceForm({
         }}
         placeholder="Выберите подкатегорию"
       />
-      
+
       {currentItems.length > 0 ? (
         <ComboboxSelect
           label="Товар/услуга"
@@ -288,14 +328,10 @@ export function FinanceForm({
       ) : (
         <div className="space-y-2">
           <Label htmlFor="title">Товар/услуга</Label>
-          <Input
-            id="title"
-            placeholder="Введите название товара/услуги"
-            {...register("title")}
-          />
+          <Input id="title" placeholder="Введите название товара/услуги" {...register("title")} />
         </div>
       )}
-      
+
       <ComboboxSelect
         label="Поставщик"
         options={currentSuppliers}

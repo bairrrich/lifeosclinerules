@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save, Calculator } from "lucide-react"
+import { ArrowLeft, Save, Calculator } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -24,7 +24,14 @@ import {
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
-import type { RecipeType, Difficulty, FoodRecipeMetadata, DrinkRecipeMetadata, CocktailRecipeMetadata, RecipeContentExtended } from "@/types"
+import type {
+  RecipeType,
+  Difficulty,
+  FoodRecipeMetadata,
+  DrinkRecipeMetadata,
+  CocktailRecipeMetadata,
+  RecipeContentExtended,
+} from "@/types"
 import { ContentType, RecipeType as RecipeTypeEnum } from "@/types"
 
 // Form schema
@@ -39,7 +46,7 @@ const baseRecipeSchema = z.object({
   difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
   rating: z.number().min(1).max(5).optional(),
   tags: z.string().optional(),
-  
+
   // КБЖУ
   calories: z.number().optional(),
   protein: z.number().optional(),
@@ -54,24 +61,24 @@ type FormData = z.infer<typeof baseRecipeSchema>
 export default function NewRecipePage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  
+
   // Состояния формы
   const [recipeType, setRecipeType] = useState<RecipeType>(RecipeTypeEnum.FOOD)
   const [ingredients, setIngredients] = useState<IngredientItem[]>([])
-  
+
   // Автоматический расчёт КБЖУ из ингредиентов
   const calculateNutrition = () => {
     let totalCalories = 0
     let totalProtein = 0
     let totalFat = 0
     let totalCarbs = 0
-    
+
     for (const ing of ingredients) {
       if (ing.calories_per_100 && ing.amount > 0) {
         // Определяем множитель в зависимости от единицы
         let multiplier = 1
         const unit = ing.unit.toLowerCase()
-        
+
         if (unit === "г" || unit === "гр" || unit === "мл") {
           multiplier = ing.amount / 100
         } else if (unit === "кг" || unit === "л") {
@@ -89,14 +96,14 @@ export default function NewRecipePage() {
           // По умолчанию считаем как граммы
           multiplier = ing.amount / 100
         }
-        
+
         totalCalories += (ing.calories_per_100 || 0) * multiplier
         totalProtein += (ing.protein_per_100 || 0) * multiplier
         totalFat += (ing.fat_per_100 || 0) * multiplier
         totalCarbs += (ing.carbs_per_100 || 0) * multiplier
       }
     }
-    
+
     return {
       calories: Math.round(totalCalories),
       protein: Math.round(totalProtein * 10) / 10,
@@ -104,8 +111,10 @@ export default function NewRecipePage() {
       carbs: Math.round(totalCarbs * 10) / 10,
     }
   }
-  const [steps, setSteps] = useState<{ id?: string; order: number; text: string; timer_min?: number; isNew?: boolean }[]>([])
-  
+  const [steps, setSteps] = useState<
+    { id?: string; order: number; text: string; timer_min?: number; isNew?: boolean }[]
+  >([])
+
   // Специфичные метаданные
   const [foodMetadata, setFoodMetadata] = useState<FoodRecipeMetadata>({})
   const [drinkMetadata, setDrinkMetadata] = useState<DrinkRecipeMetadata>({
@@ -114,7 +123,7 @@ export default function NewRecipePage() {
   const [cocktailMetadata, setCocktailMetadata] = useState<CocktailRecipeMetadata>({
     is_alcoholic: true,
   })
-  
+
   const {
     register,
     handleSubmit,
@@ -129,11 +138,11 @@ export default function NewRecipePage() {
       serving_unit: "порции",
     },
   })
-  
+
   useEffect(() => {
     initializeDatabase()
   }, [])
-  
+
   const onSubmit = async (data: FormData) => {
     setIsLoading(true)
     try {
@@ -144,17 +153,17 @@ export default function NewRecipePage() {
         description: data.description,
         rating: data.rating,
         tags: data.tags ? data.tags.split(",").map((t) => t.trim()) : [],
-        
+
         // Время
         prep_time_min: data.prep_time_min,
         cook_time_min: data.cook_time_min,
         total_time_min: (data.prep_time_min || 0) + (data.cook_time_min || 0),
-        
+
         // Порции
         servings: data.servings,
         serving_unit: data.serving_unit,
         difficulty: data.difficulty,
-        
+
         // КБЖУ
         calories: data.calories,
         protein: data.protein,
@@ -162,15 +171,18 @@ export default function NewRecipePage() {
         carbs: data.carbs,
         sugar: data.sugar,
         fiber: data.fiber,
-        
+
         // Специфичные метаданные
         food_metadata: recipeType === "food" ? foodMetadata : undefined,
         drink_metadata: recipeType === "drink" ? drinkMetadata : undefined,
         cocktail_metadata: recipeType === "cocktail" ? cocktailMetadata : undefined,
       }
-      
-      const recipeId = await createEntity(db.content, recipeData as Omit<RecipeContentExtended, "id" | "created_at" | "updated_at">)
-      
+
+      const recipeId = await createEntity(
+        db.content,
+        recipeData as Omit<RecipeContentExtended, "id" | "created_at" | "updated_at">
+      )
+
       // Сохраняем ингредиенты
       if (ingredients.length > 0) {
         for (const ing of ingredients) {
@@ -185,7 +197,7 @@ export default function NewRecipePage() {
           })
         }
       }
-      
+
       // Сохраняем шаги
       if (steps.length > 0) {
         for (const step of steps) {
@@ -197,7 +209,7 @@ export default function NewRecipePage() {
           })
         }
       }
-      
+
       router.push("/recipes")
     } catch (error) {
       console.error("Failed to create recipe:", error)
@@ -205,7 +217,7 @@ export default function NewRecipePage() {
       setIsLoading(false)
     }
   }
-  
+
   return (
     <AppLayout title="Новый рецепт">
       <div className="container mx-auto px-4 py-6">
@@ -216,34 +228,25 @@ export default function NewRecipePage() {
               <CardTitle>Тип рецепта</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs 
-                value={recipeType} 
+              <Tabs
+                value={recipeType}
                 onValueChange={(value) => setRecipeType(value as RecipeType)}
               >
                 <TabsList className="grid grid-cols-3">
-                  <TabsTrigger 
-                    value="food" 
-                    className={recipeTypeColors["food"]}
-                  >
+                  <TabsTrigger value="food" className={recipeTypeColors["food"]}>
                     {recipeTypeLabels["food"]}
                   </TabsTrigger>
-                  <TabsTrigger 
-                    value="drink" 
-                    className={recipeTypeColors["drink"]}
-                  >
+                  <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
                     {recipeTypeLabels["drink"]}
                   </TabsTrigger>
-                  <TabsTrigger 
-                    value="cocktail" 
-                    className={recipeTypeColors["cocktail"]}
-                  >
+                  <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
                     {recipeTypeLabels["cocktail"]}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
             </CardContent>
           </Card>
-          
+
           {/* Основное */}
           <Card>
             <CardHeader>
@@ -252,16 +255,10 @@ export default function NewRecipePage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="title">Название *</Label>
-                <Input
-                  id="title"
-                  placeholder="Название рецепта"
-                  {...register("title")}
-                />
-                {errors.title && (
-                  <p className="text-sm text-destructive">{errors.title.message}</p>
-                )}
+                <Input id="title" placeholder="Название рецепта" {...register("title")} />
+                {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="description">Описание</Label>
                 <Textarea
@@ -270,7 +267,7 @@ export default function NewRecipePage() {
                   {...register("description")}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="servings">Порции</Label>
@@ -282,14 +279,10 @@ export default function NewRecipePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="serving_unit">Единица</Label>
-                  <Input
-                    id="serving_unit"
-                    placeholder="порции"
-                    {...register("serving_unit")}
-                  />
+                  <Input id="serving_unit" placeholder="порции" {...register("serving_unit")} />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="prep_time_min">Подготовка (мин)</Label>
@@ -308,12 +301,14 @@ export default function NewRecipePage() {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Сложность</Label>
-                <Tabs 
-                  value={watch("difficulty") || ""} 
-                  onValueChange={(value) => setValue("difficulty", value as Difficulty || undefined)}
+                <Tabs
+                  value={watch("difficulty") || ""}
+                  onValueChange={(value) =>
+                    setValue("difficulty", (value as Difficulty) || undefined)
+                  }
                 >
                   <TabsList>
                     <TabsTrigger value="easy">Легко</TabsTrigger>
@@ -324,19 +319,13 @@ export default function NewRecipePage() {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Ингредиенты */}
-          <RecipeIngredients
-            ingredients={ingredients}
-            onChange={setIngredients}
-          />
-          
+          <RecipeIngredients ingredients={ingredients} onChange={setIngredients} />
+
           {/* Шаги */}
-          <RecipeSteps
-            steps={steps}
-            onChange={setSteps}
-          />
-          
+          <RecipeSteps steps={steps} onChange={setSteps} />
+
           {/* КБЖУ */}
           <Card>
             <CardHeader>
@@ -363,7 +352,9 @@ export default function NewRecipePage() {
             <CardContent>
               <div className="grid grid-cols-5 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="calories" className="text-xs">Ккал</Label>
+                  <Label htmlFor="calories" className="text-xs">
+                    Ккал
+                  </Label>
                   <Input
                     id="calories"
                     type="number"
@@ -372,7 +363,9 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="protein" className="text-xs">Белки</Label>
+                  <Label htmlFor="protein" className="text-xs">
+                    Белки
+                  </Label>
                   <Input
                     id="protein"
                     type="number"
@@ -382,7 +375,9 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="fat" className="text-xs">Жиры</Label>
+                  <Label htmlFor="fat" className="text-xs">
+                    Жиры
+                  </Label>
                   <Input
                     id="fat"
                     type="number"
@@ -392,7 +387,9 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="carbs" className="text-xs">Угл.</Label>
+                  <Label htmlFor="carbs" className="text-xs">
+                    Угл.
+                  </Label>
                   <Input
                     id="carbs"
                     type="number"
@@ -402,7 +399,9 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sugar" className="text-xs">Сахар</Label>
+                  <Label htmlFor="sugar" className="text-xs">
+                    Сахар
+                  </Label>
                   <Input
                     id="sugar"
                     type="number"
@@ -414,29 +413,20 @@ export default function NewRecipePage() {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Специфичные поля */}
           {recipeType === "food" && (
-            <FoodRecipeForm
-              metadata={foodMetadata}
-              onChange={setFoodMetadata}
-            />
+            <FoodRecipeForm metadata={foodMetadata} onChange={setFoodMetadata} />
           )}
-          
+
           {recipeType === "drink" && (
-            <DrinkRecipeForm
-              metadata={drinkMetadata}
-              onChange={setDrinkMetadata}
-            />
+            <DrinkRecipeForm metadata={drinkMetadata} onChange={setDrinkMetadata} />
           )}
-          
+
           {recipeType === "cocktail" && (
-            <CocktailRecipeForm
-              metadata={cocktailMetadata}
-              onChange={setCocktailMetadata}
-            />
+            <CocktailRecipeForm metadata={cocktailMetadata} onChange={setCocktailMetadata} />
           )}
-          
+
           {/* Теги */}
           <Card>
             <CardHeader>
@@ -445,15 +435,11 @@ export default function NewRecipePage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="tags">Теги</Label>
-                <Input
-                  id="tags"
-                  placeholder="теги через запятую"
-                  {...register("tags")}
-                />
+                <Input id="tags" placeholder="теги через запятую" {...register("tags")} />
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Действия */}
           <div className="flex gap-4">
             <Button

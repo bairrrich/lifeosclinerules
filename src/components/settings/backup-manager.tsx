@@ -1,11 +1,28 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Download, Upload, Trash2, FileJson, FileSpreadsheet, Check, AlertTriangle, Clock, RefreshCw } from "lucide-react"
+import {
+  Download,
+  Upload,
+  Trash2,
+  FileJson,
+  FileSpreadsheet,
+  Check,
+  AlertTriangle,
+  Clock,
+  RefreshCw,
+} from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { db } from "@/lib/db"
 
 type ExportFormat = "json" | "csv"
@@ -30,7 +47,7 @@ export function BackupManager() {
   const [showConfirmImport, setShowConfirmImport] = useState(false)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null)
-  
+
   // Автоматический бэкап
   const [autoBackupEnabled, setAutoBackupEnabled] = useState(false)
   const [autoBackupInterval, setAutoBackupInterval] = useState(24)
@@ -41,7 +58,7 @@ export function BackupManager() {
     const savedEnabled = localStorage.getItem(AUTO_BACKUP_ENABLED_KEY)
     const savedInterval = localStorage.getItem(AUTO_BACKUP_INTERVAL_KEY)
     const savedLastBackup = localStorage.getItem(LAST_BACKUP_KEY)
-    
+
     if (savedEnabled === "true") {
       setAutoBackupEnabled(true)
     }
@@ -93,9 +110,10 @@ export function BackupManager() {
 
       // Сохраняем в localStorage (ограничение ~5-10MB)
       const jsonStr = JSON.stringify(data)
-      
+
       // Проверяем размер
-      if (jsonStr.length > 4 * 1024 * 1024) { // 4MB лимит
+      if (jsonStr.length > 4 * 1024 * 1024) {
+        // 4MB лимит
         console.warn("Auto backup too large, skipping localStorage save")
         // Сохраняем метаданные о том, что бэкап был сделан
         localStorage.setItem(LAST_BACKUP_KEY, new Date().toISOString())
@@ -106,7 +124,7 @@ export function BackupManager() {
       localStorage.setItem("life-os-auto-backup-data", jsonStr)
       localStorage.setItem(LAST_BACKUP_KEY, new Date().toISOString())
       setLastBackup(new Date().toISOString())
-      
+
       console.log("Auto backup created at", new Date().toISOString())
     } catch (error) {
       console.error("Auto backup failed:", error)
@@ -120,7 +138,7 @@ export function BackupManager() {
     const checkAndBackup = () => {
       const now = new Date()
       const lastBackupDate = lastBackup ? new Date(lastBackup) : null
-      
+
       if (!lastBackupDate) {
         // Первым делом создаём бэкап
         createAutoBackup()
@@ -128,7 +146,7 @@ export function BackupManager() {
       }
 
       const hoursSinceLastBackup = (now.getTime() - lastBackupDate.getTime()) / (1000 * 60 * 60)
-      
+
       if (hoursSinceLastBackup >= autoBackupInterval) {
         createAutoBackup()
       }
@@ -147,7 +165,7 @@ export function BackupManager() {
   const toggleAutoBackup = (enabled: boolean) => {
     setAutoBackupEnabled(enabled)
     localStorage.setItem(AUTO_BACKUP_ENABLED_KEY, String(enabled))
-    
+
     if (enabled) {
       createAutoBackup()
     }
@@ -200,7 +218,7 @@ export function BackupManager() {
       a.download = `life-os-backup-${new Date().toISOString().split("T")[0]}.json`
       a.click()
       URL.revokeObjectURL(url)
-      
+
       showToast("success", "Данные успешно экспортированы")
     } catch (error) {
       console.error("Export failed:", error)
@@ -214,7 +232,7 @@ export function BackupManager() {
   const handleCSVExport = async (tableName: string) => {
     try {
       let data: unknown[] = []
-      
+
       switch (tableName) {
         case "logs":
           data = await db.logs.toArray()
@@ -238,7 +256,7 @@ export function BackupManager() {
       }
 
       // Flatten metadata для CSV
-      const flatData = data.map(item => {
+      const flatData = data.map((item) => {
         const flat: Record<string, unknown> = {}
         Object.entries(item as Record<string, unknown>).forEach(([key, value]) => {
           if (typeof value === "object" && value !== null) {
@@ -253,15 +271,17 @@ export function BackupManager() {
       const headers = Object.keys(flatData[0])
       const csvContent = [
         headers.join(","),
-        ...flatData.map(row => 
-          headers.map(h => {
-            const val = row[h]
-            if (typeof val === "string" && (val.includes(",") || val.includes('"'))) {
-              return `"${val.replace(/"/g, '""')}"`
-            }
-            return val ?? ""
-          }).join(",")
-        )
+        ...flatData.map((row) =>
+          headers
+            .map((h) => {
+              const val = row[h]
+              if (typeof val === "string" && (val.includes(",") || val.includes('"'))) {
+                return `"${val.replace(/"/g, '""')}"`
+              }
+              return val ?? ""
+            })
+            .join(",")
+        ),
       ].join("\n")
 
       const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8" })
@@ -287,7 +307,7 @@ export function BackupManager() {
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
       if (!file) return
-      
+
       setPendingFile(file)
       setShowConfirmImport(true)
     }
@@ -296,40 +316,59 @@ export function BackupManager() {
 
   const confirmImport = async () => {
     if (!pendingFile) return
-    
+
     setIsImporting(true)
     setShowConfirmImport(false)
-    
+
     try {
       const text = await pendingFile.text()
       const data = JSON.parse(text)
 
       // Очищаем и импортируем данные
-      await db.transaction("rw", [
-        db.logs, db.items, db.content, db.categories, db.tags,
-        db.accounts, db.units, db.books, db.userBooks, db.authors,
-        db.bookAuthors, db.genres, db.bookGenres, db.bookQuotes,
-        db.bookReviews, db.recipeIngredients, db.recipeIngredientItems, db.recipeSteps
-      ], async () => {
-        if (data.logs) await db.logs.bulkPut(data.logs)
-        if (data.items) await db.items.bulkPut(data.items)
-        if (data.content) await db.content.bulkPut(data.content)
-        if (data.categories) await db.categories.bulkPut(data.categories)
-        if (data.tags) await db.tags.bulkPut(data.tags)
-        if (data.accounts) await db.accounts.bulkPut(data.accounts)
-        if (data.units) await db.units.bulkPut(data.units)
-        if (data.books) await db.books.bulkPut(data.books)
-        if (data.userBooks) await db.userBooks.bulkPut(data.userBooks)
-        if (data.authors) await db.authors.bulkPut(data.authors)
-        if (data.bookAuthors) await db.bookAuthors.bulkPut(data.bookAuthors)
-        if (data.genres) await db.genres.bulkPut(data.genres)
-        if (data.bookGenres) await db.bookGenres.bulkPut(data.bookGenres)
-        if (data.bookQuotes) await db.bookQuotes.bulkPut(data.bookQuotes)
-        if (data.bookReviews) await db.bookReviews.bulkPut(data.bookReviews)
-        if (data.recipeIngredients) await db.recipeIngredients.bulkPut(data.recipeIngredients)
-        if (data.recipeIngredientItems) await db.recipeIngredientItems.bulkPut(data.recipeIngredientItems)
-        if (data.recipeSteps) await db.recipeSteps.bulkPut(data.recipeSteps)
-      })
+      await db.transaction(
+        "rw",
+        [
+          db.logs,
+          db.items,
+          db.content,
+          db.categories,
+          db.tags,
+          db.accounts,
+          db.units,
+          db.books,
+          db.userBooks,
+          db.authors,
+          db.bookAuthors,
+          db.genres,
+          db.bookGenres,
+          db.bookQuotes,
+          db.bookReviews,
+          db.recipeIngredients,
+          db.recipeIngredientItems,
+          db.recipeSteps,
+        ],
+        async () => {
+          if (data.logs) await db.logs.bulkPut(data.logs)
+          if (data.items) await db.items.bulkPut(data.items)
+          if (data.content) await db.content.bulkPut(data.content)
+          if (data.categories) await db.categories.bulkPut(data.categories)
+          if (data.tags) await db.tags.bulkPut(data.tags)
+          if (data.accounts) await db.accounts.bulkPut(data.accounts)
+          if (data.units) await db.units.bulkPut(data.units)
+          if (data.books) await db.books.bulkPut(data.books)
+          if (data.userBooks) await db.userBooks.bulkPut(data.userBooks)
+          if (data.authors) await db.authors.bulkPut(data.authors)
+          if (data.bookAuthors) await db.bookAuthors.bulkPut(data.bookAuthors)
+          if (data.genres) await db.genres.bulkPut(data.genres)
+          if (data.bookGenres) await db.bookGenres.bulkPut(data.bookGenres)
+          if (data.bookQuotes) await db.bookQuotes.bulkPut(data.bookQuotes)
+          if (data.bookReviews) await db.bookReviews.bulkPut(data.bookReviews)
+          if (data.recipeIngredients) await db.recipeIngredients.bulkPut(data.recipeIngredients)
+          if (data.recipeIngredientItems)
+            await db.recipeIngredientItems.bulkPut(data.recipeIngredientItems)
+          if (data.recipeSteps) await db.recipeSteps.bulkPut(data.recipeSteps)
+        }
+      )
 
       showToast("success", "Данные успешно импортированы")
       setTimeout(() => window.location.reload(), 1000)
@@ -345,7 +384,7 @@ export function BackupManager() {
   // Очистка всех данных
   const handleClearAll = async () => {
     if (!confirm("Вы уверены? Все данные будут удалены без возможности восстановления!")) return
-    
+
     try {
       await Promise.all([
         db.logs.clear(),
@@ -367,7 +406,7 @@ export function BackupManager() {
         db.recipeIngredientItems.clear(),
         db.recipeSteps.clear(),
       ])
-      
+
       showToast("success", "Все данные удалены")
       window.location.reload()
     } catch (error) {
@@ -389,18 +428,18 @@ export function BackupManager() {
         <CardContent className="space-y-4">
           {/* Основные действия */}
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              onClick={handleFullExport} 
+            <Button
+              variant="outline"
+              onClick={handleFullExport}
               disabled={isExporting}
               className="flex-1"
             >
               <Download className="h-4 w-4 mr-2" />
               {isExporting ? "Экспорт..." : "Экспорт JSON"}
             </Button>
-            <Button 
-              variant="outline" 
-              onClick={handleImportClick} 
+            <Button
+              variant="outline"
+              onClick={handleImportClick}
               disabled={isImporting}
               className="flex-1"
             >
@@ -426,7 +465,7 @@ export function BackupManager() {
                 <div className="w-9 h-5 bg-muted rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
               </label>
             </div>
-            
+
             {autoBackupEnabled && (
               <div className="space-y-2">
                 <select
@@ -440,7 +479,7 @@ export function BackupManager() {
                     </option>
                   ))}
                 </select>
-                
+
                 {lastBackup && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <RefreshCw className="h-3 w-3" />
@@ -455,36 +494,36 @@ export function BackupManager() {
           <div className="pt-2 border-t">
             <p className="text-sm text-muted-foreground mb-2">Экспорт в CSV (для Excel):</p>
             <div className="flex flex-wrap gap-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleCSVExport("logs")}
                 className="text-xs"
               >
                 <FileSpreadsheet className="h-3 w-3 mr-1" />
                 Записи
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleCSVExport("items")}
                 className="text-xs"
               >
                 <FileSpreadsheet className="h-3 w-3 mr-1" />
                 Каталог
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleCSVExport("books")}
                 className="text-xs"
               >
                 <FileSpreadsheet className="h-3 w-3 mr-1" />
                 Книги
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleCSVExport("accounts")}
                 className="text-xs"
               >
@@ -496,12 +535,7 @@ export function BackupManager() {
 
           {/* Опасная зона */}
           <div className="pt-2 border-t">
-            <Button 
-              variant="destructive" 
-              size="sm" 
-              onClick={handleClearAll}
-              className="w-full"
-            >
+            <Button variant="destructive" size="sm" onClick={handleClearAll} className="w-full">
               <Trash2 className="h-4 w-4 mr-2" />
               Очистить все данные
             </Button>
@@ -518,8 +552,8 @@ export function BackupManager() {
               Подтвердите импорт
             </DialogTitle>
             <DialogDescription>
-              Импорт данных может перезаписать существующие записи с такими же ID. 
-              Вы уверены, что хотите продолжить?
+              Импорт данных может перезаписать существующие записи с такими же ID. Вы уверены, что
+              хотите продолжить?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
@@ -536,10 +570,16 @@ export function BackupManager() {
 
       {/* Toast уведомление */}
       {toast && (
-        <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 ${
-          toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"
-        }`}>
-          {toast.type === "success" ? <Check className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
+        <div
+          className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 ${
+            toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <AlertTriangle className="h-4 w-4" />
+          )}
           {toast.message}
         </div>
       )}

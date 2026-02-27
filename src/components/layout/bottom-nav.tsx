@@ -2,14 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  LayoutDashboard,
-  ClipboardList,
-  Package,
-  BookOpen,
-  ChefHat,
-  BarChart3,
-} from "lucide-react"
+import { LayoutDashboard, ClipboardList, Package, BookOpen, ChefHat, BarChart3 } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 
 const navItems = [
@@ -53,18 +46,16 @@ export function BottomNav() {
       <nav className="w-full max-w-[960px] border border-border rounded-t-2xl border-b-0 bg-background safe-bottom">
         <div className="flex h-16 items-center justify-around px-2">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || 
-              (item.href !== "/" && pathname.startsWith(item.href))
-            
+            const isActive =
+              pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
                   "flex flex-col items-center justify-center gap-1 rounded-xl px-3 py-2 transition-colors",
-                  isActive
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 <item.icon className="h-5 w-5" />

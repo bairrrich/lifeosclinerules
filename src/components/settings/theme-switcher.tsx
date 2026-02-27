@@ -1,6 +1,6 @@
 "use client"
 
-import { Sun, Moon, Monitor } from "lucide-react"
+import { Sun, Moon, Monitor } from "@/lib/icons"
 import { useTheme } from "next-themes"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

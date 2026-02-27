@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Calculator } from "lucide-react"
+import { Calculator } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { FormActions } from "@/components/shared/form-actions"
 import { Card, CardContent } from "@/components/ui/card"
@@ -22,7 +22,16 @@ import {
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
-import type { Difficulty, FoodRecipeMetadata, DrinkRecipeMetadata, CocktailRecipeMetadata, RecipeContentExtended, RecipeIngredientItem, RecipeStep, RecipeType } from "@/types"
+import type {
+  Difficulty,
+  FoodRecipeMetadata,
+  DrinkRecipeMetadata,
+  CocktailRecipeMetadata,
+  RecipeContentExtended,
+  RecipeIngredientItem,
+  RecipeStep,
+  RecipeType,
+} from "@/types"
 import { RecipeType as RecipeTypeEnum } from "@/types"
 
 // Recipe schema
@@ -53,18 +62,25 @@ export default function EditRecipePage() {
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  
+
   // Recipe specific state
   const [recipeType, setRecipeType] = useState<RecipeType>(RecipeTypeEnum.FOOD)
   const [ingredients, setIngredients] = useState<IngredientItem[]>([])
-  const [steps, setSteps] = useState<{ id?: string; order: number; text: string; timer_min?: number }[]>([])
+  const [steps, setSteps] = useState<
+    { id?: string; order: number; text: string; timer_min?: number }[]
+  >([])
   const [foodMetadata, setFoodMetadata] = useState<FoodRecipeMetadata>({})
   const [drinkMetadata, setDrinkMetadata] = useState<DrinkRecipeMetadata>({ is_carbonated: false })
-  const [cocktailMetadata, setCocktailMetadata] = useState<CocktailRecipeMetadata>({ is_alcoholic: true })
+  const [cocktailMetadata, setCocktailMetadata] = useState<CocktailRecipeMetadata>({
+    is_alcoholic: true,
+  })
 
   // Автоматический расчёт КБЖУ из ингредиентов
   const calculateNutrition = () => {
-    let totalCalories = 0, totalProtein = 0, totalFat = 0, totalCarbs = 0
+    let totalCalories = 0,
+      totalProtein = 0,
+      totalFat = 0,
+      totalCarbs = 0
     for (const ing of ingredients) {
       if (ing.calories_per_100 && ing.amount > 0) {
         let multiplier = 1
@@ -82,7 +98,12 @@ export default function EditRecipePage() {
         totalCarbs += (ing.carbs_per_100 || 0) * multiplier
       }
     }
-    return { calories: Math.round(totalCalories), protein: Math.round(totalProtein * 10) / 10, fat: Math.round(totalFat * 10) / 10, carbs: Math.round(totalCarbs * 10) / 10 }
+    return {
+      calories: Math.round(totalCalories),
+      protein: Math.round(totalProtein * 10) / 10,
+      fat: Math.round(totalFat * 10) / 10,
+      carbs: Math.round(totalCarbs * 10) / 10,
+    }
   }
 
   const {
@@ -101,13 +122,13 @@ export default function EditRecipePage() {
       try {
         await initializeDatabase()
         const content = await db.content.get(id)
-        
+
         if (content && content.type === "recipe") {
           const recipe = content as RecipeContentExtended
-          
+
           // Recipe type
           setRecipeType(recipe.recipe_type || "food")
-          
+
           // Recipe fields
           const baseData: Record<string, unknown> = {
             title: recipe.title,
@@ -127,34 +148,35 @@ export default function EditRecipePage() {
             fiber: recipe.fiber,
           }
           reset(baseData as RecipeFormData)
-          
+
           // Load ingredients
           const recipeIngredients = await db.recipeIngredientItems
             .where("recipe_id")
             .equals(id)
             .sortBy("order")
-          setIngredients(recipeIngredients.map(ing => ({
-            id: ing.id,
-            ingredient_name: ing.ingredient_name,
-            amount: ing.amount,
-            unit: ing.unit,
-            optional: ing.optional,
-            note: ing.note,
-            order: ing.order,
-          })))
-          
+          setIngredients(
+            recipeIngredients.map((ing) => ({
+              id: ing.id,
+              ingredient_name: ing.ingredient_name,
+              amount: ing.amount,
+              unit: ing.unit,
+              optional: ing.optional,
+              note: ing.note,
+              order: ing.order,
+            }))
+          )
+
           // Load steps
-          const recipeSteps = await db.recipeSteps
-            .where("recipe_id")
-            .equals(id)
-            .sortBy("order")
-          setSteps(recipeSteps.map(s => ({
-            id: s.id,
-            order: s.order,
-            text: s.text,
-            timer_min: s.timer_min,
-          })))
-          
+          const recipeSteps = await db.recipeSteps.where("recipe_id").equals(id).sortBy("order")
+          setSteps(
+            recipeSteps.map((s) => ({
+              id: s.id,
+              order: s.order,
+              text: s.text,
+              timer_min: s.timer_min,
+            }))
+          )
+
           // Load metadata
           if (recipe.food_metadata) setFoodMetadata(recipe.food_metadata)
           if (recipe.drink_metadata) setDrinkMetadata(recipe.drink_metadata)
@@ -173,7 +195,7 @@ export default function EditRecipePage() {
     setIsSaving(true)
     try {
       const now = getTimestamp()
-      
+
       // Update recipe content (using type assertion for RecipeContentExtended fields)
       await db.content.update(id, {
         title: data.title,
@@ -198,7 +220,7 @@ export default function EditRecipePage() {
         cocktail_metadata: recipeType === "cocktail" ? cocktailMetadata : undefined,
         updated_at: now,
       } as Partial<RecipeContentExtended>)
-      
+
       // Delete old ingredients and add new ones
       await db.recipeIngredientItems.where("recipe_id").equals(id).delete()
       for (const ing of ingredients) {
@@ -215,7 +237,7 @@ export default function EditRecipePage() {
           updated_at: now,
         })
       }
-      
+
       // Delete old steps and add new ones
       await db.recipeSteps.where("recipe_id").equals(id).delete()
       for (const step of steps) {
@@ -242,7 +264,9 @@ export default function EditRecipePage() {
     return (
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -255,8 +279,8 @@ export default function EditRecipePage() {
           {/* Recipe Type Selector */}
           <Card>
             <CardContent className="p-4">
-              <Tabs 
-                value={recipeType} 
+              <Tabs
+                value={recipeType}
                 onValueChange={(value) => setRecipeType(value as RecipeType)}
               >
                 <TabsList className="grid grid-cols-3">
@@ -286,7 +310,7 @@ export default function EditRecipePage() {
                 />
                 {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Описание</label>
                 <textarea
@@ -295,7 +319,7 @@ export default function EditRecipePage() {
                   {...register("description")}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Порции</label>
@@ -314,7 +338,7 @@ export default function EditRecipePage() {
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Подготовка (мин)</label>
@@ -333,12 +357,17 @@ export default function EditRecipePage() {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Сложность</label>
-                <Tabs 
-                  value={watch("difficulty") as string || ""} 
-                  onValueChange={(value) => setValue("difficulty", value as "easy" | "medium" | "hard" | "pro" || undefined)}
+                <Tabs
+                  value={(watch("difficulty") as string) || ""}
+                  onValueChange={(value) =>
+                    setValue(
+                      "difficulty",
+                      (value as "easy" | "medium" | "hard" | "pro") || undefined
+                    )
+                  }
                 >
                   <TabsList>
                     <TabsTrigger value="easy">Легко</TabsTrigger>
@@ -351,16 +380,10 @@ export default function EditRecipePage() {
           </Card>
 
           {/* Ingredients */}
-          <RecipeIngredients
-            ingredients={ingredients}
-            onChange={setIngredients}
-          />
+          <RecipeIngredients ingredients={ingredients} onChange={setIngredients} />
 
           {/* Steps */}
-          <RecipeSteps
-            steps={steps}
-            onChange={setSteps}
-          />
+          <RecipeSteps steps={steps} onChange={setSteps} />
 
           {/* Nutrition */}
           <Card>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, X, ChevronDown } from "lucide-react"
+import { Plus, X, ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -156,6 +156,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                       size="icon"
                       className="h-9 w-9 text-destructive hover:text-destructive"
                       onClick={() => removeIngredient(index)}
+                      aria-label="Удалить ингредиент"
                     >
                       <X className="h-4 w-4" />
                     </Button>

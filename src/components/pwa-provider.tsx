@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Download, X, Bell, BellOff } from "lucide-react"
+import { Download, X, Bell, BellOff } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useNotifications } from "@/hooks/use-notifications"
@@ -23,7 +23,7 @@ export function PWAProvider() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   // Инициализируем состояние сразу, чтобы избежать setState в effect
   const [isInstalled, setIsInstalled] = useState(getIsInstalledInitial)
-  
+
   // Инициализация системы уведомлений
   const { hasPermission, requestPermission } = useNotifications()
 
@@ -44,7 +44,7 @@ export function PWAProvider() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e as BeforeInstallPromptEvent)
-      
+
       // Показываем промпт только если не было отказов ранее
       const dismissed = localStorage.getItem("pwa-install-dismissed")
       if (!dismissed) {
@@ -87,7 +87,7 @@ export function PWAProvider() {
 
   // Проверяем, нужно ли показать запрос на уведомления
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false)
-  
+
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
       // Показываем запрос только если разрешение ещё не запрошено
@@ -133,6 +133,7 @@ export function PWAProvider() {
                 size="icon"
                 onClick={handleNotificationDismiss}
                 className="h-8 w-8"
+                aria-label="Закрыть"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -157,9 +158,7 @@ export function PWAProvider() {
           </div>
           <div className="flex-1">
             <p className="font-medium text-sm">Установить Life OS</p>
-            <p className="text-xs text-muted-foreground">
-              Работает офлайн и быстрее запускается
-            </p>
+            <p className="text-xs text-muted-foreground">Работает офлайн и быстрее запускается</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -167,6 +166,7 @@ export function PWAProvider() {
               size="icon"
               onClick={handleDismiss}
               className="h-8 w-8"
+              aria-label="Закрыть"
             >
               <X className="h-4 w-4" />
             </Button>

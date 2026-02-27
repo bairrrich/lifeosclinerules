@@ -5,10 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
-import { Wallet, Plus, Pencil, Trash2, AlertTriangle } from "lucide-react"
-import { db, initializeDatabase, createEntity, updateEntity, deleteEntity, getAllEntities } from "@/lib/db"
+import { Wallet, Plus, Pencil, Trash2, AlertTriangle } from "@/lib/icons"
+import {
+  db,
+  initializeDatabase,
+  createEntity,
+  updateEntity,
+  deleteEntity,
+  getAllEntities,
+} from "@/lib/db"
 import type { Category, Log, Budget } from "@/types"
 
 // Ключ для localStorage бюджетов
@@ -32,25 +45,28 @@ export function BudgetManager() {
     try {
       await initializeDatabase()
       const now = new Date()
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0]
-      
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+        .toISOString()
+        .split("T")[0]
+
       const [allCategories, allLogs] = await Promise.all([
         getAllEntities(db.categories),
         db.logs.where("type").equals("finance").toArray(),
       ])
-      
+
       // Фильтруем категории для финансов
-      const financeCategories = allCategories.filter(c => c.type === "finance")
+      const financeCategories = allCategories.filter((c) => c.type === "finance")
       setCategories(financeCategories)
-      
+
       // Фильтруем расходы за текущий месяц
-      const monthExpenses = allLogs.filter(log => 
-        log.date >= startOfMonth && 
-        log.type === "finance" && 
-        (log.metadata as any)?.finance_type === "expense"
+      const monthExpenses = allLogs.filter(
+        (log) =>
+          log.date >= startOfMonth &&
+          log.type === "finance" &&
+          (log.metadata as any)?.finance_type === "expense"
       )
       setExpenses(monthExpenses)
-      
+
       // Загружаем бюджеты из localStorage
       const savedBudgets = localStorage.getItem(BUDGETS_KEY)
       if (savedBudgets) {
@@ -70,8 +86,8 @@ export function BudgetManager() {
 
   function handleAddBudget() {
     if (!selectedCategoryId || !budgetAmount) return
-    
-    const category = categories.find(c => c.id === selectedCategoryId)
+
+    const category = categories.find((c) => c.id === selectedCategoryId)
     if (!category) return
 
     const newBudget: Budget = {
@@ -84,9 +100,9 @@ export function BudgetManager() {
 
     let newBudgets: Budget[]
     if (editingBudget) {
-      newBudgets = budgets.map(b => b.id === editingBudget.id ? newBudget : b)
+      newBudgets = budgets.map((b) => (b.id === editingBudget.id ? newBudget : b))
     } else {
-      newBudgets = [...budgets.filter(b => b.category_id !== selectedCategoryId), newBudget]
+      newBudgets = [...budgets.filter((b) => b.category_id !== selectedCategoryId), newBudget]
     }
 
     saveBudgets(newBudgets)
@@ -94,7 +110,7 @@ export function BudgetManager() {
   }
 
   function handleDeleteBudget(budgetId: string) {
-    const newBudgets = budgets.filter(b => b.id !== budgetId)
+    const newBudgets = budgets.filter((b) => b.id !== budgetId)
     saveBudgets(newBudgets)
   }
 
@@ -115,21 +131,19 @@ export function BudgetManager() {
   // Рассчитать расходы по категории за месяц
   function getExpensesForCategory(categoryId: string): number {
     return expenses
-      .filter(e => e.category_id === categoryId)
+      .filter((e) => e.category_id === categoryId)
       .reduce((sum, e) => sum + (e.value || 0), 0)
   }
 
   // Доступные категории для бюджета
   const availableCategories = categories.filter(
-    c => !budgets.some(b => b.category_id === c.id) || editingBudget?.category_id === c.id
+    (c) => !budgets.some((b) => b.category_id === c.id) || editingBudget?.category_id === c.id
   )
 
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="p-4 text-center text-muted-foreground">
-          Загрузка...
-        </CardContent>
+        <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
       </Card>
     )
   }
@@ -147,9 +161,9 @@ export function BudgetManager() {
         {budgets.length === 0 ? (
           <div className="text-center text-muted-foreground py-4">
             <p>Нет установленных бюджетов</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="mt-2"
               onClick={() => setIsAddDialogOpen(true)}
             >
@@ -162,7 +176,8 @@ export function BudgetManager() {
             <div className="space-y-3">
               {budgets.map((budget) => {
                 const spent = getExpensesForCategory(budget.category_id)
-                const percentage = budget.amount > 0 ? Math.min((spent / budget.amount) * 100, 100) : 0
+                const percentage =
+                  budget.amount > 0 ? Math.min((spent / budget.amount) * 100, 100) : 0
                 const isOverBudget = spent > budget.amount
                 const remaining = budget.amount - spent
 
@@ -171,12 +186,12 @@ export function BudgetManager() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{budget.category_name}</span>
-                        {isOverBudget && (
-                          <AlertTriangle className="h-4 w-4 text-red-500" />
-                        )}
+                        {isOverBudget && <AlertTriangle className="h-4 w-4 text-red-500" />}
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`text-sm ${isOverBudget ? "text-red-500" : "text-muted-foreground"}`}>
+                        <span
+                          className={`text-sm ${isOverBudget ? "text-red-500" : "text-muted-foreground"}`}
+                        >
                           {spent.toLocaleString()} / {budget.amount.toLocaleString()} ₽
                         </span>
                         <Button
@@ -184,6 +199,7 @@ export function BudgetManager() {
                           size="icon"
                           className="h-6 w-6"
                           onClick={() => openEditDialog(budget)}
+                          aria-label="Редактировать бюджет"
                         >
                           <Pencil className="h-3 w-3" />
                         </Button>
@@ -192,32 +208,32 @@ export function BudgetManager() {
                           size="icon"
                           className="h-6 w-6 text-destructive"
                           onClick={() => handleDeleteBudget(budget.id)}
+                          aria-label="Удалить бюджет"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
-                    <Progress 
-                      value={percentage} 
+                    <Progress
+                      value={percentage}
                       className={`h-2 ${isOverBudget ? "bg-red-100" : ""}`}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
                       <span>{percentage.toFixed(0)}% использовано</span>
                       <span className={isOverBudget ? "text-red-500" : ""}>
-                        {isOverBudget 
+                        {isOverBudget
                           ? `Превышение на ${Math.abs(remaining).toLocaleString()} ₽`
-                          : `Осталось ${remaining.toLocaleString()} ₽`
-                        }
+                          : `Осталось ${remaining.toLocaleString()} ₽`}
                       </span>
                     </div>
                   </div>
                 )
               })}
             </div>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
+
+            <Button
+              variant="outline"
+              size="sm"
               className="w-full"
               onClick={() => setIsAddDialogOpen(true)}
             >
@@ -264,9 +280,7 @@ export function BudgetManager() {
               <Button variant="outline" onClick={resetForm}>
                 Отмена
               </Button>
-              <Button onClick={handleAddBudget}>
-                {editingBudget ? "Сохранить" : "Добавить"}
-              </Button>
+              <Button onClick={handleAddBudget}>{editingBudget ? "Сохранить" : "Добавить"}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

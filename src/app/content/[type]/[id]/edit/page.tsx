@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -25,7 +25,17 @@ import {
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
-import type { ContentType, BookMetadata, BookStatus, RecipeContentExtended, FoodRecipeMetadata, DrinkRecipeMetadata, CocktailRecipeMetadata, RecipeIngredientItem, RecipeStep } from "@/types"
+import type {
+  ContentType,
+  BookMetadata,
+  BookStatus,
+  RecipeContentExtended,
+  FoodRecipeMetadata,
+  DrinkRecipeMetadata,
+  CocktailRecipeMetadata,
+  RecipeIngredientItem,
+  RecipeStep,
+} from "@/types"
 import { RecipeType } from "@/types"
 
 // Book schema
@@ -77,14 +87,18 @@ export default function EditContentPage() {
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  
+
   // Recipe specific state
   const [recipeType, setRecipeType] = useState<RecipeType>(RecipeType.FOOD)
   const [ingredients, setIngredients] = useState<IngredientItem[]>([])
-  const [steps, setSteps] = useState<{ id?: string; order: number; text: string; timer_min?: number }[]>([])
+  const [steps, setSteps] = useState<
+    { id?: string; order: number; text: string; timer_min?: number }[]
+  >([])
   const [foodMetadata, setFoodMetadata] = useState<FoodRecipeMetadata>({})
   const [drinkMetadata, setDrinkMetadata] = useState<DrinkRecipeMetadata>({ is_carbonated: false })
-  const [cocktailMetadata, setCocktailMetadata] = useState<CocktailRecipeMetadata>({ is_alcoholic: true })
+  const [cocktailMetadata, setCocktailMetadata] = useState<CocktailRecipeMetadata>({
+    is_alcoholic: true,
+  })
 
   const {
     register,
@@ -122,10 +136,10 @@ export default function EditContentPage() {
             }
           } else if (type === "recipe") {
             const recipe = content as RecipeContentExtended
-            
+
             // Recipe type
             setRecipeType(recipe.recipe_type || RecipeType.FOOD)
-            
+
             // Recipe fields
             Object.assign(baseData, {
               prep_time_min: recipe.prep_time_min,
@@ -140,34 +154,35 @@ export default function EditContentPage() {
               sugar: recipe.sugar,
               fiber: recipe.fiber,
             })
-            
+
             // Load ingredients
             const recipeIngredients = await db.recipeIngredientItems
               .where("recipe_id")
               .equals(id)
               .sortBy("order")
-            setIngredients(recipeIngredients.map(ing => ({
-              id: ing.id,
-              ingredient_name: ing.ingredient_name,
-              amount: ing.amount,
-              unit: ing.unit,
-              optional: ing.optional,
-              note: ing.note,
-              order: ing.order,
-            })))
-            
+            setIngredients(
+              recipeIngredients.map((ing) => ({
+                id: ing.id,
+                ingredient_name: ing.ingredient_name,
+                amount: ing.amount,
+                unit: ing.unit,
+                optional: ing.optional,
+                note: ing.note,
+                order: ing.order,
+              }))
+            )
+
             // Load steps
-            const recipeSteps = await db.recipeSteps
-              .where("recipe_id")
-              .equals(id)
-              .sortBy("order")
-            setSteps(recipeSteps.map(s => ({
-              id: s.id,
-              order: s.order,
-              text: s.text,
-              timer_min: s.timer_min,
-            })))
-            
+            const recipeSteps = await db.recipeSteps.where("recipe_id").equals(id).sortBy("order")
+            setSteps(
+              recipeSteps.map((s) => ({
+                id: s.id,
+                order: s.order,
+                text: s.text,
+                timer_min: s.timer_min,
+              }))
+            )
+
             // Load metadata
             if (recipe.food_metadata) setFoodMetadata(recipe.food_metadata)
             if (recipe.drink_metadata) setDrinkMetadata(recipe.drink_metadata)
@@ -193,7 +208,7 @@ export default function EditContentPage() {
         description: data.description,
         body: data.body,
         rating: data.rating,
-        tags: typeof data.tags === 'string' ? data.tags.split(",").map((t) => t.trim()) : [],
+        tags: typeof data.tags === "string" ? data.tags.split(",").map((t) => t.trim()) : [],
       }
 
       if (type === "book") {
@@ -209,7 +224,7 @@ export default function EditContentPage() {
         })
       } else {
         const recipeData = data as RecipeFormData
-        
+
         // Update recipe content
         await updateEntity(db.content, id, {
           ...baseData,
@@ -230,7 +245,7 @@ export default function EditContentPage() {
           drink_metadata: recipeType === "drink" ? drinkMetadata : undefined,
           cocktail_metadata: recipeType === "cocktail" ? cocktailMetadata : undefined,
         })
-        
+
         // Delete old ingredients and add new ones
         await db.recipeIngredientItems.where("recipe_id").equals(id).delete()
         for (const ing of ingredients) {
@@ -247,7 +262,7 @@ export default function EditContentPage() {
             updated_at: new Date().toISOString(),
           })
         }
-        
+
         // Delete old steps and add new ones
         await db.recipeSteps.where("recipe_id").equals(id).delete()
         for (const step of steps) {
@@ -275,7 +290,9 @@ export default function EditContentPage() {
     return (
       <AppLayout title="Загрузка...">
         <div className="container mx-auto px-4 py-6">
-          <Card><CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent></Card>
+          <Card>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+          </Card>
         </div>
       </AppLayout>
     )
@@ -289,12 +306,16 @@ export default function EditContentPage() {
           {type === "book" && (
             <>
               <Card>
-                <CardHeader><CardTitle>Основное</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>Основное</CardTitle>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="title">Название *</Label>
                     <Input id="title" {...register("title")} />
-                    {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
+                    {errors.title && (
+                      <p className="text-sm text-destructive">{errors.title.message}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="description">Описание</Label>
@@ -302,13 +323,21 @@ export default function EditContentPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="rating">Оценка</Label>
-                    <Input id="rating" type="number" min={1} max={5} {...register("rating", { valueAsNumber: true })} />
+                    <Input
+                      id="rating"
+                      type="number"
+                      min={1}
+                      max={5}
+                      {...register("rating", { valueAsNumber: true })}
+                    />
                   </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader><CardTitle>О книге</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>О книге</CardTitle>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="author">Автор</Label>
@@ -317,18 +346,24 @@ export default function EditContentPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="year">Год издания</Label>
-                      <Input id="year" type="number" {...register("year", { valueAsNumber: true })} />
+                      <Input
+                        id="year"
+                        type="number"
+                        {...register("year", { valueAsNumber: true })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="pages">Страниц</Label>
-                      <Input id="pages" type="number" {...register("pages", { valueAsNumber: true })} />
+                      <Input
+                        id="pages"
+                        type="number"
+                        {...register("pages", { valueAsNumber: true })}
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label>Статус</Label>
-                    <NativeSelect
-                      {...register("status")}
-                    >
+                    <NativeSelect {...register("status")}>
                       <option value="planned">Запланировано</option>
                       <option value="reading">Читаю</option>
                       <option value="done">Прочитано</option>
@@ -338,7 +373,9 @@ export default function EditContentPage() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle>Заметки</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>Заметки</CardTitle>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Textarea className="min-h-[200px]" {...register("body")} />
@@ -361,27 +398,18 @@ export default function EditContentPage() {
                   <CardTitle>Тип рецепта</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Tabs 
-                    value={recipeType} 
+                  <Tabs
+                    value={recipeType}
                     onValueChange={(value) => setRecipeType(value as RecipeType)}
                   >
                     <TabsList className="grid grid-cols-3">
-                      <TabsTrigger 
-                        value="food" 
-                        className={recipeTypeColors["food"]}
-                      >
+                      <TabsTrigger value="food" className={recipeTypeColors["food"]}>
                         {recipeTypeLabels["food"]}
                       </TabsTrigger>
-                      <TabsTrigger 
-                        value="drink" 
-                        className={recipeTypeColors["drink"]}
-                      >
+                      <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
                         {recipeTypeLabels["drink"]}
                       </TabsTrigger>
-                      <TabsTrigger 
-                        value="cocktail" 
-                        className={recipeTypeColors["cocktail"]}
-                      >
+                      <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
                         {recipeTypeLabels["cocktail"]}
                       </TabsTrigger>
                     </TabsList>
@@ -391,46 +419,71 @@ export default function EditContentPage() {
 
               {/* Basic Info */}
               <Card>
-                <CardHeader><CardTitle>Основное</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>Основное</CardTitle>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="title">Название *</Label>
                     <Input id="title" placeholder="Название рецепта" {...register("title")} />
-                    {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
+                    {errors.title && (
+                      <p className="text-sm text-destructive">{errors.title.message}</p>
+                    )}
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="description">Описание</Label>
-                    <Textarea id="description" placeholder="Краткое описание..." {...register("description")} />
+                    <Textarea
+                      id="description"
+                      placeholder="Краткое описание..."
+                      {...register("description")}
+                    />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="servings">Порции</Label>
-                      <Input id="servings" type="number" {...register("servings", { valueAsNumber: true })} />
+                      <Input
+                        id="servings"
+                        type="number"
+                        {...register("servings", { valueAsNumber: true })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="serving_unit">Единица</Label>
                       <Input id="serving_unit" placeholder="порции" {...register("serving_unit")} />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="prep_time_min">Подготовка (мин)</Label>
-                      <Input id="prep_time_min" type="number" {...register("prep_time_min", { valueAsNumber: true })} />
+                      <Input
+                        id="prep_time_min"
+                        type="number"
+                        {...register("prep_time_min", { valueAsNumber: true })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="cook_time_min">Приготовление (мин)</Label>
-                      <Input id="cook_time_min" type="number" {...register("cook_time_min", { valueAsNumber: true })} />
+                      <Input
+                        id="cook_time_min"
+                        type="number"
+                        {...register("cook_time_min", { valueAsNumber: true })}
+                      />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label>Сложность</Label>
-                    <Tabs 
-                      value={watch("difficulty") as string || ""} 
-                      onValueChange={(value) => setValue("difficulty", value as "easy" | "medium" | "hard" | "pro" || undefined)}
+                    <Tabs
+                      value={(watch("difficulty") as string) || ""}
+                      onValueChange={(value) =>
+                        setValue(
+                          "difficulty",
+                          (value as "easy" | "medium" | "hard" | "pro") || undefined
+                        )
+                      }
                     >
                       <TabsList>
                         <TabsTrigger value="easy">Легко</TabsTrigger>
@@ -443,16 +496,10 @@ export default function EditContentPage() {
               </Card>
 
               {/* Ingredients */}
-              <RecipeIngredients
-                ingredients={ingredients}
-                onChange={setIngredients}
-              />
+              <RecipeIngredients ingredients={ingredients} onChange={setIngredients} />
 
               {/* Steps */}
-              <RecipeSteps
-                steps={steps}
-                onChange={setSteps}
-              />
+              <RecipeSteps steps={steps} onChange={setSteps} />
 
               {/* Nutrition */}
               <Card>
@@ -463,25 +510,49 @@ export default function EditContentPage() {
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="calories">Ккал</Label>
-                      <Input id="calories" type="number" {...register("calories", { valueAsNumber: true })} />
+                      <Input
+                        id="calories"
+                        type="number"
+                        {...register("calories", { valueAsNumber: true })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="protein">Белки (г)</Label>
-                      <Input id="protein" type="number" step="0.1" {...register("protein", { valueAsNumber: true })} />
+                      <Input
+                        id="protein"
+                        type="number"
+                        step="0.1"
+                        {...register("protein", { valueAsNumber: true })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="fat">Жиры (г)</Label>
-                      <Input id="fat" type="number" step="0.1" {...register("fat", { valueAsNumber: true })} />
+                      <Input
+                        id="fat"
+                        type="number"
+                        step="0.1"
+                        {...register("fat", { valueAsNumber: true })}
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     <div className="space-y-2">
                       <Label htmlFor="carbs">Углеводы (г)</Label>
-                      <Input id="carbs" type="number" step="0.1" {...register("carbs", { valueAsNumber: true })} />
+                      <Input
+                        id="carbs"
+                        type="number"
+                        step="0.1"
+                        {...register("carbs", { valueAsNumber: true })}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="sugar">Сахар (г)</Label>
-                      <Input id="sugar" type="number" step="0.1" {...register("sugar", { valueAsNumber: true })} />
+                      <Input
+                        id="sugar"
+                        type="number"
+                        step="0.1"
+                        {...register("sugar", { valueAsNumber: true })}
+                      />
                     </div>
                   </div>
                 </CardContent>
@@ -489,29 +560,22 @@ export default function EditContentPage() {
 
               {/* Type-specific forms */}
               {recipeType === "food" && (
-                <FoodRecipeForm
-                  metadata={foodMetadata}
-                  onChange={setFoodMetadata}
-                />
+                <FoodRecipeForm metadata={foodMetadata} onChange={setFoodMetadata} />
               )}
 
               {recipeType === "drink" && (
-                <DrinkRecipeForm
-                  metadata={drinkMetadata}
-                  onChange={setDrinkMetadata}
-                />
+                <DrinkRecipeForm metadata={drinkMetadata} onChange={setDrinkMetadata} />
               )}
 
               {recipeType === "cocktail" && (
-                <CocktailRecipeForm
-                  metadata={cocktailMetadata}
-                  onChange={setCocktailMetadata}
-                />
+                <CocktailRecipeForm metadata={cocktailMetadata} onChange={setCocktailMetadata} />
               )}
 
               {/* Tags */}
               <Card>
-                <CardHeader><CardTitle>Дополнительно</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>Дополнительно</CardTitle>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="tags">Теги</Label>
@@ -523,11 +587,18 @@ export default function EditContentPage() {
           )}
 
           <div className="flex gap-4">
-            <Button type="button" variant="outline" onClick={() => router.back()} className="flex-1">
-              <ArrowLeft className="h-4 w-4 mr-2" />Отмена
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+              className="flex-1"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Отмена
             </Button>
             <Button type="submit" disabled={isSaving} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />{isSaving ? "Сохранение..." : "Сохранить"}
+              <Save className="h-4 w-4 mr-2" />
+              {isSaving ? "Сохранение..." : "Сохранить"}
             </Button>
           </div>
         </form>

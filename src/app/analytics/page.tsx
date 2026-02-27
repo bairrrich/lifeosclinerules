@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react"
 import { format, subDays, eachDayOfInterval } from "date-fns"
 import { ru } from "date-fns/locale"
-import { Utensils, Dumbbell, Wallet, TrendingUp, TrendingDown } from "lucide-react"
+import { Utensils, Dumbbell, Wallet, TrendingUp, TrendingDown } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -170,14 +170,14 @@ export default function AnalyticsPage() {
     const periodFinanceLogs = financeLogs.filter((log) => log.date >= startDate)
 
     // Предыдущий период
-    const prevPeriodFoodLogs = foodLogs.filter((log) => 
-      log.date >= prevStartDate && log.date <= prevEndDate
+    const prevPeriodFoodLogs = foodLogs.filter(
+      (log) => log.date >= prevStartDate && log.date <= prevEndDate
     )
-    const prevPeriodWorkoutLogs = workoutLogs.filter((log) => 
-      log.date >= prevStartDate && log.date <= prevEndDate
+    const prevPeriodWorkoutLogs = workoutLogs.filter(
+      (log) => log.date >= prevStartDate && log.date <= prevEndDate
     )
-    const prevPeriodFinanceLogs = financeLogs.filter((log) => 
-      log.date >= prevStartDate && log.date <= prevEndDate
+    const prevPeriodFinanceLogs = financeLogs.filter(
+      (log) => log.date >= prevStartDate && log.date <= prevEndDate
     )
 
     // Текущие значения
@@ -223,12 +223,15 @@ export default function AnalyticsPage() {
     }, 0)
 
     // Функция расчёта процента изменения
-    const calcChange = (current: number, prev: number): { value: number; trend: 'up' | 'down' | 'same' } => {
-      if (prev === 0) return { value: 0, trend: 'same' }
+    const calcChange = (
+      current: number,
+      prev: number
+    ): { value: number; trend: "up" | "down" | "same" } => {
+      if (prev === 0) return { value: 0, trend: "same" }
       const change = ((current - prev) / prev) * 100
       return {
         value: Math.round(change),
-        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'same'
+        trend: change > 0 ? "up" : change < 0 ? "down" : "same",
       }
     }
 
@@ -269,9 +272,7 @@ export default function AnalyticsPage() {
       <AppLayout title="Аналитика">
         <div className="container mx-auto px-4 py-6">
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">
-              Загрузка...
-            </CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
           </Card>
         </div>
       </AppLayout>
@@ -299,19 +300,23 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <Utensils className="h-4 w-4" />
                 <span className="text-sm">Калории</span>
-                {stats.caloriesTrend.trend !== 'same' && (
-                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
-                    stats.caloriesTrend.trend === 'up' ? 'text-orange-500' : 'text-green-500'
-                  }`}>
-                    {stats.caloriesTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {stats.caloriesTrend.trend !== "same" && (
+                  <span
+                    className={`ml-auto text-xs flex items-center gap-0.5 ${
+                      stats.caloriesTrend.trend === "up" ? "text-orange-500" : "text-green-500"
+                    }`}
+                  >
+                    {stats.caloriesTrend.trend === "up" ? (
+                      <TrendingUp className="h-3 w-3" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3" />
+                    )}
                     {Math.abs(stats.caloriesTrend.value)}%
                   </span>
                 )}
               </div>
               <div className="text-2xl font-bold">{stats.calories.toLocaleString()}</div>
-              <div className="text-xs text-muted-foreground">
-                ~{stats.avgCalories} ккал/день
-              </div>
+              <div className="text-xs text-muted-foreground">~{stats.avgCalories} ккал/день</div>
             </CardContent>
           </Card>
 
@@ -320,11 +325,17 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <Dumbbell className="h-4 w-4" />
                 <span className="text-sm">Тренировки</span>
-                {stats.workoutsTrend.trend !== 'same' && (
-                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
-                    stats.workoutsTrend.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                  }`}>
-                    {stats.workoutsTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {stats.workoutsTrend.trend !== "same" && (
+                  <span
+                    className={`ml-auto text-xs flex items-center gap-0.5 ${
+                      stats.workoutsTrend.trend === "up" ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {stats.workoutsTrend.trend === "up" ? (
+                      <TrendingUp className="h-3 w-3" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3" />
+                    )}
                     {Math.abs(stats.workoutsTrend.value)}%
                   </span>
                 )}
@@ -341,11 +352,17 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <TrendingUp className="h-4 w-4 text-green-500" />
                 <span className="text-sm">Доход</span>
-                {stats.incomeTrend.trend !== 'same' && (
-                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
-                    stats.incomeTrend.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                  }`}>
-                    {stats.incomeTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {stats.incomeTrend.trend !== "same" && (
+                  <span
+                    className={`ml-auto text-xs flex items-center gap-0.5 ${
+                      stats.incomeTrend.trend === "up" ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {stats.incomeTrend.trend === "up" ? (
+                      <TrendingUp className="h-3 w-3" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3" />
+                    )}
                     {Math.abs(stats.incomeTrend.value)}%
                   </span>
                 )}
@@ -362,11 +379,17 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <TrendingDown className="h-4 w-4 text-red-500" />
                 <span className="text-sm">Расход</span>
-                {stats.expenseTrend.trend !== 'same' && (
-                  <span className={`ml-auto text-xs flex items-center gap-0.5 ${
-                    stats.expenseTrend.trend === 'down' ? 'text-green-500' : 'text-red-500'
-                  }`}>
-                    {stats.expenseTrend.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {stats.expenseTrend.trend !== "same" && (
+                  <span
+                    className={`ml-auto text-xs flex items-center gap-0.5 ${
+                      stats.expenseTrend.trend === "down" ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {stats.expenseTrend.trend === "up" ? (
+                      <TrendingUp className="h-3 w-3" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3" />
+                    )}
                     {Math.abs(stats.expenseTrend.value)}%
                   </span>
                 )}
@@ -499,7 +522,10 @@ export default function AnalyticsPage() {
                         dataKey="value"
                       >
                         {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={PIE_COLORS[index % PIE_COLORS.length]}
+                          />
                         ))}
                       </Pie>
                       <Tooltip
@@ -552,7 +578,12 @@ export default function AnalyticsPage() {
                           color: "hsl(var(--foreground))",
                         }}
                       />
-                      <Bar dataKey="duration" fill={COLORS.workout} name="Минуты" radius={[4, 4, 0, 0]} />
+                      <Bar
+                        dataKey="duration"
+                        fill={COLORS.workout}
+                        name="Минуты"
+                        radius={[4, 4, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -657,8 +688,11 @@ export default function AnalyticsPage() {
                   <div className="text-2xl text-muted-foreground">=</div>
                   <div>
                     <div className="text-sm text-muted-foreground">Баланс</div>
-                    <div className={`text-xl font-bold ${stats.balance >= 0 ? "text-green-500" : "text-red-500"}`}>
-                      {stats.balance >= 0 ? "+" : ""}{stats.balance.toLocaleString()} ₽
+                    <div
+                      className={`text-xl font-bold ${stats.balance >= 0 ? "text-green-500" : "text-red-500"}`}
+                    >
+                      {stats.balance >= 0 ? "+" : ""}
+                      {stats.balance.toLocaleString()} ₽
                     </div>
                   </div>
                 </div>

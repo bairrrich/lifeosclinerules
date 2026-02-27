@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Plus, X, Quote, BookOpen } from "lucide-react"
+import { Plus, X, Quote, BookOpen } from "@/lib/icons"
 import type { BookQuote } from "@/types"
 
 interface BookQuotesProps {
@@ -65,6 +65,7 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
                   size="icon"
                   className="absolute top-2 right-2 h-6 w-6"
                   onClick={() => removeQuote(quote.id || "")}
+                  aria-label="Удалить цитату"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -118,12 +119,7 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
               >
                 Отмена
               </Button>
-              <Button
-                type="button"
-                size="sm"
-                onClick={addQuote}
-                disabled={!newQuote.trim()}
-              >
+              <Button type="button" size="sm" onClick={addQuote} disabled={!newQuote.trim()}>
                 Добавить
               </Button>
             </div>
@@ -141,9 +137,7 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
         )}
 
         {quotes.length === 0 && !isAdding && (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            Нет добавленных цитат
-          </p>
+          <p className="text-sm text-muted-foreground text-center py-4">Нет добавленных цитат</p>
         )}
       </CardContent>
     </Card>

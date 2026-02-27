@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Utensils, Dumbbell, Wallet, Search, LucideIcon } from "lucide-react"
+import { Utensils, Dumbbell, Wallet, Search } from "@/lib/icons"
+import type { LucideIcon } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"

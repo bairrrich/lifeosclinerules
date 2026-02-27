@@ -1,11 +1,29 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Copy, Trash2, Star, Utensils, Dumbbell, Droplet, Moon, Smile, Edit2, Check } from "lucide-react"
+import {
+  Plus,
+  Copy,
+  Trash2,
+  Star,
+  Utensils,
+  Dumbbell,
+  Droplet,
+  Moon,
+  Smile,
+  Edit2,
+  Check,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, createEntity, deleteEntity } from "@/lib/db"
@@ -25,7 +43,11 @@ import {
   moodOptions,
 } from "@/components/templates/template-forms"
 import { useRouter } from "next/navigation"
-import { FormActions, CreateFormActions, DeleteConfirmActions } from "@/components/shared/form-actions"
+import {
+  FormActions,
+  CreateFormActions,
+  DeleteConfirmActions,
+} from "@/components/shared/form-actions"
 
 const templateTypes = [
   { key: "food" as const, label: "Еда", icon: Utensils, color: "text-green-500" },
@@ -57,22 +79,24 @@ export default function TemplatesPage() {
   const router = useRouter()
   const [templates, setTemplates] = useState<Template[]>([])
   const [loading, setLoading] = useState(true)
-  
+
   // Состояния для создания шаблона
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [newTemplateName, setNewTemplateName] = useState("")
   const [newTemplateType, setNewTemplateType] = useState<Template["type"]>("food")
-  const [newTemplateData, setNewTemplateData] = useState<Record<string, unknown>>(getDefaultData("food"))
-  
+  const [newTemplateData, setNewTemplateData] = useState<Record<string, unknown>>(
+    getDefaultData("food")
+  )
+
   // Состояния для редактирования шаблона
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
   const [editTemplateName, setEditTemplateName] = useState("")
   const [editTemplateData, setEditTemplateData] = useState<Record<string, unknown>>({})
-  
+
   // Состояния для удаления
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  
+
   // Состояния для применения шаблона
   const [showApplyDialog, setShowApplyDialog] = useState(false)
   const [applyingTemplate, setApplyingTemplate] = useState<Template | null>(null)
@@ -97,7 +121,7 @@ export default function TemplatesPage() {
   // ========================================
   // Создание шаблона
   // ========================================
-  
+
   function openCreateDialog(type: Template["type"] = "food") {
     setNewTemplateType(type)
     setNewTemplateName("")
@@ -123,7 +147,7 @@ export default function TemplatesPage() {
   // ========================================
   // Редактирование шаблона
   // ========================================
-  
+
   function openEditDialog(template: Template) {
     setEditingTemplate(template)
     setEditTemplateName(template.name)
@@ -148,7 +172,7 @@ export default function TemplatesPage() {
   // ========================================
   // Удаление шаблона
   // ========================================
-  
+
   function openDeleteDialog(template: Template) {
     setEditingTemplate(template)
     setShowDeleteDialog(true)
@@ -156,9 +180,9 @@ export default function TemplatesPage() {
 
   async function deleteTemplate() {
     if (!editingTemplate) return
-    
+
     await deleteEntity(db.templates, editingTemplate.id)
-    
+
     setShowDeleteDialog(false)
     setShowEditDialog(false)
     setEditingTemplate(null)
@@ -168,7 +192,7 @@ export default function TemplatesPage() {
   // ========================================
   // Избранное
   // ========================================
-  
+
   async function toggleFavorite(template: Template) {
     await db.templates.update(template.id, { is_favorite: !template.is_favorite })
     loadTemplates()
@@ -177,11 +201,11 @@ export default function TemplatesPage() {
   // ========================================
   // Применение шаблона
   // ========================================
-  
+
   async function useTemplate(template: Template) {
     // Увеличиваем счётчик использований
     await db.templates.update(template.id, { use_count: (template.use_count || 0) + 1 })
-    
+
     const now = new Date()
     const today = now.toISOString().split("T")[0]
     const time = now.toTimeString().slice(0, 5)
@@ -205,7 +229,7 @@ export default function TemplatesPage() {
           })
           break
         }
-        
+
         case "workout": {
           const data = template.data as unknown as WorkoutTemplateData
           await createEntity(db.logs, {
@@ -228,7 +252,7 @@ export default function TemplatesPage() {
           })
           break
         }
-        
+
         case "water": {
           const data = template.data as unknown as WaterTemplateData
           await createEntity(db.waterLogs, {
@@ -237,7 +261,7 @@ export default function TemplatesPage() {
             time: time,
             type: data.type || "water",
           } as WaterLog)
-          
+
           // Обновляем цель по воде
           const goal = await db.goals.where("type").equals("water").first()
           if (goal) {
@@ -247,7 +271,7 @@ export default function TemplatesPage() {
           }
           break
         }
-        
+
         case "sleep": {
           const data = template.data as unknown as SleepTemplateData
           // Расчёт длительности
@@ -257,7 +281,7 @@ export default function TemplatesPage() {
           let endMinutes = endH * 60 + endM
           if (endMinutes < startMinutes) endMinutes += 24 * 60
           const duration = endMinutes - startMinutes
-          
+
           await createEntity(db.sleepLogs, {
             date: today,
             start_time: data.start_time,
@@ -268,7 +292,7 @@ export default function TemplatesPage() {
           } as SleepLog)
           break
         }
-        
+
         case "mood": {
           const data = template.data as unknown as MoodTemplateData
           await createEntity(db.moodLogs, {
@@ -282,11 +306,11 @@ export default function TemplatesPage() {
           break
         }
       }
-      
+
       setApplySuccess(true)
       setApplyingTemplate(template)
       setShowApplyDialog(true)
-      
+
       loadTemplates()
     } catch (error) {
       console.error("Failed to apply template:", error)
@@ -295,16 +319,16 @@ export default function TemplatesPage() {
   }
 
   const getTypeInfo = (type: Template["type"]) => {
-    return templateTypes.find(t => t.key === type) || templateTypes[0]
+    return templateTypes.find((t) => t.key === type) || templateTypes[0]
   }
 
   const groupedTemplates = {
-    favorite: templates.filter(t => t.is_favorite),
-    food: templates.filter(t => t.type === "food" && !t.is_favorite),
-    workout: templates.filter(t => t.type === "workout" && !t.is_favorite),
-    water: templates.filter(t => t.type === "water" && !t.is_favorite),
-    sleep: templates.filter(t => t.type === "sleep" && !t.is_favorite),
-    mood: templates.filter(t => t.type === "mood" && !t.is_favorite),
+    favorite: templates.filter((t) => t.is_favorite),
+    food: templates.filter((t) => t.type === "food" && !t.is_favorite),
+    workout: templates.filter((t) => t.type === "workout" && !t.is_favorite),
+    water: templates.filter((t) => t.type === "water" && !t.is_favorite),
+    sleep: templates.filter((t) => t.type === "sleep" && !t.is_favorite),
+    mood: templates.filter((t) => t.type === "mood" && !t.is_favorite),
   }
 
   // Рендер формы в зависимости от типа
@@ -355,7 +379,7 @@ export default function TemplatesPage() {
   // Получить краткое описание данных шаблона
   const getTemplateSummary = (template: Template): string => {
     const data = template.data as Record<string, unknown>
-    
+
     switch (template.type) {
       case "food": {
         const d = data as unknown as FoodTemplateData
@@ -381,7 +405,7 @@ export default function TemplatesPage() {
       }
       case "mood": {
         const d = data as unknown as MoodTemplateData
-        const moodInfo = moodOptions.find(m => m.value === d.mood)
+        const moodInfo = moodOptions.find((m) => m.value === d.mood)
         return `${moodInfo?.emoji} ${moodInfo?.label}`
       }
       default:
@@ -412,7 +436,9 @@ export default function TemplatesPage() {
                 <Copy className="h-8 w-8 text-dark-lighter" />
               </div>
               <h3 className="text-lg font-medium text-dark mb-2">Нет шаблонов</h3>
-              <p className="text-dark-lighter text-sm mb-4">Создайте шаблоны для быстрого добавления частых записей</p>
+              <p className="text-dark-lighter text-sm mb-4">
+                Создайте шаблоны для быстрого добавления частых записей
+              </p>
               <Button onClick={() => openCreateDialog()}>
                 <Plus className="h-4 w-4 mr-2" />
                 Создать первый шаблон
@@ -428,7 +454,7 @@ export default function TemplatesPage() {
                     Избранное
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {groupedTemplates.favorite.map(template => {
+                    {groupedTemplates.favorite.map((template) => {
                       const typeInfo = getTypeInfo(template.type)
                       const Icon = typeInfo.icon
                       return (
@@ -453,11 +479,11 @@ export default function TemplatesPage() {
                                 <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                               </Button>
                             </div>
-                            
+
                             <p className="text-sm text-dark-lighter mb-3">
                               {getTemplateSummary(template)}
                             </p>
-                            
+
                             <div className="flex items-center justify-between">
                               <span className="text-xs text-dark-lighter">
                                 Использований: {template.use_count || 0}
@@ -497,10 +523,12 @@ export default function TemplatesPage() {
               )}
 
               {/* По категориям */}
-              {templateTypes.map(type => {
-                const items = groupedTemplates[type.key as keyof typeof groupedTemplates] as Template[]
+              {templateTypes.map((type) => {
+                const items = groupedTemplates[
+                  type.key as keyof typeof groupedTemplates
+                ] as Template[]
                 if (items.length === 0) return null
-                
+
                 const Icon = type.icon
                 return (
                   <div key={type.key}>
@@ -509,17 +537,13 @@ export default function TemplatesPage() {
                         <Icon className={`h-5 w-5 ${type.color}`} />
                         {type.label}
                       </h2>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openCreateDialog(type.key)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => openCreateDialog(type.key)}>
                         <Plus className="h-4 w-4 mr-1" />
                         Добавить
                       </Button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {items.map(template => {
+                      {items.map((template) => {
                         const typeInfo = getTypeInfo(template.type)
                         const Icon = typeInfo.icon
                         return (
@@ -541,14 +565,16 @@ export default function TemplatesPage() {
                                   className="h-8 w-8"
                                   onClick={() => toggleFavorite(template)}
                                 >
-                                  <Star className={`h-4 w-4 ${template.is_favorite ? "fill-yellow-500 text-yellow-500" : ""}`} />
+                                  <Star
+                                    className={`h-4 w-4 ${template.is_favorite ? "fill-yellow-500 text-yellow-500" : ""}`}
+                                  />
                                 </Button>
                               </div>
-                              
+
                               <p className="text-sm text-dark-lighter mb-3">
                                 {getTemplateSummary(template)}
                               </p>
-                              
+
                               <div className="flex items-center justify-between">
                                 <span className="text-xs text-dark-lighter">
                                   Использований: {template.use_count || 0}
@@ -611,7 +637,7 @@ export default function TemplatesPage() {
             <div className="space-y-2">
               <Label>Тип</Label>
               <div className="grid grid-cols-5 gap-2">
-                {templateTypes.map(type => {
+                {templateTypes.map((type) => {
                   const Icon = type.icon
                   return (
                     <button
@@ -697,7 +723,8 @@ export default function TemplatesPage() {
             <DialogTitle>Удалить шаблон?</DialogTitle>
           </DialogHeader>
           <p className="py-4 text-muted-foreground">
-            Вы уверены, что хотите удалить шаблон "{editingTemplate?.name}"? Это действие нельзя отменить.
+            Вы уверены, что хотите удалить шаблон "{editingTemplate?.name}"? Это действие нельзя
+            отменить.
           </p>
           <DeleteConfirmActions
             onCancel={() => setShowDeleteDialog(false)}

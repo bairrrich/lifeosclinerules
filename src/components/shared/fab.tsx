@@ -22,7 +22,7 @@ import {
   Sparkles,
   ShoppingBag,
   HeartPulse,
-} from "lucide-react"
+} from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { QuickMoodDialog } from "./quick-mood-dialog"
 
