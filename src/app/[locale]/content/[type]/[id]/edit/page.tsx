@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { ArrowLeft, Save } from "@/lib/icons"
+import { useTranslations } from "next-intl"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -21,7 +22,6 @@ import {
   FoodRecipeForm,
   DrinkRecipeForm,
   CocktailRecipeForm,
-  recipeTypeLabels,
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
@@ -84,6 +84,7 @@ export default function EditContentPage() {
   const params = useParams()
   const type = params.type as ContentType
   const id = params.id as string
+  const t = useTranslations("recipes")
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -404,13 +405,13 @@ export default function EditContentPage() {
                   >
                     <TabsList className="grid grid-cols-3">
                       <TabsTrigger value="food" className={recipeTypeColors["food"]}>
-                        {recipeTypeLabels["food"]}
+                        {t("types.food")}
                       </TabsTrigger>
                       <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
-                        {recipeTypeLabels["drink"]}
+                        {t("types.drink")}
                       </TabsTrigger>
                       <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
-                        {recipeTypeLabels["cocktail"]}
+                        {t("types.cocktail")}
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>

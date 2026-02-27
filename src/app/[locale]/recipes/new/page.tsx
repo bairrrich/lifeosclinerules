@@ -21,7 +21,6 @@ import {
   FoodRecipeForm,
   DrinkRecipeForm,
   CocktailRecipeForm,
-  recipeTypeLabels,
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
@@ -35,9 +34,9 @@ import type {
 } from "@/types"
 import { ContentType, RecipeType as RecipeTypeEnum } from "@/types"
 
-// Form schema
+// Form schema - сообщение об ошибке будет установлено в компоненте
 const baseRecipeSchema = z.object({
-  title: z.string().min(1, "Введите название"),
+  title: z.string().min(1),
   description: z.string().optional(),
   recipe_type: z.enum(["food", "drink", "cocktail"]),
   servings: z.number().optional(),
@@ -137,7 +136,7 @@ export default function NewRecipePage() {
     defaultValues: {
       recipe_type: "food",
       servings: 2,
-      serving_unit: "порции",
+      serving_unit: t("fields.servingUnitPlaceholder"),
     },
   })
 
@@ -236,13 +235,13 @@ export default function NewRecipePage() {
               >
                 <TabsList className="grid grid-cols-3">
                   <TabsTrigger value="food" className={recipeTypeColors["food"]}>
-                    {recipeTypeLabels["food"]}
+                    {t("types.food")}
                   </TabsTrigger>
                   <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
-                    {recipeTypeLabels["drink"]}
+                    {t("types.drink")}
                   </TabsTrigger>
                   <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
-                    {recipeTypeLabels["cocktail"]}
+                    {t("types.cocktail")}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>

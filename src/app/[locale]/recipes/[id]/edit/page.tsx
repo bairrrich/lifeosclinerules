@@ -19,7 +19,6 @@ import {
   FoodRecipeForm,
   DrinkRecipeForm,
   CocktailRecipeForm,
-  recipeTypeLabels,
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
@@ -289,13 +288,13 @@ export default function EditRecipePage() {
               >
                 <TabsList className="grid grid-cols-3">
                   <TabsTrigger value="food" className={recipeTypeColors["food"]}>
-                    {recipeTypeLabels["food"]}
+                    {t("types.food")}
                   </TabsTrigger>
                   <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
-                    {recipeTypeLabels["drink"]}
+                    {t("types.drink")}
                   </TabsTrigger>
                   <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
-                    {recipeTypeLabels["cocktail"]}
+                    {t("types.cocktail")}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>

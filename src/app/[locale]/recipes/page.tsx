@@ -11,16 +11,15 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase } from "@/lib/db"
-import { recipeTypeLabels, recipeTypeColors } from "@/components/recipes"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
 import { RecipeType } from "@/types"
 
-// Типы фильтров
-const recipeTypeFilters: { value: RecipeType | "all"; label: string; icon: typeof ChefHat }[] = [
-  { value: "all", label: "Все", icon: ChefHat },
-  { value: RecipeType.FOOD, label: "Еда", icon: ChefHat },
-  { value: RecipeType.DRINK, label: "Напитки", icon: Coffee },
-  { value: RecipeType.COCKTAIL, label: "Коктейли", icon: Martini },
+// Типы фильтров - label будет получен через t()
+const recipeTypeFilters: { value: RecipeType | "all"; icon: typeof ChefHat }[] = [
+  { value: "all", icon: ChefHat },
+  { value: RecipeType.FOOD, icon: ChefHat },
+  { value: RecipeType.DRINK, icon: Coffee },
+  { value: RecipeType.COCKTAIL, icon: Martini },
 ]
 
 interface RecipeWithDetails extends RecipeContentExtended {

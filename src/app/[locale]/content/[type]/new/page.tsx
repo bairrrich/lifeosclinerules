@@ -21,7 +21,6 @@ import {
   FoodRecipeForm,
   DrinkRecipeForm,
   CocktailRecipeForm,
-  recipeTypeLabels,
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
@@ -64,6 +63,7 @@ export default function NewRecipePage() {
   const params = useParams()
   const type = params.type as ContentType
   const t = useTranslations("content")
+  const tRecipes = useTranslations("recipes")
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -188,13 +188,13 @@ export default function NewRecipePage() {
               >
                 <TabsList className="grid grid-cols-3">
                   <TabsTrigger value="food" className={recipeTypeColors["food"]}>
-                    {recipeTypeLabels["food"]}
+                    {tRecipes("types.food")}
                   </TabsTrigger>
                   <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
-                    {recipeTypeLabels["drink"]}
+                    {tRecipes("types.drink")}
                   </TabsTrigger>
                   <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
-                    {recipeTypeLabels["cocktail"]}
+                    {tRecipes("types.cocktail")}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
