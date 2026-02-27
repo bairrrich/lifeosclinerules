@@ -655,7 +655,10 @@
     },
     "edit": {
       "title": "Edit Recipe",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
     },
     "new": {
       "title": "New Recipe"

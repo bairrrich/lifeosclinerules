@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Plus, X, Quote, BookOpen } from "@/lib/icons"
 import type { BookQuote } from "@/types"
 
@@ -16,6 +16,8 @@ interface BookQuotesProps {
 }
 
 export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
+  const t = useTranslations("books.quotes")
+  const tCommon = useTranslations("common")
   const [newQuote, setNewQuote] = useState("")
   const [newPage, setNewPage] = useState("")
   const [isAdding, setIsAdding] = useState(false)
@@ -47,7 +49,7 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Quote className="h-5 w-5" />
-          Цитаты
+          {t("title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -65,7 +67,7 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
                   size="icon"
                   className="absolute top-2 right-2 h-6 w-6"
                   onClick={() => removeQuote(quote.id || "")}
-                  aria-label="Удалить цитату"
+                  aria-label={tCommon("delete")}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -73,7 +75,9 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
                 {quote.page && (
                   <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                     <BookOpen className="h-3 w-3" />
-                    <span>стр. {quote.page}</span>
+                    <span>
+                      {t("page")} {quote.page}
+                    </span>
                   </div>
                 )}
               </div>
@@ -85,10 +89,10 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
         {isAdding ? (
           <div className="space-y-3 p-3 border rounded-lg">
             <div className="space-y-2">
-              <Label htmlFor="quote_text">Текст цитаты</Label>
+              <Label htmlFor="quote_text">{t("text")}</Label>
               <Textarea
                 id="quote_text"
-                placeholder="Введите цитату..."
+                placeholder={t("text")}
                 value={newQuote}
                 onChange={(e) => setNewQuote(e.target.value)}
                 className="min-h-[80px]"
@@ -96,7 +100,9 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="quote_page">Страница (опц.)</Label>
+              <Label htmlFor="quote_page">
+                {t("page")} ({tCommon("optional").toLowerCase()})
+              </Label>
               <Input
                 id="quote_page"
                 type="number"
@@ -117,10 +123,10 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
                   setNewPage("")
                 }}
               >
-                Отмена
+                {tCommon("cancel")}
               </Button>
               <Button type="button" size="sm" onClick={addQuote} disabled={!newQuote.trim()}>
-                Добавить
+                {tCommon("add")}
               </Button>
             </div>
           </div>
@@ -132,12 +138,12 @@ export function BookQuotes({ quotes, onChange }: BookQuotesProps) {
             onClick={() => setIsAdding(true)}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Добавить цитату
+            {t("addQuote")}
           </Button>
         )}
 
         {quotes.length === 0 && !isAdding && (
-          <p className="text-sm text-muted-foreground text-center py-4">Нет добавленных цитат</p>
+          <p className="text-sm text-muted-foreground text-center py-4">{t("noQuotes")}</p>
         )}
       </CardContent>
     </Card>

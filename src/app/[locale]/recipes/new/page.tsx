@@ -363,7 +363,7 @@ export default function NewRecipePage() {
               <div className="grid grid-cols-5 gap-3">
                 <div className="space-y-2">
                   <Label htmlFor="calories" className="text-xs">
-                    {t("recipes.nutrition.calories")}
+                    {t("nutrition.calories")}
                   </Label>
                   <Input
                     id="calories"
@@ -374,7 +374,7 @@ export default function NewRecipePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="protein" className="text-xs">
-                    {t("recipes.nutrition.protein")}
+                    {t("nutrition.protein")}
                   </Label>
                   <Input
                     id="protein"
@@ -386,7 +386,7 @@ export default function NewRecipePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="fat" className="text-xs">
-                    {t("recipes.nutrition.fat")}
+                    {t("nutrition.fat")}
                   </Label>
                   <Input
                     id="fat"
@@ -398,7 +398,7 @@ export default function NewRecipePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="carbs" className="text-xs">
-                    {t("recipes.nutrition.carbs")}
+                    {t("nutrition.carbs")}
                   </Label>
                   <Input
                     id="carbs"
@@ -410,7 +410,7 @@ export default function NewRecipePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="sugar" className="text-xs">
-                    {t("recipes.nutrition.sugar")}
+                    {t("nutrition.sugar")}
                   </Label>
                   <Input
                     id="sugar"

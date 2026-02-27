@@ -298,7 +298,7 @@ export default function BookDetailPage() {
                   </div>
                   <div>
                     <span className="text-muted-foreground">{t("fields.language")}: </span>
-                    <span>{book.language}</span>
+                    <span>{t(`languages.${book.language}`) || book.language}</span>
                   </div>
                 </div>
 

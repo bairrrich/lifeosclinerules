@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,6 +8,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { UserBook, ReadingStatus, BookFormat } from "@/types"
+
+// Локализованные placeholder для дат
+const datePlaceholders: Record<string, string> = {
+  ru: "дд.мм.гггг",
+  en: "mm/dd/yyyy",
+}
 
 interface UserBookFormProps {
   data?: Partial<UserBook>
@@ -119,21 +125,45 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="started_at">{t("userBook.startedAt")}</Label>
-              <Input
-                id="started_at"
-                type="date"
-                value={data?.started_at?.split("T")[0] || ""}
-                onChange={(e) => updateField("started_at", e.target.value || undefined)}
-              />
+              <div className="relative">
+                <Input
+                  id="started_at"
+                  type="date"
+                  value={data?.started_at?.split("T")[0] || ""}
+                  onChange={(e) => updateField("started_at", e.target.value || undefined)}
+                  className={data?.started_at ? "" : "text-muted-foreground"}
+                />
+                {data?.started_at && (
+                  <button
+                    type="button"
+                    onClick={() => updateField("started_at", undefined)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="finished_at">{t("userBook.finishedAt")}</Label>
-              <Input
-                id="finished_at"
-                type="date"
-                value={data?.finished_at?.split("T")[0] || ""}
-                onChange={(e) => updateField("finished_at", e.target.value || undefined)}
-              />
+              <div className="relative">
+                <Input
+                  id="finished_at"
+                  type="date"
+                  value={data?.finished_at?.split("T")[0] || ""}
+                  onChange={(e) => updateField("finished_at", e.target.value || undefined)}
+                  className={data?.finished_at ? "" : "text-muted-foreground"}
+                />
+                {data?.finished_at && (
+                  <button
+                    type="button"
+                    onClick={() => updateField("finished_at", undefined)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>

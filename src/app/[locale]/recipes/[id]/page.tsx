@@ -291,35 +291,25 @@ export default function RecipeDetailPage() {
                       <Flame className="h-4 w-4 text-orange-500" />
                       {recipe.calories || "-"}
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {t("recipes.nutrition.calories")}
-                    </div>
+                    <div className="text-xs text-muted-foreground">{t("nutrition.calories")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-semibold">{recipe.protein || "-"}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {t("recipes.nutrition.protein")}
-                    </div>
+                    <div className="text-xs text-muted-foreground">{t("nutrition.protein")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-semibold">{recipe.fat || "-"}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {t("recipes.nutrition.fat")}
-                    </div>
+                    <div className="text-xs text-muted-foreground">{t("nutrition.fat")}</div>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-center mt-2">
                   <div>
                     <div className="text-lg font-semibold">{recipe.carbs || "-"}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {t("recipes.nutrition.carbs")}
-                    </div>
+                    <div className="text-xs text-muted-foreground">{t("nutrition.carbs")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-semibold">{recipe.sugar || "-"}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {t("recipes.nutrition.sugar")}
-                    </div>
+                    <div className="text-xs text-muted-foreground">{t("nutrition.sugar")}</div>
                   </div>
                 </div>
               </CardContent>
@@ -334,32 +324,26 @@ export default function RecipeDetailPage() {
                 <CardContent className="space-y-2">
                   {recipe.cocktail_metadata.base_spirit && (
                     <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {t("recipes.cocktailDetails.base")}:{" "}
-                      </span>
+                      <span className="text-muted-foreground">{t("cocktailDetails.base")}: </span>
                       {recipe.cocktail_metadata.base_spirit}
                     </div>
                   )}
                   {recipe.cocktail_metadata.cocktail_method && (
                     <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {t("recipes.cocktailDetails.method")}:{" "}
-                      </span>
+                      <span className="text-muted-foreground">{t("cocktailDetails.method")}: </span>
                       {recipe.cocktail_metadata.cocktail_method}
                     </div>
                   )}
                   {recipe.cocktail_metadata.glass_type && (
                     <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {t("recipes.cocktailDetails.glass")}:{" "}
-                      </span>
+                      <span className="text-muted-foreground">{t("cocktailDetails.glass")}: </span>
                       {recipe.cocktail_metadata.glass_type}
                     </div>
                   )}
                   {recipe.cocktail_metadata.alcohol_percent && (
                     <div className="text-sm">
                       <span className="text-muted-foreground">
-                        {t("recipes.cocktailDetails.strength")}:{" "}
+                        {t("cocktailDetails.strength")}:{" "}
                       </span>
                       {recipe.cocktail_metadata.alcohol_percent}%
                     </div>
