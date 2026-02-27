@@ -1,10 +1,10 @@
 export {
   SettingsProvider,
   useSettings,
-  accountTypes,
-  unitTypes,
-  logTypeLabels,
-  itemTypeLabels,
+  useAccountTypes,
+  useUnitTypes,
+  useLogTypeLabels,
+  useItemTypeLabels,
 } from "./settings-context"
 export { ThemeSwitcher } from "./theme-switcher"
 export { LanguageSwitcher } from "./language-switcher"

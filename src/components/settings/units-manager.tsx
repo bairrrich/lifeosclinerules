@@ -7,12 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useSettings, unitTypes } from "./settings-context"
+import { useSettings, useUnitTypes } from "./settings-context"
 import type { Unit } from "@/types"
 
 export function UnitsManager() {
   const t = useTranslations("settings")
   const tCommon = useTranslations("common")
+  const unitTypes = useUnitTypes()
   const { units, editingUnit, setEditingUnit, createUnit, updateUnitData, deleteUnitData } =
     useSettings()
 

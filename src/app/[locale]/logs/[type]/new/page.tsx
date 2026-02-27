@@ -23,11 +23,7 @@ import {
   categoryColors,
   financeTypeColors,
   typeLabels,
-  foodCategoryOrder,
-  workoutCategoryOrder,
   getSubcategoryLabel,
-  financeCategories,
-  suppliers,
 } from "@/components/logs"
 import type {
   LogType,
@@ -42,6 +38,23 @@ import type {
   YogaSubcategory,
   WorkoutGoal,
 } from "@/types"
+
+// ============================================
+// Фиксированные типы для питания и тренировок
+// ============================================
+
+export const foodTypeOptions = [
+  { value: "breakfast", label: "Breakfast" },
+  { value: "lunch", label: "Lunch" },
+  { value: "dinner", label: "Dinner" },
+  { value: "snack", label: "Snack" },
+]
+
+export const workoutTypeOptions = [
+  { value: "strength", label: "Strength" },
+  { value: "cardio", label: "Cardio" },
+  { value: "yoga", label: "Yoga" },
+]
 
 // Form schemas
 const baseLogSchema = z.object({
@@ -154,36 +167,34 @@ export default function NewLogPage() {
     } as FormData,
   })
 
-  // Получаем текущую категорию тренировки
-  const selectedWorkoutCategory = categories.find((c) => c.id === selectedCategoryId)?.name || ""
+  // Получаем текущий тип тренировки (фиксированный)
+  const selectedWorkoutCategory =
+    workoutTypeOptions.find((opt) => opt.value === selectedCategoryId)?.label || ""
 
   useEffect(() => {
     async function loadData() {
       await initializeDatabase()
-      const cats = await getCategoriesByType(type)
 
-      // Сортируем категории в нужном порядке
-      let sortedCats = cats
+      // Для питания и тренировок используем фиксированные типы
       if (type === "food") {
-        const orderCats = foodCategoryOrder
-          .map((name) => cats.find((c) => c.name === name))
-          .filter(Boolean) as Category[]
-        const remainingCats = cats.filter((c) => !foodCategoryOrder.includes(c.name))
-        sortedCats = [...orderCats, ...remainingCats]
-      } else if (type === "workout") {
-        const orderCats = workoutCategoryOrder
-          .map((name) => cats.find((c) => c.name === name))
-          .filter(Boolean) as Category[]
-        const remainingCats = cats.filter((c) => !workoutCategoryOrder.includes(c.name))
-        sortedCats = [...orderCats, ...remainingCats]
+        setSelectedCategoryId(foodTypeOptions[0].value)
+        setValue("category_id", foodTypeOptions[0].value)
+        return
       }
 
-      setCategories(sortedCats)
+      if (type === "workout") {
+        setSelectedCategoryId(workoutTypeOptions[0].value)
+        setValue("category_id", workoutTypeOptions[0].value)
+        return
+      }
 
-      if (sortedCats.length > 0) {
-        const defaultCat = sortedCats[0]
-        setSelectedCategoryId(defaultCat.id)
-        setValue("category_id", defaultCat.id)
+      // Для финансов загружаем категории из базы
+      const cats = await getCategoriesByType(type)
+      setCategories(cats)
+
+      if (cats.length > 0) {
+        setSelectedCategoryId(cats[0].id)
+        setValue("category_id", cats[0].id)
       }
 
       // Загружаем аккаунты для финансов
@@ -409,34 +420,54 @@ export default function NewLogPage() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Tabs для категорий питания и тренировок */}
-              {(type === "food" || type === "workout") && categories.length > 0 && (
+              {/* Tabs для типов питания и тренировок (фиксированные, не редактируются) */}
+              {type === "food" && (
                 <div className="space-y-2">
-                  <Label>{t("fields.category")}</Label>
+                  <Label>{t("fields.type")}</Label>
+                  <Tabs
+                    value={selectedCategoryId}
+                    onValueChange={(value) => {
+                      setSelectedCategoryId(value)
+                      setValue("category_id", value)
+                    }}
+                  >
+                    <TabsList className="grid grid-cols-4">
+                      {foodTypeOptions.map((opt) => (
+                        <TabsTrigger
+                          key={opt.value}
+                          value={opt.value}
+                          className={categoryColors[opt.label] || ""}
+                        >
+                          {opt.label}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </Tabs>
+                </div>
+              )}
+
+              {type === "workout" && (
+                <div className="space-y-2">
+                  <Label>{t("fields.type")}</Label>
                   <Tabs
                     value={selectedCategoryId}
                     onValueChange={(value) => {
                       setSelectedCategoryId(value)
                       setValue("category_id", value)
                       // Сбрасываем подкатегорию при смене типа тренировки
-                      if (type === "workout") {
-                        setWorkoutSubcategory("")
-                        setWorkoutEquipment("")
-                        setWorkoutGoal("")
-                      }
+                      setWorkoutSubcategory("")
+                      setWorkoutEquipment("")
+                      setWorkoutGoal("")
                     }}
                   >
-                    <TabsList
-                      className="grid w-full"
-                      style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}
-                    >
-                      {categories.map((cat) => (
+                    <TabsList className="grid grid-cols-3">
+                      {workoutTypeOptions.map((opt) => (
                         <TabsTrigger
-                          key={cat.id}
-                          value={cat.id}
-                          className={categoryColors[cat.name] || ""}
+                          key={opt.value}
+                          value={opt.value}
+                          className={categoryColors[opt.label] || ""}
                         >
-                          {cat.name}
+                          {opt.label}
                         </TabsTrigger>
                       ))}
                     </TabsList>

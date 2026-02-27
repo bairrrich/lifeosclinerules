@@ -293,14 +293,13 @@ const FINANCE_EXPENSE = [
 // Seed Functions
 // ============================================
 
-async function seedCategories(): Promise<Category[]> {
-  const existingCategories = await db.categories.count()
-  if (existingCategories > 0) {
-    return db.categories.toArray()
-  }
+export async function seedCategories(): Promise<Category[]> {
+  // Получаем все существующие категории
+  const existingCategories = await db.categories.toArray()
+  const existingKeys = new Set(existingCategories.map((c) => `${c.type}-${c.name}`))
 
   const now = getTimestamp()
-  const categories: Category[] = [
+  const allCategories: Category[] = [
     // Питание
     {
       id: uuid(),
@@ -451,8 +450,15 @@ async function seedCategories(): Promise<Category[]> {
     },
   ]
 
-  await db.categories.bulkAdd(categories)
-  return categories
+  // Фильтруем только те категории, которых ещё нет
+  const newCategories = allCategories.filter((cat) => !existingKeys.has(`${cat.type}-${cat.name}`))
+
+  if (newCategories.length > 0) {
+    await db.categories.bulkAdd(newCategories)
+  }
+
+  // Возвращаем все категории (и существующие, и новые)
+  return [...existingCategories, ...newCategories]
 }
 
 async function seedTags(): Promise<void> {
@@ -471,7 +477,7 @@ async function seedTags(): Promise<void> {
   await db.tags.bulkAdd(tags)
 }
 
-async function seedUnits(): Promise<void> {
+export async function seedUnits(): Promise<void> {
   const existingUnits = await db.units.count()
   if (existingUnits > 0) return
 

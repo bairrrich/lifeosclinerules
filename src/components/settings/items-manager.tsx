@@ -3,10 +3,11 @@
 import { FolderOpen } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useTranslations } from "next-intl"
-import { itemTypeLabels } from "./settings-context"
+import { useItemTypeLabels } from "./settings-context"
 
 export function ItemsManager() {
   const t = useTranslations("settings")
+  const itemTypeLabels = useItemTypeLabels()
 
   return (
     <Card>

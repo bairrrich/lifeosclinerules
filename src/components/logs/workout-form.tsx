@@ -744,7 +744,7 @@ export function WorkoutForm({
           )}
 
           {/* Уровень и фокус - только для йоги */}
-          {selectedCategory === "Йога" && (
+          {selectedCategory === "Yoga" && (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>{t("workout.level")}</Label>

@@ -3,13 +3,14 @@
 import { useTranslations } from "next-intl"
 import { Book, ChefHat, BookOpen, CheckCircle, Bookmark } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { useSettings, logTypeLabels } from "./settings-context"
+import { useSettings, useLogTypeLabels } from "./settings-context"
 import { LogType } from "@/types"
 
 export function DataStats() {
   const t = useTranslations("settings")
   const tCommon = useTranslations("common")
   const { stats } = useSettings()
+  const logTypeLabels = useLogTypeLabels()
 
   return (
     <Card>

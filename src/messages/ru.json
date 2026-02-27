@@ -133,9 +133,6 @@
     "signup": "Зарегистрироваться",
     "noAccountSignup": "Нет аккаунта? Зарегистрироваться",
     "hasAccountLogin": "Уже есть аккаунт? Войти",
-    "records": "Записей",
-    "catalog": "Каталог",
-    "content": "Контент",
     "logsByType": "Записи по типам",
     "reading": "Читаю",
     "completed": "Прочитано",
@@ -406,6 +403,12 @@
       "icon": "Иконка (emoji)",
       "name": "Название",
       "type": "Тип",
+      "financeType": "Тип финансов",
+      "financeTypes": {
+        "income": "Доход",
+        "expense": "Расход",
+        "transfer": "Перевод"
+      },
       "categoryTypes": {
         "food": "Питание",
         "workout": "Тренировки",
@@ -877,6 +880,7 @@
     "fields": {
       "date": "Дата",
       "time": "Время",
+      "type": "Тип",
       "title": "Название",
       "category": "Категория",
       "quantity": "Количество",

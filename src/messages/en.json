@@ -87,9 +87,6 @@
     "signup": "Sign Up",
     "noAccountSignup": "No account? Sign up",
     "hasAccountLogin": "Already have an account? Log in",
-    "records": "Records",
-    "catalog": "Catalog",
-    "content": "Content",
     "logsByType": "Logs by Type",
     "reading": "Reading",
     "completed": "Completed",
@@ -397,6 +394,12 @@
       "icon": "Icon (emoji)",
       "name": "Name",
       "type": "Type",
+      "financeType": "Finance Type",
+      "financeTypes": {
+        "income": "Income",
+        "expense": "Expense",
+        "transfer": "Transfer"
+      },
       "categoryTypes": {
         "food": "Nutrition",
         "workout": "Workouts",
@@ -874,7 +877,19 @@
       "unit": "Unit",
       "value": "Value",
       "notes": "Notes",
-      "tags": "Tags"
+      "tags": "Tags",
+      "type": "Type"
+    },
+    "foodTypes": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "workoutTypes": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "yoga": "Yoga"
     },
     "edit": {
       "title": "Edit: {type}",

@@ -7,12 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useSettings, accountTypes } from "./settings-context"
+import { NativeSelect } from "@/components/ui/native-select"
+import { useSettings, useAccountTypes } from "./settings-context"
 import type { Account } from "@/types"
 
 export function AccountsManager() {
   const t = useTranslations("settings")
   const tCommon = useTranslations("common")
+  const accountTypes = useAccountTypes()
   const {
     accounts,
     editingAccount,
@@ -20,13 +22,18 @@ export function AccountsManager() {
     createAccount,
     updateAccountData,
     deleteAccountData,
+    units,
   } = useSettings()
+
+  // Фильтруем валюты из единиц измерения (тип "money")
+  const currencyUnits = units.filter((u) => u.type === "money")
+  const defaultCurrency = currencyUnits[0]?.abbreviation || "RUB"
 
   const [newAccount, setNewAccount] = useState({
     name: "",
     type: "card" as Account["type"],
     balance: 0,
-    currency: "RUB",
+    currency: defaultCurrency,
   })
 
   const handleCreate = async () => {
@@ -37,7 +44,7 @@ export function AccountsManager() {
       balance: newAccount.balance,
       currency: newAccount.currency,
     })
-    setNewAccount({ name: "", type: "card", balance: 0, currency: "RUB" })
+    setNewAccount({ name: "", type: "card", balance: 0, currency: defaultCurrency })
   }
 
   const handleUpdate = async () => {
@@ -135,14 +142,19 @@ export function AccountsManager() {
                           <Label htmlFor={`edit-acc-currency-${account.id}`} className="sr-only">
                             {t("accounts.currency")}
                           </Label>
-                          <Input
+                          <NativeSelect
                             id={`edit-acc-currency-${account.id}`}
                             value={editingAccount.currency}
                             onChange={(e) =>
                               setEditingAccount({ ...editingAccount, currency: e.target.value })
                             }
-                            placeholder={t("accounts.currency")}
-                          />
+                          >
+                            {currencyUnits.map((unit) => (
+                              <option key={unit.id} value={unit.abbreviation}>
+                                {unit.name} ({unit.abbreviation})
+                              </option>
+                            ))}
+                          </NativeSelect>
                         </div>
                       </div>
                       <div className="flex gap-2">
@@ -164,7 +176,8 @@ export function AccountsManager() {
                             {accountType?.label} • {account.name}
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            Баланс: {account.balance.toLocaleString()} {account.currency}
+                            {t("accounts.balance")}: {account.balance.toLocaleString()}{" "}
+                            {account.currency}
                           </div>
                         </div>
                       </div>
@@ -250,12 +263,17 @@ export function AccountsManager() {
               <Label htmlFor="new-acc-currency" className="sr-only">
                 {t("accounts.currency")}
               </Label>
-              <Input
+              <NativeSelect
                 id="new-acc-currency"
                 value={newAccount.currency}
                 onChange={(e) => setNewAccount({ ...newAccount, currency: e.target.value })}
-                placeholder={`${t("accounts.currency")} (RUB)`}
-              />
+              >
+                {currencyUnits.map((unit) => (
+                  <option key={unit.id} value={unit.abbreviation}>
+                    {unit.name} ({unit.abbreviation})
+                  </option>
+                ))}
+              </NativeSelect>
             </div>
           </div>
           <Button onClick={handleCreate} disabled={!newAccount.name.trim()}>

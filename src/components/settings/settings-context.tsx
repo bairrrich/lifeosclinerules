@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { useTranslations } from "next-intl"
 import { db, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import { LogType, ContentType, ItemType } from "@/types"
 import type { Account, Category, Unit } from "@/types"
@@ -12,8 +13,6 @@ import {
   TrendingUp,
   LineChart,
   Bitcoin,
-  UtensilsCrossed,
-  Dumbbell,
   Wallet,
   Pill,
   Bandage,
@@ -22,39 +21,67 @@ import {
   Apple,
 } from "@/lib/icons"
 
-// Типы аккаунтов с иконками
-export const accountTypes: { value: Account["type"]; label: string; icon: LucideIcon }[] = [
-  { value: "cash", label: "Наличные", icon: Banknote },
-  { value: "card", label: "Карта", icon: CreditCard },
-  { value: "bank", label: "Счёт", icon: Landmark },
-  { value: "deposit", label: "Вклад", icon: TrendingUp },
-  { value: "investment", label: "Инвестиции", icon: LineChart },
-  { value: "crypto", label: "Крипто", icon: Bitcoin },
-]
-
-// Типы единиц измерения
-export const unitTypes = [
-  { value: "weight", label: "Вес" },
-  { value: "volume", label: "Объём" },
-  { value: "count", label: "Штуки" },
-  { value: "time", label: "Время" },
-  { value: "money", label: "Деньги" },
-]
-
-// Маппинг типов логов
-export const logTypeLabels: Record<string, { label: string; icon: LucideIcon }> = {
-  [LogType.FOOD]: { label: "Питание", icon: UtensilsCrossed },
-  [LogType.WORKOUT]: { label: "Тренировки", icon: Dumbbell },
-  [LogType.FINANCE]: { label: "Финансы", icon: Wallet },
+// Хук для получения локализованных типов аккаунтов
+export function useAccountTypes() {
+  const t = useTranslations("settings.accounts.accountTypes")
+  return [
+    { value: "cash" as const, label: t("cash"), icon: Banknote },
+    { value: "card" as const, label: t("card"), icon: CreditCard },
+    { value: "bank" as const, label: t("bank"), icon: Landmark },
+    { value: "deposit" as const, label: t("deposit"), icon: TrendingUp },
+    { value: "investment" as const, label: t("investment"), icon: LineChart },
+    { value: "crypto" as const, label: t("crypto"), icon: Bitcoin },
+  ]
 }
 
-// Маппинг типов элементов каталога
-export const itemTypeLabels: Record<string, { label: string; icon: LucideIcon }> = {
-  [ItemType.VITAMIN]: { label: "Витамины", icon: Pill },
-  [ItemType.MEDICINE]: { label: "Лекарства", icon: Bandage },
-  [ItemType.HERB]: { label: "Травы", icon: Leaf },
-  [ItemType.COSMETIC]: { label: "Косметика", icon: Sparkles },
-  [ItemType.PRODUCT]: { label: "Продукты", icon: Apple },
+// Хук для получения локализованных типов единиц измерения
+export function useUnitTypes() {
+  const t = useTranslations("settings.units.unitTypes")
+  return [
+    { value: "weight" as const, label: t("weight") },
+    { value: "volume" as const, label: t("volume") },
+    { value: "count" as const, label: t("count") },
+    { value: "time" as const, label: t("time") },
+    { value: "money" as const, label: t("money") },
+  ]
+}
+
+// Хук для получения локализованных типов логов
+export function useLogTypeLabels() {
+  const t = useTranslations("logs.types")
+  return {
+    [LogType.FINANCE]: { label: t("finance"), icon: Wallet },
+  }
+}
+
+// Хук для получения локализованных типов элементов каталога
+export function useItemTypeLabels() {
+  const t = useTranslations("items.list.types")
+  return {
+    [ItemType.VITAMIN]: { label: t("vitamin"), icon: Pill },
+    [ItemType.MEDICINE]: { label: t("medicine"), icon: Bandage },
+    [ItemType.HERB]: { label: t("herb"), icon: Leaf },
+    [ItemType.COSMETIC]: { label: t("cosmetic"), icon: Sparkles },
+    [ItemType.PRODUCT]: { label: t("product"), icon: Apple },
+  }
+}
+
+// Экспорт иконок для использования вне React-компонентов
+export const accountTypeIcons: Record<Account["type"], LucideIcon> = {
+  cash: Banknote,
+  card: CreditCard,
+  bank: Landmark,
+  deposit: TrendingUp,
+  investment: LineChart,
+  crypto: Bitcoin,
+}
+
+export const itemTypeIcons: Record<ItemType, LucideIcon> = {
+  [ItemType.VITAMIN]: Pill,
+  [ItemType.MEDICINE]: Bandage,
+  [ItemType.HERB]: Leaf,
+  [ItemType.COSMETIC]: Sparkles,
+  [ItemType.PRODUCT]: Apple,
 }
 
 // Интерфейс контекста

@@ -6,16 +6,11 @@
 // Книги — Перечисления
 // ============================================
 
-export type BookFormat = 'paperback' | 'hardcover' | 'ebook' | 'audiobook'
+export type BookFormat = "paperback" | "hardcover" | "ebook" | "audiobook"
 
-export type ReadingStatus = 
-  | 'planned' 
-  | 'reading' 
-  | 'completed' 
-  | 'paused' 
-  | 'dropped'
+export type ReadingStatus = "planned" | "reading" | "completed" | "paused" | "dropped"
 
-export type AuthorRole = 'author' | 'translator' | 'editor' | 'illustrator'
+export type AuthorRole = "author" | "translator" | "editor" | "illustrator"
 
 // ============================================
 // Книги — Метаданные (объективная информация)
@@ -36,15 +31,15 @@ export interface Book extends BaseEntity {
   cover_image_url?: string
   series_id?: UUID
   series_number?: number
-  
+
   // Внешние ID
   goodreads_id?: string
   google_books_id?: string
-  
+
   // Вычисляемые поля
   rating_avg?: number
   rating_count?: number
-  
+
   // Связи (не хранятся в таблице, заполняются при запросе)
   authors?: BookAuthorWithDetails[]
   genres?: Genre[]
@@ -146,73 +141,99 @@ export interface BookReview extends BaseEntity {
   text: string
 }
 
-
 export type UUID = string
 export type ISODate = string
-export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue }
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | { [key: string]: JSONValue }
 
 // ============================================
 // Перечисления
 // ============================================
 
 export enum LogType {
-  FOOD = 'food',
-  WORKOUT = 'workout',
-  FINANCE = 'finance',
+  FOOD = "food",
+  WORKOUT = "workout",
+  FINANCE = "finance",
 }
 
 export enum ItemType {
-  VITAMIN = 'vitamin',
-  MEDICINE = 'medicine',
-  HERB = 'herb',
-  COSMETIC = 'cosmetic',
-  PRODUCT = 'product',
+  VITAMIN = "vitamin",
+  MEDICINE = "medicine",
+  HERB = "herb",
+  COSMETIC = "cosmetic",
+  PRODUCT = "product",
 }
 
 export enum ContentType {
-  BOOK = 'book',
-  RECIPE = 'recipe',
+  BOOK = "book",
+  RECIPE = "recipe",
 }
 
 // Типы рецептов
 export enum RecipeType {
-  FOOD = 'food',       // Еда (блюда)
-  DRINK = 'drink',     // Напитки безалкогольные
-  COCKTAIL = 'cocktail' // Коктейли
+  FOOD = "food", // Еда (блюда)
+  DRINK = "drink", // Напитки безалкогольные
+  COCKTAIL = "cocktail", // Коктейли
 }
 
 // Тип блюда (для еды)
-export type CourseType = 
-  | 'breakfast' | 'lunch' | 'dinner' 
-  | 'soup' | 'salad' | 'dessert' | 'snack' | 'sauce' | 'appetizer'
+export type CourseType =
+  | "breakfast"
+  | "lunch"
+  | "dinner"
+  | "soup"
+  | "salad"
+  | "dessert"
+  | "snack"
+  | "sauce"
+  | "appetizer"
 
 // Метод приготовления еды
-export type CookingMethod = 
-  | 'bake' | 'fry' | 'boil' | 'steam' | 'grill' | 'raw' | 'stew' | 'roast'
+export type CookingMethod = "bake" | "fry" | "boil" | "steam" | "grill" | "raw" | "stew" | "roast"
 
 // Метод для коктейлей
-export type CocktailMethod = 
-  | 'shaken' | 'stirred' | 'blended' | 'built' | 'muddled' | 'layered'
+export type CocktailMethod = "shaken" | "stirred" | "blended" | "built" | "muddled" | "layered"
 
 // Сложность
-export type Difficulty = 'easy' | 'medium' | 'hard' | 'pro'
+export type Difficulty = "easy" | "medium" | "hard" | "pro"
 
 // Категория ингредиента
-export type IngredientCategory = 
-  | 'vegetable' | 'fruit' | 'meat' | 'poultry' | 'seafood' | 'dairy' 
-  | 'grain' | 'pasta' | 'spice' | 'alcohol' | 'liqueur' | 'liquid' 
-  | 'sweetener' | 'herb' | 'nut' | 'seed' | 'oil' | 'sauce' | 'other'
+export type IngredientCategory =
+  | "vegetable"
+  | "fruit"
+  | "meat"
+  | "poultry"
+  | "seafood"
+  | "dairy"
+  | "grain"
+  | "pasta"
+  | "spice"
+  | "alcohol"
+  | "liqueur"
+  | "liquid"
+  | "sweetener"
+  | "herb"
+  | "nut"
+  | "seed"
+  | "oil"
+  | "sauce"
+  | "other"
 
 export enum FinanceType {
-  INCOME = 'income',
-  EXPENSE = 'expense',
-  TRANSFER = 'transfer',
+  INCOME = "income",
+  EXPENSE = "expense",
+  TRANSFER = "transfer",
 }
 
 export enum BookStatus {
-  PLANNED = 'planned',
-  READING = 'reading',
-  DONE = 'done',
+  PLANNED = "planned",
+  READING = "reading",
+  DONE = "done",
 }
 
 // ============================================
@@ -259,65 +280,65 @@ export interface FoodMetadata {
 // Типы тренировок
 // ============================================
 
-export type WorkoutType = 'strength' | 'cardio' | 'yoga'
+export type WorkoutType = "strength" | "cardio" | "yoga"
 
 // Силовые тренировки - подкатегории
-export type StrengthSubcategory = 
+export type StrengthSubcategory =
   // По анатомическому принципу
-  | 'chest' // Грудь
-  | 'back' // Спина
-  | 'legs' // Ноги
-  | 'shoulders' // Плечи
-  | 'arms' // Руки
-  | 'core' // Пресс (Кор)
+  | "chest" // Грудь
+  | "back" // Спина
+  | "legs" // Ноги
+  | "shoulders" // Плечи
+  | "arms" // Руки
+  | "core" // Пресс (Кор)
   // По типу оборудования
-  | 'free_weights' // Свободные веса
-  | 'machines' // Тренажеры
-  | 'bodyweight' // С собственным весом
-  | 'functional' // Функциональный тренинг
+  | "free_weights" // Свободные веса
+  | "machines" // Тренажеры
+  | "bodyweight" // С собственным весом
+  | "functional" // Функциональный тренинг
 
 // Кардио - подкатегории
-export type CardioSubcategory = 
+export type CardioSubcategory =
   // По типу активности
-  | 'running' // Бег
-  | 'walking' // Ходьба
-  | 'cycling' // Велосипед
-  | 'rowing' // Гребля
-  | 'jumping' // Прыжки
+  | "running" // Бег
+  | "walking" // Ходьба
+  | "cycling" // Велосипед
+  | "rowing" // Гребля
+  | "jumping" // Прыжки
   // По интенсивности
-  | 'liss' // LISS
-  | 'hiit' // HIIT
-  | 'tabata' // Табата
+  | "liss" // LISS
+  | "hiit" // HIIT
+  | "tabata" // Табата
 
 // Йога - подкатегории
-export type YogaSubcategory = 
+export type YogaSubcategory =
   // По стилям
-  | 'hatha' // Хатха-йога
-  | 'vinyasa' // Виньяса-йога
-  | 'ashtanga' // Аштанга-йога
-  | 'kundalini' // Кундалини-йога
-  | 'iyengar' // Айенгар-йога
+  | "hatha" // Хатха-йога
+  | "vinyasa" // Виньяса-йога
+  | "ashtanga" // Аштанга-йога
+  | "kundalini" // Кундалини-йога
+  | "iyengar" // Айенгар-йога
   // По целям
-  | 'stretching' // Стретчинг / Гибкость
-  | 'power' // Силовая йога
-  | 'relax' // Релакс / Восстановление
-  | 'breathing' // Дыхание и медитация
+  | "stretching" // Стретчинг / Гибкость
+  | "power" // Силовая йога
+  | "relax" // Релакс / Восстановление
+  | "breathing" // Дыхание и медитация
   // По уровню
-  | 'beginner' // Для начинающих
-  | 'intermediate' // Для продолжающих
-  | 'advanced' // Для опытных
+  | "beginner" // Для начинающих
+  | "intermediate" // Для продолжающих
+  | "advanced" // Для опытных
 
 // Цели тренировок
-export type WorkoutGoal = 
-  | 'mass' // Набор массы
-  | 'relief' // Рельеф
-  | 'strength' // Сила
-  | 'endurance' // Выносливость
-  | 'flexibility' // Гибкость
-  | 'relaxation' // Расслабление
-  | 'balance' // Баланс
-  | 'fat_loss' // Сжигание жира
-  | 'recovery' // Восстановление
+export type WorkoutGoal =
+  | "mass" // Набор массы
+  | "relief" // Рельеф
+  | "strength" // Сила
+  | "endurance" // Выносливость
+  | "flexibility" // Гибкость
+  | "relaxation" // Расслабление
+  | "balance" // Баланс
+  | "fat_loss" // Сжигание жира
+  | "recovery" // Восстановление
 
 // Метрики для силовой тренировки
 export interface StrengthMetrics {
@@ -337,44 +358,44 @@ export interface CardioMetrics {
 
 // Метрики для йоги
 export interface YogaMetrics {
-  level?: 'beginner' | 'intermediate' | 'advanced' // Уровень
-  focus?: 'flexibility' | 'strength' | 'relaxation' | 'meditation' | 'breathing' // Фокус
+  level?: "beginner" | "intermediate" | "advanced" // Уровень
+  focus?: "flexibility" | "strength" | "relaxation" | "meditation" | "breathing" // Фокус
 }
 
 // Объединённые метаданные тренировки
 export interface WorkoutMetadata {
   // Общие поля
   duration?: number // Длительность в минутах
-  intensity?: 'low' | 'medium' | 'high'
+  intensity?: "low" | "medium" | "high"
   exercise_id?: UUID
-  
+
   // Подкатегория в зависимости от типа тренировки
   subcategory?: StrengthSubcategory | CardioSubcategory | YogaSubcategory
-  
+
   // Дополнительные параметры
   equipment?: string | string[] // Инвентарь (одно или несколько)
   goal?: WorkoutGoal // Цель тренировки
   calories_burned?: number // Сожженные калории
-  
+
   // Пульс (общее для кардио и силовых)
   heart_rate_avg?: number // Средний пульс
   heart_rate_max?: number // Максимальный пульс
-  
+
   // Специфические метрики для силовой
   exercises_count?: number
   sets_count?: number
   reps_count?: number
   total_weight?: number
-  
+
   // Специфические метрики для кардио
   distance?: number // Дистанция (км)
   average_speed?: number // Средняя скорость
   average_pace?: string // Средний темп
   rounds?: number // Количество раундов
-  
+
   // Специфические метрики для йоги
-  level?: 'beginner' | 'intermediate' | 'advanced'
-  focus?: 'flexibility' | 'strength' | 'relaxation' | 'meditation' | 'breathing'
+  level?: "beginner" | "intermediate" | "advanced"
+  focus?: "flexibility" | "strength" | "relaxation" | "meditation" | "breathing"
 }
 
 export interface FinanceMetadata {
@@ -491,6 +512,8 @@ export interface Category extends BaseEntity {
   name: string
   icon?: string
   color?: string
+  // Для финансовых категорий
+  finance_type?: FinanceType
 }
 
 export interface Tag extends BaseEntity {
@@ -501,12 +524,12 @@ export interface Tag extends BaseEntity {
 export interface Unit extends BaseEntity {
   name: string
   abbreviation: string
-  type: 'weight' | 'volume' | 'count' | 'time' | 'money'
+  type: "weight" | "volume" | "count" | "time" | "money"
 }
 
 export interface Account extends BaseEntity {
   name: string
-  type: 'cash' | 'card' | 'bank' | 'crypto' | 'investment' | 'deposit'
+  type: "cash" | "card" | "bank" | "crypto" | "investment" | "deposit"
   balance: number
   currency: string
   icon?: string
@@ -524,10 +547,10 @@ export interface Exercise extends BaseEntity {
 // Синхронизация
 // ============================================
 
-export type SyncAction = 'create' | 'update' | 'delete'
+export type SyncAction = "create" | "update" | "delete"
 
 export interface SyncQueueItem extends BaseEntity {
-  table_name: 'logs' | 'items' | 'content' | 'categories' | 'tags'
+  table_name: "logs" | "items" | "content" | "categories" | "tags"
   record_id: UUID
   action: SyncAction
   data: JSONValue
@@ -573,16 +596,25 @@ export interface RecipeStep extends BaseEntity {
 }
 
 // Типы бокалов для коктейлей
-export type GlassType = 
-  | 'highball' | 'lowball' | 'martini' | 'coupe' 
-  | 'margarita' | 'hurricane' | 'shot' | 'wine'
-  | 'champagne' | 'mug' | 'collins' | 'rocks'
+export type GlassType =
+  | "highball"
+  | "lowball"
+  | "martini"
+  | "coupe"
+  | "margarita"
+  | "hurricane"
+  | "shot"
+  | "wine"
+  | "champagne"
+  | "mug"
+  | "collins"
+  | "rocks"
 
 // Тип льда
-export type IceType = 'cubed' | 'crushed' | 'sphere' | 'none'
+export type IceType = "cubed" | "crushed" | "sphere" | "none"
 
 // Температура подачи
-export type ServingTemperature = 'hot' | 'warm' | 'room' | 'cold' | 'iced'
+export type ServingTemperature = "hot" | "warm" | "room" | "cold" | "iced"
 
 // Метаданные для еды
 export interface FoodRecipeMetadata {
@@ -596,7 +628,15 @@ export interface FoodRecipeMetadata {
 
 // Метаданные для напитков
 export interface DrinkRecipeMetadata {
-  drink_type?: 'tea' | 'coffee' | 'smoothie' | 'juice' | 'lemonade' | 'milkshake' | 'compote' | 'cocoa'
+  drink_type?:
+    | "tea"
+    | "coffee"
+    | "smoothie"
+    | "juice"
+    | "lemonade"
+    | "milkshake"
+    | "compote"
+    | "cocoa"
   base?: string // "вода", "молоко", "сок"
   is_carbonated?: boolean
   serving_temperature?: ServingTemperature
@@ -623,18 +663,18 @@ export interface RecipeContentExtended extends BaseContent {
   type: ContentType.RECIPE
   recipe_type: RecipeType
   metadata?: RecipeMetadata // для обратной совместимости
-  
+
   // Время
   prep_time_min?: number
   cook_time_min?: number
   total_time_min?: number
-  
+
   // Порции
   servings?: number
   serving_unit?: string // "порции", "шт", "литр"
-  
+
   difficulty?: Difficulty
-  
+
   // КБЖУ
   calories?: number
   protein?: number
@@ -642,12 +682,12 @@ export interface RecipeContentExtended extends BaseContent {
   carbs?: number
   sugar?: number
   fiber?: number
-  
+
   // Специфичные данные по типу
   food_metadata?: FoodRecipeMetadata
   drink_metadata?: DrinkRecipeMetadata
   cocktail_metadata?: CocktailRecipeMetadata
-  
+
   // Связи (не хранятся в metadata, а в отдельных таблицах)
   ingredients?: RecipeIngredientItem[]
   steps?: RecipeStep[]
@@ -660,9 +700,9 @@ export type ContentExtended = BookContent | RecipeContentExtended
 // Цели и прогресс
 // ============================================
 
-export type GoalType = 'calories' | 'workout' | 'water' | 'sleep' | 'steps' | 'weight' | 'finance'
+export type GoalType = "calories" | "workout" | "water" | "sleep" | "steps" | "weight" | "finance"
 
-export type GoalPeriod = 'daily' | 'weekly' | 'monthly'
+export type GoalPeriod = "daily" | "weekly" | "monthly"
 
 export interface Goal extends BaseEntity {
   type: GoalType
@@ -686,8 +726,8 @@ export interface Habit extends BaseEntity {
   name: string
   icon?: string
   color?: string
-  habit_type: 'positive' | 'negative' // Позитивная (делать) или негативная (не делать)
-  frequency: 'daily' | 'weekly' | 'custom'
+  habit_type: "positive" | "negative" // Позитивная (делать) или негативная (не делать)
+  frequency: "daily" | "weekly" | "custom"
   custom_days?: number[] // 0-6 для дней недели
   reminder_time?: string // "08:00"
   is_active: boolean
@@ -744,7 +784,7 @@ export interface WaterLog extends BaseEntity {
   date: ISODate
   amount_ml: number
   time?: string // "08:30"
-  type?: 'water' | 'tea' | 'coffee' | 'other'
+  type?: "water" | "tea" | "coffee" | "other"
   note?: string
 }
 
@@ -752,7 +792,7 @@ export interface WaterLog extends BaseEntity {
 // Трекер настроения
 // ============================================
 
-export type MoodType = 'great' | 'good' | 'okay' | 'bad' | 'terrible'
+export type MoodType = "great" | "good" | "okay" | "bad" | "terrible"
 
 export interface MoodLog extends BaseEntity {
   date: ISODate
@@ -768,11 +808,20 @@ export interface MoodLog extends BaseEntity {
 // Измерения тела
 // ============================================
 
-export type BodyMeasurementType = 
-  | 'weight' | 'height' | 'bmi'
-  | 'chest' | 'waist' | 'hips' | 'neck'
-  | 'biceps' | 'forearm' | 'thigh' | 'calf'
-  | 'body_fat' | 'muscle_mass'
+export type BodyMeasurementType =
+  | "weight"
+  | "height"
+  | "bmi"
+  | "chest"
+  | "waist"
+  | "hips"
+  | "neck"
+  | "biceps"
+  | "forearm"
+  | "thigh"
+  | "calf"
+  | "body_fat"
+  | "muscle_mass"
 
 export interface BodyMeasurement extends BaseEntity {
   date: ISODate
@@ -786,46 +835,52 @@ export interface BodyMeasurement extends BaseEntity {
 // Напоминания
 // ============================================
 
-export type ReminderType = 'habit' | 'medicine' | 'water' | 'workout' | 'food' | 'item' | 'custom'
+export type ReminderType = "habit" | "medicine" | "water" | "workout" | "food" | "item" | "custom"
 
-export type ReminderPriority = 'low' | 'medium' | 'high' | 'critical'
+export type ReminderPriority = "low" | "medium" | "high" | "critical"
 
-export type ReminderRepeatType = 'none' | 'daily' | 'weekly' | 'monthly' | 'custom' | 'after_completion'
+export type ReminderRepeatType =
+  | "none"
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "custom"
+  | "after_completion"
 
-export type ReminderRelatedType = 'habit' | 'item' | 'log' | 'recipe'
+export type ReminderRelatedType = "habit" | "item" | "log" | "recipe"
 
 export interface Reminder extends BaseEntity {
   // Основное
   title: string
   message?: string
-  
+
   // Тип и связь
   type: ReminderType
   related_id?: UUID
   related_type?: ReminderRelatedType
-  
+
   // Время
   time: string // "08:00"
   days: number[] // 0-6 для дней недели
   start_date?: ISODate // Начало курса/периода
   end_date?: ISODate // Окончание курса/периода
-  
+
   // Упреждение
   advance_minutes?: number // Напомнить за X минут
-  
+
   // Повтор
   repeat_type?: ReminderRepeatType
   repeat_interval?: number // Каждые N дней
-  
+
   // Приоритет
   priority: ReminderPriority
-  
+
   // Настройки уведомлений
   is_active: boolean
   sound: boolean
   vibration: boolean
   persistent: boolean // "Назойливый" режим
-  
+
   // Статус выполнения
   last_triggered_at?: ISODate
   last_completed_at?: ISODate
@@ -835,7 +890,7 @@ export interface Reminder extends BaseEntity {
 }
 
 // История срабатываний напоминаний
-export type ReminderLogAction = 'triggered' | 'completed' | 'snoozed' | 'dismissed'
+export type ReminderLogAction = "triggered" | "completed" | "snoozed" | "dismissed"
 
 export interface ReminderLog extends BaseEntity {
   reminder_id: UUID
@@ -852,7 +907,7 @@ export interface ReminderLog extends BaseEntity {
 
 export interface Template extends BaseEntity {
   name: string
-  type: 'food' | 'workout' | 'finance' | 'water' | 'sleep' | 'mood'
+  type: "food" | "workout" | "finance" | "water" | "sleep" | "mood"
   data: JSONValue // сериализованные данные записи
   is_favorite?: boolean
   use_count?: number
@@ -867,19 +922,25 @@ export interface Budget {
   category_id: string
   category_name: string
   amount: number
-  period: 'monthly' | 'weekly'
+  period: "monthly" | "weekly"
 }
 
 // ============================================
 // Повторяющиеся транзакции
 // ============================================
 
-export type RecurringFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly' | 'yearly'
+export type RecurringFrequency =
+  | "daily"
+  | "weekly"
+  | "biweekly"
+  | "monthly"
+  | "quarterly"
+  | "yearly"
 
 export interface RecurringTransaction extends BaseEntity {
   title: string
   amount: number
-  type: 'income' | 'expense'
+  type: "income" | "expense"
   category?: string
   subcategory?: string
   account_id?: UUID

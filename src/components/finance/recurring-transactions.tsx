@@ -398,7 +398,7 @@ export function RecurringTransactions() {
                       )}
                     >
                       {item.type === "expense" ? "-" : "+"}
-                      {item.amount.toLocaleString()} ₽
+                      {item.amount.toLocaleString()} {account?.currency || "₽"}
                     </div>
                     {account && <div className="text-xs text-muted-foreground">{account.name}</div>}
                   </div>
