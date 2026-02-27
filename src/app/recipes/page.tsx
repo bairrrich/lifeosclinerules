@@ -247,19 +247,6 @@ export default function RecipesPage() {
           </div>
         )}
 
-        {/* FAB */}
-        <div className="fixed bottom-20 right-4 max-w-[960px] mx-auto left-0 right-0 pointer-events-none">
-          <div className="flex justify-end">
-            <Link href="/recipes/new">
-              <Button
-                size="icon"
-                className="h-14 w-14 rounded-full shadow-lg pointer-events-auto"
-              >
-                <Plus className="h-6 w-6" />
-              </Button>
-            </Link>
-          </div>
-        </div>
       </div>
     </AppLayout>
   )
