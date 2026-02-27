@@ -5,40 +5,41 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, Save } from "lucide-react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Button } from "@/components/ui/button"
-import { db, createEntity, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
-import { 
-  BookForm, 
-  UserBookForm, 
-  BookQuotes,
-  statusColors,
-  statusLabels 
-} from "@/components/books"
-import type { 
-  Book, UserBook, Author, Genre, BookAuthor, BookQuote, BookFormat, ReadingStatus 
+import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
+import { BookForm, UserBookForm, BookQuotes } from "@/components/books"
+import type {
+  Book,
+  UserBook,
+  Author,
+  Genre,
+  BookAuthor,
+  BookQuote,
+  BookFormat,
+  ReadingStatus,
 } from "@/types"
 
 export default function NewBookPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  
+
   // Справочники
   const [authors, setAuthors] = useState<Author[]>([])
   const [genres, setGenres] = useState<Genre[]>([])
-  
+
   // Данные книги
   const [bookData, setBookData] = useState<Partial<Book>>({
     language: "ru",
     format: "paperback" as BookFormat,
   })
-  
+
   // Пользовательские данные
   const [userBookData, setUserBookData] = useState<Partial<UserBook>>({
     status: "planned" as ReadingStatus,
   })
-  
+
   // Цитаты
   const [quotes, setQuotes] = useState<BookQuote[]>([])
-  
+
   // Выбранные авторы (IDs)
   const [selectedAuthorIds, setSelectedAuthorIds] = useState<string[]>([])
   // Выбранные жанры (IDs)
@@ -55,6 +56,62 @@ export default function NewBookPage() {
     loadData()
   }, [])
 
+  // Обработчик изменения авторов
+  const handleAuthorsChange = async (selectedIds: string[], newAuthors?: string[]) => {
+    setSelectedAuthorIds(selectedIds)
+
+    // Если есть новые авторы, добавляем их в базу
+    if (newAuthors && newAuthors.length > 0) {
+      const now = getTimestamp()
+      const newAuthorIds: string[] = []
+
+      for (const authorName of newAuthors) {
+        const authorId = generateId()
+        const newAuthor: Author = {
+          id: authorId,
+          name: authorName,
+          created_at: now,
+          updated_at: now,
+        }
+        await db.authors.add(newAuthor)
+        newAuthorIds.push(authorId)
+      }
+
+      // Обновляем список авторов и выбранные ID
+      const updatedAuthors = await db.authors.toArray()
+      setAuthors(updatedAuthors)
+      setSelectedAuthorIds([...selectedIds, ...newAuthorIds])
+    }
+  }
+
+  // Обработчик изменения жанров
+  const handleGenresChange = async (selectedIds: string[], newGenres?: string[]) => {
+    setSelectedGenreIds(selectedIds)
+
+    // Если есть новые жанры, добавляем их в базу
+    if (newGenres && newGenres.length > 0) {
+      const now = getTimestamp()
+      const newGenreIds: string[] = []
+
+      for (const genreName of newGenres) {
+        const genreId = generateId()
+        const newGenre: Genre = {
+          id: genreId,
+          name: genreName,
+          created_at: now,
+          updated_at: now,
+        }
+        await db.genres.add(newGenre)
+        newGenreIds.push(genreId)
+      }
+
+      // Обновляем список жанров и выбранные ID
+      const updatedGenres = await db.genres.toArray()
+      setGenres(updatedGenres)
+      setSelectedGenreIds([...selectedIds, ...newGenreIds])
+    }
+  }
+
   const onSubmit = async () => {
     if (!bookData.title?.trim()) {
       alert("Введите название книги")
@@ -64,7 +121,7 @@ export default function NewBookPage() {
     setIsLoading(true)
     try {
       const now = getTimestamp()
-      
+
       // 1. Создаём книгу
       const bookId = generateId()
       const book: Book = {
@@ -85,9 +142,9 @@ export default function NewBookPage() {
         created_at: now,
         updated_at: now,
       }
-      
+
       await db.books.add(book)
-      
+
       // 2. Создаём связи с авторами
       for (let i = 0; i < selectedAuthorIds.length; i++) {
         const bookAuthor: BookAuthor = {
@@ -101,7 +158,7 @@ export default function NewBookPage() {
         }
         await db.bookAuthors.add(bookAuthor)
       }
-      
+
       // 3. Создаём пользовательские данные
       const userBookId = generateId()
       const userBook: UserBook = {
@@ -121,9 +178,9 @@ export default function NewBookPage() {
         created_at: now,
         updated_at: now,
       }
-      
+
       await db.userBooks.add(userBook)
-      
+
       // 4. Сохраняем цитаты
       for (const quote of quotes) {
         const savedQuote: BookQuote = {
@@ -135,7 +192,7 @@ export default function NewBookPage() {
         }
         await db.bookQuotes.add(savedQuote)
       }
-      
+
       router.push("/books")
     } catch (error) {
       console.error("Failed to create book:", error)
@@ -148,28 +205,35 @@ export default function NewBookPage() {
   return (
     <AppLayout title="Новая книга">
       <div className="container mx-auto px-4 py-6">
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            onSubmit()
+          }}
+          className="space-y-6"
+        >
           {/* Метаданные книги */}
           <BookForm
             data={bookData}
             authors={authors}
             genres={genres}
+            selectedAuthorIds={selectedAuthorIds}
+            selectedGenreIds={selectedGenreIds}
+            onAuthorsChange={handleAuthorsChange}
+            onGenresChange={handleGenresChange}
             onChange={setBookData}
           />
-          
+
           {/* Пользовательские данные */}
           <UserBookForm
             data={userBookData}
             pageCount={bookData.page_count}
             onChange={setUserBookData}
           />
-          
+
           {/* Цитаты */}
-          <BookQuotes
-            quotes={quotes}
-            onChange={setQuotes}
-          />
-          
+          <BookQuotes quotes={quotes} onChange={setQuotes} />
+
           {/* Действия */}
           <div className="flex gap-4">
             <Button

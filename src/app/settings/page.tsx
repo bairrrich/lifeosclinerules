@@ -18,6 +18,7 @@ import {
   RecipesManager,
 } from "@/components/settings"
 import { RecurringTransactions } from "@/components/finance/recurring-transactions"
+import { SyncManager } from "@/components/settings/sync-manager"
 
 function AboutCard() {
   return (
@@ -50,6 +51,7 @@ export default function SettingsPage() {
 
             {/* Вкладка "Общие" */}
             <TabsContent value="general" className="space-y-6">
+              <SyncManager />
               <ThemeSwitcher />
               <DataStats />
               <BackupManager />

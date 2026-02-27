@@ -9,6 +9,7 @@ import { NativeSelect } from "@/components/ui/native-select"
 import { Badge } from "@/components/ui/badge"
 import { X, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { MultiCombobox, type ComboboxOption } from "@/components/ui/multi-combobox"
 import type { Book, BookFormat, Author, Genre } from "@/types"
 
 // Форматы книг
@@ -36,37 +37,53 @@ interface BookFormProps {
   data?: Partial<Book>
   authors: Author[]
   genres: Genre[]
+  selectedAuthorIds: string[]
+  selectedGenreIds: string[]
+  onAuthorsChange: (selectedIds: string[], newAuthors?: string[]) => void
+  onGenresChange: (selectedIds: string[], newGenres?: string[]) => void
   onChange: (data: Partial<Book>) => void
 }
 
-export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
-  const [newAuthorName, setNewAuthorName] = useState("")
-  const [newGenreName, setNewGenreName] = useState("")
-  
-  // Локальное состояние для авторов и жанров (для UI)
-  const [selectedAuthors, setSelectedAuthors] = useState<string[]>(
-    data?.authors?.map(a => a.author_id || "") || []
-  )
-  const [selectedGenres, setSelectedGenres] = useState<string[]>(
-    data?.genres?.map(g => g.id) || []
-  )
+export function BookForm({
+  data,
+  authors,
+  genres,
+  selectedAuthorIds,
+  selectedGenreIds,
+  onAuthorsChange,
+  onGenresChange,
+  onChange,
+}: BookFormProps) {
+  const [newTagName, setNewTagName] = useState("")
   const [tags, setTags] = useState<string[]>(data?.tags || [])
+
+  // Преобразуем авторов в опции для combobox
+  const authorOptions: ComboboxOption[] = authors.map((author) => ({
+    id: author.id,
+    label: author.name,
+  }))
+
+  // Преобразуем жанры в опции для combobox
+  const genreOptions: ComboboxOption[] = genres.map((genre) => ({
+    id: genre.id,
+    label: genre.name,
+  }))
 
   const updateField = <K extends keyof Book>(field: K, value: Book[K]) => {
     onChange({ ...data, [field]: value })
   }
 
   const addTag = () => {
-    if (newGenreName.trim() && !tags.includes(newGenreName.trim())) {
-      const newTags = [...tags, newGenreName.trim()]
+    if (newTagName.trim() && !tags.includes(newTagName.trim())) {
+      const newTags = [...tags, newTagName.trim()]
       setTags(newTags)
       onChange({ ...data, tags: newTags })
-      setNewGenreName("")
+      setNewTagName("")
     }
   }
 
   const removeTag = (tag: string) => {
-    const newTags = tags.filter(t => t !== tag)
+    const newTags = tags.filter((t) => t !== tag)
     setTags(newTags)
     onChange({ ...data, tags: newTags })
   }
@@ -118,47 +135,14 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
           <CardTitle>Автор и издание</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>Автор(ы)</Label>
-            <div className="flex gap-2">
-              <NativeSelect
-                value=""
-                onChange={(e) => {
-                  const authorId = e.target.value
-                  if (authorId && !selectedAuthors.includes(authorId)) {
-                    setSelectedAuthors([...selectedAuthors, authorId])
-                  }
-                }}
-              >
-                <option value="">Выберите автора...</option>
-                {authors.map((author) => (
-                  <option key={author.id} value={author.id}>
-                    {author.name}
-                  </option>
-                ))}
-              </NativeSelect>
-            </div>
-            {selectedAuthors.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {selectedAuthors.map((authorId) => {
-                  const author = authors.find((a) => a.id === authorId)
-                  return author ? (
-                    <Badge key={authorId} variant="secondary" className="gap-1">
-                      {author.name}
-                      <X
-                        className="h-3 w-3 cursor-pointer"
-                        onClick={() =>
-                          setSelectedAuthors(
-                            selectedAuthors.filter((id) => id !== authorId)
-                          )
-                        }
-                      />
-                    </Badge>
-                  ) : null
-                })}
-              </div>
-            )}
-          </div>
+          <MultiCombobox
+            label="Автор(ы)"
+            options={authorOptions}
+            selectedIds={selectedAuthorIds}
+            onChange={onAuthorsChange}
+            placeholder="Выберите авторов..."
+            addPlaceholder="Имя нового автора..."
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -169,7 +153,10 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
                 placeholder="2024"
                 value={data?.published_year || ""}
                 onChange={(e) =>
-                  updateField("published_year", e.target.value ? parseInt(e.target.value) : undefined)
+                  updateField(
+                    "published_year",
+                    e.target.value ? parseInt(e.target.value) : undefined
+                  )
                 }
               />
             </div>
@@ -181,7 +168,10 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
                 placeholder="1953"
                 value={data?.original_publication_year || ""}
                 onChange={(e) =>
-                  updateField("original_publication_year", e.target.value ? parseInt(e.target.value) : undefined)
+                  updateField(
+                    "original_publication_year",
+                    e.target.value ? parseInt(e.target.value) : undefined
+                  )
                 }
               />
             </div>
@@ -307,53 +297,22 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
           <CardTitle>Жанры и теги</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>Жанры</Label>
-            <NativeSelect
-              value=""
-              onChange={(e) => {
-                const genreId = e.target.value
-                if (genreId && !selectedGenres.includes(genreId)) {
-                  setSelectedGenres([...selectedGenres, genreId])
-                }
-              }}
-            >
-              <option value="">Выберите жанр...</option>
-              {genres.map((genre) => (
-                <option key={genre.id} value={genre.id}>
-                  {genre.name}
-                </option>
-              ))}
-            </NativeSelect>
-            {selectedGenres.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {selectedGenres.map((genreId) => {
-                  const genre = genres.find((g) => g.id === genreId)
-                  return genre ? (
-                    <Badge key={genreId} variant="secondary" className="gap-1">
-                      {genre.name}
-                      <X
-                        className="h-3 w-3 cursor-pointer"
-                        onClick={() =>
-                          setSelectedGenres(
-                            selectedGenres.filter((id) => id !== genreId)
-                          )
-                        }
-                      />
-                    </Badge>
-                  ) : null
-                })}
-              </div>
-            )}
-          </div>
+          <MultiCombobox
+            label="Жанры"
+            options={genreOptions}
+            selectedIds={selectedGenreIds}
+            onChange={onGenresChange}
+            placeholder="Выберите жанры..."
+            addPlaceholder="Название нового жанра..."
+          />
 
           <div className="space-y-2">
             <Label>Теги</Label>
             <div className="flex gap-2">
               <Input
                 placeholder="Новый тег..."
-                value={newGenreName}
-                onChange={(e) => setNewGenreName(e.target.value)}
+                value={newTagName}
+                onChange={(e) => setNewTagName(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault()
@@ -370,10 +329,7 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
                 {tags.map((tag) => (
                   <Badge key={tag} variant="outline" className="gap-1">
                     {tag}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() => removeTag(tag)}
-                    />
+                    <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
                   </Badge>
                 ))}
               </div>
