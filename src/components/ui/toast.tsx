@@ -50,11 +50,21 @@ toast.error = (message: string) => toast(message, "error")
 toast.info = (message: string) => toast(message, "info")
 
 // Компонент контейнера для toasts
-export function ToastContainer() {
+export function ToastContainer({
+  role,
+  "aria-live": ariaLive,
+}: {
+  role?: string
+  "aria-live"?: "off" | "polite" | "assertive"
+}) {
   const { toasts, removeToast } = useToast()
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-1.5 pointer-events-none max-w-xs w-full">
+    <div
+      role={role}
+      aria-live={ariaLive}
+      className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-1.5 pointer-events-none max-w-xs w-full"
+    >
       {toasts.map((t) => (
         <ToastItem key={t.id} toast={t} onClose={() => removeToast(t.id)} />
       ))}

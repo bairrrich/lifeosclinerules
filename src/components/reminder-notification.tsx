@@ -13,7 +13,13 @@ interface ActiveNotification {
   id: string
 }
 
-export function ReminderNotification() {
+export function ReminderNotification({
+  role,
+  "aria-live": ariaLive,
+}: {
+  role?: string
+  "aria-live"?: "off" | "polite" | "assertive"
+}) {
   const [notifications, setNotifications] = useState<ActiveNotification[]>([])
   const lastCheckedMinuteRef = useRef<string>("")
   const isMountedRef = useRef(true)
