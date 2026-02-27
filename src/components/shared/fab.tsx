@@ -206,6 +206,7 @@ export function FAB() {
             isOpen ? "bg-destructive rotate-45" : "bg-primary"
           }`}
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
         >
           {isOpen ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
         </Button>

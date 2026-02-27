@@ -526,7 +526,12 @@ export default function MoodPage() {
                           month: "short",
                         })}
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(log)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => openEditDialog(log)}
+                        aria-label="Редактировать запись"
+                      >
                         <Settings className="h-4 w-4" />
                       </Button>
                     </div>

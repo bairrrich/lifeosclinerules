@@ -281,7 +281,12 @@ export function SyncIndicator() {
 
   if (!isSupabaseConfigured()) {
     return (
-      <Button variant="ghost" size="icon" className="relative opacity-50">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="relative opacity-50"
+        aria-label="Синхронизация не настроена"
+      >
         <CloudOff className="h-5 w-5" />
       </Button>
     )
@@ -294,6 +299,7 @@ export function SyncIndicator() {
       onClick={() => sync()}
       className="relative"
       title={isSyncing ? "Синхронизация..." : `Синхронизировать (${pendingChanges} изменений)`}
+      aria-label={isSyncing ? "Синхронизация..." : "Синхронизировать"}
     >
       {isSyncing ? <Loader2 className="h-5 w-5 animate-spin" /> : <RefreshCw className="h-5 w-5" />}
       {pendingChanges > 0 && !isSyncing && (

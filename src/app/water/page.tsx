@@ -232,6 +232,7 @@ export default function WaterPage() {
                         size="icon"
                         className="opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => removeLog(log.id)}
+                        aria-label="Удалить запись"
                       >
                         <Minus className="h-4 w-4 text-destructive" />
                       </Button>

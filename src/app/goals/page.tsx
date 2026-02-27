@@ -236,7 +236,12 @@ function GoalsContent() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(goal)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditDialog(goal)}
+                          aria-label="Редактировать цель"
+                        >
                           <Settings className="h-4 w-4" />
                         </Button>
                         {isCompleted && <Check className="h-5 w-5 text-green-500" />}

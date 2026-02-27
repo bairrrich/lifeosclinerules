@@ -475,6 +475,11 @@ export default function TemplatesPage() {
                                 size="icon"
                                 className="h-8 w-8"
                                 onClick={() => toggleFavorite(template)}
+                                aria-label={
+                                  template.is_favorite
+                                    ? "Удалить из избранного"
+                                    : "Добавить в избранное"
+                                }
                               >
                                 <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                               </Button>
@@ -501,6 +506,7 @@ export default function TemplatesPage() {
                                   size="icon"
                                   className="h-8 w-8"
                                   onClick={() => openEditDialog(template)}
+                                  aria-label="Редактировать шаблон"
                                 >
                                   <Edit2 className="h-4 w-4" />
                                 </Button>
@@ -509,6 +515,7 @@ export default function TemplatesPage() {
                                   size="icon"
                                   className="h-8 w-8 text-dark-lighter hover:text-red-500"
                                   onClick={() => openDeleteDialog(template)}
+                                  aria-label="Удалить шаблон"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -564,6 +571,11 @@ export default function TemplatesPage() {
                                   size="icon"
                                   className="h-8 w-8"
                                   onClick={() => toggleFavorite(template)}
+                                  aria-label={
+                                    template.is_favorite
+                                      ? "Удалить из избранного"
+                                      : "Добавить в избранное"
+                                  }
                                 >
                                   <Star
                                     className={`h-4 w-4 ${template.is_favorite ? "fill-yellow-500 text-yellow-500" : ""}`}
@@ -592,6 +604,7 @@ export default function TemplatesPage() {
                                     size="icon"
                                     className="h-8 w-8"
                                     onClick={() => openEditDialog(template)}
+                                    aria-label="Редактировать шаблон"
                                   >
                                     <Edit2 className="h-4 w-4" />
                                   </Button>
@@ -600,6 +613,7 @@ export default function TemplatesPage() {
                                     size="icon"
                                     className="h-8 w-8 text-dark-lighter hover:text-red-500"
                                     onClick={() => openDeleteDialog(template)}
+                                    aria-label="Удалить шаблон"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </Button>

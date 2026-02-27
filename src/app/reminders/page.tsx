@@ -79,6 +79,7 @@ function TestNotification() {
                     size="icon"
                     className="h-5 w-5 ml-auto"
                     onClick={() => setShowTest(false)}
+                    aria-label="Закрыть"
                   >
                     <X className="h-3 w-3" />
                   </Button>
