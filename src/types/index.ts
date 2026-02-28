@@ -954,3 +954,16 @@ export interface RecurringTransaction extends BaseEntity {
   is_active: boolean
   notes?: string
 }
+
+// ============================================
+// Локализация сущностей
+// ============================================
+
+export type EntityType = "category" | "unit" | "account"
+
+export interface EntityTranslation extends BaseEntity {
+  entity_type: EntityType
+  entity_id: string
+  locale: "en" | "ru"
+  name: string
+}

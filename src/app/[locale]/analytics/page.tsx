@@ -292,13 +292,16 @@ export default function AnalyticsPage() {
           <Tabs value={dateRange} onValueChange={(v) => setDateRange(v as "7" | "14" | "30")}>
             <TabsList className="h-auto">
               <TabsTrigger value="7" className="text-xs sm:text-sm px-3 py-2">
-                {t("period.7days")}
+                <span className="hidden sm:inline">{t("period.7days")}</span>
+                <span className="sm:hidden">7d</span>
               </TabsTrigger>
               <TabsTrigger value="14" className="text-xs sm:text-sm px-3 py-2">
-                {t("period.14days")}
+                <span className="hidden sm:inline">{t("period.14days")}</span>
+                <span className="sm:hidden">14d</span>
               </TabsTrigger>
               <TabsTrigger value="30" className="text-xs sm:text-sm px-3 py-2">
-                {t("period.30days")}
+                <span className="hidden sm:inline">{t("period.30days")}</span>
+                <span className="sm:hidden">30d</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -420,19 +423,16 @@ export default function AnalyticsPage() {
         <Tabs defaultValue="food">
           <TabsList className="grid w-full grid-cols-3 h-auto">
             <TabsTrigger value="food" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
-              <Utensils className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("food.title")}</span>
-              <span className="sm:hidden">{tNav("logs")}</span>
+              <Utensils className="h-4 w-4" />
+              <span className="hidden sm:inline sm:ml-1">{t("food.title")}</span>
             </TabsTrigger>
             <TabsTrigger value="workout" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
-              <Dumbbell className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("workout.title")}</span>
-              <span className="sm:hidden">{tNav("habits")}</span>
+              <Dumbbell className="h-4 w-4" />
+              <span className="hidden sm:inline sm:ml-1">{t("workout.title")}</span>
             </TabsTrigger>
             <TabsTrigger value="finance" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
-              <Wallet className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("finance.title")}</span>
-              <span className="sm:hidden">{tNav("goals")}</span>
+              <Wallet className="h-4 w-4" />
+              <span className="hidden sm:inline sm:ml-1">{t("finance.title")}</span>
             </TabsTrigger>
           </TabsList>
 

@@ -51,9 +51,10 @@ export const foodTypeOptions = [
 ]
 
 export const workoutTypeOptions = [
-  { value: "strength", label: "Strength" },
-  { value: "cardio", label: "Cardio" },
-  { value: "yoga", label: "Yoga" },
+  { value: "strength" },
+  { value: "cardio" },
+  { value: "yoga" },
+  { value: "stretching" },
 ]
 
 // Form schemas
@@ -169,7 +170,7 @@ export default function NewLogPage() {
 
   // Получаем текущий тип тренировки (фиксированный)
   const selectedWorkoutCategory =
-    workoutTypeOptions.find((opt) => opt.value === selectedCategoryId)?.label || ""
+    selectedCategoryId.charAt(0).toUpperCase() + selectedCategoryId.slice(1)
 
   useEffect(() => {
     async function loadData() {
@@ -460,16 +461,19 @@ export default function NewLogPage() {
                       setWorkoutGoal("")
                     }}
                   >
-                    <TabsList className="grid grid-cols-3">
-                      {workoutTypeOptions.map((opt) => (
-                        <TabsTrigger
-                          key={opt.value}
-                          value={opt.value}
-                          className={categoryColors[opt.label] || ""}
-                        >
-                          {opt.label}
-                        </TabsTrigger>
-                      ))}
+                    <TabsList className="grid grid-cols-4">
+                      {workoutTypeOptions.map((opt) => {
+                        const labelKey = opt.value.charAt(0).toUpperCase() + opt.value.slice(1)
+                        return (
+                          <TabsTrigger
+                            key={opt.value}
+                            value={opt.value}
+                            className={categoryColors[labelKey] || ""}
+                          >
+                            {tCommon(`workout.types.${opt.value}`)}
+                          </TabsTrigger>
+                        )
+                      })}
                     </TabsList>
                   </Tabs>
                 </div>

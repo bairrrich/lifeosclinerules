@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "food": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "workout": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "yoga": "Yoga",
+      "stretching": "Stretching"
+    },
+    "finance": {
+      "salary": "Salary",
+      "freelance": "Freelance",
+      "investments": "Investments",
+      "other_income": "Other Income",
+      "food": "Food",
+      "transport": "Transport",
+      "utilities": "Utilities",
+      "entertainment": "Entertainment",
+      "shopping": "Shopping",
+      "health": "Health",
+      "education": "Education",
+      "rent": "Rent",
+      "other_expense": "Other Expense"
+    }
+  },
+  "units": {
+    "g": "Grams",
+    "kg": "Kilograms",
+    "mg": "Milligrams",
+    "ml": "Milliliters",
+    "l": "Liters",
+    "tsp": "Teaspoons",
+    "tbsp": "Tablespoons",
+    "cup": "Cups",
+    "oz": "Ounces",
+    "drop": "Drops",
+    "dash": "Dash",
+    "pcs": "Pieces",
+    "servings": "Servings",
+    "portions": "Portions",
+    "min": "Minutes",
+    "h": "Hours",
+    "sec": "Seconds",
+    "days": "Days"
+  },
+  "accounts": {
+    "cash": "Cash",
+    "card": "Bank Card",
+    "bank": "Bank Account",
+    "deposit": "Deposit",
+    "investment": "Investment Account",
+    "crypto": "Crypto Wallet"
+  }
+}

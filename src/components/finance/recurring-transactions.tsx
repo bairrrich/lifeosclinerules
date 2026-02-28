@@ -228,149 +228,151 @@ export function RecurringTransactions() {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Repeat className="h-5 w-5" />
-          {t("title")}
-        </h2>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-1" />
-              {t("add")}
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{editingId ? t("edit") : t("title")}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              {/* Type */}
-              <div className="flex gap-2">
-                <Button
-                  variant={type === "expense" ? "default" : "outline"}
-                  className="flex-1"
-                  onClick={() => setType("expense")}
-                >
-                  <TrendingDown className="h-4 w-4 mr-1" />
-                  {t("expense")}
-                </Button>
-                <Button
-                  variant={type === "income" ? "default" : "outline"}
-                  className="flex-1"
-                  onClick={() => setType("income")}
-                >
-                  <TrendingUp className="h-4 w-4 mr-1" />
-                  {t("income")}
-                </Button>
-              </div>
-
-              {/* Title */}
-              <div className="space-y-2">
-                <Label>{t("form.title")}</Label>
-                <Input
-                  placeholder={t("form.titlePlaceholder")}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-
-              {/* Amount */}
-              <div className="space-y-2">
-                <Label>{t("form.amount")}</Label>
-                <Input
-                  type="number"
-                  placeholder="0"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-              </div>
-
-              {/* Frequency */}
-              <div className="space-y-2">
-                <Label>{t("form.frequency")}</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {["daily", "weekly", "biweekly", "monthly", "quarterly", "yearly"].map((key) => (
-                    <Button
-                      key={key}
-                      variant={frequency === key ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setFrequency(key as typeof frequency)}
-                    >
-                      {t(`frequency.${key}`)}
-                    </Button>
-                  ))}
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
+            <Repeat className="h-5 w-5" />
+            <div>
+              <CardTitle>{t("title")}</CardTitle>
+            </div>
+          </div>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-1" />
+                {t("add")}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{editingId ? t("edit") : t("title")}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                {/* Type */}
+                <div className="flex gap-2">
+                  <Button
+                    variant={type === "expense" ? "default" : "outline"}
+                    className="flex-1"
+                    onClick={() => setType("expense")}
+                  >
+                    <TrendingDown className="h-4 w-4 mr-1" />
+                    {t("expense")}
+                  </Button>
+                  <Button
+                    variant={type === "income" ? "default" : "outline"}
+                    className="flex-1"
+                    onClick={() => setType("income")}
+                  >
+                    <TrendingUp className="h-4 w-4 mr-1" />
+                    {t("income")}
+                  </Button>
                 </div>
-              </div>
 
-              {/* Day of Month (for monthly) */}
-              {frequency === "monthly" && (
+                {/* Title */}
                 <div className="space-y-2">
-                  <Label>{t("form.dayOfMonth")}</Label>
+                  <Label>{t("form.title")}</Label>
                   <Input
-                    type="number"
-                    min="1"
-                    max="31"
-                    value={dayOfMonth}
-                    onChange={(e) => setDayOfMonth(e.target.value)}
-                    className="w-20"
+                    placeholder={t("form.titlePlaceholder")}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
-              )}
 
-              {/* Account */}
-              {accounts.length > 0 && (
+                {/* Amount */}
                 <div className="space-y-2">
-                  <Label>{t("form.account")}</Label>
-                  <select
-                    className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                    value={accountId}
-                    onChange={(e) => setAccountId(e.target.value)}
-                  >
-                    {accounts.map((acc) => (
-                      <option key={acc.id} value={acc.id}>
-                        {acc.name}
-                      </option>
-                    ))}
-                  </select>
+                  <Label>{t("form.amount")}</Label>
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
                 </div>
-              )}
 
-              {/* Start Date */}
-              <div className="space-y-2">
-                <Label>{t("form.startDate")}</Label>
-                <Input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
+                {/* Frequency */}
+                <div className="space-y-2">
+                  <Label>{t("form.frequency")}</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {["daily", "weekly", "biweekly", "monthly", "quarterly", "yearly"].map(
+                      (key) => (
+                        <Button
+                          key={key}
+                          variant={frequency === key ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setFrequency(key as typeof frequency)}
+                        >
+                          {t(`frequency.${key}`)}
+                        </Button>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {/* Day of Month (for monthly) */}
+                {frequency === "monthly" && (
+                  <div className="space-y-2">
+                    <Label>{t("form.dayOfMonth")}</Label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="31"
+                      value={dayOfMonth}
+                      onChange={(e) => setDayOfMonth(e.target.value)}
+                      className="w-20"
+                    />
+                  </div>
+                )}
+
+                {/* Account */}
+                {accounts.length > 0 && (
+                  <div className="space-y-2">
+                    <Label>{t("form.account")}</Label>
+                    <select
+                      className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+                      value={accountId}
+                      onChange={(e) => setAccountId(e.target.value)}
+                    >
+                      {accounts.map((acc) => (
+                        <option key={acc.id} value={acc.id}>
+                          {acc.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Start Date */}
+                <div className="space-y-2">
+                  <Label>{t("form.startDate")}</Label>
+                  <Input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </div>
+
+                {/* Save */}
+                <Button className="w-full" onClick={saveRecurring}>
+                  {editingId ? t("form.save") : t("form.create")}
+                </Button>
               </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {/* List */}
+        {recurring.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground">{t("empty")}</div>
+        ) : (
+          <div className="space-y-2">
+            {recurring.map((item) => {
+              const account = accounts.find((a) => a.id === item.account_id)
+              const nextDue = calculateNextDue(item)
 
-              {/* Save */}
-              <Button className="w-full" onClick={saveRecurring}>
-                {editingId ? t("form.save") : t("form.create")}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      {/* List */}
-      {recurring.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">{t("empty")}</CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-2">
-          {recurring.map((item) => {
-            const account = accounts.find((a) => a.id === item.account_id)
-            const nextDue = calculateNextDue(item)
-
-            return (
-              <Card key={item.id}>
-                <CardContent className="p-3 flex items-center gap-3">
+              return (
+                <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl border">
                   <div
                     className={cn(
                       "flex h-10 w-10 items-center justify-center rounded-xl",
@@ -420,12 +422,12 @@ export function RecurringTransactions() {
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-      )}
-    </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }

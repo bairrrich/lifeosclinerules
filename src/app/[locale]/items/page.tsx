@@ -131,7 +131,9 @@ export default function ItemsPage() {
         >
           <TabsList className="grid grid-cols-6 w-full h-auto">
             <TabsTrigger value="all" className="text-xs sm:text-sm px-1 sm:px-3 py-2">
-              {t("list.filters.all")}
+              <Search className="h-4 w-4 hidden sm:inline sm:mr-1" />
+              <span className="hidden sm:inline">{t("list.filters.all")}</span>
+              <Search className="h-4 w-4 sm:hidden" />
             </TabsTrigger>
             {itemTypes.map((it) => (
               <TabsTrigger
@@ -139,9 +141,8 @@ export default function ItemsPage() {
                 value={it.type}
                 className="text-xs sm:text-sm px-1 sm:px-3 py-2"
               >
-                <it.icon className="h-4 w-4 sm:mr-1" />
-                <span className="hidden sm:inline">{it.label}</span>
-                <span className="sm:hidden text-[10px]">{it.label.slice(0, 4)}</span>
+                <it.icon className="h-4 w-4" />
+                <span className="hidden sm:inline sm:ml-1">{it.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>

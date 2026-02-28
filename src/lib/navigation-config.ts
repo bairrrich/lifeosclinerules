@@ -46,7 +46,7 @@ export const bottomNavItems: NavItem[] = [
   },
   {
     href: "/items",
-    translationKey: "items",
+    translationKey: "catalog",
     icon: Package,
   },
   {

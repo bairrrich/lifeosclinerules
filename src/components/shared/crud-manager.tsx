@@ -45,6 +45,7 @@ export interface CrudManagerProps<T extends { id?: string | number }> {
   className?: string
   groupBy?: (item: T) => string
   renderGroupHeader?: (groupKey: string, items: T[]) => React.ReactNode
+  showActions?: boolean // Показывать кнопки редактирования/удаления
 }
 
 /**
@@ -72,6 +73,7 @@ export function CrudManager<T extends { id?: string | number }>({
   className,
   groupBy,
   renderGroupHeader,
+  showActions = true,
 }: CrudManagerProps<T>) {
   const t = useTranslations("common")
   const tSettings = useTranslations("settings")
@@ -220,7 +222,7 @@ export function CrudManager<T extends { id?: string | number }>({
                                   () => handleDelete(String(key))
                                 )}
                               </div>
-                              {canItemEdit && (
+                              {showActions && canItemEdit && (
                                 <div className="flex gap-1 ml-4">
                                   <Button
                                     size="icon"

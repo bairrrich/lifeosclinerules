@@ -3,7 +3,18 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useTranslations, useLocale } from "next-intl"
-import { BookOpen, Plus, Search, Star, Calendar, FileText, TrendingUp } from "@/lib/icons"
+import {
+  BookOpen,
+  Plus,
+  Search,
+  Star,
+  Calendar,
+  FileText,
+  TrendingUp,
+  Bookmark,
+  CheckCircle,
+  PauseCircle,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -14,13 +25,17 @@ import { db, initializeDatabase } from "@/lib/db"
 import { statusColors } from "@/components/books"
 import type { Book, UserBook, Author, BookAuthor, ReadingStatus } from "@/types"
 
-// Фильтры статуса с переводами будут в компоненте
-const statusFilters: { value: ReadingStatus | "all"; labelKey: string }[] = [
-  { value: "all", labelKey: "filters.all" },
-  { value: "reading", labelKey: "filters.reading" },
-  { value: "planned", labelKey: "filters.planned" },
-  { value: "completed", labelKey: "filters.completed" },
-  { value: "paused", labelKey: "filters.paused" },
+// Фильтры статуса с переводами и иконками
+const statusFilters: {
+  value: ReadingStatus | "all"
+  labelKey: string
+  icon: React.ElementType | null
+}[] = [
+  { value: "all", labelKey: "filters.all", icon: Search },
+  { value: "reading", labelKey: "filters.reading", icon: BookOpen },
+  { value: "planned", labelKey: "filters.planned", icon: Bookmark },
+  { value: "completed", labelKey: "filters.completed", icon: CheckCircle },
+  { value: "paused", labelKey: "filters.paused", icon: PauseCircle },
 ]
 
 interface BookWithDetails extends Book {
@@ -154,22 +169,24 @@ export default function BooksPage() {
             role="tablist"
             aria-label={t("list.filters.all")}
           >
-            {statusFilters.map((filter) => (
-              <TabsTrigger
-                key={filter.value}
-                value={filter.value}
-                className="text-xs sm:text-sm px-1 sm:px-3 py-2"
-                role="tab"
-                aria-selected={activeStatus === filter.value}
-                aria-controls={`panel-${filter.value}`}
-                id={`tab-${filter.value}`}
-              >
-                <span className="hidden sm:inline">{t(`list.filters.${filter.value}`)}</span>
-                <span className="sm:hidden text-[10px]">
-                  {t(`list.filters.${filter.value}`).slice(0, 4)}
-                </span>
-              </TabsTrigger>
-            ))}
+            {statusFilters.map((filter) => {
+              const Icon = filter.icon
+              return (
+                <TabsTrigger
+                  key={filter.value}
+                  value={filter.value}
+                  className="text-xs sm:text-sm px-1 sm:px-3 py-2 flex items-center gap-1"
+                  role="tab"
+                  aria-selected={activeStatus === filter.value}
+                  aria-controls={`panel-${filter.value}`}
+                  id={`tab-${filter.value}`}
+                >
+                  {Icon && <Icon className="h-4 w-4 hidden sm:inline sm:mr-1" />}
+                  <span className="hidden sm:inline">{t(`list.filters.${filter.value}`)}</span>
+                  {Icon && <Icon className="h-4 w-4 sm:hidden" />}
+                </TabsTrigger>
+              )
+            })}
           </TabsList>
         </Tabs>
 

@@ -126,6 +126,14 @@
     },
     "items": "items",
     "noItems": "No items",
+    "workout": {
+      "types": {
+        "strength": "Strength",
+        "cardio": "Cardio",
+        "yoga": "Yoga",
+        "stretching": "Stretching"
+      }
+    },
     "pwa": {
       "installTitle": "Install Life OS",
       "installDescription": "Works offline and launches faster",
@@ -141,6 +149,7 @@
     "analytics": "Analytics",
     "body": "Body",
     "books": "Books",
+    "catalog": "Catalog",
     "content": "Content",
     "goals": "Goals",
     "habits": "Habits",
@@ -420,6 +429,8 @@
       "books": "Books",
       "recipes": "Recipes"
     },
+    "addItem": "Add Item",
+    "editItem": "Edit Item",
     "about": {
       "title": "About Application",
       "description": "Life OS is a unified application for tracking various aspects of life.",
@@ -536,6 +547,7 @@
       "totalBooks": "Total books",
       "reading": "Reading",
       "completed": "Completed",
+      "planned": "Planned",
       "comingSoon": "Book management will be available in the next version."
     },
     "recipes": {
@@ -1160,6 +1172,14 @@
       "workout": "Workout",
       "finance": "Finance"
     },
+    "workout": {
+      "types": {
+        "strength": "Strength",
+        "cardio": "Cardio",
+        "yoga": "Yoga",
+        "stretching": "Stretching"
+      }
+    },
     "stats": {
       "total": "Total"
     },
@@ -1205,7 +1225,8 @@
     "workoutTypes": {
       "strength": "Strength",
       "cardio": "Cardio",
-      "yoga": "Yoga"
+      "yoga": "Yoga",
+      "stretching": "Stretching"
     },
     "edit": {
       "title": "Edit: {type}",
@@ -1402,7 +1423,8 @@
       "types": {
         "strength": "Strength",
         "cardio": "Cardio",
-        "yoga": "Yoga"
+        "yoga": "Yoga",
+        "stretching": "Stretching"
       },
       "subcategory": "Subcategory",
       "duration": "Duration (min)",
@@ -1470,12 +1492,26 @@
         "intermediate": "Intermediate",
         "advanced": "Advanced"
       },
+      "stretchingSubcategories": {
+        "byType": "By Type",
+        "byFocus": "By Focus Area",
+        "static": "Static Stretching",
+        "dynamic": "Dynamic Stretching",
+        "ballistic": "Ballistic Stretching",
+        "pnf": "PNF Stretching",
+        "fullBody": "Full Body",
+        "upperBody": "Upper Body",
+        "lowerBody": "Lower Body",
+        "back": "Back & Spine",
+        "hips": "Hips & Glutes"
+      },
       "goals": {
         "mass": "Mass Gain",
         "relief": "Definition",
         "strength": "Strength",
         "endurance": "Endurance",
         "flexibility": "Flexibility",
+        "mobility": "Mobility",
         "relaxation": "Relaxation",
         "balance": "Balance",
         "fatLoss": "Fat Loss",
@@ -1503,7 +1539,9 @@
         "Bolster": "Bolster",
         "Blanket": "Blanket",
         "Chair": "Chair",
-        "Wall": "Wall"
+        "Wall": "Wall",
+        "FoamRoller": "Foam Roller",
+        "Ball": "Exercise Ball"
       },
       "placeholders": {
         "calories": "cal",
@@ -2546,6 +2584,22 @@
       "empty": "No recurring transactions",
       "loading": "Loading...",
       "nextDue": "Next"
+    },
+    "budgets": {
+      "title": "Budgets",
+      "description": "Set spending limits by category",
+      "add": "Add Budget",
+      "edit": "Edit Budget",
+      "new": "New Budget",
+      "category": "Category",
+      "selectCategory": "Select category",
+      "limit": "Monthly Limit",
+      "empty": "No budgets set",
+      "addFirst": "Add Budget",
+      "used": "used",
+      "remaining": "Remaining",
+      "overBudget": "Over by",
+      "currency": "₽"
     }
   }
 }

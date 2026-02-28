@@ -120,11 +120,13 @@ export { default as AlertCircle } from "lucide-react/dist/esm/icons/alert-circle
 export { default as Info } from "lucide-react/dist/esm/icons/info"
 export { default as Circle } from "lucide-react/dist/esm/icons/circle"
 export { default as Loader2 } from "lucide-react/dist/esm/icons/loader-2"
+export { default as PauseCircle } from "lucide-react/dist/esm/icons/pause-circle"
 
 // Cloud & Sync
 export { default as Cloud } from "lucide-react/dist/esm/icons/cloud"
 export { default as CloudOff } from "lucide-react/dist/esm/icons/cloud-off"
 export { default as LogIn } from "lucide-react/dist/esm/icons/log-in"
+export { default as Languages } from "lucide-react/dist/esm/icons/languages"
 
 // Data & Database
 export { default as Database } from "lucide-react/dist/esm/icons/database"

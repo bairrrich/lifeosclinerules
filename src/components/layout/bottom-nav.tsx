@@ -31,7 +31,7 @@ export function BottomNav() {
                 )}
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
-                <span className="text-[10px] sm:text-xs font-medium truncate max-w-full">
+                <span className="text-[10px] sm:text-xs font-medium truncate max-w-full hidden sm:inline">
                   {t(item.translationKey)}
                 </span>
               </Link>

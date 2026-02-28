@@ -7,6 +7,7 @@ export {
   getStrengthSubcategories,
   getCardioSubcategories,
   getYogaSubcategories,
+  getStretchingSubcategories,
   getEquipmentOptions,
   getGoalOptions,
 } from "./workout-form"
@@ -29,6 +30,7 @@ export const categoryColors: Record<string, string> = {
   Strength: "data-[state=active]:bg-red-500 data-[state=active]:text-white",
   Cardio: "data-[state=active]:bg-blue-500 data-[state=active]:text-white",
   Yoga: "data-[state=active]:bg-emerald-500 data-[state=active]:text-white",
+  Stretching: "data-[state=active]:bg-pink-500 data-[state=active]:text-white",
 }
 
 export const financeTypeColors: Record<string, string> = {
@@ -44,4 +46,4 @@ export const typeLabels: Record<string, string> = {
 }
 
 export const foodCategoryOrder = ["Breakfast", "Lunch", "Dinner", "Snack"]
-export const workoutCategoryOrder = ["Strength", "Cardio", "Yoga"]
+export const workoutCategoryOrder = ["Strength", "Cardio", "Yoga", "Stretching"]

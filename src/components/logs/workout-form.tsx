@@ -119,6 +119,30 @@ export function getYogaSubcategories(t: any) {
   }
 }
 
+export function getStretchingSubcategories(t: any) {
+  return {
+    type: {
+      label: t("workout.stretchingSubcategories.byType"),
+      options: [
+        { value: "static", label: t("workout.stretchingSubcategories.static") },
+        { value: "dynamic", label: t("workout.stretchingSubcategories.dynamic") },
+        { value: "ballistic", label: t("workout.stretchingSubcategories.ballistic") },
+        { value: "pnf", label: t("workout.stretchingSubcategories.pnf") },
+      ],
+    },
+    focus: {
+      label: t("workout.stretchingSubcategories.byFocus"),
+      options: [
+        { value: "full_body", label: t("workout.stretchingSubcategories.fullBody") },
+        { value: "upper_body", label: t("workout.stretchingSubcategories.upperBody") },
+        { value: "lower_body", label: t("workout.stretchingSubcategories.lowerBody") },
+        { value: "back", label: t("workout.stretchingSubcategories.back") },
+        { value: "hips", label: t("workout.stretchingSubcategories.hips") },
+      ],
+    },
+  }
+}
+
 export function getEquipmentOptions(t: any): Record<string, string[]> {
   return {
     strength: [
@@ -161,6 +185,15 @@ export function getEquipmentOptions(t: any): Record<string, string[]> {
       t("workout.equipmentOptions.Wall"),
       t("workout.equipmentOptions.NoEquipment"),
     ],
+    stretching: [
+      t("workout.equipmentOptions.Mat"),
+      t("workout.equipmentOptions.Strap"),
+      t("workout.equipmentOptions.Blocks"),
+      t("workout.equipmentOptions.FoamRoller"),
+      t("workout.equipmentOptions.Ball"),
+      t("workout.equipmentOptions.Wall"),
+      t("workout.equipmentOptions.NoEquipment"),
+    ],
   }
 }
 
@@ -182,6 +215,12 @@ export function getGoalOptions(t: any): Record<string, { value: string; label: s
       { value: "strength", label: t("workout.goals.strength") },
       { value: "relaxation", label: t("workout.goals.relaxation") },
       { value: "balance", label: t("workout.goals.balance") },
+    ],
+    stretching: [
+      { value: "flexibility", label: t("workout.goals.flexibility") },
+      { value: "mobility", label: t("workout.goals.mobility") },
+      { value: "recovery", label: t("workout.goals.recovery") },
+      { value: "relaxation", label: t("workout.goals.relaxation") },
     ],
   }
 }
@@ -312,7 +351,9 @@ export function WorkoutForm({
         ? getCardioSubcategories(t)
         : selectedCategory === "Yoga"
           ? getYogaSubcategories(t)
-          : null
+          : selectedCategory === "Stretching"
+            ? getStretchingSubcategories(t)
+            : null
 
   // Get equipment for current workout type
   const currentEquipment =
@@ -322,7 +363,9 @@ export function WorkoutForm({
         ? getEquipmentOptions(t).cardio
         : selectedCategory === "Yoga"
           ? getEquipmentOptions(t).yoga
-          : []
+          : selectedCategory === "Stretching"
+            ? getEquipmentOptions(t).stretching
+            : []
 
   // Get goals for current workout type
   const currentGoals =
@@ -332,7 +375,9 @@ export function WorkoutForm({
         ? getGoalOptions(t).cardio
         : selectedCategory === "Yoga"
           ? getGoalOptions(t).yoga
-          : []
+          : selectedCategory === "Stretching"
+            ? getGoalOptions(t).stretching
+            : []
 
   return (
     <>
@@ -507,6 +552,54 @@ export function WorkoutForm({
                 </div>
               </>
             )}
+
+            {/* Subcategories for Stretching */}
+            {selectedCategory === "Stretching" && (
+              <>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground">
+                    {t(`workout.stretchingSubcategories.byType`)}
+                  </Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {getStretchingSubcategories(t).type.options.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setWorkoutSubcategory(opt.value)}
+                        className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
+                          workoutSubcategory === opt.value
+                            ? "bg-pink-500 text-white border-pink-500"
+                            : "bg-background hover:bg-accent"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground">
+                    {t(`workout.stretchingSubcategories.byFocus`)}
+                  </Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {getStretchingSubcategories(t).focus.options.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setWorkoutSubcategory(opt.value)}
+                        className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
+                          workoutSubcategory === opt.value
+                            ? "bg-pink-500 text-white border-pink-500"
+                            : "bg-background hover:bg-accent"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       )}
@@ -554,46 +647,49 @@ export function WorkoutForm({
             </div>
           </div>
 
-          {/* Инвентарь */}
-          {currentEquipment.length > 0 && (
-            <ComboboxSelect
-              label={t("workout.equipment")}
-              options={currentEquipment}
-              value={workoutEquipment}
-              onChange={setWorkoutEquipment}
-              placeholder={t("workout.equipment")}
-            />
-          )}
+          {/* Инвентарь и Цель тренировки - в одну строку */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Инвентарь */}
+            {currentEquipment.length > 0 && (
+              <ComboboxSelect
+                label={t("workout.equipment")}
+                options={currentEquipment}
+                value={workoutEquipment}
+                onChange={setWorkoutEquipment}
+                placeholder={t("workout.equipment")}
+              />
+            )}
 
-          {/* Цель тренировки */}
-          {currentGoals.length > 0 && (
-            <div className="space-y-2">
-              <Label>{t("workout.goal")}</Label>
-              <div className="relative">
-                <select
-                  className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
-                  value={workoutGoal}
-                  onChange={(e) => setWorkoutGoal(e.target.value)}
-                  style={{
-                    backgroundImage: "none",
-                    WebkitAppearance: "none",
-                    MozAppearance: "none",
-                    appearance: "none",
-                  }}
-                >
-                  <option value="" disabled>
-                    {t("workout.goal")}
-                  </option>
-                  {currentGoals.map((g) => (
-                    <option key={g.value} value={g.value}>
-                      {g.label}
+            {/* Цель тренировки */}
+            {currentGoals.length > 0 && (
+              <div className="space-y-2">
+                <Label>{t("workout.goal")}</Label>
+                <div className="relative">
+                  <select
+                    className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
+                    value={workoutGoal}
+                    onChange={(e) => setWorkoutGoal(e.target.value)}
+                    style={{
+                      backgroundImage: "none",
+                      WebkitAppearance: "none",
+                      MozAppearance: "none",
+                      appearance: "none",
+                    }}
+                  >
+                    <option value="" disabled>
+                      {t("workout.goal")}
                     </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+                    {currentGoals.map((g) => (
+                      <option key={g.value} value={g.value}>
+                        {g.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </CardContent>
       </Card>
 

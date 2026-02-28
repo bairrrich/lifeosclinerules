@@ -20,3 +20,6 @@ export type { EmptyStateProps } from "./empty-state"
 
 export { LoadingState } from "./loading-state"
 export type { LoadingStateProps } from "./loading-state"
+
+export { EntityTranslations } from "./entity-translations"
+export type { EntityTranslationsProps } from "./entity-translations"

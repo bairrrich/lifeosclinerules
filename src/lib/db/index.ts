@@ -35,6 +35,7 @@ import type {
   ReminderLog,
   Template,
   RecurringTransaction,
+  EntityTranslation,
 } from "@/types"
 import { LogType, ItemType, ContentType } from "@/types"
 
@@ -88,6 +89,9 @@ class LifeOSDatabase extends Dexie {
 
   // Повторяющиеся транзакции
   recurringTransactions!: EntityTable<RecurringTransaction, "id">
+
+  // Локализация сущностей
+  entityTranslations!: EntityTable<EntityTranslation, "id">
 
   constructor() {
     super("LifeOSDB")
@@ -144,6 +148,11 @@ class LifeOSDatabase extends Dexie {
 
       // Синхронизация
       syncQueue: "id, table_name, record_id, action, synced",
+    })
+
+    this.version(8).stores({
+      // Локализация сущностей
+      entityTranslations: "id, entity_type, entity_id, locale",
     })
   }
 }
@@ -226,6 +235,191 @@ export async function getAllEntities<T extends { id: string }>(
   table: EntityTable<T, "id">
 ): Promise<T[]> {
   return await table.toArray()
+}
+
+// ============================================
+// Localization Helpers
+// ============================================
+
+// Импорт статических переводов сущностей
+import enEntities from "@/messages/en/entities.json"
+import ruEntities from "@/messages/ru/entities.json"
+
+const entityTranslations: Record<string, typeof enEntities> = {
+  en: enEntities,
+  ru: ruEntities,
+}
+
+/**
+ * Получить перевод сущности из статических файлов
+ * @param entityType - тип сущности (categories, units, accounts)
+ * @param entityKey - ключ сущности (например, "food", "salary")
+ * @param locale - язык (en, ru)
+ * @param subKey - подкатегория (например, "finance" для категорий)
+ */
+export function getStaticEntityTranslation(
+  entityType: "categories" | "units" | "accounts",
+  entityKey: string,
+  locale: string,
+  subKey?: string
+): string {
+  const translations = entityTranslations[locale] || entityTranslations["en"]
+
+  if (!translations) return entityKey
+
+  const entityData = (translations as Record<string, Record<string, unknown>>)[entityType]
+  if (!entityData) return entityKey
+
+  // Для категорий используем подкатегорию
+  if (entityType === "categories" && subKey) {
+    const subData = entityData[subKey] as Record<string, string> | undefined
+    if (subData && subData[entityKey]) {
+      return subData[entityKey]
+    }
+  }
+
+  // Для units и accounts - прямой перевод по ключу
+  const directTranslation = (entityData as Record<string, string>)[entityKey]
+  return directTranslation || entityKey
+}
+
+/**
+ * Получить все переводы для типа сущности
+ */
+export function getEntityTranslationsByType(
+  entityType: "categories" | "units" | "accounts",
+  locale: string
+): Record<string, string> | Record<string, Record<string, string>> {
+  const translations = entityTranslations[locale] || entityTranslations["en"]
+
+  if (!translations) return {}
+
+  return (translations as Record<string, Record<string, unknown>>)[entityType] || {}
+}
+
+/**
+ * Получить локализованное название сущности
+ * @param entityType - тип сущности (category, unit, account)
+ * @param entityId - ID сущности
+ * @param locale - язык (en, ru)
+ * @param defaultName - название по умолчанию (из основной таблицы)
+ * @param categoryType - тип категории для категорий (food, workout, finance)
+ */
+export async function getLocalizedEntityName(
+  entityType: "category" | "unit" | "account",
+  entityId: string,
+  locale: string,
+  defaultName: string,
+  categoryType?: string
+): Promise<string> {
+  if (!locale || !["en", "ru"].includes(locale)) {
+    return defaultName
+  }
+
+  // Сначала пробуем найти перевод по ID в базе данных
+  const translation = await db.entityTranslations
+    .where({
+      entity_type: entityType,
+      entity_id: entityId,
+      locale: locale as "en" | "ru",
+    })
+    .first()
+
+  if (translation?.name) {
+    return translation.name
+  }
+
+  // Если нет в БД, пробуем статический перевод по ключу
+  let staticTranslation: string
+
+  if (entityType === "category" && categoryType) {
+    // Для категорий используем подкатегорию (food, workout, finance)
+    staticTranslation = getStaticEntityTranslation("categories", defaultName, locale, categoryType)
+  } else {
+    // Для units и accounts - прямой перевод по ключу
+    staticTranslation = getStaticEntityTranslation(
+      entityType === "category" ? "categories" : entityType === "unit" ? "units" : "accounts",
+      defaultName,
+      locale
+    )
+  }
+
+  return staticTranslation !== defaultName ? staticTranslation : defaultName
+}
+
+/**
+ * Сохранить перевод названия сущности
+ */
+export async function saveEntityTranslation(
+  entityType: "category" | "unit" | "account",
+  entityId: string,
+  locale: "en" | "ru",
+  name: string
+): Promise<void> {
+  const existing = await db.entityTranslations
+    .where({
+      entity_type: entityType,
+      entity_id: entityId,
+      locale,
+    })
+    .first()
+
+  if (existing) {
+    await db.entityTranslations.update(existing.id, { name, updated_at: getTimestamp() })
+  } else {
+    await db.entityTranslations.add({
+      id: generateId(),
+      entity_type: entityType,
+      entity_id: entityId,
+      locale,
+      name,
+      created_at: getTimestamp(),
+      updated_at: getTimestamp(),
+    })
+  }
+}
+
+/**
+ * Удалить перевод сущности
+ */
+export async function deleteEntityTranslation(
+  entityType: "category" | "unit" | "account",
+  entityId: string,
+  locale: "en" | "ru"
+): Promise<void> {
+  const translation = await db.entityTranslations
+    .where({
+      entity_type: entityType,
+      entity_id: entityId,
+      locale,
+    })
+    .first()
+
+  if (translation) {
+    await db.entityTranslations.delete(translation.id)
+  }
+}
+
+/**
+ * Получить все переводы для сущности
+ */
+export async function getEntityTranslations(
+  entityType: "category" | "unit" | "account",
+  entityId: string
+): Promise<{ en?: string; ru?: string }> {
+  const translations = await db.entityTranslations
+    .where({
+      entity_type: entityType,
+      entity_id: entityId,
+    })
+    .toArray()
+
+  const result: { en?: string; ru?: string } = {}
+  translations.forEach((t) => {
+    result[t.locale] = t.name
+  })
+
+  return result
 }
 
 // ============================================

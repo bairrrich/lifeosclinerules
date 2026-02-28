@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 import { Ruler } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,13 +11,28 @@ import { Button } from "@/components/ui/button"
 import { CrudManager } from "@/components/shared"
 import { useSettings, useUnitTypes } from "./settings-context"
 import type { Unit } from "@/types"
+import { getLocalizedEntityName } from "@/lib/db"
 
 export function UnitsManager() {
   const t = useTranslations("settings")
   const tCommon = useTranslations("common")
+  const locale = useLocale()
   const unitTypes = useUnitTypes()
   const { units, editingUnit, setEditingUnit, createUnit, updateUnitData, deleteUnitData } =
     useSettings()
+  const [localizedUnitNames, setLocalizedUnitNames] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    loadLocalizedNames()
+  }, [locale, units])
+
+  async function loadLocalizedNames() {
+    const localizedNames: Record<string, string> = {}
+    for (const unit of units) {
+      localizedNames[unit.id] = await getLocalizedEntityName("unit", unit.id, locale, unit.name)
+    }
+    setLocalizedUnitNames(localizedNames)
+  }
 
   // Получаем название типа на русском
   const getTypeLabel = (type: Unit["type"]) => {
@@ -42,46 +58,50 @@ export function UnitsManager() {
     onCancel: () => void
   ) => {
     return (
-      <div className="grid grid-cols-3 gap-2">
-        <div className="space-y-1">
-          <Label className="sr-only">{t("units.name")}</Label>
-          <Input
-            value={item?.name || ""}
-            onChange={(e) => onChange({ name: e.target.value })}
-            placeholder={t("units.name")}
-            className="h-9"
-          />
+      <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <Label className="sr-only">{t("units.name")}</Label>
+            <Input
+              value={item?.name || ""}
+              onChange={(e) => onChange({ name: e.target.value })}
+              placeholder={t("units.name")}
+              className="h-9"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="sr-only">{t("units.abbreviation")}</Label>
+            <Input
+              value={item?.abbreviation || ""}
+              onChange={(e) => onChange({ abbreviation: e.target.value })}
+              placeholder={t("units.abbreviation")}
+              className="h-9"
+            />
+          </div>
         </div>
-        <div className="space-y-1">
-          <Label className="sr-only">{t("units.abbreviation")}</Label>
-          <Input
-            value={item?.abbreviation || ""}
-            onChange={(e) => onChange({ abbreviation: e.target.value })}
-            placeholder={t("units.abbreviation")}
-            className="h-9"
-          />
-        </div>
-        <div className="space-y-1">
-          <Label className="sr-only">{t("units.type")}</Label>
-          <NativeSelect
-            value={item?.type || "weight"}
-            onChange={(e) => onChange({ type: e.target.value as Unit["type"] })}
-            className="h-9"
-          >
-            {unitTypes.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
-        <div className="col-span-3 flex gap-2">
-          <Button size="sm" onClick={onSave}>
-            {tCommon("save")}
-          </Button>
-          <Button size="sm" variant="outline" onClick={onCancel}>
-            {tCommon("cancel")}
-          </Button>
+        <div className="flex items-end gap-2">
+          <div className="flex-1 space-y-1">
+            <Label className="sr-only">{t("units.type")}</Label>
+            <NativeSelect
+              value={item?.type || "weight"}
+              onChange={(e) => onChange({ type: e.target.value as Unit["type"] })}
+              className="h-9"
+            >
+              {unitTypes.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </NativeSelect>
+          </div>
+          <div className="flex gap-2 pt-2">
+            <Button size="sm" onClick={onSave}>
+              {tCommon("save")}
+            </Button>
+            <Button size="sm" variant="outline" onClick={onCancel}>
+              {tCommon("cancel")}
+            </Button>
+          </div>
         </div>
       </div>
     )
@@ -90,7 +110,7 @@ export function UnitsManager() {
   const renderItem = (item: Unit, onEdit: () => void, onDelete: () => void) => {
     return (
       <div className="font-medium">
-        {item.name} ({item.abbreviation})
+        {localizedUnitNames[item.id] || item.name} ({item.abbreviation})
       </div>
     )
   }

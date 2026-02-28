@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 import { Wallet, Plus, Pencil, Trash2, AlertTriangle } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,6 +24,7 @@ import {
   updateEntity,
   deleteEntity,
   getAllEntities,
+  getLocalizedEntityName,
 } from "@/lib/db"
 import type { Category, Log, Budget } from "@/types"
 
@@ -38,9 +40,11 @@ export function BudgetManager() {
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null)
   const [selectedCategoryId, setSelectedCategoryId] = useState("")
   const [budgetAmount, setBudgetAmount] = useState("")
+  const [localizedCategoryNames, setLocalizedCategoryNames] = useState<Record<string, string>>({})
 
-  const t = useTranslations("common")
-  const tLoading = useTranslations("loading")
+  const t = useTranslations("finance")
+  const tCommon = useTranslations("common")
+  const locale = useLocale()
 
   useEffect(() => {
     loadData()
@@ -62,6 +66,19 @@ export function BudgetManager() {
       // Фильтруем категории для финансов
       const financeCategories = allCategories.filter((c) => c.type === "finance")
       setCategories(financeCategories)
+
+      // Загружаем локализованные названия категорий
+      const localizedNames: Record<string, string> = {}
+      for (const category of financeCategories) {
+        localizedNames[category.id] = await getLocalizedEntityName(
+          "category",
+          category.id,
+          locale,
+          category.name,
+          "finance"
+        )
+      }
+      setLocalizedCategoryNames(localizedNames)
 
       // Фильтруем расходы за текущий месяц
       const monthExpenses = allLogs.filter(
@@ -147,22 +164,22 @@ export function BudgetManager() {
 
   if (isLoading) {
     return (
-      <FormSection title="Бюджеты" icon={Wallet}>
-        <div className="text-center text-muted-foreground py-4">Загрузка...</div>
+      <FormSection title={t("budgets.title")} icon={Wallet}>
+        <div className="text-center text-muted-foreground py-4">{t("recurring.loading")}</div>
       </FormSection>
     )
   }
 
   return (
     <FormSection
-      title="Бюджеты"
-      description="Установите лимиты расходов по категориям"
+      title={t("budgets.title")}
+      description={t("budgets.description")}
       icon={Wallet}
       actions={
         budgets.length > 0 && (
           <Button variant="outline" size="sm" onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-1" />
-            Добавить
+            {t("budgets.add")}
           </Button>
         )
       }
@@ -170,9 +187,9 @@ export function BudgetManager() {
       <div className="space-y-4">
         {budgets.length === 0 ? (
           <EmptyState
-            title="Нет установленных бюджетов"
+            title={t("budgets.empty")}
             action={{
-              label: "Добавить бюджет",
+              label: t("budgets.addFirst"),
               onClick: () => setIsAddDialogOpen(true),
               icon: Plus,
             }}
@@ -191,21 +208,24 @@ export function BudgetManager() {
                   <div key={budget.id} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{budget.category_name}</span>
+                        <span className="font-medium">
+                          {localizedCategoryNames[budget.category_id] || budget.category_name}
+                        </span>
                         {isOverBudget && <AlertTriangle className="h-4 w-4 text-red-500" />}
                       </div>
                       <div className="flex items-center gap-2">
                         <span
                           className={`text-sm ${isOverBudget ? "text-red-500" : "text-muted-foreground"}`}
                         >
-                          {spent.toLocaleString()} / {budget.amount.toLocaleString()} ₽
+                          {spent.toLocaleString()} / {budget.amount.toLocaleString()}{" "}
+                          {t("budgets.currency")}
                         </span>
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-6 w-6"
                           onClick={() => openEditDialog(budget)}
-                          aria-label="Редактировать бюджет"
+                          aria-label={t("budgets.edit")}
                         >
                           <Pencil className="h-3 w-3" />
                         </Button>
@@ -214,7 +234,7 @@ export function BudgetManager() {
                           size="icon"
                           className="h-6 w-6 text-destructive"
                           onClick={() => handleDeleteBudget(budget.id)}
-                          aria-label="Удалить бюджет"
+                          aria-label={tCommon("delete")}
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
@@ -225,11 +245,13 @@ export function BudgetManager() {
                       className={`h-2 ${isOverBudget ? "bg-red-100" : ""}`}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{percentage.toFixed(0)}% использовано</span>
+                      <span>
+                        {percentage.toFixed(0)}% {t("budgets.used")}
+                      </span>
                       <span className={isOverBudget ? "text-red-500" : ""}>
                         {isOverBudget
-                          ? `Превышение на ${Math.abs(remaining).toLocaleString()} ₽`
-                          : `Осталось ${remaining.toLocaleString()} ₽`}
+                          ? `${t("budgets.overBudget")} ${Math.abs(remaining).toLocaleString()} ${t("budgets.currency")}`
+                          : `${t("budgets.remaining")} ${remaining.toLocaleString()} ${t("budgets.currency")}`}
                       </span>
                     </div>
                   </div>
@@ -244,7 +266,7 @@ export function BudgetManager() {
               onClick={() => setIsAddDialogOpen(true)}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Добавить бюджет
+              {t("budgets.add")}
             </Button>
           </>
         )}
@@ -253,27 +275,29 @@ export function BudgetManager() {
         <Dialog open={isAddDialogOpen} onOpenChange={(open) => !open && resetForm()}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editingBudget ? "Редактировать бюджет" : "Новый бюджет"}</DialogTitle>
+              <DialogTitle>{editingBudget ? t("budgets.edit") : t("budgets.new")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label>Категория</Label>
+                <Label>{t("budgets.category")}</Label>
                 <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={selectedCategoryId}
                   onChange={(e) => setSelectedCategoryId(e.target.value)}
                   disabled={!!editingBudget}
                 >
-                  <option value="">Выберите категорию</option>
+                  <option value="">{t("budgets.selectCategory")}</option>
                   {availableCategories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
-                      {cat.name}
+                      {localizedCategoryNames[cat.id] || cat.name}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="space-y-2">
-                <Label>Лимит на месяц (₽)</Label>
+                <Label>
+                  {t("budgets.limit")} ({t("budgets.currency")})
+                </Label>
                 <Input
                   type="number"
                   placeholder="10000"
@@ -284,9 +308,11 @@ export function BudgetManager() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={resetForm}>
-                {t("cancel")}
+                {tCommon("cancel")}
               </Button>
-              <Button onClick={handleAddBudget}>{editingBudget ? t("save") : t("add")}</Button>
+              <Button onClick={handleAddBudget}>
+                {editingBudget ? tCommon("save") : tCommon("add")}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

@@ -15,8 +15,11 @@ import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/
 import { RecipeType } from "@/types"
 
 // Типы фильтров - label будет получен через t()
-const recipeTypeFilters: { value: RecipeType | "all"; icon: typeof ChefHat }[] = [
-  { value: "all", icon: ChefHat },
+const recipeTypeFilters: {
+  value: RecipeType | "all"
+  icon: typeof ChefHat | typeof Search | null
+}[] = [
+  { value: "all", icon: Search },
   { value: RecipeType.FOOD, icon: ChefHat },
   { value: RecipeType.DRINK, icon: Coffee },
   { value: RecipeType.COCKTAIL, icon: Martini },
@@ -151,23 +154,25 @@ export default function RecipesPage() {
             role="tablist"
             aria-label={t("list.filters.all")}
           >
-            {recipeTypeFilters.map((filter) => (
-              <TabsTrigger
-                key={filter.value}
-                value={filter.value}
-                className="text-xs sm:text-sm px-2 sm:px-4 py-2"
-                role="tab"
-                aria-selected={activeType === filter.value}
-                aria-controls={`panel-${filter.value}`}
-                id={`tab-${filter.value}`}
-              >
-                <filter.icon className="h-4 w-4 sm:mr-1" />
-                <span className="hidden sm:inline">{t(`list.filters.${filter.value}`)}</span>
-                <span className="sm:hidden text-[10px]">
-                  {t(`list.filters.${filter.value}`).slice(0, 4)}
-                </span>
-              </TabsTrigger>
-            ))}
+            {recipeTypeFilters.map((filter) => {
+              const Icon = filter.icon
+              return (
+                <TabsTrigger
+                  key={filter.value}
+                  value={filter.value}
+                  className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+                  role="tab"
+                  aria-selected={activeType === filter.value}
+                  aria-controls={`panel-${filter.value}`}
+                  id={`tab-${filter.value}`}
+                >
+                  {Icon && <Icon className="h-4 w-4 hidden sm:inline" />}
+                  <span className="hidden sm:inline sm:ml-1">
+                    {t(`list.filters.${filter.value}`)}
+                  </span>
+                </TabsTrigger>
+              )
+            })}
           </TabsList>
         </Tabs>
 

@@ -21,6 +21,7 @@ import {
 import { RecurringTransactions } from "@/components/finance/recurring-transactions"
 import { SyncManager } from "@/components/settings/sync-manager"
 import { useTranslations } from "next-intl"
+import { Settings, ClipboardList, Package, BookOpen, ChefHat } from "@/lib/icons"
 
 function AboutCard() {
   const t = useTranslations("settings")
@@ -49,19 +50,29 @@ export default function SettingsPage() {
           <Tabs defaultValue="general" className="space-y-4" aria-label={t("title")}>
             <TabsList className="grid grid-cols-5 w-full">
               <TabsTrigger value="general" className="text-xs sm:text-sm">
-                {t("tabs.general")}
+                <Settings className="h-4 w-4 hidden sm:inline sm:mr-1" />
+                <span className="hidden sm:inline">{t("tabs.general")}</span>
+                <Settings className="h-4 w-4 sm:hidden" />
               </TabsTrigger>
               <TabsTrigger value="logs" className="text-xs sm:text-sm">
-                {t("tabs.logs")}
+                <ClipboardList className="h-4 w-4 hidden sm:inline sm:mr-1" />
+                <span className="hidden sm:inline">{t("tabs.logs")}</span>
+                <ClipboardList className="h-4 w-4 sm:hidden" />
               </TabsTrigger>
               <TabsTrigger value="items" className="text-xs sm:text-sm">
-                {t("tabs.items")}
+                <Package className="h-4 w-4 hidden sm:inline sm:mr-1" />
+                <span className="hidden sm:inline">{t("tabs.items")}</span>
+                <Package className="h-4 w-4 sm:hidden" />
               </TabsTrigger>
               <TabsTrigger value="books" className="text-xs sm:text-sm">
-                {t("tabs.books")}
+                <BookOpen className="h-4 w-4 hidden sm:inline sm:mr-1" />
+                <span className="hidden sm:inline">{t("tabs.books")}</span>
+                <BookOpen className="h-4 w-4 sm:hidden" />
               </TabsTrigger>
               <TabsTrigger value="recipes" className="text-xs sm:text-sm">
-                {t("tabs.recipes")}
+                <ChefHat className="h-4 w-4 hidden sm:inline sm:mr-1" />
+                <span className="hidden sm:inline">{t("tabs.recipes")}</span>
+                <ChefHat className="h-4 w-4 sm:hidden" />
               </TabsTrigger>
             </TabsList>
 
