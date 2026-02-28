@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -7,67 +8,77 @@ import { Label } from "@/components/ui/label"
 import type { FoodRecipeMetadata, CourseType, CookingMethod, ServingTemperature } from "@/types"
 
 // ============================================
-// Константы
+// Функции для получения локализованных конфигураций
 // ============================================
 
-export const courseTypes: { value: CourseType; label: string }[] = [
-  { value: "breakfast", label: "Завтрак" },
-  { value: "lunch", label: "Обед" },
-  { value: "dinner", label: "Ужин" },
-  { value: "soup", label: "Суп" },
-  { value: "salad", label: "Салат" },
-  { value: "dessert", label: "Десерт" },
-  { value: "snack", label: "Перекус" },
-  { value: "sauce", label: "Соус" },
-  { value: "appetizer", label: "Закуска" },
-]
+export function getCourseTypes(t: any) {
+  return [
+    { value: "breakfast", label: t("courseTypes.breakfast") },
+    { value: "lunch", label: t("courseTypes.lunch") },
+    { value: "dinner", label: t("courseTypes.dinner") },
+    { value: "soup", label: t("courseTypes.soup") },
+    { value: "salad", label: t("courseTypes.salad") },
+    { value: "dessert", label: t("courseTypes.dessert") },
+    { value: "snack", label: t("courseTypes.snack") },
+    { value: "sauce", label: t("courseTypes.sauce") },
+    { value: "appetizer", label: t("courseTypes.appetizer") },
+  ]
+}
 
-export const cookingMethods: { value: CookingMethod; label: string }[] = [
-  { value: "bake", label: "Запекать" },
-  { value: "fry", label: "Жарить" },
-  { value: "boil", label: "Варить" },
-  { value: "steam", label: "На пару" },
-  { value: "grill", label: "Гриль" },
-  { value: "raw", label: "Без обработки" },
-  { value: "stew", label: "Тушить" },
-  { value: "roast", label: "Обжаривать" },
-]
+export function getCookingMethods(t: any) {
+  return [
+    { value: "bake" as CookingMethod, label: t("cookingMethods.bake") },
+    { value: "fry" as CookingMethod, label: t("cookingMethods.fry") },
+    { value: "boil" as CookingMethod, label: t("cookingMethods.boil") },
+    { value: "steam" as CookingMethod, label: t("cookingMethods.steam") },
+    { value: "grill" as CookingMethod, label: t("cookingMethods.grill") },
+    { value: "raw" as CookingMethod, label: t("cookingMethods.raw") },
+    { value: "stew" as CookingMethod, label: t("cookingMethods.stew") },
+    { value: "roast" as CookingMethod, label: t("cookingMethods.roast") },
+  ]
+}
 
-export const servingTemperatures: { value: ServingTemperature; label: string }[] = [
-  { value: "hot", label: "Горячее" },
-  { value: "warm", label: "Тёплое" },
-  { value: "room", label: "Комнатной температуры" },
-  { value: "cold", label: "Холодное" },
-]
+export function getServingTemperatures(t: any) {
+  return [
+    { value: "hot" as ServingTemperature, label: t("servingTemperatures.hot") },
+    { value: "warm" as ServingTemperature, label: t("servingTemperatures.warm") },
+    { value: "room" as ServingTemperature, label: t("servingTemperatures.room") },
+    { value: "cold" as ServingTemperature, label: t("servingTemperatures.cold") },
+  ]
+}
 
-export const cuisines = [
-  "Русская",
-  "Итальянская",
-  "Французская",
-  "Японская",
-  "Китайская",
-  "Корейская",
-  "Тайская",
-  "Индийская",
-  "Мексиканская",
-  "Грузинская",
-  "Узбекская",
-  "Арабская",
-  "Средиземноморская",
-  "Американская",
-  "Другая",
-]
+export function getCuisines(t: any) {
+  return [
+    t("cuisines.russian"),
+    t("cuisines.italian"),
+    t("cuisines.french"),
+    t("cuisines.japanese"),
+    t("cuisines.chinese"),
+    t("cuisines.korean"),
+    t("cuisines.thai"),
+    t("cuisines.indian"),
+    t("cuisines.mexican"),
+    t("cuisines.georgian"),
+    t("cuisines.uzbek"),
+    t("cuisines.arabic"),
+    t("cuisines.mediterranean"),
+    t("cuisines.american"),
+    t("cuisines.other"),
+  ]
+}
 
-export const dietaryOptions = [
-  { value: "vegan", label: "Веган" },
-  { value: "vegetarian", label: "Вегетарианское" },
-  { value: "gluten-free", label: "Без глютена" },
-  { value: "keto", label: "Кето" },
-  { value: "low-carb", label: "Низкоуглеводное" },
-  { value: "dairy-free", label: "Без молока" },
-  { value: "nut-free", label: "Без орехов" },
-  { value: "diabetic", label: "Диабетическое" },
-]
+export function getDietaryOptions(t: any) {
+  return [
+    { value: "vegan", label: t("dietaryOptions.vegan") },
+    { value: "vegetarian", label: t("dietaryOptions.vegetarian") },
+    { value: "gluten-free", label: t("dietaryOptions.glutenFree") },
+    { value: "keto", label: t("dietaryOptions.keto") },
+    { value: "low-carb", label: t("dietaryOptions.lowCarb") },
+    { value: "dairy-free", label: t("dietaryOptions.dairyFree") },
+    { value: "nut-free", label: t("dietaryOptions.nutFree") },
+    { value: "diabetic", label: t("dietaryOptions.diabetic") },
+  ]
+}
 
 // ============================================
 // Интерфейсы
@@ -83,6 +94,8 @@ interface FoodRecipeFormProps {
 // ============================================
 
 export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
+  const t = useTranslations("recipes")
+
   const updateField = <K extends keyof FoodRecipeMetadata>(
     field: K,
     value: FoodRecipeMetadata[K]
@@ -117,12 +130,12 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Параметры блюда</CardTitle>
+        <CardTitle className="text-base">{t("forms.dishParameters")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Тип блюда */}
         <div className="space-y-2">
-          <Label>Тип блюда</Label>
+          <Label>{t("fields.courseType")}</Label>
           <div className="relative">
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -138,9 +151,9 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
               }}
             >
               <option value="" disabled>
-                Выберите тип
+                {t("forms.selectPlaceholder")}
               </option>
-              {courseTypes.map((ct) => (
+              {getCourseTypes(t).map((ct) => (
                 <option key={ct.value} value={ct.value}>
                   {ct.label}
                 </option>
@@ -152,7 +165,7 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
 
         {/* Кухня */}
         <div className="space-y-2">
-          <Label>Кухня</Label>
+          <Label>{t("fields.cuisine")}</Label>
           <div className="relative">
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -165,9 +178,9 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
                 appearance: "none",
               }}
             >
-              <option value="">Не указана</option>
-              {cuisines.map((c) => (
-                <option key={c} value={c}>
+              <option value="">{t("forms.notSpecified")}</option>
+              {getCuisines(t).map((c, index) => (
+                <option key={index} value={c}>
                   {c}
                 </option>
               ))}
@@ -178,9 +191,9 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
 
         {/* Метод приготовления */}
         <div className="space-y-2">
-          <Label>Способ приготовления</Label>
+          <Label>{t("fields.cookingMethod")}</Label>
           <div className="grid grid-cols-4 gap-2">
-            {cookingMethods.map((cm) => (
+            {getCookingMethods(t).map((cm) => (
               <button
                 key={cm.value}
                 type="button"
@@ -199,9 +212,9 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
 
         {/* Температура подачи */}
         <div className="space-y-2">
-          <Label>Температура подачи</Label>
+          <Label>{t("fields.servingTemperature")}</Label>
           <div className="grid grid-cols-4 gap-2">
-            {servingTemperatures.map((st) => (
+            {getServingTemperatures(t).map((st) => (
               <button
                 key={st.value}
                 type="button"
@@ -220,13 +233,13 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
 
         {/* Острота */}
         <div className="space-y-2">
-          <Label>Острота</Label>
+          <Label>{t("fields.spicyLevel")}</Label>
           <div className="grid grid-cols-4 gap-2">
             {[
-              { value: 0, label: "Нет" },
-              { value: 1, label: "Слабо" },
-              { value: 2, label: "Средне" },
-              { value: 3, label: "Остро" },
+              { value: 0, label: t("spicyLevels.none") },
+              { value: 1, label: t("spicyLevels.mild") },
+              { value: 2, label: t("spicyLevels.medium") },
+              { value: 3, label: t("spicyLevels.hot") },
             ].map((level) => (
               <button
                 key={level.value}
@@ -246,9 +259,9 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
 
         {/* Диетические особенности */}
         <div className="space-y-2">
-          <Label>Диетические особенности</Label>
+          <Label>{t("fields.dietary")}</Label>
           <div className="grid grid-cols-2 gap-2">
-            {dietaryOptions.map((opt) => (
+            {getDietaryOptions(t).map((opt) => (
               <label
                 key={opt.value}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer hover:bg-accent"

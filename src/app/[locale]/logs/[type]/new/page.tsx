@@ -249,7 +249,7 @@ export default function NewLogPage() {
           title = t("finance.type")
         }
       } else if (type === "workout") {
-        const subcategoryLabel = getSubcategoryLabel(selectedWorkoutCategory, workoutSubcategory)
+        const subcategoryLabel = getSubcategoryLabel(t, selectedWorkoutCategory, workoutSubcategory)
         if (subcategoryLabel) {
           title = `${selectedWorkoutCategory} (${subcategoryLabel})`
         } else {

@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Save, Trash2 } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 
 interface FormActionsProps {
   /** Показывать ли кнопку удаления */
@@ -40,29 +41,38 @@ export function FormActions({
   onCancel,
   onSave,
   isSaving = false,
-  saveText = "Сохранить",
-  deleteText = "Удалить",
+  saveText,
+  deleteText,
   type = "dialog",
   showBackButton = true,
 }: FormActionsProps) {
+  const t = useTranslations("common")
+  const tl = useTranslations("loading")
+
+  const saveLabel = saveText || t("save")
+  const deleteLabel = deleteText || t("delete")
+  const cancelLabel = t("cancel")
+  const savingLabel = isSaving ? tl("saving") : saveLabel
+  const deletingLabel = isDeleting ? tl("deleting") : deleteLabel
+
   if (type === "page") {
     return (
       <div className="flex justify-between gap-4">
         <Button type="button" variant="destructive" onClick={onDelete} disabled={isDeleting}>
           <Trash2 className="h-4 w-4 mr-2" />
-          {isDeleting ? "Удаление..." : deleteText}
+          {isDeleting ? tl("deleting") : deleteLabel}
         </Button>
         <div className="flex gap-2">
           {showBackButton && (
             <Button type="button" variant="outline" onClick={onCancel}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Отмена
+              {cancelLabel}
             </Button>
           )}
           {onSave && (
             <Button type="submit" disabled={isSaving}>
               <Save className="h-4 w-4 mr-2" />
-              {isSaving ? "Сохранение..." : saveText}
+              {isSaving ? tl("saving") : saveLabel}
             </Button>
           )}
         </div>
@@ -80,11 +90,11 @@ export function FormActions({
       )}
       <div className="flex gap-2 ml-auto">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Отмена
+          {cancelLabel}
         </Button>
         {onSave && (
           <Button type="button" onClick={onSave} disabled={isSaving}>
-            {isSaving ? "Сохранение..." : saveText}
+            {isSaving ? tl("saving") : saveLabel}
           </Button>
         )}
       </div>
@@ -104,13 +114,16 @@ export function DeleteConfirmActions({
   onConfirm: () => void
   isLoading?: boolean
 }) {
+  const t = useTranslations("common")
+  const tl = useTranslations("loading")
+
   return (
     <div className="flex justify-end gap-2">
       <Button type="button" variant="outline" onClick={onCancel}>
-        Отмена
+        {t("cancel")}
       </Button>
       <Button type="button" variant="destructive" onClick={onConfirm} disabled={isLoading}>
-        {isLoading ? "Удаление..." : "Удалить"}
+        {isLoading ? tl("deleting") : t("delete")}
       </Button>
     </div>
   )
@@ -123,21 +136,26 @@ export function CreateFormActions({
   onCancel,
   onSave,
   isSaving = false,
-  saveText = "Создать",
+  saveText,
 }: {
   onCancel: () => void
   onSave?: () => void
   isSaving?: boolean
   saveText?: string
 }) {
+  const t = useTranslations("common")
+  const tl = useTranslations("loading")
+
+  const saveLabel = saveText || t("create")
+
   return (
     <div className="flex justify-end gap-2">
       <Button type="button" variant="outline" onClick={onCancel}>
-        Отмена
+        {t("cancel")}
       </Button>
       {onSave && (
         <Button type="button" onClick={onSave} disabled={isSaving}>
-          {isSaving ? "Создание..." : saveText}
+          {isSaving ? tl("creating") : saveLabel}
         </Button>
       )}
     </div>

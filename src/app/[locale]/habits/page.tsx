@@ -40,7 +40,7 @@ const habitTypes = [
   { value: "negative", label: "Не делать", description: "Привычка чего-то избегать", icon: "✗" },
 ]
 
-const skipReasons = ["Забыл", "Не было времени", "Болезнь", "Отпуск", "Погода", "Другое"]
+const skipReasons = ["forgot", "noTime", "illness", "vacation", "weather", "other"]
 
 const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
 
@@ -59,6 +59,7 @@ export default function HabitsPage() {
 function HabitsContent() {
   const searchParams = useSearchParams()
   const t = useTranslations("habits")
+  const tCommon = useTranslations("common")
   const [isLoading, setIsLoading] = useState(true)
   const [habits, setHabits] = useState<Habit[]>([])
   const [habitLogs, setHabitLogs] = useState<HabitLog[]>([])
@@ -363,7 +364,7 @@ function HabitsContent() {
         {isLoading ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
-              {t("common.loading")}
+              {tCommon("loading")}
             </CardContent>
           </Card>
         ) : habits.length === 0 ? (

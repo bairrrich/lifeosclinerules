@@ -42,12 +42,14 @@ export type FoodFormData = z.infer<typeof foodSchema>
 // Константы
 // ============================================
 
-// Источники питания
-export const foodSourceTypes = [
-  { value: "custom", label: "Свой вариант", icon: Edit3 },
-  { value: "recipe", label: "Рецепты", icon: ChefHat },
-  { value: "product", label: "Продукты", icon: Package },
-]
+// Функции для получения локализованных конфигураций
+export function getFoodSourceTypes(t: any) {
+  return [
+    { value: "custom", label: t("logs.food.sourceTypes.custom"), icon: Edit3 },
+    { value: "recipe", label: t("logs.food.sourceTypes.recipe"), icon: ChefHat },
+    { value: "product", label: t("logs.food.sourceTypes.product"), icon: Package },
+  ]
+}
 
 // Интерфейс для данных продукта
 interface ProductNutrition {
@@ -58,138 +60,752 @@ interface ProductNutrition {
   carbs: number
 }
 
-// Продукты по подкатегориям с КБЖУ (на 100г)
-export const foodProducts: Record<string, Record<string, ProductNutrition>> = {
-  Молочные: {
-    "Молоко 3.2%": { variants: [], calories: 61, protein: 3, fat: 3.2, carbs: 4.7 },
-    "Молоко 2.5%": { variants: [], calories: 52, protein: 2.8, fat: 2.5, carbs: 4.7 },
-    "Молоко 1.5%": { variants: [], calories: 44, protein: 2.8, fat: 1.5, carbs: 4.7 },
-    "Сыр твёрдый": { variants: [], calories: 352, protein: 26, fat: 28, carbs: 0.1 },
-    "Сыр мягкий": { variants: [], calories: 300, protein: 20, fat: 24, carbs: 0.5 },
-    "Творог 0%": { variants: [], calories: 71, protein: 16.5, fat: 0, carbs: 1.3 },
-    "Творог 5%": { variants: [], calories: 121, protein: 17, fat: 5, carbs: 1.8 },
-    "Творог 9%": { variants: [], calories: 159, protein: 16.7, fat: 9, carbs: 2 },
-    "Сметана 15%": { variants: [], calories: 158, protein: 2.7, fat: 15, carbs: 3.2 },
-    "Сметана 20%": { variants: [], calories: 204, protein: 2.5, fat: 20, carbs: 3.4 },
-    "Кефир 2.5%": { variants: [], calories: 54, protein: 3, fat: 2.5, carbs: 4 },
-    "Кефир 3.2%": { variants: [], calories: 59, protein: 3.2, fat: 3.2, carbs: 4.1 },
-    "Йогурт натуральный": { variants: [], calories: 66, protein: 4, fat: 3.5, carbs: 4.7 },
-    "Йогурт греческий": { variants: [], calories: 97, protein: 8, fat: 5, carbs: 3.5 },
-    "Масло сливочное 82.5%": { variants: [], calories: 748, protein: 0.6, fat: 82.5, carbs: 0.8 },
-  },
-  Мясо: {
-    "Говядина вырезка": { variants: [], calories: 170, protein: 20, fat: 9, carbs: 0 },
-    "Говядина грудинка": { variants: [], calories: 217, protein: 18, fat: 16, carbs: 0 },
-    "Говяжий фарш": { variants: [], calories: 254, protein: 17, fat: 20, carbs: 0 },
-    "Свинина шея": { variants: [], calories: 269, protein: 16, fat: 22, carbs: 0 },
-    "Свинина корейка": { variants: [], calories: 242, protein: 17, fat: 18, carbs: 0 },
-    "Куриная грудка": { variants: [], calories: 113, protein: 23, fat: 1, carbs: 0 },
-    "Куриное бедро": { variants: [], calories: 185, protein: 19, fat: 11, carbs: 0 },
-    "Куриный фарш": { variants: [], calories: 143, protein: 17, fat: 8, carbs: 0 },
-    "Индейка грудка": { variants: [], calories: 84, protein: 19, fat: 0.5, carbs: 0 },
-    "Индейка бедро": { variants: [], calories: 142, protein: 18, fat: 7, carbs: 0 },
-  },
-  Рыба: {
-    "Форель свежая": { variants: [], calories: 97, protein: 19, fat: 2, carbs: 0 },
-    "Форель слабосолёная": { variants: [], calories: 186, protein: 20, fat: 11, carbs: 0 },
-    "Лосось свежий": { variants: [], calories: 142, protein: 20, fat: 6, carbs: 0 },
-    "Лосось слабосолёный": { variants: [], calories: 201, protein: 20, fat: 13, carbs: 0 },
-    "Треска свежая": { variants: [], calories: 78, protein: 17, fat: 0.7, carbs: 0 },
-    "Сельдь солёная": { variants: [], calories: 145, protein: 17, fat: 8, carbs: 0 },
-    "Скумбрия свежая": { variants: [], calories: 191, protein: 18, fat: 13, carbs: 0 },
-    "Скумбрия копчёная": { variants: [], calories: 317, protein: 23, fat: 24, carbs: 0 },
-    "Тунец консервированный": { variants: [], calories: 116, protein: 23, fat: 1, carbs: 0 },
-  },
-  Овощи: {
-    Картофель: { variants: [], calories: 77, protein: 2, fat: 0.4, carbs: 17 },
-    Морковь: { variants: [], calories: 32, protein: 1.3, fat: 0.1, carbs: 7 },
-    "Лук репчатый": { variants: [], calories: 40, protein: 1.4, fat: 0.2, carbs: 9 },
-    "Огурцы свежие": { variants: [], calories: 15, protein: 0.8, fat: 0.1, carbs: 3 },
-    "Помидоры свежие": { variants: [], calories: 18, protein: 0.9, fat: 0.2, carbs: 4 },
-    "Капуста белокочанная": { variants: [], calories: 28, protein: 1.8, fat: 0.1, carbs: 5 },
-    "Перец болгарский": { variants: [], calories: 27, protein: 1.3, fat: 0.1, carbs: 5 },
-    Чеснок: { variants: [], calories: 149, protein: 6.5, fat: 0.5, carbs: 30 },
-    Кабачок: { variants: [], calories: 24, protein: 0.6, fat: 0.3, carbs: 5 },
-    Баклажан: { variants: [], calories: 25, protein: 1.2, fat: 0.1, carbs: 6 },
-    Свёкла: { variants: [], calories: 43, protein: 1.6, fat: 0.2, carbs: 9 },
-  },
-  Фрукты: {
-    Яблоко: { variants: [], calories: 47, protein: 0.4, fat: 0.4, carbs: 10 },
-    Банан: { variants: [], calories: 89, protein: 1.1, fat: 0.3, carbs: 23 },
-    Апельсин: { variants: [], calories: 43, protein: 0.9, fat: 0.2, carbs: 9 },
-    Мандарин: { variants: [], calories: 38, protein: 0.8, fat: 0.2, carbs: 8 },
-    Груша: { variants: [], calories: 42, protein: 0.4, fat: 0.3, carbs: 11 },
-    Киви: { variants: [], calories: 61, protein: 1.1, fat: 0.5, carbs: 14 },
-    Виноград: { variants: [], calories: 65, protein: 0.6, fat: 0.2, carbs: 16 },
-    Ананас: { variants: [], calories: 50, protein: 0.5, fat: 0.1, carbs: 12 },
-  },
-  Ягоды: {
-    Клубника: { variants: [], calories: 32, protein: 0.8, fat: 0.3, carbs: 7 },
-    Малина: { variants: [], calories: 46, protein: 0.8, fat: 0.5, carbs: 9 },
-    Черника: { variants: [], calories: 44, protein: 1.1, fat: 0.3, carbs: 10 },
-    "Смородина чёрная": { variants: [], calories: 44, protein: 1, fat: 0.2, carbs: 8 },
-    Вишня: { variants: [], calories: 52, protein: 0.8, fat: 0.2, carbs: 11 },
-    Брусника: { variants: [], calories: 43, protein: 0.7, fat: 0.5, carbs: 9 },
-  },
-  "Крупы и бобовые": {
-    "Рис белый (сухой)": { variants: [], calories: 344, protein: 6.7, fat: 0.7, carbs: 78 },
-    "Рис бурый (сухой)": { variants: [], calories: 337, protein: 7.4, fat: 2.2, carbs: 72 },
-    "Гречка (сухая)": { variants: [], calories: 313, protein: 12.6, fat: 3.3, carbs: 62 },
-    "Овсянка (сухая)": { variants: [], calories: 342, protein: 12, fat: 6, carbs: 60 },
-    "Манка (сухая)": { variants: [], calories: 333, protein: 10, fat: 1, carbs: 72 },
-    "Пшено (сухое)": { variants: [], calories: 324, protein: 11, fat: 3, carbs: 66 },
-    "Чечевица (сухая)": { variants: [], calories: 284, protein: 24, fat: 1.5, carbs: 46 },
-    "Фасоль (сухая)": { variants: [], calories: 285, protein: 21, fat: 1.5, carbs: 47 },
-    "Горох (сухой)": { variants: [], calories: 298, protein: 20, fat: 2, carbs: 49 },
-  },
-  "Хлеб и выпечка": {
-    "Хлеб белый": { variants: [], calories: 242, protein: 7, fat: 1, carbs: 49 },
-    "Хлеб чёрный": { variants: [], calories: 201, protein: 6.6, fat: 1.4, carbs: 41 },
-    "Батон нарезной": { variants: [], calories: 262, protein: 7.5, fat: 2.9, carbs: 51 },
-    "Бородинский хлеб": { variants: [], calories: 201, protein: 6.8, fat: 1.3, carbs: 41 },
-    "Лаваш армянский": { variants: [], calories: 236, protein: 7.9, fat: 1, carbs: 48 },
-  },
-  Яйца: {
-    "Яйцо куриное (1 шт)": { variants: [], calories: 155, protein: 13, fat: 11, carbs: 1.1 },
-    "Белок яичный": { variants: [], calories: 52, protein: 11, fat: 0.2, carbs: 0.7 },
-    "Желток яичный": { variants: [], calories: 352, protein: 16, fat: 31, carbs: 1 },
-  },
-  "Орехи и семена": {
-    "Грецкий орех": { variants: [], calories: 656, protein: 16, fat: 61, carbs: 11 },
-    Миндаль: { variants: [], calories: 645, protein: 18, fat: 58, carbs: 13 },
-    Фундук: { variants: [], calories: 679, protein: 15, fat: 65, carbs: 10 },
-    Кешью: { variants: [], calories: 600, protein: 18, fat: 49, carbs: 22 },
-    Арахис: { variants: [], calories: 567, protein: 26, fat: 49, carbs: 16 },
-    "Семечки подсолнечные": { variants: [], calories: 578, protein: 21, fat: 53, carbs: 17 },
-  },
-  "Масла и жиры": {
-    "Масло подсолнечное": { variants: [], calories: 899, protein: 0, fat: 99.9, carbs: 0 },
-    "Масло оливковое": { variants: [], calories: 898, protein: 0, fat: 99.8, carbs: 0 },
-    "Масло кокосовое": { variants: [], calories: 899, protein: 0, fat: 99.9, carbs: 0 },
-    Майонез: { variants: [], calories: 680, protein: 1, fat: 75, carbs: 1.5 },
-  },
-  Напитки: {
-    "Чай без сахара": { variants: [], calories: 0, protein: 0, fat: 0, carbs: 0 },
-    "Кофе чёрный": { variants: [], calories: 2, protein: 0.2, fat: 0, carbs: 0.3 },
-    "Сок апельсиновый": { variants: [], calories: 45, protein: 0.7, fat: 0.2, carbs: 10 },
-    "Сок яблочный": { variants: [], calories: 46, protein: 0.1, fat: 0.1, carbs: 11 },
-    "Сок томатный": { variants: [], calories: 17, protein: 1, fat: 0, carbs: 4 },
-    Компот: { variants: [], calories: 60, protein: 0.2, fat: 0, carbs: 15 },
-  },
-  Сладости: {
-    Сахар: { variants: [], calories: 387, protein: 0, fat: 0, carbs: 100 },
-    Мёд: { variants: [], calories: 304, protein: 0.3, fat: 0, carbs: 82 },
-    "Шоколад молочный": { variants: [], calories: 535, protein: 6.9, fat: 30, carbs: 59 },
-    "Шоколад тёмный": { variants: [], calories: 546, protein: 5, fat: 35, carbs: 52 },
-    Печенье: { variants: [], calories: 452, protein: 7, fat: 18, carbs: 68 },
-    Конфеты: { variants: [], calories: 400, protein: 2, fat: 12, carbs: 75 },
-  },
-  Бакалея: {
-    "Макароны (сухие)": { variants: [], calories: 344, protein: 10, fat: 1.1, carbs: 72 },
-    "Мука пшеничная": { variants: [], calories: 342, protein: 10, fat: 1, carbs: 73 },
-    "Мука ржаная": { variants: [], calories: 298, protein: 8, fat: 1.5, carbs: 63 },
-    Крахмал: { variants: [], calories: 342, protein: 0.1, fat: 0, carbs: 85 },
-  },
+// Функция для получения продуктов по категориям с КБЖУ (на 100г)
+export function getFoodProducts(t: any): Record<string, Record<string, ProductNutrition>> {
+  return {
+    [t("logs.food.productCategories.dairy")]: {
+      [t("logs.food.products.dairy.milk32")]: {
+        variants: [],
+        calories: 61,
+        protein: 3,
+        fat: 3.2,
+        carbs: 4.7,
+      },
+      [t("logs.food.products.dairy.milk25")]: {
+        variants: [],
+        calories: 52,
+        protein: 2.8,
+        fat: 2.5,
+        carbs: 4.7,
+      },
+      [t("logs.food.products.dairy.milk15")]: {
+        variants: [],
+        calories: 44,
+        protein: 2.8,
+        fat: 1.5,
+        carbs: 4.7,
+      },
+      [t("logs.food.products.dairy.hardCheese")]: {
+        variants: [],
+        calories: 352,
+        protein: 26,
+        fat: 28,
+        carbs: 0.1,
+      },
+      [t("logs.food.products.dairy.softCheese")]: {
+        variants: [],
+        calories: 300,
+        protein: 20,
+        fat: 24,
+        carbs: 0.5,
+      },
+      [t("logs.food.products.dairy.cottageCheese0")]: {
+        variants: [],
+        calories: 71,
+        protein: 16.5,
+        fat: 0,
+        carbs: 1.3,
+      },
+      [t("logs.food.products.dairy.cottageCheese5")]: {
+        variants: [],
+        calories: 121,
+        protein: 17,
+        fat: 5,
+        carbs: 1.8,
+      },
+      [t("logs.food.products.dairy.cottageCheese9")]: {
+        variants: [],
+        calories: 159,
+        protein: 16.7,
+        fat: 9,
+        carbs: 2,
+      },
+      [t("logs.food.products.dairy.sourCream15")]: {
+        variants: [],
+        calories: 158,
+        protein: 2.7,
+        fat: 15,
+        carbs: 3.2,
+      },
+      [t("logs.food.products.dairy.sourCream20")]: {
+        variants: [],
+        calories: 204,
+        protein: 2.5,
+        fat: 20,
+        carbs: 3.4,
+      },
+      [t("logs.food.products.dairy.kefir25")]: {
+        variants: [],
+        calories: 54,
+        protein: 3,
+        fat: 2.5,
+        carbs: 4,
+      },
+      [t("logs.food.products.dairy.kefir32")]: {
+        variants: [],
+        calories: 59,
+        protein: 3.2,
+        fat: 3.2,
+        carbs: 4.1,
+      },
+      [t("logs.food.products.dairy.naturalYogurt")]: {
+        variants: [],
+        calories: 66,
+        protein: 4,
+        fat: 3.5,
+        carbs: 4.7,
+      },
+      [t("logs.food.products.dairy.greekYogurt")]: {
+        variants: [],
+        calories: 97,
+        protein: 8,
+        fat: 5,
+        carbs: 3.5,
+      },
+      [t("logs.food.products.dairy.butter825")]: {
+        variants: [],
+        calories: 748,
+        protein: 0.6,
+        fat: 82.5,
+        carbs: 0.8,
+      },
+    },
+    [t("logs.food.productCategories.meat")]: {
+      [t("logs.food.products.meat.beefFillet")]: {
+        variants: [],
+        calories: 170,
+        protein: 20,
+        fat: 9,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.beefBrisket")]: {
+        variants: [],
+        calories: 217,
+        protein: 18,
+        fat: 16,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.beefMince")]: {
+        variants: [],
+        calories: 254,
+        protein: 17,
+        fat: 20,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.porkNeck")]: {
+        variants: [],
+        calories: 269,
+        protein: 16,
+        fat: 22,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.porkLoin")]: {
+        variants: [],
+        calories: 242,
+        protein: 17,
+        fat: 18,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.chickenBreast")]: {
+        variants: [],
+        calories: 113,
+        protein: 23,
+        fat: 1,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.chickenThigh")]: {
+        variants: [],
+        calories: 185,
+        protein: 19,
+        fat: 11,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.chickenMince")]: {
+        variants: [],
+        calories: 143,
+        protein: 17,
+        fat: 8,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.turkeyBreast")]: {
+        variants: [],
+        calories: 84,
+        protein: 19,
+        fat: 0.5,
+        carbs: 0,
+      },
+      [t("logs.food.products.meat.turkeyThigh")]: {
+        variants: [],
+        calories: 142,
+        protein: 18,
+        fat: 7,
+        carbs: 0,
+      },
+    },
+    [t("logs.food.productCategories.fish")]: {
+      [t("logs.food.products.fish.troutFresh")]: {
+        variants: [],
+        calories: 97,
+        protein: 19,
+        fat: 2,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.troutLightlySalted")]: {
+        variants: [],
+        calories: 186,
+        protein: 20,
+        fat: 11,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.salmonFresh")]: {
+        variants: [],
+        calories: 142,
+        protein: 20,
+        fat: 6,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.salmonLightlySalted")]: {
+        variants: [],
+        calories: 201,
+        protein: 20,
+        fat: 13,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.codFresh")]: {
+        variants: [],
+        calories: 78,
+        protein: 17,
+        fat: 0.7,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.herringSalted")]: {
+        variants: [],
+        calories: 145,
+        protein: 17,
+        fat: 8,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.mackerelFresh")]: {
+        variants: [],
+        calories: 191,
+        protein: 18,
+        fat: 13,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.mackerelSmoked")]: {
+        variants: [],
+        calories: 317,
+        protein: 23,
+        fat: 24,
+        carbs: 0,
+      },
+      [t("logs.food.products.fish.tunaCanned")]: {
+        variants: [],
+        calories: 116,
+        protein: 23,
+        fat: 1,
+        carbs: 0,
+      },
+    },
+    [t("logs.food.productCategories.vegetables")]: {
+      [t("logs.food.products.vegetables.potato")]: {
+        variants: [],
+        calories: 77,
+        protein: 2,
+        fat: 0.4,
+        carbs: 17,
+      },
+      [t("logs.food.products.vegetables.carrot")]: {
+        variants: [],
+        calories: 32,
+        protein: 1.3,
+        fat: 0.1,
+        carbs: 7,
+      },
+      [t("logs.food.products.vegetables.onion")]: {
+        variants: [],
+        calories: 40,
+        protein: 1.4,
+        fat: 0.2,
+        carbs: 9,
+      },
+      [t("logs.food.products.vegetables.cucumber")]: {
+        variants: [],
+        calories: 15,
+        protein: 0.8,
+        fat: 0.1,
+        carbs: 3,
+      },
+      [t("logs.food.products.vegetables.tomato")]: {
+        variants: [],
+        calories: 18,
+        protein: 0.9,
+        fat: 0.2,
+        carbs: 4,
+      },
+      [t("logs.food.products.vegetables.whiteCabbage")]: {
+        variants: [],
+        calories: 28,
+        protein: 1.8,
+        fat: 0.1,
+        carbs: 5,
+      },
+      [t("logs.food.products.vegetables.pepper")]: {
+        variants: [],
+        calories: 27,
+        protein: 1.3,
+        fat: 0.1,
+        carbs: 5,
+      },
+      [t("logs.food.products.vegetables.garlic")]: {
+        variants: [],
+        calories: 149,
+        protein: 6.5,
+        fat: 0.5,
+        carbs: 30,
+      },
+      [t("logs.food.products.vegetables.zucchini")]: {
+        variants: [],
+        calories: 24,
+        protein: 0.6,
+        fat: 0.3,
+        carbs: 5,
+      },
+      [t("logs.food.products.vegetables.eggplant")]: {
+        variants: [],
+        calories: 25,
+        protein: 1.2,
+        fat: 0.1,
+        carbs: 6,
+      },
+      [t("logs.food.products.vegetables.beet")]: {
+        variants: [],
+        calories: 43,
+        protein: 1.6,
+        fat: 0.2,
+        carbs: 9,
+      },
+    },
+    [t("logs.food.productCategories.fruits")]: {
+      [t("logs.food.products.fruits.apple")]: {
+        variants: [],
+        calories: 47,
+        protein: 0.4,
+        fat: 0.4,
+        carbs: 10,
+      },
+      [t("logs.food.products.fruits.banana")]: {
+        variants: [],
+        calories: 89,
+        protein: 1.1,
+        fat: 0.3,
+        carbs: 23,
+      },
+      [t("logs.food.products.fruits.orange")]: {
+        variants: [],
+        calories: 43,
+        protein: 0.9,
+        fat: 0.2,
+        carbs: 9,
+      },
+      [t("logs.food.products.fruits.tangerine")]: {
+        variants: [],
+        calories: 38,
+        protein: 0.8,
+        fat: 0.2,
+        carbs: 8,
+      },
+      [t("logs.food.products.fruits.pear")]: {
+        variants: [],
+        calories: 42,
+        protein: 0.4,
+        fat: 0.3,
+        carbs: 11,
+      },
+      [t("logs.food.products.fruits.kiwi")]: {
+        variants: [],
+        calories: 61,
+        protein: 1.1,
+        fat: 0.5,
+        carbs: 14,
+      },
+      [t("logs.food.products.fruits.grape")]: {
+        variants: [],
+        calories: 65,
+        protein: 0.6,
+        fat: 0.2,
+        carbs: 16,
+      },
+      [t("logs.food.products.fruits.pineapple")]: {
+        variants: [],
+        calories: 50,
+        protein: 0.5,
+        fat: 0.1,
+        carbs: 12,
+      },
+    },
+    [t("logs.food.productCategories.berries")]: {
+      [t("logs.food.products.berries.strawberry")]: {
+        variants: [],
+        calories: 32,
+        protein: 0.8,
+        fat: 0.3,
+        carbs: 7,
+      },
+      [t("logs.food.products.berries.raspberry")]: {
+        variants: [],
+        calories: 46,
+        protein: 0.8,
+        fat: 0.5,
+        carbs: 9,
+      },
+      [t("logs.food.products.berries.blueberry")]: {
+        variants: [],
+        calories: 44,
+        protein: 1.1,
+        fat: 0.3,
+        carbs: 10,
+      },
+      [t("logs.food.products.berries.blackcurrant")]: {
+        variants: [],
+        calories: 44,
+        protein: 1,
+        fat: 0.2,
+        carbs: 8,
+      },
+      [t("logs.food.products.berries.cherry")]: {
+        variants: [],
+        calories: 52,
+        protein: 0.8,
+        fat: 0.2,
+        carbs: 11,
+      },
+      [t("logs.food.products.berries.cranberry")]: {
+        variants: [],
+        calories: 43,
+        protein: 0.7,
+        fat: 0.5,
+        carbs: 9,
+      },
+    },
+    [t("logs.food.productCategories.grainsAndLegumes")]: {
+      [t("logs.food.products.grains.riceWhiteDry")]: {
+        variants: [],
+        calories: 344,
+        protein: 6.7,
+        fat: 0.7,
+        carbs: 78,
+      },
+      [t("logs.food.products.grains.riceBrownDry")]: {
+        variants: [],
+        calories: 337,
+        protein: 7.4,
+        fat: 2.2,
+        carbs: 72,
+      },
+      [t("logs.food.products.grains.buckwheatDry")]: {
+        variants: [],
+        calories: 313,
+        protein: 12.6,
+        fat: 3.3,
+        carbs: 62,
+      },
+      [t("logs.food.products.grains.oatmealDry")]: {
+        variants: [],
+        calories: 342,
+        protein: 12,
+        fat: 6,
+        carbs: 60,
+      },
+      [t("logs.food.products.grains.semolinaDry")]: {
+        variants: [],
+        calories: 333,
+        protein: 10,
+        fat: 1,
+        carbs: 72,
+      },
+      [t("logs.food.products.grains.milletDry")]: {
+        variants: [],
+        calories: 324,
+        protein: 11,
+        fat: 3,
+        carbs: 66,
+      },
+      [t("logs.food.products.grains.lentilsDry")]: {
+        variants: [],
+        calories: 284,
+        protein: 24,
+        fat: 1.5,
+        carbs: 46,
+      },
+      [t("logs.food.products.grains.beansDry")]: {
+        variants: [],
+        calories: 285,
+        protein: 21,
+        fat: 1.5,
+        carbs: 47,
+      },
+      [t("logs.food.products.grains.peasDry")]: {
+        variants: [],
+        calories: 298,
+        protein: 20,
+        fat: 2,
+        carbs: 49,
+      },
+    },
+    [t("logs.food.productCategories.breadAndBakery")]: {
+      [t("logs.food.products.bakery.whiteBread")]: {
+        variants: [],
+        calories: 242,
+        protein: 7,
+        fat: 1,
+        carbs: 49,
+      },
+      [t("logs.food.products.bakery.blackBread")]: {
+        variants: [],
+        calories: 201,
+        protein: 6.6,
+        fat: 1.4,
+        carbs: 41,
+      },
+      [t("logs.food.products.bakery.slicedLoaf")]: {
+        variants: [],
+        calories: 262,
+        protein: 7.5,
+        fat: 2.9,
+        carbs: 51,
+      },
+      [t("logs.food.products.bakery.borodinskyBread")]: {
+        variants: [],
+        calories: 201,
+        protein: 6.8,
+        fat: 1.3,
+        carbs: 41,
+      },
+      [t("logs.food.products.bakery.armenianLavash")]: {
+        variants: [],
+        calories: 236,
+        protein: 7.9,
+        fat: 1,
+        carbs: 48,
+      },
+    },
+    [t("logs.food.productCategories.eggs")]: {
+      [t("logs.food.products.eggs.chickenEggOnePiece")]: {
+        variants: [],
+        calories: 155,
+        protein: 13,
+        fat: 11,
+        carbs: 1.1,
+      },
+      [t("logs.food.products.eggs.eggWhite")]: {
+        variants: [],
+        calories: 52,
+        protein: 11,
+        fat: 0.2,
+        carbs: 0.7,
+      },
+      [t("logs.food.products.eggs.eggYolk")]: {
+        variants: [],
+        calories: 352,
+        protein: 16,
+        fat: 31,
+        carbs: 1,
+      },
+    },
+    [t("logs.food.productCategories.nutsAndSeeds")]: {
+      [t("logs.food.products.nuts.walnut")]: {
+        variants: [],
+        calories: 656,
+        protein: 16,
+        fat: 61,
+        carbs: 11,
+      },
+      [t("logs.food.products.nuts.almond")]: {
+        variants: [],
+        calories: 645,
+        protein: 18,
+        fat: 58,
+        carbs: 13,
+      },
+      [t("logs.food.products.nuts.hazelnut")]: {
+        variants: [],
+        calories: 679,
+        protein: 15,
+        fat: 65,
+        carbs: 10,
+      },
+      [t("logs.food.products.nuts.cashew")]: {
+        variants: [],
+        calories: 600,
+        protein: 18,
+        fat: 49,
+        carbs: 22,
+      },
+      [t("logs.food.products.nuts.peanut")]: {
+        variants: [],
+        calories: 567,
+        protein: 26,
+        fat: 49,
+        carbs: 16,
+      },
+      [t("logs.food.products.nuts.sunflowerSeeds")]: {
+        variants: [],
+        calories: 578,
+        protein: 21,
+        fat: 53,
+        carbs: 17,
+      },
+    },
+    [t("logs.food.productCategories.oilsAndFats")]: {
+      [t("logs.food.products.fats.sunflowerOil")]: {
+        variants: [],
+        calories: 899,
+        protein: 0,
+        fat: 9.9,
+        carbs: 0,
+      },
+      [t("logs.food.products.fats.oliveOil")]: {
+        variants: [],
+        calories: 898,
+        protein: 0,
+        fat: 99.8,
+        carbs: 0,
+      },
+      [t("logs.food.products.fats.coconutOil")]: {
+        variants: [],
+        calories: 899,
+        protein: 0,
+        fat: 99.9,
+        carbs: 0,
+      },
+      [t("logs.food.products.fats.mayonnaise")]: {
+        variants: [],
+        calories: 680,
+        protein: 1,
+        fat: 75,
+        carbs: 1.5,
+      },
+    },
+    [t("logs.food.productCategories.drinks")]: {
+      [t("logs.food.products.drinks.teaWithoutSugar")]: {
+        variants: [],
+        calories: 0,
+        protein: 0,
+        fat: 0,
+        carbs: 0,
+      },
+      [t("logs.food.products.drinks.blackCoffee")]: {
+        variants: [],
+        calories: 2,
+        protein: 0.2,
+        fat: 0,
+        carbs: 0.3,
+      },
+      [t("logs.food.products.drinks.orangeJuice")]: {
+        variants: [],
+        calories: 45,
+        protein: 0.7,
+        fat: 0.2,
+        carbs: 10,
+      },
+      [t("logs.food.products.drinks.appleJuice")]: {
+        variants: [],
+        calories: 46,
+        protein: 0.1,
+        fat: 0.1,
+        carbs: 11,
+      },
+      [t("logs.food.products.drinks.tomatoJuice")]: {
+        variants: [],
+        calories: 17,
+        protein: 1,
+        fat: 0,
+        carbs: 4,
+      },
+      [t("logs.food.products.drinks.compote")]: {
+        variants: [],
+        calories: 60,
+        protein: 0.2,
+        fat: 0,
+        carbs: 15,
+      },
+    },
+    [t("logs.food.productCategories.sweets")]: {
+      [t("logs.food.products.sweets.sugar")]: {
+        variants: [],
+        calories: 387,
+        protein: 0,
+        fat: 0,
+        carbs: 100,
+      },
+      [t("logs.food.products.sweets.honey")]: {
+        variants: [],
+        calories: 304,
+        protein: 0.3,
+        fat: 0,
+        carbs: 82,
+      },
+      [t("logs.food.products.sweets.milkChocolate")]: {
+        variants: [],
+        calories: 535,
+        protein: 6.9,
+        fat: 30,
+        carbs: 59,
+      },
+      [t("logs.food.products.sweets.darkChocolate")]: {
+        variants: [],
+        calories: 546,
+        protein: 5,
+        fat: 35,
+        carbs: 52,
+      },
+      [t("logs.food.products.sweets.cookies")]: {
+        variants: [],
+        calories: 452,
+        protein: 7,
+        fat: 18,
+        carbs: 68,
+      },
+      [t("logs.food.products.sweets.candy")]: {
+        variants: [],
+        calories: 400,
+        protein: 2,
+        fat: 12,
+        carbs: 75,
+      },
+    },
+    [t("logs.food.productCategories.groceries")]: {
+      [t("logs.food.products.groceries.pastaDry")]: {
+        variants: [],
+        calories: 344,
+        protein: 10,
+        fat: 1.1,
+        carbs: 72,
+      },
+      [t("logs.food.products.groceries.wheatFlour")]: {
+        variants: [],
+        calories: 342,
+        protein: 10,
+        fat: 1,
+        carbs: 73,
+      },
+      [t("logs.food.products.groceries.ryeFlour")]: {
+        variants: [],
+        calories: 298,
+        protein: 8,
+        fat: 1.5,
+        carbs: 63,
+      },
+      [t("logs.food.products.groceries.starch")]: {
+        variants: [],
+        calories: 342,
+        protein: 0.1,
+        fat: 0,
+        carbs: 85,
+      },
+    },
+  }
 }
 
 // ============================================
@@ -290,7 +906,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
       setValue("title", productSubcategory)
 
       // Получаем КБЖУ из справочника
-      const productData = foodProducts[productCategory]?.[productSubcategory]
+      const productData = getFoodProducts(t)[productCategory]?.[productSubcategory]
       if (productData) {
         setValue("calories", productData.calories)
         setValue("protein", productData.protein)
@@ -302,7 +918,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
 
   // Получаем подкатегории для категории
   const currentSubcategories = productCategory
-    ? Object.keys(foodProducts[productCategory] || {})
+    ? Object.keys(getFoodProducts(t)[productCategory] || {})
     : []
 
   return (
@@ -311,7 +927,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
       <div className="space-y-2">
         <Label>{t("food.source")}</Label>
         <div className="grid grid-cols-3 gap-2">
-          {foodSourceTypes.map((source) => {
+          {getFoodSourceTypes(t).map((source) => {
             const Icon = source.icon
             return (
               <button
@@ -339,7 +955,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                 }`}
               >
                 <Icon className="h-5 w-5" />
-                {t(`food.sourceTypes.${source.value}`)}
+                {t(`logs.food.sourceTypes.${source.value}`)}
               </button>
             )
           })}
@@ -502,7 +1118,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             <>
               <ComboboxSelect
                 label={t("food.productCategory")}
-                options={Object.keys(foodProducts)}
+                options={Object.keys(getFoodProducts(t))}
                 value={productCategory}
                 onChange={(value) => {
                   setProductCategory(value)
@@ -528,25 +1144,25 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                       <div>
                         <p className="text-muted-foreground">{t("food.calories")}</p>
                         <p className="font-medium">
-                          {foodProducts[productCategory]?.[productSubcategory]?.calories || 0}
+                          {getFoodProducts(t)[productCategory]?.[productSubcategory]?.calories || 0}
                         </p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">{t("food.protein")}</p>
                         <p className="font-medium">
-                          {foodProducts[productCategory]?.[productSubcategory]?.protein || 0}г
+                          {getFoodProducts(t)[productCategory]?.[productSubcategory]?.protein || 0}г
                         </p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">{t("food.fat")}</p>
                         <p className="font-medium">
-                          {foodProducts[productCategory]?.[productSubcategory]?.fat || 0}г
+                          {getFoodProducts(t)[productCategory]?.[productSubcategory]?.fat || 0}г
                         </p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">{t("food.carbs")}</p>
                         <p className="font-medium">
-                          {foodProducts[productCategory]?.[productSubcategory]?.carbs || 0}г
+                          {getFoodProducts(t)[productCategory]?.[productSubcategory]?.carbs || 0}г
                         </p>
                       </div>
                     </div>
@@ -561,13 +1177,13 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
       {/* КБЖУ */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t("recipes.nutrition.title")}</CardTitle>
+          <CardTitle className="text-base">{t("common.nutrition.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="calories" className="text-xs">
-                {t("food.calories")}
+                {t("common.nutrition.calories")}
               </Label>
               <Input
                 id="calories"
@@ -578,7 +1194,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="protein" className="text-xs">
-                {t("food.protein")}
+                {t("common.nutrition.protein")}
               </Label>
               <Input
                 id="protein"
@@ -590,7 +1206,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="fat" className="text-xs">
-                {t("food.fat")}
+                {t("common.nutrition.fat")}
               </Label>
               <Input
                 id="fat"
@@ -602,7 +1218,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="carbs" className="text-xs">
-                {t("food.carbs")}
+                {t("common.nutrition.carbs")}
               </Label>
               <Input
                 id="carbs"

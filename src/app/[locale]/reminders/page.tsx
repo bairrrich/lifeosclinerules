@@ -556,7 +556,7 @@ function RemindersContent() {
             {Object.entries(groupedReminders).map(([type, typeReminders]) => (
               <div key={type}>
                 <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  <span>{reminderTypesConfig.find((t) => t.type === type)?.icon}</span>
+                  <span>{reminderTypesConfig(t).find((t) => t.type === type)?.icon}</span>
                   <span>{t(`types.${type}`)}</span>
                   <Badge variant="secondary" className="ml-2">
                     {typeReminders.length}
@@ -580,11 +580,13 @@ function RemindersContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
             <DialogHeader>
-              <DialogTitle>{t("dialogs.newTitle")}</DialogTitle>
+              <DialogTitle className="text-base sm:text-lg">{t("dialogs.newTitle")}</DialogTitle>
             </DialogHeader>
-            <ReminderForm formData={formData} setFormData={setFormData} />
+            <div className="mt-4 overflow-x-hidden">
+              <ReminderForm formData={formData} setFormData={setFormData} />
+            </div>
             <CreateFormActions
               onCancel={() => setIsAddDialogOpen(false)}
               onSave={addReminder}
@@ -595,11 +597,13 @@ function RemindersContent() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
             <DialogHeader>
-              <DialogTitle>{t("dialogs.editTitle")}</DialogTitle>
+              <DialogTitle className="text-base sm:text-lg">{t("dialogs.editTitle")}</DialogTitle>
             </DialogHeader>
-            <ReminderForm formData={formData} setFormData={setFormData} />
+            <div className="mt-4 overflow-x-hidden">
+              <ReminderForm formData={formData} setFormData={setFormData} />
+            </div>
             <FormActions
               type="dialog"
               showDelete

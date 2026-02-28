@@ -42,103 +42,34 @@ const itemSchema = z.object({
 
 type FormData = z.infer<typeof itemSchema>
 
-const typeLabels: Record<ItemType, string> = {
-  vitamin: "Витамин",
-  medicine: "Лекарство",
-  herb: "Трава",
-  cosmetic: "Косметика",
-  product: "Продукт",
+function getTypeLabels(t: any): Record<ItemType, string> {
+  return {
+    vitamin: t("types.vitamin"),
+    medicine: t("types.medicine"),
+    herb: t("types.herb"),
+    cosmetic: t("types.cosmetic"),
+    product: t("types.product"),
+  }
 }
 
-// Формы выпуска по типам
-const formOptions: Record<ItemType, string[]> = {
-  vitamin: ["Таблетки", "Капсулы", "Драже", "Порошок", "Жидкость", "Спрей", "Пластырь"],
-  medicine: [
-    "Таблетки",
-    "Капсулы",
-    "Ампулы",
-    "Флакон",
-    "Туба",
-    "Мазь",
-    "Гель",
-    "Свечи",
-    "Порошок",
-    "Сироп",
-    "Капли",
-  ],
-  herb: ["Сухая смесь", "Фильтр-пакеты", "Настойка", "Экстракт", "Масло", "Капсулы"],
-  cosmetic: [
-    "Крем",
-    "Гель",
-    "Сыворотка",
-    "Маска",
-    "Лосьон",
-    "Тоник",
-    "Масло",
-    "Скраб",
-    "Бальзам",
-    "Спрей",
-  ],
-  product: ["Штучный", "Весовой", "Жидкий", "Замороженный", "Консервы", "Бутылка", "Пакет"],
+function getFormOptions(t: any): Record<ItemType, string[]> {
+  return {
+    vitamin: t("formOptions.vitamin").split("|"),
+    medicine: t("formOptions.medicine").split("|"),
+    herb: t("formOptions.herb").split("|"),
+    cosmetic: t("formOptions.cosmetic").split("|"),
+    product: t("formOptions.product").split("|"),
+  }
 }
 
-// Производители по типам
-const manufacturerOptions: Record<ItemType, string[]> = {
-  vitamin: [
-    "Solgar",
-    "Now Foods",
-    "Nature's Bounty",
-    "Доппельгерц",
-    "Компливит",
-    "Алфавит",
-    "Витрум",
-    "Мульти-табс",
-    "Эвалар",
-    "Другое",
-  ],
-  medicine: [
-    "Фармстандарт",
-    "Teva",
-    "Sanofi",
-    "Bayer",
-    "Novartis",
-    "Nycomed",
-    "Берлин-Хеми",
-    "Гедеон Рихтер",
-    "Другое",
-  ],
-  herb: [
-    "Эвалар",
-    "Байкальские травы",
-    "Травы Кавказа",
-    "Биолит",
-    "Фитолон",
-    "Nature's Way",
-    "Другое",
-  ],
-  cosmetic: [
-    "Nivea",
-    "L'Oreal",
-    "Garnier",
-    "La Roche-Posay",
-    "CeraVe",
-    "Vichy",
-    "Bioderma",
-    "The Ordinary",
-    "Другое",
-  ],
-  product: [
-    "Магнит",
-    "Пятёрочка",
-    "Азбука Вкуса",
-    "Перекрёсток",
-    "Красная Цена",
-    "Чистая Линия",
-    "Домик в деревне",
-    "Простоквашино",
-    "Савушкин",
-    "Другое",
-  ],
+function getManufacturerOptions(t: any): Record<ItemType, string[]> {
+  return {
+    vitamin: t("manufacturerOptions.vitamin").split("|"),
+    medicine: t("manufacturerOptions.medicine").split("|"),
+    herb: t("manufacturerOptions.herb").split("|"),
+    cosmetic: t("manufacturerOptions.cosmetic").split("|"),
+    product: t("manufacturerOptions.product").split("|"),
+  }
 }
 
 export default function NewItemPage() {
@@ -146,6 +77,9 @@ export default function NewItemPage() {
   const params = useParams()
   const type = params.type as ItemType
   const t = useTranslations("items")
+  const typeLabels = getTypeLabels(t)
+  const formOptions = getFormOptions(t)
+  const manufacturerOptions = getManufacturerOptions(t)
 
   const [isLoading, setIsLoading] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState("")
@@ -188,56 +122,18 @@ export default function NewItemPage() {
   const getCategoryOptions = (): string[] => {
     if (type === "product") {
       // Для продуктов используем подкатегории из финансов
-      const productCats = Object.keys(financeCategories.expense?.["Продукты"]?.subcategories || {})
+      const productCats = Object.keys(
+        financeCategories.expense?.[t("financeCategories.product")]?.subcategories || {}
+      )
       return [...productCats, ...existingCategories.filter((c) => !productCats.includes(c))]
     }
-    return existingCategories.length > 0 ? existingCategories : getDefaultCategories(type)
+    return existingCategories.length > 0 ? existingCategories : getDefaultCategories(type, t)
   }
 
-  const getDefaultCategories = (itemType: ItemType): string[] => {
-    const defaults: Record<ItemType, string[]> = {
-      vitamin: [
-        "Витамин A",
-        "Витамин B",
-        "Витамин C",
-        "Витамин D",
-        "Витамин E",
-        "Витамин K",
-        "Мультивитамины",
-        "Минералы",
-      ],
-      medicine: [
-        "Обезболивающие",
-        "Жаропонижающие",
-        "Противовирусные",
-        "Антибиотики",
-        "Аллергия",
-        "ЖКТ",
-        "Сердце",
-        "Нервная система",
-      ],
-      herb: [
-        "Успокоительные",
-        "Иммунитет",
-        "Пищеварение",
-        "Сон",
-        "Дыхание",
-        "Сердце",
-        "Печень",
-        "Почки",
-      ],
-      cosmetic: [
-        "Уход за лицом",
-        "Уход за телом",
-        "Уход за волосами",
-        "Уход за руками",
-        "Уход за ногами",
-        "Солнцезащитные",
-        "Декоративная",
-      ],
-      product: [],
-    }
-    return defaults[itemType] || []
+  const getDefaultCategories = (itemType: ItemType, t: any): string[] => {
+    const categoriesStr = t(`defaultCategories.${itemType}`)
+    if (!categoriesStr) return []
+    return categoriesStr.split("|").filter(Boolean)
   }
 
   // Объединяем варианты форм и производителей

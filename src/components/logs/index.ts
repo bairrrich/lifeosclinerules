@@ -1,14 +1,14 @@
 export { ComboboxSelect } from "./combobox-select"
-export { FoodForm, type FoodFormData, foodSourceTypes, foodProducts } from "./food-form"
+export { FoodForm, type FoodFormData, getFoodSourceTypes, getFoodProducts } from "./food-form"
 export {
   WorkoutForm,
   type WorkoutFormData,
   getSubcategoryLabel,
-  strengthSubcategories,
-  cardioSubcategories,
-  yogaSubcategories,
-  equipmentOptions,
-  goalOptions,
+  getStrengthSubcategories,
+  getCardioSubcategories,
+  getYogaSubcategories,
+  getEquipmentOptions,
+  getGoalOptions,
 } from "./workout-form"
 export {
   FinanceForm,

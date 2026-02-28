@@ -38,157 +38,177 @@ export type WorkoutFormData = z.infer<typeof workoutSchema>
 // Константы
 // ============================================
 
-// Strength training - subcategories
-export const strengthSubcategories = {
-  anatomical: {
-    label: "By Anatomy",
-    options: [
-      { value: "chest", label: "Chest" },
-      { value: "back", label: "Back" },
-      { value: "legs", label: "Legs" },
-      { value: "shoulders", label: "Shoulders" },
-      { value: "arms", label: "Arms" },
-      { value: "core", label: "Core" },
-    ],
-  },
-  equipment: {
-    label: "By Equipment",
-    options: [
-      { value: "free_weights", label: "Free Weights" },
-      { value: "machines", label: "Machines" },
-      { value: "bodyweight", label: "Bodyweight" },
-      { value: "functional", label: "Functional" },
-    ],
-  },
+// Функции для получения локализованных конфигураций
+export function getStrengthSubcategories(t: any) {
+  return {
+    anatomical: {
+      label: t("workout.strengthSubcategories.anatomical"),
+      options: [
+        { value: "chest", label: t("workout.strengthSubcategories.chest") },
+        { value: "back", label: t("workout.strengthSubcategories.back") },
+        { value: "legs", label: t("workout.strengthSubcategories.legs") },
+        { value: "shoulders", label: t("workout.strengthSubcategories.shoulders") },
+        { value: "arms", label: t("workout.strengthSubcategories.arms") },
+        { value: "core", label: t("workout.strengthSubcategories.core") },
+      ],
+    },
+    equipment: {
+      label: t("workout.strengthSubcategories.equipment"),
+      options: [
+        { value: "free_weights", label: t("workout.strengthSubcategories.freeWeights") },
+        { value: "machines", label: t("workout.strengthSubcategories.machines") },
+        { value: "bodyweight", label: t("workout.strengthSubcategories.bodyweight") },
+        { value: "functional", label: t("workout.strengthSubcategories.functional") },
+      ],
+    },
+  }
 }
 
-// Cardio - subcategories
-export const cardioSubcategories = {
-  activity: {
-    label: "By Activity",
-    options: [
-      { value: "running", label: "Running" },
-      { value: "walking", label: "Walking" },
-      { value: "cycling", label: "Cycling" },
-      { value: "rowing", label: "Rowing" },
-      { value: "jumping", label: "Jumping" },
-    ],
-  },
-  intensity: {
-    label: "By Intensity",
-    options: [
-      { value: "liss", label: "LISS (Low Intensity)" },
-      { value: "hiit", label: "HIIT (Interval)" },
-      { value: "tabata", label: "Tabata" },
-    ],
-  },
+export function getCardioSubcategories(t: any) {
+  return {
+    activity: {
+      label: t("workout.cardioSubcategories.activity"),
+      options: [
+        { value: "running", label: t("workout.cardioSubcategories.running") },
+        { value: "walking", label: t("workout.cardioSubcategories.walking") },
+        { value: "cycling", label: t("workout.cardioSubcategories.cycling") },
+        { value: "rowing", label: t("workout.cardioSubcategories.rowing") },
+        { value: "jumping", label: t("workout.cardioSubcategories.jumping") },
+      ],
+    },
+    intensity: {
+      label: t("workout.cardioSubcategories.byIntensity"),
+      options: [
+        { value: "liss", label: t("workout.cardioSubcategories.liss") },
+        { value: "hiit", label: t("workout.cardioSubcategories.hiit") },
+        { value: "tabata", label: t("workout.cardioSubcategories.tabata") },
+      ],
+    },
+  }
 }
 
-// Yoga - subcategories
-export const yogaSubcategories = {
-  style: {
-    label: "By Style",
-    options: [
-      { value: "hatha", label: "Hatha Yoga" },
-      { value: "vinyasa", label: "Vinyasa Yoga" },
-      { value: "ashtanga", label: "Ashtanga Yoga" },
-      { value: "kundalini", label: "Kundalini Yoga" },
-      { value: "iyengar", label: "Iyengar Yoga" },
-    ],
-  },
-  goal: {
-    label: "By Goal",
-    options: [
-      { value: "stretching", label: "Stretching / Flexibility" },
-      { value: "power", label: "Power Yoga" },
-      { value: "relax", label: "Relax / Recovery" },
-      { value: "breathing", label: "Breathing & Meditation" },
-    ],
-  },
-  level: {
-    label: "By Level",
-    options: [
-      { value: "beginner", label: "Beginner" },
-      { value: "intermediate", label: "Intermediate" },
-      { value: "advanced", label: "Advanced" },
-    ],
-  },
+export function getYogaSubcategories(t: any) {
+  return {
+    style: {
+      label: t("workout.yogaSubcategories.style"),
+      options: [
+        { value: "hatha", label: t("workout.yogaSubcategories.hatha") },
+        { value: "vinyasa", label: t("workout.yogaSubcategories.vinyasa") },
+        { value: "ashtanga", label: t("workout.yogaSubcategories.ashtanga") },
+        { value: "kundalini", label: t("workout.yogaSubcategories.kundalini") },
+        { value: "iyengar", label: t("workout.yogaSubcategories.iyengar") },
+      ],
+    },
+    goal: {
+      label: t("workout.yogaSubcategories.byGoal"),
+      options: [
+        { value: "stretching", label: t("workout.yogaSubcategories.stretching") },
+        { value: "power", label: t("workout.yogaSubcategories.power") },
+        { value: "relax", label: t("workout.yogaSubcategories.relax") },
+        { value: "breathing", label: t("workout.yogaSubcategories.breathing") },
+      ],
+    },
+    level: {
+      label: t("workout.yogaSubcategories.byLevel"),
+      options: [
+        { value: "beginner", label: t("workout.yogaSubcategories.beginner") },
+        { value: "intermediate", label: t("workout.yogaSubcategories.intermediate") },
+        { value: "advanced", label: t("workout.yogaSubcategories.advanced") },
+      ],
+    },
+  }
 }
 
-// Инвентарь для тренировок
-export const equipmentOptions: Record<string, string[]> = {
-  strength: [
-    "Barbell",
-    "Dumbbells",
-    "Kettlebells",
-    "Cable Machine",
-    "Leverage Machine",
-    "Bench",
-    "Pull-up Bar",
-    "Parallel Bars",
-    "Cable Crossover",
-    "Smith Machine",
-    "Resistance Bands",
-    "Medicine Ball",
-    "TRX",
-    "No Equipment",
-  ],
-  cardio: [
-    "Treadmill",
-    "Elliptical",
-    "Exercise Bike",
-    "Rowing Machine",
-    "Jump Rope",
-    "Stepper",
-    "No Equipment",
-  ],
-  yoga: ["Mat", "Blocks", "Strap", "Bolster", "Blanket", "Chair", "Wall", "No Equipment"],
+export function getEquipmentOptions(t: any): Record<string, string[]> {
+  return {
+    strength: [
+      t("workout.strengthSubcategories.chest"),
+      t("workout.strengthSubcategories.back"),
+      t("workout.strengthSubcategories.legs"),
+      t("workout.strengthSubcategories.shoulders"),
+      t("workout.strengthSubcategories.arms"),
+      t("workout.strengthSubcategories.core"),
+      t("workout.strengthSubcategories.freeWeights"),
+      t("workout.strengthSubcategories.machines"),
+      t("workout.strengthSubcategories.bodyweight"),
+      t("workout.strengthSubcategories.functional"),
+      t("workout.equipmentOptions.Bench"),
+      t("workout.equipmentOptions.PullUpBar"),
+      t("workout.equipmentOptions.ParallelBars"),
+      t("workout.equipmentOptions.CableCrossover"),
+      t("workout.equipmentOptions.SmithMachine"),
+      t("workout.equipmentOptions.ResistanceBands"),
+      t("workout.equipmentOptions.MedicineBall"),
+      t("workout.equipmentOptions.TRX"),
+      t("workout.equipmentOptions.NoEquipment"),
+    ],
+    cardio: [
+      t("workout.equipmentOptions.Treadmill"),
+      t("workout.equipmentOptions.Elliptical"),
+      t("workout.equipmentOptions.ExerciseBike"),
+      t("workout.equipmentOptions.RowingMachine"),
+      t("workout.equipmentOptions.JumpRope"),
+      t("workout.equipmentOptions.Stepper"),
+      t("workout.equipmentOptions.NoEquipment"),
+    ],
+    yoga: [
+      t("workout.equipmentOptions.Mat"),
+      t("workout.equipmentOptions.Blocks"),
+      t("workout.equipmentOptions.Strap"),
+      t("workout.equipmentOptions.Bolster"),
+      t("workout.equipmentOptions.Blanket"),
+      t("workout.equipmentOptions.Chair"),
+      t("workout.equipmentOptions.Wall"),
+      t("workout.equipmentOptions.NoEquipment"),
+    ],
+  }
 }
 
-// Цели тренировок
-export const goalOptions: Record<string, { value: string; label: string }[]> = {
-  strength: [
-    { value: "mass", label: "Mass Gain" },
-    { value: "relief", label: "Definition" },
-    { value: "strength", label: "Strength" },
-    { value: "endurance", label: "Endurance" },
-  ],
-  cardio: [
-    { value: "endurance", label: "Endurance" },
-    { value: "fat_loss", label: "Fat Loss" },
-    { value: "recovery", label: "Recovery" },
-  ],
-  yoga: [
-    { value: "flexibility", label: "Flexibility" },
-    { value: "strength", label: "Strength" },
-    { value: "relaxation", label: "Relaxation" },
-    { value: "balance", label: "Balance" },
-  ],
+export function getGoalOptions(t: any): Record<string, { value: string; label: string }[]> {
+  return {
+    strength: [
+      { value: "mass", label: t("workout.goals.mass") },
+      { value: "relief", label: t("workout.goals.relief") },
+      { value: "strength", label: t("workout.goals.strength") },
+      { value: "endurance", label: t("workout.goals.endurance") },
+    ],
+    cardio: [
+      { value: "endurance", label: t("workout.goals.endurance") },
+      { value: "fat_loss", label: t("workout.goals.fatLoss") },
+      { value: "recovery", label: t("workout.goals.recovery") },
+    ],
+    yoga: [
+      { value: "flexibility", label: t("workout.goals.flexibility") },
+      { value: "strength", label: t("workout.goals.strength") },
+      { value: "relaxation", label: t("workout.goals.relaxation") },
+      { value: "balance", label: t("workout.goals.balance") },
+    ],
+  }
 }
 
 // Функция для получения метки подкатегории
-export function getSubcategoryLabel(category: string, value: string): string {
+export function getSubcategoryLabel(t: any, category: string, value: string): string {
   if (category === "Strength") {
     const allOptions = [
-      ...strengthSubcategories.anatomical.options,
-      ...strengthSubcategories.equipment.options,
+      ...getStrengthSubcategories(t).anatomical.options,
+      ...getStrengthSubcategories(t).equipment.options,
     ]
     const found = allOptions.find((opt) => opt.value === value)
     return found?.label || ""
   }
   if (category === "Cardio") {
     const allOptions = [
-      ...cardioSubcategories.activity.options,
-      ...cardioSubcategories.intensity.options,
+      ...getCardioSubcategories(t).activity.options,
+      ...getCardioSubcategories(t).intensity.options,
     ]
     const found = allOptions.find((opt) => opt.value === value)
     return found?.label || ""
   }
   if (category === "Yoga") {
     const allOptions = [
-      ...yogaSubcategories.style.options,
-      ...yogaSubcategories.goal.options,
-      ...yogaSubcategories.level.options,
+      ...getYogaSubcategories(t).style.options,
+      ...getYogaSubcategories(t).goal.options,
+      ...getYogaSubcategories(t).level.options,
     ]
     const found = allOptions.find((opt) => opt.value === value)
     return found?.label || ""
@@ -287,31 +307,31 @@ export function WorkoutForm({
   // Get subcategories for current workout type
   const currentWorkoutSubcategories =
     selectedCategory === "Strength"
-      ? strengthSubcategories
+      ? getStrengthSubcategories(t)
       : selectedCategory === "Cardio"
-        ? cardioSubcategories
+        ? getCardioSubcategories(t)
         : selectedCategory === "Yoga"
-          ? yogaSubcategories
+          ? getYogaSubcategories(t)
           : null
 
   // Get equipment for current workout type
   const currentEquipment =
     selectedCategory === "Strength"
-      ? equipmentOptions.strength
+      ? getEquipmentOptions(t).strength
       : selectedCategory === "Cardio"
-        ? equipmentOptions.cardio
+        ? getEquipmentOptions(t).cardio
         : selectedCategory === "Yoga"
-          ? equipmentOptions.yoga
+          ? getEquipmentOptions(t).yoga
           : []
 
   // Get goals for current workout type
   const currentGoals =
     selectedCategory === "Strength"
-      ? goalOptions.strength
+      ? getGoalOptions(t).strength
       : selectedCategory === "Cardio"
-        ? goalOptions.cardio
+        ? getGoalOptions(t).cardio
         : selectedCategory === "Yoga"
-          ? goalOptions.yoga
+          ? getGoalOptions(t).yoga
           : []
 
   return (
@@ -331,7 +351,7 @@ export function WorkoutForm({
                     {t(`workout.strengthSubcategories.anatomical`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {strengthSubcategories.anatomical.options.map((opt) => (
+                    {getStrengthSubcategories(t).anatomical.options.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
@@ -352,7 +372,7 @@ export function WorkoutForm({
                     {t(`workout.strengthSubcategories.equipment`)}
                   </Label>
                   <div className="grid grid-cols-2 gap-2">
-                    {strengthSubcategories.equipment.options.map((opt) => (
+                    {getStrengthSubcategories(t).equipment.options.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
@@ -379,7 +399,7 @@ export function WorkoutForm({
                     {t(`workout.cardioSubcategories.activity`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {cardioSubcategories.activity.options.map((opt) => (
+                    {getCardioSubcategories(t).activity.options.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
@@ -400,7 +420,7 @@ export function WorkoutForm({
                     {t(`workout.cardioSubcategories.byIntensity`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {cardioSubcategories.intensity.options.map((opt) => (
+                    {getCardioSubcategories(t).intensity.options.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
@@ -427,7 +447,7 @@ export function WorkoutForm({
                     {t(`workout.yogaSubcategories.style`)}
                   </Label>
                   <div className="grid grid-cols-2 gap-2">
-                    {yogaSubcategories.style.options.map((opt) => (
+                    {getYogaSubcategories(t).style.options.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
@@ -448,7 +468,7 @@ export function WorkoutForm({
                     {t(`workout.yogaSubcategories.byGoal`)}
                   </Label>
                   <div className="grid grid-cols-2 gap-2">
-                    {yogaSubcategories.goal.options.map((opt) => (
+                    {getYogaSubcategories(t).goal.options.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
@@ -469,7 +489,7 @@ export function WorkoutForm({
                     {t(`workout.yogaSubcategories.byLevel`)}
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {yogaSubcategories.level.options.map((opt) => (
+                    {getYogaSubcategories(t).level.options.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"

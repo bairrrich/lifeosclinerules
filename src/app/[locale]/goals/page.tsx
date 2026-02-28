@@ -19,17 +19,48 @@ import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from
 import { useTranslations } from "next-intl"
 import type { Goal, GoalType, GoalPeriod } from "@/types"
 
-const goalTypeConfig: Record<
-  GoalType,
-  { label: string; icon: string; defaultTarget: number; units: string[] }
-> = {
-  calories: { label: "Калории", icon: "🔥", defaultTarget: 2000, units: ["ккал"] },
-  workout: { label: "Тренировки", icon: "💪", defaultTarget: 30, units: ["мин", "ч", "шт"] },
-  water: { label: "Вода", icon: "💧", defaultTarget: 2000, units: ["мл", "л"] },
-  sleep: { label: "Сон", icon: "😴", defaultTarget: 480, units: ["мин", "ч"] },
-  steps: { label: "Шаги", icon: "👟", defaultTarget: 10000, units: ["шт"] },
-  weight: { label: "Вес", icon: "⚖️", defaultTarget: 70, units: ["кг", "г"] },
-  finance: { label: "Финансы", icon: "💰", defaultTarget: 50000, units: ["₽"] },
+function getGoalTypeConfig(
+  t: any
+): Record<GoalType, { label: string; icon: string; defaultTarget: number; units: string[] }> {
+  return {
+    calories: {
+      label: t("types.calories"),
+      icon: "🔥",
+      defaultTarget: 2000,
+      units: [t("units.kcal")],
+    },
+    workout: {
+      label: t("types.workout"),
+      icon: "💪",
+      defaultTarget: 30,
+      units: [t("units.min"), t("units.hour"), t("units.count")],
+    },
+    water: {
+      label: t("types.water"),
+      icon: "💧",
+      defaultTarget: 2000,
+      units: [t("units.ml"), t("units.l")],
+    },
+    sleep: {
+      label: t("types.sleep"),
+      icon: "😴",
+      defaultTarget: 480,
+      units: [t("units.min"), t("units.hour")],
+    },
+    steps: { label: t("types.steps"), icon: "👟", defaultTarget: 10000, units: [t("units.count")] },
+    weight: {
+      label: t("types.weight"),
+      icon: "⚖️",
+      defaultTarget: 70,
+      units: [t("units.kg"), t("units.g")],
+    },
+    finance: {
+      label: t("types.finance"),
+      icon: "💰",
+      defaultTarget: 50000,
+      units: [t("units.currency")],
+    },
+  }
 }
 
 const periodLabels: Record<GoalPeriod, string> = {
@@ -59,6 +90,7 @@ export default function GoalsPage() {
 function GoalsContent() {
   const searchParams = useSearchParams()
   const t = useTranslations("goals")
+  const goalConfig = getGoalTypeConfig(t)
   const [isLoading, setIsLoading] = useState(true)
   const [goals, setGoals] = useState<Goal[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -71,7 +103,7 @@ function GoalsContent() {
     type: "calories" as GoalType,
     target_value: 2000,
     period: "daily" as GoalPeriod,
-    unit: "ккал",
+    unit: "",
   })
 
   useEffect(() => {
@@ -99,7 +131,7 @@ function GoalsContent() {
 
   function openAddDialog() {
     const defaultType = "calories"
-    const config = goalTypeConfig[defaultType]
+    const config = goalConfig[defaultType]
     setFormData({
       name: "",
       type: defaultType,
@@ -117,14 +149,14 @@ function GoalsContent() {
       type: goal.type,
       target_value: goal.target_value,
       period: goal.period,
-      unit: goal.unit || goalTypeConfig[goal.type]?.units[0] || "",
+      unit: goal.unit || goalConfig[goal.type]?.units[0] || "",
     })
     setEditingGoal(goal)
     setIsEditDialogOpen(true)
   }
 
   function handleTypeChange(newType: GoalType) {
-    const config = goalTypeConfig[newType]
+    const config = goalConfig[newType]
     setFormData({
       ...formData,
       type: newType,
@@ -183,7 +215,7 @@ function GoalsContent() {
     return "bg-blue-500"
   }
 
-  const availableUnits = goalTypeConfig[formData.type]?.units || []
+  const availableUnits = goalConfig[formData.type]?.units || []
 
   return (
     <AppLayout title={t("title")}>
@@ -224,7 +256,7 @@ function GoalsContent() {
             {goals.map((goal) => {
               const progress = getProgress(goal)
               const isCompleted = progress >= 100
-              const config = goalTypeConfig[goal.type]
+              const config = goalConfig[goal.type]
 
               return (
                 <Card key={goal.id} className={isCompleted ? "border-green-500/30" : ""}>
@@ -287,7 +319,7 @@ function GoalsContent() {
                   <TabsList className="grid grid-cols-4 h-auto">
                     {allGoalTypes.map((type) => (
                       <TabsTrigger key={type} value={type} className="text-lg py-2">
-                        {goalTypeConfig[type]?.icon}
+                        {goalConfig[type]?.icon}
                       </TabsTrigger>
                     ))}
                   </TabsList>
@@ -385,7 +417,7 @@ function GoalsContent() {
                   <TabsList className="grid grid-cols-4 h-auto">
                     {allGoalTypes.map((type) => (
                       <TabsTrigger key={type} value={type} className="text-lg py-2">
-                        {goalTypeConfig[type]?.icon}
+                        {goalConfig[type]?.icon}
                       </TabsTrigger>
                     ))}
                   </TabsList>

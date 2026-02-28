@@ -617,7 +617,9 @@
       "ingredients": "Ingredients",
       "steps": "Cooking Steps",
       "recipeType": "Recipe Type",
-      "additional": "Additional"
+      "additional": "Additional",
+      "selectPlaceholder": "Select...",
+      "notSpecified": "Not specified"
     },
     "fields": {
       "title": "Recipe Title",
@@ -646,6 +648,7 @@
       "isAlcoholic": "Alcoholic",
       "alcoholPercent": "Alcohol %",
       "baseSpirit": "Base Spirit",
+      "ibaCategory": "IBA Category",
       "cocktailMethod": "Cocktail Method",
       "glassType": "Glass Type",
       "iceType": "Ice Type",
@@ -699,6 +702,23 @@
       "medium": "Medium",
       "hot": "Hot"
     },
+    "cuisines": {
+      "russian": "Russian",
+      "italian": "Italian",
+      "french": "French",
+      "japanese": "Japanese",
+      "chinese": "Chinese",
+      "korean": "Korean",
+      "thai": "Thai",
+      "indian": "Indian",
+      "mexican": "Mexican",
+      "georgian": "Georgian",
+      "uzbek": "Uzbek",
+      "arabic": "Arabic",
+      "mediterranean": "Mediterranean",
+      "american": "American",
+      "other": "Other"
+    },
     "dietaryOptions": {
       "vegan": "Vegan",
       "vegetarian": "Vegetarian",
@@ -724,6 +744,25 @@
       "milkshake": "Milkshake",
       "compote": "Compote",
       "cocoa": "Cocoa"
+    },
+    "drinkBases": {
+      "water": "Water",
+      "milk": "Milk",
+      "cream": "Cream",
+      "juice": "Juice",
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "yogurt": "Yogurt",
+      "kefir": "Kefir",
+      "plantMilk": "Plant Milk",
+      "other": "Other"
+    },
+    "servingTemperatures": {
+      "hot": "Hot",
+      "warm": "Warm",
+      "room": "Room Temperature",
+      "cold": "Cold",
+      "iced": "Iced"
     },
     "ingredients": {
       "addIngredient": "Add Ingredient",
@@ -777,7 +816,102 @@
       "base": "Base",
       "method": "Method",
       "glass": "Glass",
-      "strength": "Strength"
+      "strength": "Strength",
+      "alcoholic": "Alcoholic",
+      "nonAlcoholic": "Non-Alcoholic",
+      "methods": {
+        "shaken": "Shaken",
+        "stirred": "Stirred",
+        "blended": "Blended",
+        "built": "Built",
+        "muddled": "Muddled",
+        "layered": "Layered"
+      },
+      "methodDescriptions": {
+        "shaken": "Shake in a shaker with ice",
+        "stirred": "Stir in a mixing glass",
+        "blended": "Blend in a blender",
+        "built": "Build directly in the glass",
+        "muddled": "Muddle ingredients with a muddler",
+        "layered": "Layer ingredients"
+      },
+      "glassTypes": {
+        "highball": "Highball",
+        "lowball": "Lowball (Rocks)",
+        "martini": "Martini (Cocktail glass)",
+        "coupe": "Coupe",
+        "margarita": "Margarita",
+        "hurricane": "Hurricane",
+        "shot": "Shot",
+        "wine": "Wine glass",
+        "champagne": "Champagne flute",
+        "mug": "Mug",
+        "collins": "Collins",
+        "rocks": "Rocks"
+      },
+      "iceTypes": {
+        "cubed": "Cubed",
+        "crushed": "Crushed",
+        "sphere": "Sphere",
+        "none": "No ice"
+      },
+      "baseSpirits": {
+        "vodka": "Vodka",
+        "gin": "Gin",
+        "rumWhite": "White rum",
+        "rumDark": "Dark rum",
+        "tequila": "Tequila",
+        "whiskey": "Whiskey",
+        "bourbon": "Bourbon",
+        "cognac": "Cognac",
+        "brandy": "Brandy",
+        "liqueur": "Liqueur",
+        "absinthe": "Absinthe",
+        "other": "Other"
+      },
+      "ibaCategories": {
+        "unforgettables": "The Unforgettables",
+        "contemporaryClassics": "Contemporary Classics",
+        "newEraDrinks": "New Era Drinks",
+        "tequila": "Tequila",
+        "vodka": "Vodka",
+        "gin": "Gin",
+        "rum": "Rum",
+        "whiskey": "Whiskey",
+        "brandy": "Brandy",
+        "liqueur": "Liqueur"
+      },
+      "tools": {
+        "shaker": "Shaker",
+        "bostonShaker": "Boston Shaker",
+        "jigger": "Jigger",
+        "muddler": "Muddler",
+        "barSpoon": "Bar spoon",
+        "strainer": "Strainer",
+        "hawthorneStrainer": "Hawthorne strainer",
+        "julepStrainer": "Julep strainer",
+        "pestle": "Pestle",
+        "cone": "Funnel",
+        "other": "Other"
+      },
+      "garnish": {
+        "lemon": "Lemon",
+        "lime": "Lime",
+        "orange": "Orange",
+        "grapefruit": "Grapefruit",
+        "mint": "Mint",
+        "basil": "Basil",
+        "olives": "Olives",
+        "cherry": "Cherry",
+        "pineapple": "Pineapple",
+        "strawberry": "Strawberry",
+        "sugarRim": "Sugar rim",
+        "salt": "Salt",
+        "lemonZest": "Lemon zest",
+        "orangeZest": "Orange zest",
+        "cucumber": "Cucumber",
+        "other": "Other"
+      }
     },
     "createdAt": "Created",
     "updatedAt": "Updated",
@@ -811,6 +945,9 @@
       "minutes": "min",
       "calories": "cal",
       "servings": "servings"
+    },
+    "placeholders": {
+      "color": "e.g., Red, Golden, Amber"
     }
   },
   "fab": {
@@ -920,7 +1057,155 @@
       "productCategory": "Product Category",
       "product": "Product",
       "noRecipes": "No saved recipes",
-      "addRecipeToContent": "Add recipes in Content section"
+      "addRecipeToContent": "Add recipes in Content section",
+      "productCategories": {
+        "dairy": "Dairy",
+        "meat": "Meat",
+        "fish": "Fish",
+        "vegetables": "Vegetables",
+        "fruits": "Fruits",
+        "berries": "Berries",
+        "grainsAndLegumes": "Grains & Legumes",
+        "breadAndBakery": "Bread & Bakery",
+        "eggs": "Eggs",
+        "nutsAndSeeds": "Nuts & Seeds",
+        "oilsAndFats": "Oils & Fats",
+        "drinks": "Drinks",
+        "sweets": "Sweets",
+        "groceries": "Groceries"
+      },
+      "products": {
+        "dairy": {
+          "milk32": "Milk 3.2%",
+          "milk25": "Milk 2.5%",
+          "milk15": "Milk 1.5%",
+          "hardCheese": "Hard Cheese",
+          "softCheese": "Soft Cheese",
+          "cottageCheese0": "Cottage Cheese 0%",
+          "cottageCheese5": "Cottage Cheese 5%",
+          "cottageCheese9": "Cottage Cheese 9%",
+          "sourCream15": "Sour Cream 15%",
+          "sourCream20": "Sour Cream 20%",
+          "kefir25": "Kefir 2.5%",
+          "kefir32": "Kefir 3.2%",
+          "naturalYogurt": "Natural Yogurt",
+          "greekYogurt": "Greek Yogurt",
+          "butter825": "Butter 82.5%"
+        },
+        "meat": {
+          "beefFillet": "Beef Fillet",
+          "beefBrisket": "Beef Brisket",
+          "beefMince": "Beef Mince",
+          "porkNeck": "Pork Neck",
+          "porkLoin": "Pork Loin",
+          "chickenBreast": "Chicken Breast",
+          "chickenThigh": "Chicken Thigh",
+          "chickenMince": "Chicken Mince",
+          "turkeyBreast": "Turkey Breast",
+          "turkeyThigh": "Turkey Thigh"
+        },
+        "fish": {
+          "troutFresh": "Trout Fresh",
+          "troutLightlySalted": "Trout Lightly Salted",
+          "salmonFresh": "Salmon Fresh",
+          "salmonLightlySalted": "Salmon Lightly Salted",
+          "codFresh": "Cod Fresh",
+          "herringSalted": "Herring Salted",
+          "mackerelFresh": "Mackerel Fresh",
+          "mackerelSmoked": "Mackerel Smoked",
+          "tunaCanned": "Tuna Canned"
+        },
+        "vegetables": {
+          "potato": "Potato",
+          "carrot": "Carrot",
+          "onion": "Onion",
+          "cucumber": "Cucumber",
+          "tomato": "Tomato",
+          "whiteCabbage": "White Cabbage",
+          "pepper": "Bell Pepper",
+          "garlic": "Garlic",
+          "zucchini": "Zucchini",
+          "eggplant": "Eggplant",
+          "beet": "Beet"
+        },
+        "fruits": {
+          "apple": "Apple",
+          "banana": "Banana",
+          "orange": "Orange",
+          "tangerine": "Tangerine",
+          "pear": "Pear",
+          "kiwi": "Kiwi",
+          "grape": "Grape",
+          "pineapple": "Pineapple"
+        },
+        "berries": {
+          "strawberry": "Strawberry",
+          "raspberry": "Raspberry",
+          "blueberry": "Blueberry",
+          "blackcurrant": "Blackcurrant",
+          "cherry": "Cherry",
+          "cranberry": "Cranberry"
+        },
+        "grainsAndLegumes": {
+          "riceWhiteDry": "White Rice Dry",
+          "riceBrownDry": "Brown Rice Dry",
+          "buckwheatDry": "Buckwheat Dry",
+          "oatmealDry": "Oatmeal Dry",
+          "semolinaDry": "Semolina Dry",
+          "milletDry": "Millet Dry",
+          "lentilsDry": "Lentils Dry",
+          "beansDry": "Beans Dry",
+          "peasDry": "Peas Dry"
+        },
+        "bakery": {
+          "whiteBread": "White Bread",
+          "blackBread": "Black Bread",
+          "slicedLoaf": "Sliced Loaf",
+          "borodinskyBread": "Borodinsky Bread",
+          "armenianLavash": "Armenian Lavash"
+        },
+        "eggs": {
+          "chickenEggOnePiece": "Chicken Egg 1 pc",
+          "eggWhite": "Egg White",
+          "eggYolk": "Egg Yolk"
+        },
+        "nuts": {
+          "walnut": "Walnut",
+          "almond": "Almond",
+          "hazelnut": "Hazelnut",
+          "cashew": "Cashew",
+          "peanut": "Peanut",
+          "sunflowerSeeds": "Sunflower Seeds"
+        },
+        "fats": {
+          "sunflowerOil": "Sunflower Oil",
+          "oliveOil": "Olive Oil",
+          "coconutOil": "Coconut Oil",
+          "mayonnaise": "Mayonnaise"
+        },
+        "drinks": {
+          "teaWithoutSugar": "Tea Without Sugar",
+          "blackCoffee": "Black Coffee",
+          "orangeJuice": "Orange Juice",
+          "appleJuice": "Apple Juice",
+          "tomatoJuice": "Tomato Juice",
+          "compote": "Compote"
+        },
+        "sweets": {
+          "sugar": "Sugar",
+          "honey": "Honey",
+          "milkChocolate": "Milk Chocolate",
+          "darkChocolate": "Dark Chocolate",
+          "cookies": "Cookies",
+          "candy": "Candy"
+        },
+        "groceries": {
+          "pastaDry": "Pasta Dry",
+          "wheatFlour": "Wheat Flour",
+          "ryeFlour": "Rye Flour",
+          "starch": "Starch"
+        }
+      }
     },
     "workout": {
       "workoutType": "Workout Type",
@@ -1006,6 +1291,30 @@
         "fatLoss": "Fat Loss",
         "recovery": "Recovery"
       },
+      "equipmentOptions": {
+        "Bench": "Bench",
+        "PullUpBar": "Pull-up Bar",
+        "ParallelBars": "Parallel Bars",
+        "CableCrossover": "Cable Crossover",
+        "SmithMachine": "Smith Machine",
+        "ResistanceBands": "Resistance Bands",
+        "MedicineBall": "Medicine Ball",
+        "TRX": "TRX",
+        "NoEquipment": "No Equipment",
+        "Treadmill": "Treadmill",
+        "Elliptical": "Elliptical",
+        "ExerciseBike": "Exercise Bike",
+        "RowingMachine": "Rowing Machine",
+        "JumpRope": "Jump Rope",
+        "Stepper": "Stepper",
+        "Mat": "Mat",
+        "Blocks": "Blocks",
+        "Strap": "Strap",
+        "Bolster": "Bolster",
+        "Blanket": "Blanket",
+        "Chair": "Chair",
+        "Wall": "Wall"
+      },
       "placeholders": {
         "calories": "cal",
         "distance": "km",
@@ -1057,11 +1366,16 @@
       "isActive": "Active",
       "startDate": "Start Date",
       "endDate": "End Date",
-      "subtasks": "Subtasks"
+      "subtasks": "Subtasks",
+      "color": "Color"
     },
     "types": {
       "positive": "Positive (do)",
       "negative": "Negative (don't do)"
+    },
+    "typeDescriptions": {
+      "positive": "A habit to do something",
+      "negative": "A habit to avoid something"
     },
     "frequencies": {
       "daily": "Daily",
@@ -1074,7 +1388,42 @@
     "streak": "Streak",
     "currentStreak": "Current Streak",
     "longestStreak": "Longest Streak",
-    "days": "days"
+    "days": "days",
+    "day": "day",
+    "actions": {
+      "markComplete": "Mark Complete",
+      "markIncomplete": "Mark Incomplete",
+      "viewSubtasks": "View Subtasks",
+      "skipHabit": "Skip Habit",
+      "addSubtask": "Add Subtask",
+      "removeSubtask": "Remove Subtask"
+    },
+    "common": {
+      "loading": "Loading...",
+      "add": "Add"
+    },
+    "placeholders": {
+      "positive": "e.g., Morning exercise",
+      "negative": "e.g., No sweets",
+      "addStep": "Add step..."
+    },
+    "skipDialog": {
+      "title": "Skip today?",
+      "reason": "Reason for skipping"
+    },
+    "skipReasons": {
+      "forgot": "Forgot",
+      "noTime": "No time",
+      "illness": "Illness",
+      "vacation": "Vacation",
+      "weather": "Weather",
+      "other": "Other"
+    },
+    "skip": "Skip",
+    "deleteConfirm": {
+      "title": "Delete habit?",
+      "message": "Are you sure you want to delete habit \"{name}\"? This action cannot be undone."
+    }
   },
   "goals": {
     "title": "Goals",
@@ -1101,19 +1450,48 @@
       "weight": "Weight",
       "finance": "Finance"
     },
+    "units": {
+      "kcal": "kcal",
+      "min": "min",
+      "hour": "hr",
+      "count": "count",
+      "ml": "ml",
+      "l": "L",
+      "kg": "kg",
+      "g": "g",
+      "currency": "$"
+    },
     "periods": {
       "daily": "Daily",
       "weekly": "Weekly",
       "monthly": "Monthly"
     },
     "progress": "Progress",
-    "completed": "Completed"
+    "completed": "Completed",
+    "completedToday": "Completed today",
+    "common": {
+      "loading": "Loading...",
+      "add": "Add"
+    },
+    "deleteConfirm": {
+      "title": "Delete goal?",
+      "message": "Are you sure you want to delete goal \"{name}\"? This action cannot be undone."
+    },
+    "placeholders": {
+      "caloriesPerDay": "e.g., Calories per day"
+    }
   },
   "reminders": {
     "title": "Reminders",
     "addReminder": "Add Reminder",
     "editReminder": "Edit Reminder",
     "noReminders": "No reminders yet",
+    "add": "Add",
+    "loading": "Loading...",
+    "common": {
+      "add": "Add",
+      "loading": "Loading..."
+    },
     "fields": {
       "title": "Title",
       "message": "Message",
@@ -1179,7 +1557,8 @@
     },
     "empty": {
       "noReminders": "No reminders. Add the first one!",
-      "noCategory": "No reminders in this category"
+      "noCategory": "No reminders in this category",
+      "loading": "Loading..."
     },
     "dialogs": {
       "newTitle": "New Reminder",
@@ -1267,6 +1646,12 @@
         "evening": "Evening",
         "bedtime": "Before bed"
       }
+    },
+    "reminderCard": {
+      "limitReached": "Completion limit reached",
+      "completedAction": "Completed",
+      "overdue": "Overdue",
+      "completed": "Completed"
     }
   },
   "water": {
@@ -1450,6 +1835,15 @@
       "stressLabel": "Stress (1 - low, 5 - high)",
       "notesPlaceholder": "What affected your mood?"
     },
+    "dialog": {
+      "title": "How are you feeling?",
+      "mood": "Mood",
+      "energy": "Energy",
+      "stress": "Stress",
+      "activities": "Activities",
+      "notes": "Notes",
+      "notesPlaceholder": "What affected you?"
+    },
     "empty": {
       "loading": "Loading...",
       "noRecords": "No records"
@@ -1458,6 +1852,7 @@
   },
   "body": {
     "title": "Body",
+    "add": "Add",
     "addMeasurement": "Add Measurement",
     "editMeasurement": "Edit Measurement",
     "fields": {
@@ -1480,7 +1875,9 @@
       "thigh": "Thigh",
       "calf": "Calf",
       "bodyFat": "Body Fat",
-      "muscleMass": "Muscle Mass"
+      "body_fat": "Body Fat",
+      "muscleMass": "Muscle Mass",
+      "muscle_mass": "Muscle Mass"
     },
     "bmi": {
       "title": "BMI",
@@ -1630,7 +2027,9 @@
       "protein": "Protein",
       "fat": "Fat",
       "carbs": "Carbs",
-      "servingSize": "Serving Size (g)"
+      "servingSize": "Serving Size (g)",
+      "notes": "Notes",
+      "tags": "Tags"
     },
     "types": {
       "vitamin": "Vitamin",
@@ -1638,6 +2037,30 @@
       "herb": "Herb",
       "cosmetic": "Cosmetic",
       "product": "Product"
+    },
+    "formOptions": {
+      "vitamin": "Tablets|Capsules|Dragées|Powder|Liquid|Spray|Patch",
+      "medicine": "Tablets|Capsules|Ampoules|Vial|Tube|Ointment|Gel|Suppositories|Powder|Syrup|Drops",
+      "herb": "Dry mix|Filter bags|Tincture|Extract|Oil|Capsules",
+      "cosmetic": "Cream|Gel|Serum|Mask|Lotion|Toner|Oil|Scrub|Balm|Spray",
+      "product": "Piece|By weight|Liquid|Frozen|Canned|Bottle|Package"
+    },
+    "manufacturerOptions": {
+      "vitamin": "Solgar|Now Foods|Nature's Bounty|Doppelherz|Complivit|Alphabet|Vitrum|Multi-tabs|Evalar|Other",
+      "medicine": "Pharmstandard|Teva|Sanofi|Bayer|Novartis|Nycomed|Berlin-Chemie|Gedeon Richter|Other",
+      "herb": "Evalar|Baikal Herbs|Caucasus Herbs|Biolit|Phytolon|Nature's Way|Other",
+      "cosmetic": "Nivea|L'Oreal|Garnier|La Roche-Posay|CeraVe|Vichy|Bioderma|The Ordinary|Other",
+      "product": "Magnit|Pyaterochka|Azbuka Vkusa|Perekrestok|Krasnaya Tsena|Chistaya Liniya|Domik v derevne|Prostokvashino|Savushkin|Other"
+    },
+    "defaultCategories": {
+      "vitamin": "Vitamin A|Vitamin B|Vitamin C|Vitamin D|Vitamin E|Vitamin K|Multivitamins|Minerals",
+      "medicine": "Pain relievers|Antipyretics|Antivirals|Antibiotics|Allergy|Digestive|Heart|Nervous system",
+      "herb": "Sedatives|Immunity|Digestion|Sleep|Respiratory|Heart|Liver|Kidneys",
+      "cosmetic": "Face care|Body care|Hair care|Hand care|Foot care|Sun protection|Decorative cosmetics",
+      "product": ""
+    },
+    "financeCategories": {
+      "product": "Products"
     },
     "catalog": {
       "loading": "Loading...",
@@ -1856,6 +2279,7 @@
     "data": "Loading data...",
     "saving": "Saving...",
     "deleting": "Deleting...",
+    "creating": "Creating...",
     "importing": "Importing...",
     "exporting": "Exporting...",
     "syncing": "Syncing..."

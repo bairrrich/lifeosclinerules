@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -7,40 +8,46 @@ import { Label } from "@/components/ui/label"
 import type { DrinkRecipeMetadata, ServingTemperature } from "@/types"
 
 // ============================================
-// Константы
+// Функции для получения локализованных конфигураций
 // ============================================
 
-export const drinkTypes = [
-  { value: "tea", label: "Чай" },
-  { value: "coffee", label: "Кофе" },
-  { value: "smoothie", label: "Смузи" },
-  { value: "juice", label: "Сок" },
-  { value: "lemonade", label: "Лимонад" },
-  { value: "milkshake", label: "Молочный коктейль" },
-  { value: "compote", label: "Компот" },
-  { value: "cocoa", label: "Какао" },
-]
+export function getDrinkTypes(t: any) {
+  return [
+    { value: "tea", label: t("drinkTypes.tea") },
+    { value: "coffee", label: t("drinkTypes.coffee") },
+    { value: "smoothie", label: t("drinkTypes.smoothie") },
+    { value: "juice", label: t("drinkTypes.juice") },
+    { value: "lemonade", label: t("drinkTypes.lemonade") },
+    { value: "milkshake", label: t("drinkTypes.milkshake") },
+    { value: "compote", label: t("drinkTypes.compote") },
+    { value: "cocoa", label: t("drinkTypes.cocoa") },
+  ]
+}
 
-export const drinkBases = [
-  "Вода",
-  "Молоко",
-  "Сливки",
-  "Сок",
-  "Чай",
-  "Кофе",
-  "Йогурт",
-  "Кефир",
-  "Растительное молоко",
-  "Другое",
-]
+export function getDrinkBases(t: any) {
+  return [
+    t("drinkBases.water"),
+    t("drinkBases.milk"),
+    t("drinkBases.cream"),
+    t("drinkBases.juice"),
+    t("drinkBases.tea"),
+    t("drinkBases.coffee"),
+    t("drinkBases.yogurt"),
+    t("drinkBases.kefir"),
+    t("drinkBases.plantMilk"),
+    t("drinkBases.other"),
+  ]
+}
 
-export const servingTemperatures: { value: ServingTemperature; label: string }[] = [
-  { value: "hot", label: "Горячий" },
-  { value: "warm", label: "Тёплый" },
-  { value: "room", label: "Комнатной температуры" },
-  { value: "cold", label: "Холодный" },
-  { value: "iced", label: "Ледяной" },
-]
+export function getServingTemperatures(t: any) {
+  return [
+    { value: "hot" as ServingTemperature, label: t("servingTemperatures.hot") },
+    { value: "warm" as ServingTemperature, label: t("servingTemperatures.warm") },
+    { value: "room" as ServingTemperature, label: t("servingTemperatures.room") },
+    { value: "cold" as ServingTemperature, label: t("servingTemperatures.cold") },
+    { value: "iced" as ServingTemperature, label: t("servingTemperatures.iced") },
+  ]
+}
 
 // ============================================
 // Интерфейсы
@@ -56,6 +63,7 @@ interface DrinkRecipeFormProps {
 // ============================================
 
 export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
+  const t = useTranslations("recipes")
   const updateField = <K extends keyof DrinkRecipeMetadata>(
     field: K,
     value: DrinkRecipeMetadata[K]
@@ -66,12 +74,12 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Параметры напитка</CardTitle>
+        <CardTitle className="text-base">{t("forms.drinkParameters")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Тип напитка */}
         <div className="space-y-2">
-          <Label>Тип напитка</Label>
+          <Label>{t("fields.drinkType")}</Label>
           <div className="relative">
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -90,9 +98,9 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
               }}
             >
               <option value="" disabled>
-                Выберите тип
+                {t("forms.selectPlaceholder")}
               </option>
-              {drinkTypes.map((dt) => (
+              {getDrinkTypes(t).map((dt) => (
                 <option key={dt.value} value={dt.value}>
                   {dt.label}
                 </option>
@@ -104,7 +112,7 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
 
         {/* Основа */}
         <div className="space-y-2">
-          <Label>Основа</Label>
+          <Label>{t("fields.base")}</Label>
           <div className="relative">
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -117,8 +125,8 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
                 appearance: "none",
               }}
             >
-              <option value="">Не указана</option>
-              {drinkBases.map((b) => (
+              <option value="">{t("forms.notSpecified")}</option>
+              {getDrinkBases(t).map((b) => (
                 <option key={b} value={b}>
                   {b}
                 </option>
@@ -130,9 +138,9 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
 
         {/* Температура подачи */}
         <div className="space-y-2">
-          <Label>Температура подачи</Label>
+          <Label>{t("fields.servingTemperature")}</Label>
           <div className="grid grid-cols-5 gap-2">
-            {servingTemperatures.map((st) => (
+            {getServingTemperatures(t).map((st) => (
               <button
                 key={st.value}
                 type="button"
@@ -157,12 +165,12 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
             onChange={(e) => updateField("is_carbonated", e.target.checked)}
             className="rounded"
           />
-          <span className="text-sm">Газированный напиток</span>
+          <span className="text-sm">{t("fields.isCarbonated")}</span>
         </label>
 
         {/* Объём порции */}
         <div className="space-y-2">
-          <Label htmlFor="volume_ml">Объём порции (мл)</Label>
+          <Label htmlFor="volume_ml">{t("fields.volumeMl")}</Label>
           <Input
             id="volume_ml"
             type="number"
@@ -174,7 +182,7 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
 
         {/* Кофеин */}
         <div className="space-y-2">
-          <Label htmlFor="caffeine_mg">Кофеин (мг)</Label>
+          <Label htmlFor="caffeine_mg">{t("fields.caffeineMg")}</Label>
           <Input
             id="caffeine_mg"
             type="number"

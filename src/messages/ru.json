@@ -626,7 +626,9 @@
       "ingredients": "Ингредиенты",
       "steps": "Шаги приготовления",
       "recipeType": "Тип рецепта",
-      "additional": "Дополнительно"
+      "additional": "Дополнительно",
+      "selectPlaceholder": "Выберите...",
+      "notSpecified": "Не указано"
     },
     "fields": {
       "title": "Название рецепта",
@@ -655,6 +657,7 @@
       "isAlcoholic": "Алкогольный",
       "alcoholPercent": "Процент алкоголя",
       "baseSpirit": "Базовый спирт",
+      "ibaCategory": "Категория IBA",
       "cocktailMethod": "Метод коктейля",
       "glassType": "Тип бокала",
       "iceType": "Тип льда",
@@ -708,6 +711,23 @@
       "medium": "Средне",
       "hot": "Остро"
     },
+    "cuisines": {
+      "russian": "Русская",
+      "italian": "Итальянская",
+      "french": "Французская",
+      "japanese": "Японская",
+      "chinese": "Китайская",
+      "korean": "Корейская",
+      "thai": "Тайская",
+      "indian": "Индийская",
+      "mexican": "Мексиканская",
+      "georgian": "Грузинская",
+      "uzbek": "Узбекская",
+      "arabic": "Арабская",
+      "mediterranean": "Средиземноморская",
+      "american": "Американская",
+      "other": "Другая"
+    },
     "dietaryOptions": {
       "vegan": "Веган",
       "vegetarian": "Вегетарианское",
@@ -733,6 +753,25 @@
       "milkshake": "Молочный коктейль",
       "compote": "Компот",
       "cocoa": "Какао"
+    },
+    "drinkBases": {
+      "water": "Вода",
+      "milk": "Молоко",
+      "cream": "Сливки",
+      "juice": "Сок",
+      "tea": "Чай",
+      "coffee": "Кофе",
+      "yogurt": "Йогурт",
+      "kefir": "Кефир",
+      "plantMilk": "Растительное молоко",
+      "other": "Другое"
+    },
+    "servingTemperatures": {
+      "hot": "Горячий",
+      "warm": "Тёплый",
+      "room": "Комнатной температуры",
+      "cold": "Холодный",
+      "iced": "Ледяной"
     },
     "ingredients": {
       "addIngredient": "Добавить ингредиент",
@@ -786,7 +825,102 @@
       "base": "База",
       "method": "Метод",
       "glass": "Бокал",
-      "strength": "Крепость"
+      "strength": "Крепость",
+      "alcoholic": "Алкогольный",
+      "nonAlcoholic": "Безалкогольный",
+      "methods": {
+        "shaken": "Шейк",
+        "stirred": "Стир",
+        "blended": "Бленд",
+        "built": "Билд",
+        "muddled": "Мадл",
+        "layered": "Слоями"
+      },
+      "methodDescriptions": {
+        "shaken": "Взбить в шейкере со льдом",
+        "stirred": "Размешать в смесительном стакане",
+        "blended": "Смешать в блендере",
+        "built": "Собрать прямо в бокале",
+        "muddled": "Помять ингредиенты мадлером",
+        "layered": "Уложить слоями"
+      },
+      "glassTypes": {
+        "highball": "Хайбол",
+        "lowball": "Лоуболл (Рокс)",
+        "martini": "Мартини (Коктейльная рюмка)",
+        "coupe": "Купе",
+        "margarita": "Маргарита",
+        "hurricane": "Харрикейн",
+        "shot": "Шот",
+        "wine": "Винный",
+        "champagne": "Шампанское",
+        "mug": "Кружка",
+        "collins": "Коллинз",
+        "rocks": "Рокс"
+      },
+      "iceTypes": {
+        "cubed": "Кубики",
+        "crushed": "Дроблёный",
+        "sphere": "Сфера",
+        "none": "Без льда"
+      },
+      "baseSpirits": {
+        "vodka": "Водка",
+        "gin": "Джин",
+        "rumWhite": "Ром белый",
+        "rumDark": "Ром тёмный",
+        "tequila": "Текила",
+        "whiskey": "Виски",
+        "bourbon": "Бурбон",
+        "cognac": "Коньяк",
+        "brandy": "Бренди",
+        "liqueur": "Ликёр",
+        "absinthe": "Абсент",
+        "other": "Другое"
+      },
+      "ibaCategories": {
+        "unforgettables": "The Unforgettables",
+        "contemporaryClassics": "Contemporary Classics",
+        "newEraDrinks": "New Era Drinks",
+        "tequila": "Текила",
+        "vodka": "Водка",
+        "gin": "Джин",
+        "rum": "Ром",
+        "whiskey": "Виски",
+        "brandy": "Бренди",
+        "liqueur": "Ликёр"
+      },
+      "tools": {
+        "shaker": "Шейкер",
+        "bostonShaker": "Шейкер Бостон",
+        "jigger": "Джиггер",
+        "muddler": "Мадлер",
+        "barSpoon": "Барная ложка",
+        "strainer": "Стрейнер",
+        "hawthorneStrainer": "Стрейнер Хоторн",
+        "julepStrainer": "Стрейнер Джулеп",
+        "pestle": "Пестик",
+        "cone": "Воронка",
+        "other": "Другое"
+      },
+      "garnish": {
+        "lemon": "Лимон",
+        "lime": "Лайм",
+        "orange": "Апельсин",
+        "grapefruit": "Грейпфрут",
+        "mint": "Мята",
+        "basil": "Базилик",
+        "olives": "Оливки",
+        "cherry": "Вишня",
+        "pineapple": "Ананас",
+        "strawberry": "Клубника",
+        "sugarRim": "Сахарный ободок",
+        "salt": "Соль",
+        "lemonZest": "Цедра лимона",
+        "orangeZest": "Цедра апельсина",
+        "cucumber": "Огурец",
+        "other": "Другое"
+      }
     },
     "createdAt": "Создано",
     "updatedAt": "Обновлено",
@@ -820,6 +954,9 @@
       "minutes": "мин",
       "calories": "ккал",
       "servings": "порций"
+    },
+    "placeholders": {
+      "color": "например, Красный, Золотистый, Янтарный"
     }
   },
   "fab": {
@@ -918,7 +1055,155 @@
       "productCategory": "Категория продуктов",
       "product": "Продукт",
       "noRecipes": "Нет сохранённых рецептов",
-      "addRecipeToContent": "Добавьте рецепты в раздел Контент"
+      "addRecipeToContent": "Добавьте рецепты в раздел Контент",
+      "productCategories": {
+        "dairy": "Молочные",
+        "meat": "Мясо",
+        "fish": "Рыба",
+        "vegetables": "Овощи",
+        "fruits": "Фрукты",
+        "berries": "Ягоды",
+        "grainsAndLegumes": "Крупы и бобовые",
+        "breadAndBakery": "Хлеб и выпечка",
+        "eggs": "Яйца",
+        "nutsAndSeeds": "Орехи и семена",
+        "oilsAndFats": "Масла и жиры",
+        "drinks": "Напитки",
+        "sweets": "Сладости",
+        "groceries": "Бакалея"
+      },
+      "products": {
+        "dairy": {
+          "milk32": "Молоко 3.2%",
+          "milk25": "Молоко 2.5%",
+          "milk15": "Молоко 1.5%",
+          "hardCheese": "Сыр твёрдый",
+          "softCheese": "Сыр мягкий",
+          "cottageCheese0": "Творог 0%",
+          "cottageCheese5": "Творог 5%",
+          "cottageCheese9": "Творог 9%",
+          "sourCream15": "Сметана 15%",
+          "sourCream20": "Сметана 20%",
+          "kefir25": "Кефир 2.5%",
+          "kefir32": "Кефир 3.2%",
+          "naturalYogurt": "Йогурт натуральный",
+          "greekYogurt": "Йогурт греческий",
+          "butter825": "Масло сливочное 82.5%"
+        },
+        "meat": {
+          "beefFillet": "Говядина вырезка",
+          "beefBrisket": "Говядина грудинка",
+          "beefMince": "Говядина фарш",
+          "porkNeck": "Свинина шея",
+          "porkLoin": "Свинина корейка",
+          "chickenBreast": "Курица грудка",
+          "chickenThigh": "Курица бедро",
+          "chickenMince": "Курица фарш",
+          "turkeyBreast": "Индейка грудка",
+          "turkeyThigh": "Индейка бедро"
+        },
+        "fish": {
+          "troutFresh": "Форель свежая",
+          "troutLightlySalted": "Форель слабосолёная",
+          "salmonFresh": "Лосось свежий",
+          "salmonLightlySalted": "Лосось слабосолёный",
+          "codFresh": "Треска свежая",
+          "herringSalted": "Сельдь солёная",
+          "mackerelFresh": "Скумбрия свежая",
+          "mackerelSmoked": "Скумбрия копчёная",
+          "tunaCanned": "Тунец консервы"
+        },
+        "vegetables": {
+          "potato": "Картофель",
+          "carrot": "Морковь",
+          "onion": "Лук репчатый",
+          "cucumber": "Огурец",
+          "tomato": "Помидор",
+          "whiteCabbage": "Капуста белокочанная",
+          "pepper": "Перец болгарский",
+          "garlic": "Чеснок",
+          "zucchini": "Кабачок",
+          "eggplant": "Баклажан",
+          "beet": "Свёкла"
+        },
+        "fruits": {
+          "apple": "Яблоко",
+          "banana": "Банан",
+          "orange": "Апельсин",
+          "tangerine": "Мандарин",
+          "pear": "Груша",
+          "kiwi": "Киви",
+          "grape": "Виноград",
+          "pineapple": "Ананас"
+        },
+        "berries": {
+          "strawberry": "Клубника",
+          "raspberry": "Малина",
+          "blueberry": "Голубика",
+          "blackcurrant": "Смородина чёрная",
+          "cherry": "Вишня",
+          "cranberry": "Клюква"
+        },
+        "grainsAndLegumes": {
+          "riceWhiteDry": "Рис белый сухой",
+          "riceBrownDry": "Рис бурый сухой",
+          "buckwheatDry": "Гречка сухая",
+          "oatmealDry": "Овсянка сухая",
+          "semolinaDry": "Манка сухая",
+          "milletDry": "Пшено сухое",
+          "lentilsDry": "Чечевица сухая",
+          "beansDry": "Фасоль сухая",
+          "peasDry": "Горох сухой"
+        },
+        "bakery": {
+          "whiteBread": "Хлеб белый",
+          "blackBread": "Хлеб чёрный",
+          "slicedLoaf": "Батон нарезной",
+          "borodinskyBread": "Хлеб бородинский",
+          "armenianLavash": "Лаваш армянский"
+        },
+        "eggs": {
+          "chickenEggOnePiece": "Яйцо куриное 1 шт",
+          "eggWhite": "Белок яичный",
+          "eggYolk": "Желток яичный"
+        },
+        "nuts": {
+          "walnut": "Орех грецкий",
+          "almond": "Миндаль",
+          "hazelnut": "Фундук",
+          "cashew": "Кешью",
+          "peanut": "Арахис",
+          "sunflowerSeeds": "Семечки подсолнечника"
+        },
+        "fats": {
+          "sunflowerOil": "Масло подсолнечное",
+          "oliveOil": "Масло оливковое",
+          "coconutOil": "Масло кокосовое",
+          "mayonnaise": "Майонез"
+        },
+        "drinks": {
+          "teaWithoutSugar": "Чай без сахара",
+          "blackCoffee": "Кофе чёрный",
+          "orangeJuice": "Сок апельсиновый",
+          "appleJuice": "Сок яблочный",
+          "tomatoJuice": "Сок томатный",
+          "compote": "Компот"
+        },
+        "sweets": {
+          "sugar": "Сахар",
+          "honey": "Мёд",
+          "milkChocolate": "Шоколад молочный",
+          "darkChocolate": "Шоколад тёмный",
+          "cookies": "Печенье",
+          "candy": "Конфеты"
+        },
+        "groceries": {
+          "pastaDry": "Макароны сухие",
+          "wheatFlour": "Мука пшеничная",
+          "ryeFlour": "Мука ржаная",
+          "starch": "Крахмал"
+        }
+      }
     },
     "workout": {
       "workoutType": "Тип тренировки",
@@ -1004,6 +1289,30 @@
         "fatLoss": "Сжигание жира",
         "recovery": "Восстановление"
       },
+      "equipmentOptions": {
+        "Bench": "Скамья",
+        "PullUpBar": "Турник",
+        "ParallelBars": "Брусья",
+        "CableCrossover": "Кроссовер",
+        "SmithMachine": "Машина Смита",
+        "ResistanceBands": "Эспандеры",
+        "MedicineBall": "Медицинский мяч",
+        "TRX": "TRX петли",
+        "NoEquipment": "Без оборудования",
+        "Treadmill": "Беговая дорожка",
+        "Elliptical": "Эллиптический тренажёр",
+        "ExerciseBike": "Велотренажёр",
+        "RowingMachine": "Гребной тренажёр",
+        "JumpRope": "Скакалка",
+        "Stepper": "Степпер",
+        "Mat": "Коврик",
+        "Blocks": "Блоки для йоги",
+        "Strap": "Ремень для йоги",
+        "Bolster": "Болстер",
+        "Blanket": "Плед",
+        "Chair": "Стул",
+        "Wall": "Стена"
+      },
       "placeholders": {
         "calories": "ккал",
         "distance": "км",
@@ -1088,12 +1397,12 @@
       "reason": "Причина пропуска"
     },
     "skipReasons": {
-      "Забыл": "Забыл",
-      "Не было времени": "Не было времени",
-      "Болезнь": "Болезнь",
-      "Отпуск": "Отпуск",
-      "Погода": "Погода",
-      "Другое": "Другое"
+      "forgot": "Забыл",
+      "noTime": "Не было времени",
+      "illness": "Болезнь",
+      "vacation": "Отпуск",
+      "weather": "Погода",
+      "other": "Другое"
     },
     "deleteConfirm": {
       "title": "Удалить привычку?",
@@ -1106,6 +1415,10 @@
       "skipHabit": "Пропустить привычку",
       "addSubtask": "Добавить подпривычку",
       "removeSubtask": "Удалить подпривычку"
+    },
+    "common": {
+      "loading": "Загрузка...",
+      "add": "Добавить"
     },
     "placeholders": {
       "positive": "Например: Утренняя зарядка",
@@ -1138,6 +1451,17 @@
       "weight": "Вес",
       "finance": "Финансы"
     },
+    "units": {
+      "kcal": "ккал",
+      "min": "мин",
+      "hour": "ч",
+      "count": "шт",
+      "ml": "мл",
+      "l": "л",
+      "kg": "кг",
+      "g": "г",
+      "currency": "₽"
+    },
     "periods": {
       "daily": "В день",
       "weekly": "В неделю",
@@ -1146,6 +1470,10 @@
     "progress": "Прогресс",
     "completed": "Выполнено",
     "completedToday": "Достигнуто сегодня",
+    "common": {
+      "loading": "Загрузка...",
+      "add": "Добавить"
+    },
     "deleteConfirm": {
       "title": "Удалить цель?",
       "message": "Вы уверены, что хотите удалить цель \"{name}\"? Это действие нельзя отменить."
@@ -1159,6 +1487,12 @@
     "addReminder": "Добавить напоминание",
     "editReminder": "Редактировать напоминание",
     "noReminders": "Пока нет напоминаний",
+    "add": "Добавить",
+    "loading": "Загрузка...",
+    "common": {
+      "add": "Добавить",
+      "loading": "Загрузка..."
+    },
     "fields": {
       "title": "Заголовок",
       "message": "Сообщение",
@@ -1224,7 +1558,8 @@
     },
     "empty": {
       "noReminders": "Нет напоминаний. Добавьте первое!",
-      "noCategory": "Нет напоминаний в этой категории"
+      "noCategory": "Нет напоминаний в этой категории",
+      "loading": "Загрузка..."
     },
     "dialogs": {
       "newTitle": "Новое напоминание",
@@ -1238,13 +1573,13 @@
       "best": "Лучшая",
       "total": "Всего"
     },
-    "history": "История",
+    "history": "Истори��",
     "historyEmpty": "История пуста",
     "completed": "Выполнено",
     "snooze": "Через 5 мин",
     "close": "Закрыть",
     "testNotification": {
-      "button": "🧪 Тест уведомления",
+      "button": "🧪 ��ест уведомления",
       "title": "Тестовое напоминание",
       "message": "Это тестовое уведомление для проверки работы"
     },
@@ -1262,7 +1597,7 @@
       "title": "Название",
       "titlePlaceholder": "Название напоминания",
       "message": "Сообщение",
-      "messagePlaceholder": "Дополнительная информация",
+      "messagePlaceholder": "Дополнительная ин��ормация",
       "time": "Время напоминания",
       "date": "Дата",
       "repeatType": "Повторяемость",
@@ -1312,6 +1647,12 @@
         "evening": "Вечер",
         "bedtime": "Перед сном"
       }
+    },
+    "reminderCard": {
+      "limitReached": "Лимит выполнений достигнут",
+      "completedAction": "Выполнено",
+      "overdue": "Просрочено",
+      "completed": "Выполнено"
     }
   },
   "water": {
@@ -1360,7 +1701,7 @@
       "reminders": "Напоминания:",
       "andMore": "и ещё {count}",
       "permissionWarning": "Нажмите «Включить» и разрешите уведомления в браузере",
-      "permissionRequired": "Для работы напоминаний необходимо разрешить уведомления в браузере",
+      "permissionRequired": "Для работы напоминаний необходимо разрешить уведомле��ия в браузере",
       "waterReminderTitle": "Напоминание о воде",
       "waterReminderMessage": "Пора выпить воды! (интервал {interval} мин)"
     }
@@ -1495,6 +1836,15 @@
       "stressLabel": "Стресс (1 - низкий, 5 - высокий)",
       "notesPlaceholder": "Что повлияло на настроение?"
     },
+    "dialog": {
+      "title": "Как вы себя чувствуете?",
+      "mood": "Настроение",
+      "energy": "Энергия",
+      "stress": "Стресс",
+      "activities": "Активности",
+      "notes": "Заметки",
+      "notesPlaceholder": "Что повлияло?"
+    },
     "empty": {
       "loading": "Загрузка...",
       "noRecords": "Нет записей"
@@ -1503,6 +1853,7 @@
   },
   "body": {
     "title": "Тело",
+    "add": "Добавить",
     "addMeasurement": "Добавить измерение",
     "editMeasurement": "Редактировать измерение",
     "fields": {
@@ -1525,7 +1876,9 @@
       "thigh": "Бедро",
       "calf": "Икра",
       "bodyFat": "Процент жира",
-      "muscleMass": "Мышечная масса"
+      "body_fat": "Процент жира",
+      "muscleMass": "Мышечная масса",
+      "muscle_mass": "Мышечная масса"
     },
     "bmi": {
       "title": "BMI",
@@ -1675,7 +2028,9 @@
       "protein": "Белки",
       "fat": "Жиры",
       "carbs": "Углеводы",
-      "servingSize": "Размер порции (г)"
+      "servingSize": "Размер порции (г)",
+      "notes": "Заметки",
+      "tags": "Теги"
     },
     "types": {
       "vitamin": "Витамин",
@@ -1683,6 +2038,30 @@
       "herb": "Трава",
       "cosmetic": "Косметика",
       "product": "Продукт"
+    },
+    "formOptions": {
+      "vitamin": "Таблетки|Капсулы|Драже|Порошок|Жидкость|Спрей|Пластырь",
+      "medicine": "Таблетки|Капсулы|Ампулы|Флакон|Туба|Мазь|Гель|Свечи|Порошок|Сироп|Капли",
+      "herb": "Сухая смесь|Фильтр-пакеты|Настойка|Экстракт|Масло|Капсулы",
+      "cosmetic": "Крем|Гель|Сыворотка|Маска|Лосьон|Тоник|Масло|Скраб|Бальзам|Спрей",
+      "product": "Штучный|Весовой|Жидкий|Замороженный|Консервы|Бутылка|Пакет"
+    },
+    "manufacturerOptions": {
+      "vitamin": "Solgar|Now Foods|Nature's Bounty|Доппельгерц|Компливит|Алфавит|Витрум|Мульти-табс|Эвалар|Другое",
+      "medicine": "Фармстандарт|Teva|Sanofi|Bayer|Novartis|Nycomed|Берлин-Хеми|Гедеон Рихтер|Другое",
+      "herb": "Эвалар|Байкальские травы|Травы Кавказа|Биолит|Фитолон|Nature's Way|Другое",
+      "cosmetic": "Nivea|L'Oreal|Garnier|La Roche-Posay|CeraVe|Vichy|Bioderma|The Ordinary|Другое",
+      "product": "Магнит|Пятёрочка|Азбука Вкуса|Перекрёсток|Красная Цена|Чистая Линия|Домик в деревне|Простоквашино|Савушкин|Другое"
+    },
+    "defaultCategories": {
+      "vitamin": "Витамин A|Витамин B|Витамин C|Витамин D|Витамин E|Витамин K|Мультивитамины|Минералы",
+      "medicine": "Обезболивающие|Жаропонижающие|Противовирусные|Антибиотики|Аллергия|ЖКТ|Сердце|Нервная система",
+      "herb": "Успокоительные|Иммунитет|Пищеварение|Сон|Дыхание|Сердце|Печень|Почки",
+      "cosmetic": "Уход за лицом|Уход за телом|Уход за волосами|Уход за руками|Уход за ногами|Солнцезащитные|Декоративная",
+      "product": ""
+    },
+    "financeCategories": {
+      "product": "Продукты"
     },
     "catalog": {
       "loading": "Загрузка...",
@@ -1901,6 +2280,7 @@
     "data": "Загрузка данных...",
     "saving": "Сохранение...",
     "deleting": "Удаление...",
+    "creating": "Создание...",
     "importing": "Импорт...",
     "exporting": "Экспорт...",
     "syncing": "Синхронизация..."

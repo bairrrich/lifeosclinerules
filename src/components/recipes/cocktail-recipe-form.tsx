@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { ChevronDown, Plus, X } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,100 +10,138 @@ import { Button } from "@/components/ui/button"
 import type { CocktailRecipeMetadata, CocktailMethod, GlassType, IceType } from "@/types"
 
 // ============================================
-// Константы
+// Функции для получения локализованных конфигураций
 // ============================================
 
-export const cocktailMethods: { value: CocktailMethod; label: string; description: string }[] = [
-  { value: "shaken", label: "Шейк", description: "Взбить в шейкере со льдом" },
-  { value: "stirred", label: "Стир", description: "Размешать в смесительном стакане" },
-  { value: "blended", label: "Бленд", description: "Смешать в блендере" },
-  { value: "built", label: "Билд", description: "Собрать прямо в бокале" },
-  { value: "muddled", label: "Мадл", description: "Помять ингредиенты мадлером" },
-  { value: "layered", label: "Слоями", description: "Уложить слоями" },
-]
+export function getCocktailMethods(t: any) {
+  return [
+    {
+      value: "shaken" as CocktailMethod,
+      label: t("cocktailDetails.methods.shaken"),
+      description: t("cocktailDetails.methodDescriptions.shaken"),
+    },
+    {
+      value: "stirred" as CocktailMethod,
+      label: t("cocktailDetails.methods.stirred"),
+      description: t("cocktailDetails.methodDescriptions.stirred"),
+    },
+    {
+      value: "blended" as CocktailMethod,
+      label: t("cocktailDetails.methods.blended"),
+      description: t("cocktailDetails.methodDescriptions.blended"),
+    },
+    {
+      value: "built" as CocktailMethod,
+      label: t("cocktailDetails.methods.built"),
+      description: t("cocktailDetails.methodDescriptions.built"),
+    },
+    {
+      value: "muddled" as CocktailMethod,
+      label: t("cocktailDetails.methods.muddled"),
+      description: t("cocktailDetails.methodDescriptions.muddled"),
+    },
+    {
+      value: "layered" as CocktailMethod,
+      label: t("cocktailDetails.methods.layered"),
+      description: t("cocktailDetails.methodDescriptions.layered"),
+    },
+  ]
+}
 
-export const glassTypes: { value: GlassType; label: string }[] = [
-  { value: "highball", label: "Хайбол" },
-  { value: "lowball", label: "Лоуболл (Рокс)" },
-  { value: "martini", label: "Мартини (Коктейльная рюмка)" },
-  { value: "coupe", label: "Купе (Купет)" },
-  { value: "margarita", label: "Маргарита" },
-  { value: "hurricane", label: "Ураган" },
-  { value: "shot", label: "Шот" },
-  { value: "wine", label: "Бокал для вина" },
-  { value: "champagne", label: "Флюте (Шампанское)" },
-  { value: "mug", label: "Кружка" },
-  { value: "collins", label: "Коллинз" },
-  { value: "rocks", label: "Олд-фешн" },
-]
+export function getGlassTypes(t: any) {
+  return [
+    { value: "highball" as GlassType, label: t("cocktailDetails.glassTypes.highball") },
+    { value: "lowball" as GlassType, label: t("cocktailDetails.glassTypes.lowball") },
+    { value: "martini" as GlassType, label: t("cocktailDetails.glassTypes.martini") },
+    { value: "coupe" as GlassType, label: t("cocktailDetails.glassTypes.coupe") },
+    { value: "margarita" as GlassType, label: t("cocktailDetails.glassTypes.margarita") },
+    { value: "hurricane" as GlassType, label: t("cocktailDetails.glassTypes.hurricane") },
+    { value: "shot" as GlassType, label: t("cocktailDetails.glassTypes.shot") },
+    { value: "wine" as GlassType, label: t("cocktailDetails.glassTypes.wine") },
+    { value: "champagne" as GlassType, label: t("cocktailDetails.glassTypes.champagne") },
+    { value: "mug" as GlassType, label: t("cocktailDetails.glassTypes.mug") },
+    { value: "collins" as GlassType, label: t("cocktailDetails.glassTypes.collins") },
+    { value: "rocks" as GlassType, label: t("cocktailDetails.glassTypes.rocks") },
+  ]
+}
 
-export const iceTypes: { value: IceType; label: string }[] = [
-  { value: "cubed", label: "Кубики" },
-  { value: "crushed", label: "Дроблёный" },
-  { value: "sphere", label: "Сфера" },
-  { value: "none", label: "Без льда" },
-]
+export function getIceTypes(t: any) {
+  return [
+    { value: "cubed" as IceType, label: t("cocktailDetails.iceTypes.cubed") },
+    { value: "crushed" as IceType, label: t("cocktailDetails.iceTypes.crushed") },
+    { value: "sphere" as IceType, label: t("cocktailDetails.iceTypes.sphere") },
+    { value: "none" as IceType, label: t("cocktailDetails.iceTypes.none") },
+  ]
+}
 
-export const baseSpirits = [
-  "Водка",
-  "Джин",
-  "Ром белый",
-  "Ром тёмный",
-  "Текила",
-  "Виски",
-  "Бурбон",
-  "Коньяк",
-  "Бренди",
-  "Ликёр",
-  "Абсент",
-  "Другое",
-]
+export function getBaseSpirits(t: any) {
+  return [
+    t("cocktailDetails.baseSpirits.vodka"),
+    t("cocktailDetails.baseSpirits.gin"),
+    t("cocktailDetails.baseSpirits.rumWhite"),
+    t("cocktailDetails.baseSpirits.rumDark"),
+    t("cocktailDetails.baseSpirits.tequila"),
+    t("cocktailDetails.baseSpirits.whiskey"),
+    t("cocktailDetails.baseSpirits.bourbon"),
+    t("cocktailDetails.baseSpirits.cognac"),
+    t("cocktailDetails.baseSpirits.brandy"),
+    t("cocktailDetails.baseSpirits.liqueur"),
+    t("cocktailDetails.baseSpirits.absinthe"),
+    t("cocktailDetails.baseSpirits.other"),
+  ]
+}
 
-export const ibaCategories = [
-  "The Unforgettables",
-  "Contemporary Classics",
-  "New Era Drinks",
-  "Текила",
-  "Водка",
-  "Джин",
-  "Ром",
-  "Виски",
-  "Бренди",
-  "Ликёр",
-]
+export function getIBACategories(t: any) {
+  return [
+    t("cocktailDetails.ibaCategories.unforgettables"),
+    t("cocktailDetails.ibaCategories.contemporaryClassics"),
+    t("cocktailDetails.ibaCategories.newEraDrinks"),
+    t("cocktailDetails.ibaCategories.tequila"),
+    t("cocktailDetails.ibaCategories.vodka"),
+    t("cocktailDetails.ibaCategories.gin"),
+    t("cocktailDetails.ibaCategories.rum"),
+    t("cocktailDetails.ibaCategories.whiskey"),
+    t("cocktailDetails.ibaCategories.brandy"),
+    t("cocktailDetails.ibaCategories.liqueur"),
+  ]
+}
 
-export const cocktailTools = [
-  "Шейкер",
-  "Шейкер Бостон",
-  "Джиггер",
-  "Мадлер",
-  "Барная ложка",
-  "Стрейнер",
-  "Фильтр Хоторн",
-  "Сайзер",
-  "Пестик",
-  "Конус",
-  "Другое",
-]
+export function getCocktailTools(t: any) {
+  return [
+    t("cocktailDetails.tools.shaker"),
+    t("cocktailDetails.tools.bostonShaker"),
+    t("cocktailDetails.tools.jigger"),
+    t("cocktailDetails.tools.muddler"),
+    t("cocktailDetails.tools.barSpoon"),
+    t("cocktailDetails.tools.strainer"),
+    t("cocktailDetails.tools.hawthorneStrainer"),
+    t("cocktailDetails.tools.julepStrainer"),
+    t("cocktailDetails.tools.pestle"),
+    t("cocktailDetails.tools.cone"),
+    t("cocktailDetails.tools.other"),
+  ]
+}
 
-export const garnishOptions = [
-  "Лимон",
-  "Лайм",
-  "Апельсин",
-  "Грейпфрут",
-  "Мята",
-  "Базилик",
-  "Оливки",
-  "Вишня",
-  "Ананас",
-  "Клубника",
-  "Сахарный ободок",
-  "Соль",
-  "Цедра лимона",
-  "Цедра апельсина",
-  "Огурец",
-  "Другое",
-]
+export function getGarnishOptions(t: any) {
+  return [
+    t("cocktailDetails.garnish.lemon"),
+    t("cocktailDetails.garnish.lime"),
+    t("cocktailDetails.garnish.orange"),
+    t("cocktailDetails.garnish.grapefruit"),
+    t("cocktailDetails.garnish.mint"),
+    t("cocktailDetails.garnish.basil"),
+    t("cocktailDetails.garnish.olives"),
+    t("cocktailDetails.garnish.cherry"),
+    t("cocktailDetails.garnish.pineapple"),
+    t("cocktailDetails.garnish.strawberry"),
+    t("cocktailDetails.garnish.sugarRim"),
+    t("cocktailDetails.garnish.salt"),
+    t("cocktailDetails.garnish.lemonZest"),
+    t("cocktailDetails.garnish.orangeZest"),
+    t("cocktailDetails.garnish.cucumber"),
+    t("cocktailDetails.garnish.other"),
+  ]
+}
 
 // ============================================
 // Интерфейсы
@@ -118,6 +157,8 @@ interface CocktailRecipeFormProps {
 // ============================================
 
 export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormProps) {
+  const t = useTranslations("recipes")
+
   const updateField = <K extends keyof CocktailRecipeMetadata>(
     field: K,
     value: CocktailRecipeMetadata[K]
@@ -140,12 +181,12 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Параметры коктейля</CardTitle>
+        <CardTitle className="text-base">{t("cocktailDetails.title")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Алкогольный / Безалкогольный */}
         <div className="space-y-2">
-          <Label>Тип</Label>
+          <Label>{t("fields.drinkType")}</Label>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -156,7 +197,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                   : "bg-background hover:bg-accent"
               }`}
             >
-              🍸 Алкогольный
+              🍸 {t("cocktailDetails.alcoholic")}
             </button>
             <button
               type="button"
@@ -167,7 +208,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                   : "bg-background hover:bg-accent"
               }`}
             >
-              🍹 Безалкогольный
+              🍹 {t("cocktailDetails.nonAlcoholic")}
             </button>
           </div>
         </div>
@@ -176,7 +217,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
         {metadata.is_alcoholic && (
           <>
             <div className="space-y-2">
-              <Label htmlFor="alcohol_percent">Крепость (%)</Label>
+              <Label htmlFor="alcohol_percent">{t("fields.alcoholPercent")}</Label>
               <Input
                 id="alcohol_percent"
                 type="number"
@@ -192,7 +233,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
             {/* Базовый спирт */}
             <div className="space-y-2">
-              <Label>Базовый спирт</Label>
+              <Label>{t("fields.baseSpirit")}</Label>
               <div className="relative">
                 <select
                   className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -205,9 +246,9 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                     appearance: "none",
                   }}
                 >
-                  <option value="">Не указан</option>
-                  {baseSpirits.map((s) => (
-                    <option key={s} value={s}>
+                  <option value="">{t("forms.notSpecified")}</option>
+                  {getBaseSpirits(t).map((s, index) => (
+                    <option key={index} value={s}>
                       {s}
                     </option>
                   ))}
@@ -218,7 +259,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
             {/* IBA категория */}
             <div className="space-y-2">
-              <Label>Категория IBA</Label>
+              <Label>{t("fields.ibaCategory")}</Label>
               <div className="relative">
                 <select
                   className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -231,9 +272,9 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                     appearance: "none",
                   }}
                 >
-                  <option value="">Не указана</option>
-                  {ibaCategories.map((c) => (
-                    <option key={c} value={c}>
+                  <option value="">{t("forms.notSpecified")}</option>
+                  {getIBACategories(t).map((c, index) => (
+                    <option key={index} value={c}>
                       {c}
                     </option>
                   ))}
@@ -246,9 +287,9 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
         {/* Метод приготовления */}
         <div className="space-y-2">
-          <Label>Метод приготовления</Label>
+          <Label>{t("fields.cocktailMethod")}</Label>
           <div className="grid grid-cols-3 gap-2">
-            {cocktailMethods.map((cm) => (
+            {getCocktailMethods(t).map((cm) => (
               <button
                 key={cm.value}
                 type="button"
@@ -268,7 +309,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
         {/* Бокал */}
         <div className="space-y-2">
-          <Label>Тип бокала</Label>
+          <Label>{t("fields.glassType")}</Label>
           <div className="relative">
             <select
               className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -283,8 +324,8 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                 appearance: "none",
               }}
             >
-              <option value="">Не указан</option>
-              {glassTypes.map((gt) => (
+              <option value="">{t("forms.notSpecified")}</option>
+              {getGlassTypes(t).map((gt) => (
                 <option key={gt.value} value={gt.value}>
                   {gt.label}
                 </option>
@@ -296,9 +337,9 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
         {/* Тип льда */}
         <div className="space-y-2">
-          <Label>Лёд</Label>
+          <Label>{t("fields.iceType")}</Label>
           <div className="grid grid-cols-4 gap-2">
-            {iceTypes.map((it) => (
+            {getIceTypes(t).map((it) => (
               <button
                 key={it.value}
                 type="button"
@@ -317,10 +358,10 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
         {/* Цвет */}
         <div className="space-y-2">
-          <Label htmlFor="color">Цвет напитка</Label>
+          <Label htmlFor="color">{t("fields.color")}</Label>
           <Input
             id="color"
-            placeholder="Оранжевый, Золотистый..."
+            placeholder={t("placeholders.color")}
             value={metadata.color || ""}
             onChange={(e) => updateField("color", e.target.value || undefined)}
           />
@@ -328,11 +369,11 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
         {/* Гарнир */}
         <div className="space-y-2">
-          <Label>Гарнир / Украшение</Label>
+          <Label>{t("fields.garnish")}</Label>
           <div className="grid grid-cols-4 gap-2">
-            {garnishOptions.map((g) => (
+            {getGarnishOptions(t).map((g, index) => (
               <button
-                key={g}
+                key={index}
                 type="button"
                 onClick={() => toggleArrayItem("garnish", g)}
                 className={`px-2 py-1.5 text-xs rounded-lg border transition-colors ${
@@ -349,11 +390,11 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
 
         {/* Инструменты */}
         <div className="space-y-2">
-          <Label>Инструменты</Label>
+          <Label>{t("fields.tools")}</Label>
           <div className="grid grid-cols-3 gap-2">
-            {cocktailTools.map((t) => (
+            {getCocktailTools(t).map((t, index) => (
               <button
-                key={t}
+                key={index}
                 type="button"
                 onClick={() => toggleArrayItem("tools", t)}
                 className={`px-2 py-1.5 text-xs rounded-lg border transition-colors ${

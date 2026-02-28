@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Battery, Brain } from "@/lib/icons"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -8,23 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, createEntity } from "@/lib/db"
 import type { MoodType } from "@/types"
-
-const moodConfig: Record<MoodType, { label: string; emoji: string }> = {
-  great: { label: "Отлично", emoji: "😄" },
-  good: { label: "Хорошо", emoji: "🙂" },
-  okay: { label: "Нормально", emoji: "😐" },
-  bad: { label: "Плохо", emoji: "😕" },
-  terrible: { label: "Ужасно", emoji: "😢" },
-}
-
-const activityOptions = [
-  { id: "work", label: "Работа" },
-  { id: "exercise", label: "Спорт" },
-  { id: "social", label: "Общение" },
-  { id: "hobby", label: "Хобби" },
-  { id: "rest", label: "Отдых" },
-  { id: "walk", label: "Прогулка" },
-]
 
 interface QuickMoodDialogProps {
   open: boolean
@@ -41,6 +25,27 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
     activities: [] as string[],
     notes: "",
   })
+
+  const t = useTranslations("mood")
+  const tCommon = useTranslations("common")
+  const tLoading = useTranslations("loading")
+
+  const moodConfig: Record<MoodType, { label: string; emoji: string }> = {
+    great: { label: t("moods.great"), emoji: "😄" },
+    good: { label: t("moods.good"), emoji: "🙂" },
+    okay: { label: t("moods.okay"), emoji: "😐" },
+    bad: { label: t("moods.bad"), emoji: "😕" },
+    terrible: { label: t("moods.terrible"), emoji: "😢" },
+  }
+
+  const activityOptions = [
+    { id: "work", label: t("activities.work") },
+    { id: "exercise", label: t("activities.exercise") },
+    { id: "social", label: t("activities.social") },
+    { id: "hobby", label: t("activities.hobby") },
+    { id: "rest", label: t("activities.rest") },
+    { id: "walk", label: t("activities.walk") },
+  ]
 
   async function handleSave() {
     setIsSaving(true)
@@ -85,13 +90,13 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-center">Как вы себя чувствуете?</DialogTitle>
+          <DialogTitle className="text-center">{t("dialog.title")}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
           {/* Mood selection */}
           <div className="space-y-2">
-            <Label className="text-center block">Настроение</Label>
+            <Label className="text-center block">{t("dialog.mood")}</Label>
             <div className="flex justify-between gap-1">
               {(Object.keys(moodConfig) as MoodType[]).map((mood) => (
                 <Button
@@ -110,7 +115,7 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
           {/* Energy */}
           <div className="space-y-2">
             <Label className="flex items-center gap-2 text-sm">
-              <Battery className="h-4 w-4" /> Энергия
+              <Battery className="h-4 w-4" /> {t("dialog.energy")}
             </Label>
             <div className="flex gap-1">
               {([1, 2, 3, 4, 5] as const).map((e) => (
@@ -129,7 +134,7 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
           {/* Stress */}
           <div className="space-y-2">
             <Label className="flex items-center gap-2 text-sm">
-              <Brain className="h-4 w-4" /> Стресс
+              <Brain className="h-4 w-4" /> {t("dialog.stress")}
             </Label>
             <div className="flex gap-1">
               {([1, 2, 3, 4, 5] as const).map((s) => (
@@ -147,7 +152,7 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
 
           {/* Activities */}
           <div className="space-y-2">
-            <Label className="text-sm">Активности</Label>
+            <Label className="text-sm">{t("dialog.activities")}</Label>
             <div className="flex flex-wrap gap-1">
               {activityOptions.map((activity) => (
                 <Button
@@ -166,13 +171,13 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
           {/* Notes */}
           <div className="space-y-2">
             <Label htmlFor="quick-notes" className="text-sm">
-              Заметки
+              {t("dialog.notes")}
             </Label>
             <Input
               id="quick-notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Что повлияло?"
+              placeholder={t("dialog.notesPlaceholder")}
               className="h-9"
             />
           </div>
@@ -181,10 +186,10 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
         {/* Actions */}
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
-            Отмена
+            {tCommon("cancel")}
           </Button>
           <Button onClick={handleSave} disabled={isSaving} className="flex-1">
-            {isSaving ? "Сохранение..." : "Сохранить"}
+            {isSaving ? tLoading("saving") : tCommon("save")}
           </Button>
         </div>
       </DialogContent>

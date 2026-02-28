@@ -32,7 +32,8 @@ const measurementTypes: {
   { type: "biceps", label: "biceps", unit: "см", icon: Ruler },
   { type: "thigh", label: "thigh", unit: "см", icon: Ruler },
   { type: "neck", label: "neck", unit: "см", icon: Ruler },
-  { type: "body_fat", label: "bodyFat", unit: "%", icon: TrendingDown },
+  { type: "body_fat", label: "body_fat", unit: "%", icon: TrendingDown },
+  { type: "muscle_mass", label: "muscle_mass", unit: "%", icon: TrendingUp },
 ]
 
 export default function BodyPage() {

@@ -264,7 +264,7 @@ export default function EditLogPage() {
           title = "Финансовая операция"
         }
       } else if (type === "workout") {
-        const subcategoryLabel = getSubcategoryLabel(selectedWorkoutCategory, workoutSubcategory)
+        const subcategoryLabel = getSubcategoryLabel(t, selectedWorkoutCategory, workoutSubcategory)
         if (subcategoryLabel) {
           title = `${selectedWorkoutCategory} (${subcategoryLabel})`
         } else {

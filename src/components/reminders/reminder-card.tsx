@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "@/lib/navigation"
+import { useTranslations } from "next-intl"
 import { useLocale } from "next-intl"
 import {
   Bell,
@@ -19,10 +20,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { db, updateEntity } from "@/lib/db"
-import { reminderTypesConfig, priorityConfig } from "./reminder-form"
+import { getReminderTypesConfig, getPriorityConfig, getDayNames } from "./reminder-form"
 import type { Reminder } from "@/types"
-
-const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 
 interface ReminderCardProps {
   reminder: Reminder
@@ -34,6 +33,8 @@ interface ReminderCardProps {
 export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: ReminderCardProps) {
   const router = useRouter()
   const locale = useLocale()
+  const t = useTranslations("reminders")
+  const tCommon = useTranslations("common")
   const [completedToday, setCompletedToday] = useState(0)
 
   // Максимальное количество выполнений = основное время + дополнительные времена
@@ -57,8 +58,8 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
     loadTodayCompletions()
   }, [reminder.id, reminder.last_completed_at])
 
-  const typeConfig = reminderTypesConfig.find((t) => t.type === reminder.type)
-  const priorityConf = priorityConfig.find((p) => p.value === reminder.priority)
+  const typeConfig = getReminderTypesConfig(t).find((t) => t.type === reminder.type)
+  const priorityConf = getPriorityConfig(t).find((p) => p.value === reminder.priority)
 
   // Формируем отображение повторяемости
   const getRepeatDisplay = () => {
@@ -66,30 +67,24 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
 
     switch (repeatType) {
       case "none":
-        return "Один раз"
+        return t("repeatTypes.none")
       case "daily":
-        return "Каждый день"
+        return t("repeatTypes.daily")
       case "weekly":
-        if (reminder.days.length === 7) return "Каждый день"
+        if (reminder.days.length === 7) return t("repeatTypes.daily")
         if (reminder.days.length === 5 && !reminder.days.includes(0) && !reminder.days.includes(6))
-          return "По будням"
+          return t("form.weekdays")
         if (reminder.days.length === 2 && reminder.days.includes(0) && reminder.days.includes(6))
-          return "По выходным"
-        return reminder.days.map((d) => dayNames[d]).join(", ")
+          return t("form.weekends")
+        return reminder.days.map((d) => getDayNames(tCommon)[d]).join(", ")
       case "monthly":
-        return `Каждое ${(reminder as any).monthly_day || 1}-е число`
+        return t("repeatTypes.monthly")
       case "custom":
         const interval = reminder.repeat_interval || 1
         const unit = (reminder as any).custom_unit || "days"
-        const unitLabels: Record<string, string> = {
-          hours: interval === 1 ? "час" : interval <= 4 ? "часа" : "часов",
-          days: interval === 1 ? "день" : interval <= 4 ? "дня" : "дней",
-          weeks: interval === 1 ? "неделю" : "недель",
-          months: interval === 1 ? "месяц" : interval <= 4 ? "месяца" : "месяцев",
-        }
-        return `Каждые ${interval} ${unitLabels[unit]}`
+        return t("repeatTypes.custom")
       default:
-        return reminder.days.map((d) => dayNames[d]).join(", ")
+        return reminder.days.map((d) => getDayNames(tCommon)[d]).join(", ")
     }
   }
 
@@ -222,18 +217,18 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
             <div className="flex flex-wrap gap-1 mt-2">
               {reminder.persistent && (
                 <Badge variant="outline" className="text-xs">
-                  Назойливый
+                  {t("form.persistent")}
                 </Badge>
               )}
               {isOverdue() && (
                 <Badge variant="destructive" className="text-xs">
-                  Курс завершён
+                  {t("reminderCard.overdue")}
                 </Badge>
               )}
               {isLimitReached && (
                 <Badge variant="default" className="text-xs bg-green-500">
                   <CheckCircle2 className="h-3 w-3 mr-1" />
-                  Выполнено
+                  {t("reminderCard.completed")}
                 </Badge>
               )}
             </div>
@@ -246,8 +241,12 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               size="icon"
               onClick={() => onComplete(reminder)}
               disabled={isLimitReached}
-              title={isLimitReached ? "Лимит выполнений достигнут" : "Выполнено"}
-              aria-label={isLimitReached ? "Лимит выполнений достигнут" : "Выполнено"}
+              title={
+                isLimitReached ? t("reminderCard.limitReached") : t("reminderCard.completedAction")
+              }
+              aria-label={
+                isLimitReached ? t("reminderCard.limitReached") : t("reminderCard.completedAction")
+              }
             >
               <Check
                 className={`h-4 w-4 ${isLimitReached ? "text-muted-foreground" : "text-green-500"}`}
@@ -257,8 +256,8 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               variant="ghost"
               size="icon"
               onClick={toggleActive}
-              title={reminder.is_active ? "Отключить" : "Включить"}
-              aria-label={reminder.is_active ? "Отключить напоминание" : "Включить напоминание"}
+              title={reminder.is_active ? t("form.courseEnd") : t("form.courseStart")}
+              aria-label={reminder.is_active ? t("form.courseEnd") : t("form.courseStart")}
             >
               {reminder.is_active ? (
                 <Bell className="h-4 w-4 text-blue-500" />
@@ -270,8 +269,8 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               variant="ghost"
               size="icon"
               onClick={() => onEdit(reminder)}
-              title="Настройки"
-              aria-label="Настройки напоминания"
+              title={t("form.notificationSettings")}
+              aria-label={t("form.notificationSettings")}
             >
               <Settings className="h-4 w-4" />
             </Button>
