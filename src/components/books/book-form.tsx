@@ -7,10 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { NativeSelect } from "@/components/ui/native-select"
-import { Badge } from "@/components/ui/badge"
-import { X, Plus } from "@/lib/icons"
-import { Button } from "@/components/ui/button"
-import { MultiCombobox, type ComboboxOption } from "@/components/ui/multi-combobox"
+import { Combobox } from "@/components/ui/combobox"
+import { TagManager } from "@/components/shared/forms"
 import type { Book, BookFormat, Author, Genre } from "@/types"
 
 // Форматы книг (значения)
@@ -24,35 +22,21 @@ interface BookFormProps {
   data?: Partial<Book>
   authors: Author[]
   genres: Genre[]
-  selectedAuthorIds: string[]
-  selectedGenreIds: string[]
-  onAuthorsChange: (selectedIds: string[], newAuthors?: string[]) => void
-  onGenresChange: (selectedIds: string[], newGenres?: string[]) => void
   onChange: (data: Partial<Book>) => void
 }
 
-export function BookForm({
-  data,
-  authors,
-  genres,
-  selectedAuthorIds,
-  selectedGenreIds,
-  onAuthorsChange,
-  onGenresChange,
-  onChange,
-}: BookFormProps) {
+export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
   const t = useTranslations("books")
-  const [newTagName, setNewTagName] = useState("")
   const [tags, setTags] = useState<string[]>(data?.tags || [])
 
   // Преобразуем авторов в опции для combobox
-  const authorOptions: ComboboxOption[] = authors.map((author) => ({
+  const authorOptions = authors.map((author) => ({
     id: author.id,
     label: author.name,
   }))
 
   // Преобразуем жанры в опции для combobox
-  const genreOptions: ComboboxOption[] = genres.map((genre) => ({
+  const genreOptions = genres.map((genre) => ({
     id: genre.id,
     label: genre.name,
   }))
@@ -61,19 +45,35 @@ export function BookForm({
     onChange({ ...data, [field]: value })
   }
 
-  const addTag = () => {
-    if (newTagName.trim() && !tags.includes(newTagName.trim())) {
-      const newTags = [...tags, newTagName.trim()]
-      setTags(newTags)
-      onChange({ ...data, tags: newTags })
-      setNewTagName("")
-    }
-  }
-
-  const removeTag = (tag: string) => {
-    const newTags = tags.filter((t) => t !== tag)
+  const handleTagsChange = (newTags: string[]) => {
     setTags(newTags)
     onChange({ ...data, tags: newTags })
+  }
+
+  // Получаем выбранные ID из существующих данных
+  const selectedAuthorIds = data?.authors?.map((a) => a.id) || []
+  const selectedGenreIds = data?.genres?.map((g) => g.id) || []
+
+  const handleAuthorsChange = (value: string | string[]) => {
+    const ids = Array.isArray(value) ? value : [value]
+    // Находим полные объекты авторов по ID и преобразуем в BookAuthorWithDetails
+    const selectedAuthors = authors
+      .filter((a) => ids.includes(a.id))
+      .map((a) => ({
+        ...a,
+        book_id: data?.id || "",
+        author_id: a.id,
+        role: "author",
+        order: 0,
+      })) as any // Приводим к нужному типу
+    onChange({ ...data, authors: selectedAuthors })
+  }
+
+  const handleGenresChange = (value: string | string[]) => {
+    const ids = Array.isArray(value) ? value : [value]
+    // Находим полные объекты жанров по ID
+    const selectedGenres = genres.filter((g) => ids.includes(g.id))
+    onChange({ ...data, genres: selectedGenres })
   }
 
   return (
@@ -123,13 +123,14 @@ export function BookForm({
           <CardTitle>{t("forms.authorAndEdition")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <MultiCombobox
+          <Combobox
             label={t("fields.authors")}
             options={authorOptions}
-            selectedIds={selectedAuthorIds}
-            onChange={onAuthorsChange}
-            placeholder={t("fields.authors")}
-            addPlaceholder={t("fields.newAuthor")}
+            value={selectedAuthorIds}
+            onChange={handleAuthorsChange}
+            mode="multiple"
+            searchable={true}
+            allowCustom={true}
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -285,50 +286,32 @@ export function BookForm({
           <CardTitle>{t("forms.genresAndTags")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <MultiCombobox
-            label={t("fields.genres")}
-            options={genreOptions}
-            selectedIds={selectedGenreIds}
-            onChange={onGenresChange}
-            placeholder={t("fields.genres")}
-            addPlaceholder={t("fields.newGenre")}
+          <Combobox
+            label={t("fields.authors")}
+            options={authorOptions}
+            value={selectedAuthorIds}
+            onChange={handleAuthorsChange}
+            mode="multiple"
+            searchable={true}
+            allowCustom={true}
           />
 
-          <div className="space-y-2">
-            <Label>{t("fields.tags")}</Label>
-            <div className="flex gap-2">
-              <Input
-                placeholder={t("fields.addTag")}
-                value={newTagName}
-                onChange={(e) => setNewTagName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault()
-                    addTag()
-                  }
-                }}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={addTag}
-                aria-label={t("fields.addTag")}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {tags.map((tag) => (
-                  <Badge key={tag} variant="outline" className="gap-1">
-                    {tag}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
+          <Combobox
+            label={t("fields.genres")}
+            options={genreOptions}
+            value={selectedGenreIds}
+            onChange={handleGenresChange}
+            mode="multiple"
+            searchable={true}
+            allowCustom={true}
+          />
+
+          <TagManager
+            tags={tags}
+            onChange={handleTagsChange}
+            label={t("fields.tags")}
+            placeholder={t("fields.addTag")}
+          />
         </CardContent>
       </Card>
 

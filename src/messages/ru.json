@@ -118,6 +118,8 @@
       "drink": "Напиток",
       "cocktail": "Коктейль"
     },
+    "items": "вещей",
+    "noItems": "Нет вещей",
     "pwa": {
       "installTitle": "Установить Life OS",
       "installDescription": "Работает офлайн и быстрее запускается",
@@ -163,6 +165,156 @@
     "food": "Питание",
     "workout": "Тренировка",
     "finance": "Финансы"
+  },
+  "food": {
+    "productCategories": {
+      "dairy": "Молочные продукты",
+      "meat": "Мясо",
+      "fish": "Рыба",
+      "vegetables": "Овощи",
+      "fruits": "Фрукты",
+      "berries": "Ягоды",
+      "grainsAndLegumes": "Крупы и бобовые",
+      "breadAndBakery": "Хлеб и выпечка",
+      "eggs": "Яйца",
+      "nutsAndSeeds": "Орехи и семена",
+      "oilsAndFats": "Масла и жиры",
+      "drinks": "Напитки",
+      "sweets": "Сладости",
+      "groceries": "Бакалея"
+    },
+    "products": {
+      "dairy": {
+        "milk32": "Молоко 3.2%",
+        "milk25": "Молоко 2.5%",
+        "milk15": "Молоко 1.5%",
+        "hardCheese": "Твёрдый сыр",
+        "softCheese": "Мягкий сыр",
+        "cottageCheese0": "Творог 0%",
+        "cottageCheese5": "Творог 5%",
+        "cottageCheese9": "Творог 9%",
+        "sourCream15": "Сметана 15%",
+        "sourCream20": "Сметана 20%",
+        "kefir25": "Кефир 2.5%",
+        "kefir32": "Кефир 3.2%",
+        "naturalYogurt": "Натуральный йогурт",
+        "greekYogurt": "Греческий йогурт",
+        "butter825": "Масло сливочное 82.5%"
+      },
+      "meat": {
+        "beefFillet": "Говяжья вырезка",
+        "beefBrisket": "Говяжья грудинка",
+        "beefMince": "Говяжий фарш",
+        "porkNeck": "Свиная шея",
+        "porkLoin": "Свиная корейка",
+        "chickenBreast": "Куриная грудка",
+        "chickenThigh": "Куриное бедро",
+        "chickenMince": "Куриный фарш",
+        "turkeyBreast": "Индейка грудка",
+        "turkeyThigh": "Индейка бедро"
+      },
+      "fish": {
+        "troutFresh": "Форель свежая",
+        "troutLightlySalted": "Форель слабосоленая",
+        "salmonFresh": "Лосось свежий",
+        "salmonLightlySalted": "Лосось слабосоленый",
+        "codFresh": "Треска свежая",
+        "herringSalted": "Сельдь соленая",
+        "mackerelFresh": "Скумбрия свежая",
+        "mackerelSmoked": "Скумбрия копченая",
+        "tunaCanned": "Тунец консервированный"
+      },
+      "vegetables": {
+        "potato": "Картофель",
+        "carrot": "Морковь",
+        "onion": "Лук репчатый",
+        "cucumber": "Огурец",
+        "tomato": "Помидор",
+        "whiteCabbage": "Капуста белокочанная",
+        "pepper": "Перец болгарский",
+        "garlic": "Чеснок",
+        "zucchini": "Кабачок",
+        "eggplant": "Баклажан",
+        "beet": "Свекла"
+      },
+      "fruits": {
+        "apple": "Яблоко",
+        "banana": "Банан",
+        "orange": "Апельсин",
+        "tangerine": "Мандарин",
+        "pear": "Груша",
+        "kiwi": "Киви",
+        "grape": "Виноград",
+        "pineapple": "Ананас"
+      },
+      "berries": {
+        "strawberry": "Клубника",
+        "raspberry": "Малина",
+        "blueberry": "Черника",
+        "blackcurrant": "Смородина черная",
+        "cherry": "Вишня",
+        "cranberry": "Клюква"
+      },
+      "grains": {
+        "riceWhiteDry": "Рис белый сухой",
+        "riceBrownDry": "Рис бурый сухой",
+        "buckwheatDry": "Гречка сухая",
+        "oatmealDry": "Овсянка сухая",
+        "semolinaDry": "Манка сухая",
+        "milletDry": "Пшено сухое",
+        "lentilsDry": "Чечевица сухая",
+        "beansDry": "Фасоль сухая",
+        "peasDry": "Горох сухой"
+      },
+      "bakery": {
+        "whiteBread": "Хлеб белый",
+        "blackBread": "Хлеб черный",
+        "slicedLoaf": "Хлеб нарезной",
+        "borodinskyBread": "Хлеб бородинский",
+        "armenianLavash": "Лаваш армянский"
+      },
+      "eggs": {
+        "chickenEggOnePiece": "Яйцо куриное 1 шт",
+        "eggWhite": "Яичный белок",
+        "eggYolk": "Яичный желток"
+      },
+      "nuts": {
+        "walnut": "Грецкий орех",
+        "almond": "Миндаль",
+        "hazelnut": "Фундук",
+        "cashew": "Кешью",
+        "peanut": "Арахис",
+        "sunflowerSeeds": "Семечки подсолнечника"
+      },
+      "fats": {
+        "sunflowerOil": "Масло подсолнечное",
+        "oliveOil": "Масло оливковое",
+        "coconutOil": "Масло кокосовое",
+        "mayonnaise": "Майонез"
+      },
+      "drinks": {
+        "teaWithoutSugar": "Чай без сахара",
+        "blackCoffee": "Кофе черный",
+        "orangeJuice": "Сок апельсиновый",
+        "appleJuice": "Сок яблочный",
+        "tomatoJuice": "Сок томатный",
+        "compote": "Компот"
+      },
+      "sweets": {
+        "sugar": "Сахар",
+        "honey": "Мёд",
+        "milkChocolate": "Шоколад молочный",
+        "darkChocolate": "Шоколад темный",
+        "cookies": "Печенье",
+        "candy": "Конфеты"
+      },
+      "groceries": {
+        "pastaDry": "Макароны сухие",
+        "wheatFlour": "Мука пшеничная",
+        "ryeFlour": "Мука ржаная",
+        "starch": "Крахмал"
+      }
+    }
   },
   "language": {
     "en": "Английский",
@@ -810,6 +962,25 @@
       "empty": "Нет шагов. Нажмите «Добавить шаг» для создания.",
       "noInstructions": "Нет инструкций"
     },
+    "forms": {
+      "main": "Основное",
+      "additional": "Дополнительно",
+      "ingredients": "Ингредиенты",
+      "steps": "Шаги",
+      "recipeType": "Тип рецепта",
+      "dishParameters": "Параметры блюда",
+      "drinkParameters": "Параметры напитка",
+      "cocktailParameters": "Параметры коктейля",
+      "selectPlaceholder": "Выберите...",
+      "notSpecified": "Не указано",
+      "steps": {
+        "addStep": "Добавить шаг",
+        "stepText": "Описание шага",
+        "timer": "Таймер (мин)",
+        "minutes": "минут",
+        "empty": "Нет шагов. Нажмите «Добавить шаг» для создания."
+      }
+    },
     "common": {
       "loading": "Загрузка...",
       "back": "Назад",
@@ -1151,6 +1322,17 @@
           "blackcurrant": "Смородина чёрная",
           "cherry": "Вишня",
           "cranberry": "Клюква"
+        },
+        "grains": {
+          "riceWhiteDry": "Рис белый сухой",
+          "riceBrownDry": "Рис бурый сухой",
+          "buckwheatDry": "Гречка сухая",
+          "oatmealDry": "Овсянка сухая",
+          "semolinaDry": "Манка сухая",
+          "milletDry": "Пшено сухое",
+          "lentilsDry": "Чечевица сухая",
+          "beansDry": "Фасоль сухая",
+          "peasDry": "Горох сухой"
         },
         "grainsAndLegumes": {
           "riceWhiteDry": "Рис белый сухой",
@@ -1528,7 +1710,7 @@
     },
     "priorities": {
       "low": "Низкий",
-      "medium": "Средний",
+      "medium": "Средни��",
       "high": "Высокий",
       "critical": "Критический"
     },
@@ -1557,7 +1739,7 @@
       "total": "Всего"
     },
     "filters": {
-      "all": "Все",
+      "all": "В��е",
       "today": "Сегодня",
       "active": "Ак��ивные",
       "completed": "Выполненные",

@@ -1,8 +1,8 @@
 "use client"
 
-import { Book } from "@/lib/icons"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Book, BookOpen, CheckCircle, Bookmark } from "@/lib/icons"
 import { useTranslations } from "next-intl"
+import { StatsGrid } from "@/components/shared"
 import { useSettings } from "./settings-context"
 
 export function BooksManager() {
@@ -10,32 +10,17 @@ export function BooksManager() {
   const t = useTranslations("settings")
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Book className="h-5 w-5" />
-          {t("books.title")}
-        </CardTitle>
-        <CardDescription>{t("books.description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-3 gap-4 text-center mb-4">
-          <div className="p-3 rounded-xl bg-muted">
-            <div className="text-2xl font-bold">{stats.books}</div>
-            <div className="text-xs text-muted-foreground">{t("books.totalBooks")}</div>
-          </div>
-          <div className="p-3 rounded-xl bg-muted">
-            <div className="text-2xl font-bold">{stats.booksReading}</div>
-            <div className="text-xs text-muted-foreground">{t("books.reading")}</div>
-          </div>
-          <div className="p-3 rounded-xl bg-muted">
-            <div className="text-2xl font-bold">{stats.booksCompleted}</div>
-            <div className="text-xs text-muted-foreground">{t("books.completed")}</div>
-          </div>
-        </div>
-
-        <p className="text-sm text-muted-foreground">{t("books.comingSoon")}</p>
-      </CardContent>
-    </Card>
+    <StatsGrid
+      title={t("books.title")}
+      description={t("books.description")}
+      icon={Book}
+      stats={[
+        { value: stats.books, label: t("books.totalBooks"), icon: Book },
+        { value: stats.booksReading, label: t("books.reading"), icon: BookOpen },
+        { value: stats.booksCompleted, label: t("books.completed"), icon: CheckCircle },
+        { value: stats.booksPlanned, label: t("books.planned"), icon: Bookmark },
+      ]}
+      columns={4}
+    />
   )
 }

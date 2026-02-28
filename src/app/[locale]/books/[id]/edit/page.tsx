@@ -320,16 +320,7 @@ export default function EditBookPage() {
           className="space-y-6"
         >
           {/* Метаданные книги */}
-          <BookForm
-            data={bookData}
-            authors={authors}
-            genres={genres}
-            selectedAuthorIds={selectedAuthorIds}
-            selectedGenreIds={selectedGenreIds}
-            onAuthorsChange={handleAuthorsChange}
-            onGenresChange={handleGenresChange}
-            onChange={setBookData}
-          />
+          <BookForm data={bookData} authors={authors} genres={genres} onChange={setBookData} />
 
           {/* Пользовательские данные */}
           <UserBookForm

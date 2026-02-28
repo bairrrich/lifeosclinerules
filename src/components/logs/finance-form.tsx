@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ComboboxSelect } from "./combobox-select"
 import { useTranslations } from "next-intl"
+import { DependentSelect } from "@/components/shared/forms"
 import type { FinanceType, Account } from "@/types"
 
 // ============================================
@@ -313,42 +314,44 @@ export function FinanceForm({
       )}
 
       {/* Зависимые выпадающие списки */}
-      <ComboboxSelect
-        label={t("finance.category")}
-        options={currentFinanceCategories}
-        value={financeCategory}
-        onChange={(value) => {
-          setFinanceCategory(value)
-          setFinanceSubcategory("")
-          setFinanceItem("")
-          setFinanceSupplier("")
-        }}
-        placeholder={t("finance.category")}
+      <DependentSelect
+        levels={[
+          {
+            label: t("finance.category"),
+            options: currentFinanceCategories,
+            value: financeCategory,
+            onChange: (value) => {
+              setFinanceCategory(value)
+              setFinanceSubcategory("")
+              setFinanceItem("")
+              setFinanceSupplier("")
+            },
+            placeholder: t("finance.category"),
+          },
+          {
+            label: t("finance.subcategory"),
+            options: currentSubcategories,
+            value: financeSubcategory,
+            onChange: (value) => {
+              setFinanceSubcategory(value)
+              setFinanceItem("")
+            },
+            placeholder: t("finance.subcategory"),
+          },
+          {
+            label: t("finance.item"),
+            options: currentItems,
+            value: financeItem,
+            onChange: (value) => {
+              setFinanceItem(value)
+              setValue("title", value)
+            },
+            placeholder: t("finance.item"),
+          },
+        ]}
       />
 
-      <ComboboxSelect
-        label={t("finance.subcategory")}
-        options={currentSubcategories}
-        value={financeSubcategory}
-        onChange={(value) => {
-          setFinanceSubcategory(value)
-          setFinanceItem("")
-        }}
-        placeholder={t("finance.subcategory")}
-      />
-
-      {currentItems.length > 0 ? (
-        <ComboboxSelect
-          label={t("finance.item")}
-          options={currentItems}
-          value={financeItem}
-          onChange={(value) => {
-            setFinanceItem(value)
-            setValue("title", value)
-          }}
-          placeholder={t("finance.item")}
-        />
-      ) : (
+      {currentItems.length === 0 && !financeItem && (
         <div className="space-y-2">
           <Label htmlFor="title">{t("finance.item")}</Label>
           <Input id="title" placeholder={t("finance.item")} {...register("title")} />

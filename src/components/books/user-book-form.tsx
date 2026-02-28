@@ -1,12 +1,12 @@
 "use client"
 
 import { useTranslations, useLocale } from "next-intl"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { FormSection } from "@/components/shared/forms"
 import type { UserBook, ReadingStatus, BookFormat } from "@/types"
 
 // Локализованные placeholder для дат
@@ -53,11 +53,8 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
   return (
     <>
       {/* Статус и прогресс */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("userBook.status")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <FormSection title={t("userBook.status")}>
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label>{t("userBook.status")}</Label>
             <Tabs
@@ -166,15 +163,12 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
       {/* Оценка и заметки */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("userBook.rating")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <FormSection title={t("userBook.rating")}>
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="rating">{t("userBook.rating")}</Label>
             <div className="flex items-center gap-2">
@@ -205,15 +199,12 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               className="min-h-[100px]"
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
 
       {/* Владение */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("userBook.isOwned")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <FormSection title={t("userBook.isOwned")}>
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -267,8 +258,8 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               }
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </FormSection>
     </>
   )
 }

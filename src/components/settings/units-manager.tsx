@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { useTranslations } from "next-intl"
-import { Ruler, Plus, Edit2, Trash2 } from "@/lib/icons"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Ruler } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { NativeSelect } from "@/components/ui/native-select"
+import { Button } from "@/components/ui/button"
+import { CrudManager } from "@/components/shared"
 import { useSettings, useUnitTypes } from "./settings-context"
 import type { Unit } from "@/types"
 
@@ -16,49 +17,6 @@ export function UnitsManager() {
   const unitTypes = useUnitTypes()
   const { units, editingUnit, setEditingUnit, createUnit, updateUnitData, deleteUnitData } =
     useSettings()
-
-  const [newUnit, setNewUnit] = useState({
-    name: "",
-    abbreviation: "",
-    type: "weight" as Unit["type"],
-  })
-
-  const handleCreate = async () => {
-    if (!newUnit.name.trim() || !newUnit.abbreviation.trim()) return
-    await createUnit({
-      name: newUnit.name,
-      abbreviation: newUnit.abbreviation,
-      type: newUnit.type,
-    })
-    setNewUnit({ name: "", abbreviation: "", type: "weight" })
-  }
-
-  const handleUpdate = async () => {
-    if (!editingUnit) return
-    await updateUnitData(editingUnit.id, {
-      name: editingUnit.name,
-      abbreviation: editingUnit.abbreviation,
-      type: editingUnit.type,
-    })
-  }
-
-  const handleDelete = async (id: string) => {
-    if (confirm(tCommon("delete"))) {
-      await deleteUnitData(id)
-    }
-  }
-
-  // Группируем единицы по типу
-  const groupedUnits = units.reduce(
-    (acc, unit) => {
-      if (!acc[unit.type]) {
-        acc[unit.type] = []
-      }
-      acc[unit.type].push(unit)
-      return acc
-    },
-    {} as Record<Unit["type"], Unit[]>
-  )
 
   // Получаем название типа на русском
   const getTypeLabel = (type: Unit["type"]) => {
@@ -77,197 +35,94 @@ export function UnitsManager() {
     return icons[type] || "📏"
   }
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Ruler className="h-5 w-5" />
-          {t("units.title")}
-        </CardTitle>
-        <CardDescription>{t("units.description")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Список единиц по группам */}
-        {units.length > 0 ? (
-          <div className="space-y-4">
-            {unitTypes.map((typeInfo) => {
-              const groupUnits = groupedUnits[typeInfo.value as Unit["type"]]
-              if (!groupUnits || groupUnits.length === 0) return null
-
-              return (
-                <div key={typeInfo.value} className="space-y-2">
-                  {/* Заголовок группы */}
-                  <div className="flex items-center gap-2 px-1">
-                    <span className="text-lg">{getTypeIcon(typeInfo.value as Unit["type"])}</span>
-                    <span className="font-medium text-sm">{typeInfo.label}</span>
-                    <span className="text-xs text-muted-foreground">({groupUnits.length})</span>
-                  </div>
-
-                  {/* Единицы группы */}
-                  <div className="grid grid-cols-2 gap-2">
-                    {groupUnits.map((unit) => (
-                      <div key={unit.id} className="p-3 rounded-xl bg-muted">
-                        {editingUnit?.id === unit.id ? (
-                          <div className="space-y-2">
-                            <div className="grid grid-cols-2 gap-1">
-                              <div className="space-y-1">
-                                <Label htmlFor={`edit-unit-name-${unit.id}`} className="sr-only">
-                                  {t("units.name")}
-                                </Label>
-                                <Input
-                                  id={`edit-unit-name-${unit.id}`}
-                                  value={editingUnit.name}
-                                  onChange={(e) =>
-                                    setEditingUnit({ ...editingUnit, name: e.target.value })
-                                  }
-                                  placeholder={t("units.name")}
-                                  className="h-8"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label htmlFor={`edit-unit-abbrev-${unit.id}`} className="sr-only">
-                                  {t("units.abbreviation")}
-                                </Label>
-                                <Input
-                                  id={`edit-unit-abbrev-${unit.id}`}
-                                  value={editingUnit.abbreviation}
-                                  onChange={(e) =>
-                                    setEditingUnit({ ...editingUnit, abbreviation: e.target.value })
-                                  }
-                                  placeholder={t("units.abbreviation")}
-                                  className="h-8"
-                                />
-                              </div>
-                            </div>
-                            <div className="space-y-1">
-                              <Label htmlFor={`edit-unit-type-${unit.id}`} className="sr-only">
-                                {t("units.type")}
-                              </Label>
-                              <select
-                                id={`edit-unit-type-${unit.id}`}
-                                className="flex h-8 rounded-lg border border-input bg-background px-2 py-1 text-xs w-full"
-                                value={editingUnit.type}
-                                onChange={(e) =>
-                                  setEditingUnit({
-                                    ...editingUnit,
-                                    type: e.target.value as Unit["type"],
-                                  })
-                                }
-                              >
-                                {unitTypes.map((t) => (
-                                  <option key={t.value} value={t.value}>
-                                    {t.label}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <div className="flex gap-1">
-                              <Button size="sm" className="h-7 text-xs" onClick={handleUpdate}>
-                                {tCommon("save")}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-7 text-xs"
-                                onClick={() => setEditingUnit(null)}
-                              >
-                                {tCommon("cancel")}
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="font-medium">
-                                {unit.name} ({unit.abbreviation})
-                              </div>
-                            </div>
-                            <div className="flex gap-1">
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-7 w-7"
-                                onClick={() => setEditingUnit(unit)}
-                                aria-label={tCommon("edit")}
-                              >
-                                <Edit2 className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-7 w-7"
-                                onClick={() => handleDelete(unit.id)}
-                                aria-label={tCommon("delete")}
-                              >
-                                <Trash2 className="h-3 w-3 text-destructive" />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        ) : (
-          <div className="text-sm text-muted-foreground text-center py-4">{t("units.noUnits")}</div>
-        )}
-
-        {/* Форма добавления */}
-        <div className="p-3 rounded-xl border-2 border-dashed space-y-2">
-          <div className="text-sm font-medium">{t("units.addUnit")}</div>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="space-y-1">
-              <Label htmlFor="new-unit-name" className="sr-only">
-                {t("units.name")}
-              </Label>
-              <Input
-                id="new-unit-name"
-                value={newUnit.name}
-                onChange={(e) => setNewUnit({ ...newUnit, name: e.target.value })}
-                placeholder={t("units.name")}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="new-unit-abbrev" className="sr-only">
-                {t("units.abbreviation")}
-              </Label>
-              <Input
-                id="new-unit-abbrev"
-                value={newUnit.abbreviation}
-                onChange={(e) => setNewUnit({ ...newUnit, abbreviation: e.target.value })}
-                placeholder={t("units.abbreviation")}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="new-unit-type" className="sr-only">
-                {t("units.type")}
-              </Label>
-              <select
-                id="new-unit-type"
-                className="flex h-10 rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                value={newUnit.type}
-                onChange={(e) => setNewUnit({ ...newUnit, type: e.target.value as Unit["type"] })}
-              >
-                {unitTypes.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <Button
-            onClick={handleCreate}
-            disabled={!newUnit.name.trim() || !newUnit.abbreviation.trim()}
+  const renderForm = (
+    item: Unit | null,
+    onChange: (updates: Partial<Unit>) => void,
+    onSave: () => void,
+    onCancel: () => void
+  ) => {
+    return (
+      <div className="grid grid-cols-3 gap-2">
+        <div className="space-y-1">
+          <Label className="sr-only">{t("units.name")}</Label>
+          <Input
+            value={item?.name || ""}
+            onChange={(e) => onChange({ name: e.target.value })}
+            placeholder={t("units.name")}
+            className="h-9"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="sr-only">{t("units.abbreviation")}</Label>
+          <Input
+            value={item?.abbreviation || ""}
+            onChange={(e) => onChange({ abbreviation: e.target.value })}
+            placeholder={t("units.abbreviation")}
+            className="h-9"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="sr-only">{t("units.type")}</Label>
+          <NativeSelect
+            value={item?.type || "weight"}
+            onChange={(e) => onChange({ type: e.target.value as Unit["type"] })}
+            className="h-9"
           >
-            <Plus className="h-4 w-4 mr-2" />
-            {tCommon("add")}
+            {unitTypes.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </NativeSelect>
+        </div>
+        <div className="col-span-3 flex gap-2">
+          <Button size="sm" onClick={onSave}>
+            {tCommon("save")}
+          </Button>
+          <Button size="sm" variant="outline" onClick={onCancel}>
+            {tCommon("cancel")}
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    )
+  }
+
+  const renderItem = (item: Unit, onEdit: () => void, onDelete: () => void) => {
+    return (
+      <div className="font-medium">
+        {item.name} ({item.abbreviation})
+      </div>
+    )
+  }
+
+  const renderGroupHeader = (groupKey: string, groupItems: Unit[]) => {
+    const type = groupKey as Unit["type"]
+    return (
+      <>
+        <span className="text-lg">{getTypeIcon(type)}</span>
+        <span className="font-medium text-sm">{getTypeLabel(type)}</span>
+        <span className="text-xs text-muted-foreground">({groupItems.length})</span>
+      </>
+    )
+  }
+
+  return (
+    <CrudManager
+      title={t("units.title")}
+      description={t("units.description")}
+      icon={Ruler}
+      items={units}
+      editingItem={editingUnit}
+      setEditingItem={setEditingUnit}
+      onCreate={createUnit}
+      onUpdate={(id: string) => updateUnitData(id, editingUnit!)}
+      onDelete={(id: string) => deleteUnitData(id)}
+      getKey={(item) => item.id}
+      renderForm={renderForm}
+      renderItem={renderItem}
+      groupBy={(item) => item.type}
+      renderGroupHeader={renderGroupHeader}
+      emptyMessage={t("units.noUnits")}
+    />
   )
 }

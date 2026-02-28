@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Wallet, Plus, Pencil, Trash2, AlertTriangle } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,7 +14,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
-import { Wallet, Plus, Pencil, Trash2, AlertTriangle } from "@/lib/icons"
+import { FormSection } from "@/components/shared/forms"
+import { EmptyState } from "@/components/shared"
 import {
   db,
   initializeDatabase,
@@ -146,35 +147,36 @@ export function BudgetManager() {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
-      </Card>
+      <FormSection title="Бюджеты" icon={Wallet}>
+        <div className="text-center text-muted-foreground py-4">Загрузка...</div>
+      </FormSection>
     )
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Wallet className="h-5 w-5" />
-          Бюджеты
-        </CardTitle>
-        <CardDescription>Установите лимиты расходов по категориям</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <FormSection
+      title="Бюджеты"
+      description="Установите лимиты расходов по категориям"
+      icon={Wallet}
+      actions={
+        budgets.length > 0 && (
+          <Button variant="outline" size="sm" onClick={() => setIsAddDialogOpen(true)}>
+            <Plus className="h-4 w-4 mr-1" />
+            Добавить
+          </Button>
+        )
+      }
+    >
+      <div className="space-y-4">
         {budgets.length === 0 ? (
-          <div className="text-center text-muted-foreground py-4">
-            <p>Нет установленных бюджетов</p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-2"
-              onClick={() => setIsAddDialogOpen(true)}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Добавить бюджет
-            </Button>
-          </div>
+          <EmptyState
+            title="Нет установленных бюджетов"
+            action={{
+              label: "Добавить бюджет",
+              onClick: () => setIsAddDialogOpen(true),
+              icon: Plus,
+            }}
+          />
         ) : (
           <>
             <div className="space-y-3">
@@ -288,7 +290,7 @@ export function BudgetManager() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </CardContent>
-    </Card>
+      </div>
+    </FormSection>
   )
 }

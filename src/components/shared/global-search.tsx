@@ -7,19 +7,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Log, Book, Content } from "@/types"
-import {
-  Utensils,
-  Dumbbell,
-  Wallet,
-  BookOpen,
-  ChefHat,
-  Search,
-  Droplet,
-  Moon,
-  Smile,
-  Flame,
-  Target,
-} from "@/lib/icons"
+import { searchTypeConfig, quickActions } from "@/lib/navigation-config"
+import { BookOpen, ChefHat, Flame, Search } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 
 interface SearchResult {
@@ -31,40 +20,6 @@ interface SearchResult {
   color: string
   subtitle?: string
 }
-
-const typeConfig: Record<
-  string,
-  { icon: React.ElementType; color: string; href: string; label: string }
-> = {
-  food: { icon: Utensils, color: "text-orange-500", href: "/logs/food", label: "Питание" },
-  workout: { icon: Dumbbell, color: "text-blue-500", href: "/logs/workout", label: "Тренировка" },
-  finance: { icon: Wallet, color: "text-green-500", href: "/logs/finance", label: "Финансы" },
-  book: { icon: BookOpen, color: "text-amber-500", href: "/books", label: "Книга" },
-  recipe: { icon: ChefHat, color: "text-rose-500", href: "/recipes", label: "Рецепт" },
-  water: { icon: Droplet, color: "text-cyan-500", href: "/water", label: "Вода" },
-  sleep: { icon: Moon, color: "text-indigo-500", href: "/sleep", label: "Сон" },
-  mood: { icon: Smile, color: "text-yellow-500", href: "/mood", label: "Настроение" },
-  habit: { icon: Flame, color: "text-red-500", href: "/habits", label: "Привычка" },
-  goal: { icon: Target, color: "text-emerald-500", href: "/goals", label: "Цель" },
-}
-
-const quickActions = [
-  { title: "Добавить питание", href: "/logs/food/new", icon: Utensils, color: "text-orange-500" },
-  {
-    title: "Добавить тренировку",
-    href: "/logs/workout/new",
-    icon: Dumbbell,
-    color: "text-blue-500",
-  },
-  { title: "Добавить расход", href: "/logs/finance/new", icon: Wallet, color: "text-green-500" },
-  { title: "Добавить книгу", href: "/books/new", icon: BookOpen, color: "text-amber-500" },
-  { title: "Добавить рецепт", href: "/recipes/new", icon: ChefHat, color: "text-rose-500" },
-  { title: "Записать воду", href: "/water", icon: Droplet, color: "text-cyan-500" },
-  { title: "Записать сон", href: "/sleep", icon: Moon, color: "text-indigo-500" },
-  { title: "Записать настроение", href: "/mood", icon: Smile, color: "text-yellow-500" },
-  { title: "Аналитика", href: "/analytics", icon: Search, color: "text-purple-500" },
-  { title: "Настройки", href: "/settings", icon: Search, color: "text-gray-500" },
-]
 
 export function GlobalSearch() {
   const router = useRouter()
@@ -157,7 +112,7 @@ export function GlobalSearch() {
         .toArray()
 
       logs.forEach((log: Log) => {
-        const config = typeConfig[log.type] || typeConfig.food
+        const config = searchTypeConfig[log.type] || searchTypeConfig.food
         searchResults.push({
           id: log.id,
           title: log.title || "Без названия",
