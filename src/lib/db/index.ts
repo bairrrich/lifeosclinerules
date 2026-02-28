@@ -12,7 +12,7 @@ import type {
   RecipeIngredient,
   RecipeIngredientItem,
   RecipeStep,
-  // Книги
+  // Books
   Book,
   UserBook,
   Author,
@@ -22,7 +22,7 @@ import type {
   BookGenre,
   BookQuote,
   BookReview,
-  // Новые типы
+  // New types
   Goal,
   Habit,
   HabitLog,
@@ -54,12 +54,12 @@ class LifeOSDatabase extends Dexie {
   exercises!: EntityTable<Exercise, "id">
   syncQueue!: EntityTable<SyncQueueItem, "id">
 
-  // Таблицы для рецептов
+  // Recipe tables
   recipeIngredients!: EntityTable<RecipeIngredient, "id">
   recipeIngredientItems!: EntityTable<RecipeIngredientItem, "id">
   recipeSteps!: EntityTable<RecipeStep, "id">
 
-  // Таблицы для книг
+  // Books tables
   books!: EntityTable<Book, "id">
   userBooks!: EntityTable<UserBook, "id">
   authors!: EntityTable<Author, "id">
@@ -70,51 +70,51 @@ class LifeOSDatabase extends Dexie {
   bookQuotes!: EntityTable<BookQuote, "id">
   bookReviews!: EntityTable<BookReview, "id">
 
-  // Новые таблицы - цели и привычки
+  // New tables - goals and habits
   goals!: EntityTable<Goal, "id">
   habits!: EntityTable<Habit, "id">
   habitLogs!: EntityTable<HabitLog, "id">
   streaks!: EntityTable<Streak, "id">
 
-  // Новые таблицы - трекеры
+  // New tables - trackers
   sleepLogs!: EntityTable<SleepLog, "id">
   waterLogs!: EntityTable<WaterLog, "id">
   moodLogs!: EntityTable<MoodLog, "id">
   bodyMeasurements!: EntityTable<BodyMeasurement, "id">
 
-  // Новые таблицы - напоминания и шаблоны
+  // New tables - reminders and templates
   reminders!: EntityTable<Reminder, "id">
   reminderLogs!: EntityTable<ReminderLog, "id">
   templates!: EntityTable<Template, "id">
 
-  // Повторяющиеся транзакции
+  // Recurring transactions
   recurringTransactions!: EntityTable<RecurringTransaction, "id">
 
-  // Локализация сущностей
+  // Entity localization
   entityTranslations!: EntityTable<EntityTranslation, "id">
 
   constructor() {
     super("LifeOSDB")
 
     this.version(7).stores({
-      // Основные таблицы
+      // Main tables
       logs: "id, type, date, title, category_id, created_at, updated_at",
       items: "id, type, name, category, created_at, updated_at",
       content: "id, type, title, created_at, updated_at",
 
-      // Справочники
+      // Reference data
       categories: "id, type, name",
       tags: "id, name",
       units: "id, type",
       accounts: "id, type",
       exercises: "id, category",
 
-      // Рецепты
+      // Recipes
       recipeIngredients: "id, name, category, subcategory",
       recipeIngredientItems: "id, recipe_id, ingredient_id, order",
       recipeSteps: "id, recipe_id, order",
 
-      // Книги
+      // Books
       books:
         "id, title, isbn13, published_year, language, format, series_id, created_at, updated_at",
       userBooks: "id, book_id, status, rating, started_at, finished_at, created_at, updated_at",
@@ -126,51 +126,51 @@ class LifeOSDatabase extends Dexie {
       bookQuotes: "id, user_book_id, created_at, updated_at",
       bookReviews: "id, userBook_id, created_at, updated_at",
 
-      // Цели и привычки
+      // Goals and habits
       goals: "id, type, period, is_active, start_date, end_date",
       habits: "id, name, frequency, is_active",
       habitLogs: "id, habit_id, date, completed",
       streaks: "id, habit_id, current_streak, longest_streak",
 
-      // Трекеры
+      // Trackers
       sleepLogs: "id, date, quality, created_at, updated_at",
       waterLogs: "id, date, amount_ml, type",
       moodLogs: "id, date, mood, energy, stress",
       bodyMeasurements: "id, date, type, value",
 
-      // Напоминания и шаблоны
+      // Reminders and templates
       reminders: "id, type, time, days, is_active, related_id, priority",
       reminderLogs: "id, reminder_id, triggered_at, action",
       templates: "id, name, type, is_favorite",
 
-      // Повторяющиеся транзакции
+      // Recurring transactions
       recurringTransactions: "id, type, frequency, is_active, next_due, account_id",
 
-      // Синхронизация
+      // Sync
       syncQueue: "id, table_name, record_id, action, synced",
     })
 
     this.version(8).stores({
-      // Локализация сущностей
+      // Entity localization
       entityTranslations: "id, entity_type, entity_id, locale",
     })
 
     this.version(9).stores({
-      // Добавляем поле abbreviation для локализованных аббревиатур
+      // Add abbreviation field for localized abbreviations
       entityTranslations: "id, entity_type, entity_id, locale, abbreviation",
     })
 
     this.version(10)
       .stores({
-        // Обновляем accounts для добавления индекса по type
+        // Update accounts to add type index
         accounts: "id, type, name",
       })
       .upgrade(async (tx) => {
-        // Обновляем существующие аккаунты, добавляя type на основе name
+        // Update existing accounts by adding type based on name
         const accounts = await tx.table("accounts").toArray()
         for (const acc of accounts) {
           if (!acc.type) {
-            // Определяем type по name
+            // Determine type by name
             let type = "card"
             if (acc.name === "cash") type = "cash"
             else if (acc.name === "card") type = "card"
@@ -191,11 +191,11 @@ class LifeOSDatabase extends Dexie {
 
     this.version(11)
       .stores({
-        // Обновление для корректного отображения emoji в категориях
+        // Update for correct emoji display in categories
         items: "id, type, name, category",
       })
       .upgrade(async (tx) => {
-        // Очищаем кэш emoji - принудительное обновление
+        // Clear emoji cache - force update
         const items = await tx.table("items").toArray()
         console.log(`[DB v11] Updated ${items.length} items`)
       })
@@ -286,7 +286,7 @@ export async function getAllEntities<T extends { id: string }>(
 // Localization Helpers
 // ============================================
 
-// Импорт статических переводов сущностей
+// Import static entity translations
 import enEntities from "@/messages/en/entities.json"
 import ruEntities from "@/messages/ru/entities.json"
 
@@ -296,11 +296,11 @@ const entityTranslations: Record<string, typeof enEntities> = {
 }
 
 /**
- * Получить перевод сущности из статических файлов
- * @param entityType - тип сущности (categories, units, accounts, tags, itemCategories, bookGenres, recipeIngredients, financeSuppliers)
- * @param entityKey - ключ сущности (например, "food", "salary")
- * @param locale - язык (en, ru)
- * @param subKey - подкатегория (например, "finance" для категорий или "vegetable" для ингредиентов)
+ * Get entity translation from static files
+ * @param entityType - entity type (categories, units, accounts, tags, itemCategories, bookGenres, recipeIngredients, financeSuppliers)
+ * @param entityKey - entity key (e.g., "food", "salary")
+ * @param locale - language (en, ru)
+ * @param subKey - subcategory (e.g., "finance" for categories or "vegetable" for ingredients)
  */
 export function getStaticEntityTranslation(
   entityType:
@@ -323,7 +323,7 @@ export function getStaticEntityTranslation(
   const entityData = (translations as Record<string, Record<string, unknown>>)[entityType]
   if (!entityData) return entityKey
 
-  // Для категорий используем подкатегорию
+  // For categories use subcategory
   if (entityType === "categories" && subKey) {
     const subData = entityData[subKey] as Record<string, string> | undefined
     if (subData && subData[entityKey]) {
@@ -331,7 +331,7 @@ export function getStaticEntityTranslation(
     }
   }
 
-  // Для recipeIngredients используем подкатегорию (vegetable, meat, dairy, etc.)
+  // For recipeIngredients use subcategory (vegetable, meat, dairy, etc.)
   if (entityType === "recipeIngredients" && subKey) {
     const subData = entityData[subKey] as Record<string, string> | undefined
     if (subData && subData[entityKey]) {
@@ -339,7 +339,7 @@ export function getStaticEntityTranslation(
     }
   }
 
-  // Для financeSuppliers возвращаем список поставщиков по категории
+  // For financeSuppliers return list of suppliers by category
   if (entityType === "financeSuppliers" && subKey) {
     const subData = entityData[subKey] as string[] | undefined
     if (subData) {
@@ -347,13 +347,13 @@ export function getStaticEntityTranslation(
     }
   }
 
-  // Для units, accounts, tags, itemCategories, bookGenres - прямой перевод по ключу
+  // For units, accounts, tags, itemCategories, bookGenres - direct translation by key
   const directTranslation = (entityData as Record<string, string>)[entityKey]
   return directTranslation || entityKey
 }
 
 /**
- * Получить все переводы для типа сущности
+ * Get all translations for entity type
  */
 export function getEntityTranslationsByType(
   entityType:
@@ -378,12 +378,12 @@ export function getEntityTranslationsByType(
 }
 
 /**
- * Получить локализованное название сущности
- * @param entityType - тип сущности (category, unit, account, tag, itemCategory, bookGenre, recipeIngredient, financeSupplier)
- * @param entityId - ID сущности
- * @param locale - язык (en, ru)
- * @param defaultName - название по умолчанию (из основной таблицы)
- * @param categoryType - тип категории для категорий (food, workout, finance) или подкатегория для ингредиентов (vegetable, meat, dairy) или поставщиков (Продукты, Транспорт)
+ * Get localized entity name
+ * @param entityType - entity type (category, unit, account, tag, itemCategory, bookGenre, recipeIngredient, financeSupplier)
+ * @param entityId - entity ID
+ * @param locale - language (en, ru)
+ * @param defaultName - default name (from main table)
+ * @param categoryType - category type for categories (food, workout, finance) or subcategory for ingredients (vegetable, meat, dairy) or suppliers (Products, Transport)
  */
 export async function getLocalizedEntityName(
   entityType:
@@ -404,7 +404,7 @@ export async function getLocalizedEntityName(
     return defaultName
   }
 
-  // Сначала пробуем найти перевод по ID в базе данных (для category, unit, account)
+  // First try to find translation by ID in database (for category, unit, account)
   if (["category", "unit", "account"].includes(entityType)) {
     const translation = await db.entityTranslations
       .where({
@@ -419,14 +419,14 @@ export async function getLocalizedEntityName(
     }
   }
 
-  // Если нет в БД, пробуем статический перевод по ключу
+  // If not in DB, try static translation by key
   let staticTranslation: string
 
   if (entityType === "category" && categoryType) {
-    // Для категорий используем подкатегорию (food, workout, finance)
+    // For categories use subcategory (food, workout, finance)
     staticTranslation = getStaticEntityTranslation("categories", defaultName, locale, categoryType)
   } else if (entityType === "recipeIngredient" && categoryType) {
-    // Для ингредиентов рецептов используем подкатегорию (vegetable, meat, dairy, grains, spice, herb)
+    // For recipe ingredients use subcategory (vegetable, meat, dairy, grains, spice, herb)
     staticTranslation = getStaticEntityTranslation(
       "recipeIngredients",
       defaultName,
@@ -434,7 +434,7 @@ export async function getLocalizedEntityName(
       categoryType
     )
   } else if (entityType === "financeSupplier" && categoryType) {
-    // Для поставщиков используем категорию (Продукты, Транспорт, etc.)
+    // For suppliers use category (Products, Transport, etc.)
     staticTranslation = getStaticEntityTranslation(
       "financeSuppliers",
       defaultName,
@@ -442,7 +442,7 @@ export async function getLocalizedEntityName(
       categoryType
     )
   } else {
-    // Для units, accounts, tags, itemCategories, bookGenres - прямой перевод по ключу
+    // For units, accounts, tags, itemCategories, bookGenres - direct translation by key
     const staticEntityType =
       entityType === "category"
         ? "categories"
@@ -467,10 +467,10 @@ export async function getLocalizedEntityName(
 }
 
 /**
- * Получение локализованной аббревиатуры сущности (для единиц измерения)
- * @param entityId - ID сущности
- * @param locale - локаль
- * @param defaultAbbreviation - аббревиатура по умолчанию
+ * Get localized abbreviation for entity (for units)
+ * @param entityId - entity ID
+ * @param locale - locale
+ * @param defaultAbbreviation - default abbreviation
  */
 export async function getLocalizedAbbreviation(
   entityId: string,
@@ -481,7 +481,7 @@ export async function getLocalizedAbbreviation(
     return defaultAbbreviation
   }
 
-  // Сначала пробуем найти перевод в базе данных
+  // First try to find translation in database
   const translation = await db.entityTranslations
     .where({
       entity_type: "unit",
@@ -494,7 +494,7 @@ export async function getLocalizedAbbreviation(
     return translation.abbreviation
   }
 
-  // Если нет в БД, пробуем статический перевод
+  // If not in DB, try static translation
   const translations = entityTranslations[locale]?.unitsAbbreviations as
     | Record<string, string>
     | undefined
@@ -506,7 +506,7 @@ export async function getLocalizedAbbreviation(
 }
 
 /**
- * Сохранить перевод названия сущности
+ * Save entity name translation
  */
 export async function saveEntityTranslation(
   entityType:
@@ -552,7 +552,7 @@ export async function saveEntityTranslation(
 }
 
 /**
- * Удалить перевод сущности
+ * Delete entity translation
  */
 export async function deleteEntityTranslation(
   entityType:
@@ -581,7 +581,7 @@ export async function deleteEntityTranslation(
 }
 
 /**
- * Получить все переводы для сущности
+ * Get all translations for entity
  */
 export async function getEntityTranslations(
   entityType:
@@ -674,7 +674,7 @@ export async function updateStreak(habitId: string, completed: boolean): Promise
   const existingStreak = await db.streaks.where("habit_id").equals(habitId).first()
 
   if (!existingStreak) {
-    // Создаём новый streak
+    // Create new streak
     await db.streaks.add({
       id: generateId(),
       habit_id: habitId,
@@ -738,72 +738,72 @@ export async function initializeDatabase(): Promise<void> {
   try {
     const now = getTimestamp()
 
-    // Базовые цели (с current_value для корректной работы) - создаём если нет
+    // Base goals (with current_value for correct operation) - create if not exist
     const goalsCount = await db.goals.count()
     if (goalsCount === 0) {
       await db.goals.bulkAdd([
         {
           id: generateId(),
           type: "calories",
-          name: "Калории в день",
+          name: "Calories per day",
           target_value: 2000,
           current_value: 0,
           period: "daily",
           start_date: now.split("T")[0],
           is_active: true,
-          unit: "ккал",
+          unit: "kcal",
           created_at: now,
           updated_at: now,
         },
         {
           id: generateId(),
           type: "water",
-          name: "Вода в день",
+          name: "Water per day",
           target_value: 2000,
           current_value: 0,
           period: "daily",
           start_date: now.split("T")[0],
           is_active: true,
-          unit: "мл",
+          unit: "ml",
           created_at: now,
           updated_at: now,
         },
         {
           id: generateId(),
           type: "workout",
-          name: "Тренировки в неделю",
+          name: "Workouts per week",
           target_value: 3,
           current_value: 0,
           period: "weekly",
           start_date: now.split("T")[0],
           is_active: true,
-          unit: "шт",
+          unit: "pcs",
           created_at: now,
           updated_at: now,
         },
         {
           id: generateId(),
           type: "sleep",
-          name: "Сон в день",
+          name: "Sleep per day",
           target_value: 480,
           current_value: 0,
           period: "daily",
           start_date: now.split("T")[0],
           is_active: true,
-          unit: "мин",
+          unit: "min",
           created_at: now,
           updated_at: now,
         },
       ])
     }
 
-    // Категории и единицы измерения создаются через seed-функции
-    // Они проверяют существование перед созданием
+    // Categories and units are created via seed functions
+    // They check existence before creating
     const { seedCategories, seedUnits, cleanupDuplicateCategories } = await import("./seed")
     await seedCategories()
     await seedUnits()
 
-    // Очищаем дубликаты категорий если есть
+    // Clean up duplicate categories if any
     await cleanupDuplicateCategories()
 
     console.log("Database initialized successfully")
