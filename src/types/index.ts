@@ -974,4 +974,5 @@ export interface EntityTranslation extends BaseEntity {
   entity_id: string
   locale: "en" | "ru"
   name: string
+  abbreviation?: string
 }

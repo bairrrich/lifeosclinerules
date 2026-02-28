@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { useTranslations } from "next-intl"
-import { db, createEntity, updateEntity, deleteEntity } from "@/lib/db"
+import { useLocale } from "next-intl"
+import { db, createEntity, updateEntity, deleteEntity, saveEntityTranslation } from "@/lib/db"
 import { LogType, ContentType, ItemType } from "@/types"
 import type { Account, Category, Unit } from "@/types"
 import type { LucideIcon } from "@/lib/icons"
@@ -25,12 +26,12 @@ import {
 export function useAccountTypes() {
   const t = useTranslations("settings.accounts.accountTypes")
   return [
-    { value: "cash" as const, label: t("cash"), icon: Banknote },
-    { value: "card" as const, label: t("card"), icon: CreditCard },
-    { value: "bank" as const, label: t("bank"), icon: Landmark },
-    { value: "deposit" as const, label: t("deposit"), icon: TrendingUp },
-    { value: "investment" as const, label: t("investment"), icon: LineChart },
-    { value: "crypto" as const, label: t("crypto"), icon: Bitcoin },
+    { value: "cash" as const, label: t("cash"), icon: Banknote, emoji: "💵" },
+    { value: "card" as const, label: t("card"), icon: CreditCard, emoji: "💳" },
+    { value: "bank" as const, label: t("bank"), icon: Landmark, emoji: "🏦" },
+    { value: "deposit" as const, label: t("deposit"), icon: TrendingUp, emoji: "📈" },
+    { value: "investment" as const, label: t("investment"), icon: LineChart, emoji: "📊" },
+    { value: "crypto" as const, label: t("crypto"), icon: Bitcoin, emoji: "₿" },
   ]
 }
 
@@ -138,6 +139,7 @@ interface SettingsContextType {
 const SettingsContext = createContext<SettingsContextType | null>(null)
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
+  const locale = useLocale()
   const [mounted, setMounted] = useState(false)
 
   const [stats, setStats] = useState({
@@ -254,12 +256,29 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   // CRUD единицы
   const createUnit = async (data: Partial<Unit>) => {
-    await createEntity(db.units, data)
+    const id = await createEntity(db.units, data)
+    // Сохраняем перевод аббревиатуры, если она отличается от названия
+    if (data.abbreviation && data.name) {
+      await saveEntityTranslation("unit", id, locale as "en" | "ru", data.name, data.abbreviation)
+    }
     reloadUnits()
   }
 
   const updateUnitData = async (id: string, data: Partial<Unit>) => {
     await updateEntity(db.units, id, data)
+    // Сохраняем перевод аббревиатуры, если она изменилась
+    if (data.abbreviation || data.name) {
+      const unit = await db.units.get(id)
+      if (unit) {
+        await saveEntityTranslation(
+          "unit",
+          id,
+          locale as "en" | "ru",
+          unit.name,
+          data.abbreviation ?? unit.abbreviation
+        )
+      }
+    }
     setEditingUnit(null)
     reloadUnits()
   }

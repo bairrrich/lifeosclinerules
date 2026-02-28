@@ -30,14 +30,6 @@ export function AccountsManager() {
   const defaultCurrency = currencyUnits[0]?.abbreviation || "RUB"
 
   const getAccountTypeLabel = (type: Account["type"]) => {
-    const icons: Record<string, string> = {
-      cash: "💵",
-      card: "💳",
-      bank: "🏦",
-      deposit: "📈",
-      investment: "📊",
-      crypto: "₿",
-    }
     const labels: Record<string, string> = {
       cash: t("accounts.accountTypes.cash"),
       card: t("accounts.accountTypes.card"),
@@ -46,7 +38,7 @@ export function AccountsManager() {
       investment: t("accounts.accountTypes.investment"),
       crypto: t("accounts.accountTypes.crypto"),
     }
-    return `${icons[type] || ""} ${labels[type] || type}`
+    return labels[type] || type
   }
 
   const renderForm = (
@@ -74,7 +66,7 @@ export function AccountsManager() {
             >
               {accountTypes.map((t) => (
                 <option key={t.value} value={t.value}>
-                  {t.label}
+                  {t.emoji} {t.label}
                 </option>
               ))}
             </NativeSelect>
@@ -117,13 +109,18 @@ export function AccountsManager() {
   }
 
   const renderItem = (item: Account, onEdit: () => void, onDelete: () => void) => {
+    const accountType = accountTypes.find((t) => t.value === item.type)
+    const IconComponent = accountType?.icon
     return (
-      <div>
-        <div className="font-medium">
-          {getAccountTypeLabel(item.type)} • {item.name}
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {t("accounts.balance")}: {item.balance.toLocaleString()} {item.currency}
+      <div className="flex items-center gap-2">
+        {IconComponent && <IconComponent className="h-5 w-5 text-muted-foreground" />}
+        <div className="flex-1 min-w-0">
+          <div className="font-medium truncate">
+            {accountType?.label || getAccountTypeLabel(item.type)} • {item.name}
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {t("accounts.balance")}: {item.balance.toLocaleString()} {item.currency}
+          </div>
         </div>
       </div>
     )

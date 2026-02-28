@@ -154,6 +154,51 @@ class LifeOSDatabase extends Dexie {
       // Локализация сущностей
       entityTranslations: "id, entity_type, entity_id, locale",
     })
+
+    this.version(9).stores({
+      // Добавляем поле abbreviation для локализованных аббревиатур
+      entityTranslations: "id, entity_type, entity_id, locale, abbreviation",
+    })
+
+    this.version(10)
+      .stores({
+        // Обновляем accounts для добавления индекса по type
+        accounts: "id, type, name",
+      })
+      .upgrade(async (tx) => {
+        // Обновляем существующие аккаунты, добавляя type на основе name
+        const accounts = await tx.table("accounts").toArray()
+        for (const acc of accounts) {
+          if (!acc.type) {
+            // Определяем type по name
+            let type = "card"
+            if (acc.name === "cash") type = "cash"
+            else if (acc.name === "card") type = "card"
+            else if (acc.name === "bank") type = "bank"
+            else if (acc.name === "Вклад" || acc.name === "deposit") type = "deposit"
+            else if (
+              acc.name === "Брокерский счёт" ||
+              acc.name === "ИИС" ||
+              acc.name === "investment"
+            )
+              type = "investment"
+            else if (acc.name === "Крипто-кошелёк" || acc.name === "crypto") type = "crypto"
+
+            await tx.table("accounts").update(acc.id, { type })
+          }
+        }
+      })
+
+    this.version(11)
+      .stores({
+        // Обновление для корректного отображения emoji в категориях
+        items: "id, type, name, category",
+      })
+      .upgrade(async (tx) => {
+        // Очищаем кэш emoji - принудительное обновление
+        const items = await tx.table("items").toArray()
+        console.log(`[DB v11] Updated ${items.length} items`)
+      })
   }
 }
 
@@ -422,6 +467,45 @@ export async function getLocalizedEntityName(
 }
 
 /**
+ * Получение локализованной аббревиатуры сущности (для единиц измерения)
+ * @param entityId - ID сущности
+ * @param locale - локаль
+ * @param defaultAbbreviation - аббревиатура по умолчанию
+ */
+export async function getLocalizedAbbreviation(
+  entityId: string,
+  locale: string,
+  defaultAbbreviation: string
+): Promise<string> {
+  if (!locale || !["en", "ru"].includes(locale)) {
+    return defaultAbbreviation
+  }
+
+  // Сначала пробуем найти перевод в базе данных
+  const translation = await db.entityTranslations
+    .where({
+      entity_type: "unit",
+      entity_id: entityId,
+      locale: locale as "en" | "ru",
+    })
+    .first()
+
+  if (translation?.abbreviation) {
+    return translation.abbreviation
+  }
+
+  // Если нет в БД, пробуем статический перевод
+  const translations = entityTranslations[locale]?.unitsAbbreviations as
+    | Record<string, string>
+    | undefined
+  if (translations && translations[entityId]) {
+    return translations[entityId]
+  }
+
+  return defaultAbbreviation
+}
+
+/**
  * Сохранить перевод названия сущности
  */
 export async function saveEntityTranslation(
@@ -436,7 +520,8 @@ export async function saveEntityTranslation(
     | "financeSupplier",
   entityId: string,
   locale: "en" | "ru",
-  name: string
+  name: string,
+  abbreviation?: string
 ): Promise<void> {
   const existing = await db.entityTranslations
     .where({
@@ -447,7 +532,11 @@ export async function saveEntityTranslation(
     .first()
 
   if (existing) {
-    await db.entityTranslations.update(existing.id, { name, updated_at: getTimestamp() })
+    await db.entityTranslations.update(existing.id, {
+      name,
+      abbreviation: abbreviation ?? existing.abbreviation,
+      updated_at: getTimestamp(),
+    })
   } else {
     await db.entityTranslations.add({
       id: generateId(),
@@ -455,6 +544,7 @@ export async function saveEntityTranslation(
       entity_id: entityId,
       locale,
       name,
+      abbreviation,
       created_at: getTimestamp(),
       updated_at: getTimestamp(),
     })

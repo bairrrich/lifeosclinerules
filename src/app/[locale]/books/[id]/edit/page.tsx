@@ -23,6 +23,7 @@ export default function EditBookPage() {
   // Справочники
   const [authors, setAuthors] = useState<Author[]>([])
   const [genres, setGenres] = useState<Genre[]>([])
+  const [publishers, setPublishers] = useState<string[]>([])
 
   // Данные
   const [bookData, setBookData] = useState<Partial<Book>>({})
@@ -42,8 +43,16 @@ export default function EditBookPage() {
         // Загружаем справочники
         const authorsData = await db.authors.toArray()
         const genresData = await db.genres.toArray()
+        const booksData = await db.books.toArray()
+
+        // Собираем уникальных издателей
+        const uniquePublishers = [
+          ...new Set(booksData.map((b) => b.publisher).filter(Boolean)),
+        ] as string[]
+
         setAuthors(authorsData)
         setGenres(genresData)
+        setPublishers(uniquePublishers)
 
         // Загружаем книгу
         const book = await db.books.get(bookId)
@@ -320,7 +329,13 @@ export default function EditBookPage() {
           className="space-y-6"
         >
           {/* Метаданные книги */}
-          <BookForm data={bookData} authors={authors} genres={genres} onChange={setBookData} />
+          <BookForm
+            data={bookData}
+            authors={authors}
+            genres={genres}
+            publishers={publishers}
+            onChange={setBookData}
+          />
 
           {/* Пользовательские данные */}
           <UserBookForm

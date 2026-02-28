@@ -171,10 +171,11 @@ export function Combobox({
             "flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background",
             "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
             "disabled:cursor-not-allowed disabled:opacity-50",
-            !selectedOptions.length && "text-muted-foreground"
+            !selectedOptions.length && "text-muted-foreground",
+            className?.includes("emoji") && "emoji"
           )}
         >
-          <span>{getDisplayValue()}</span>
+          <span className={cn(className?.includes("emoji") && "emoji")}>{getDisplayValue()}</span>
           <ChevronDown
             className={cn("h-4 w-4 opacity-50 transition-transform", isOpen && "rotate-180")}
           />
@@ -199,7 +200,7 @@ export function Combobox({
             )}
 
             {/* Список опций */}
-            <div className="max-h-48 overflow-auto p-1">
+            <div className={cn("max-h-48 overflow-auto p-1", className)}>
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
                   <button
@@ -208,7 +209,8 @@ export function Combobox({
                     onClick={() => handleSelect(option.id)}
                     className={cn(
                       "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-accent",
-                      selectedIds.includes(option.id) && "bg-accent"
+                      selectedIds.includes(option.id) && "bg-accent",
+                      className?.includes("emoji") && "emoji"
                     )}
                   >
                     {mode === "multiple" && (
@@ -223,7 +225,9 @@ export function Combobox({
                         {selectedIds.includes(option.id) && <Check className="h-3 w-3" />}
                       </div>
                     )}
-                    {option.label}
+                    <span className={className?.includes("emoji") ? "emoji" : ""}>
+                      {option.label}
+                    </span>
                   </button>
                 ))
               ) : (

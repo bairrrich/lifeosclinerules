@@ -1235,11 +1235,35 @@ async function seedBooks(): Promise<void> {
   // ЖАНРЫ
   // ============================================
   const genres: Genre[] = [
+    // Художественная литература
+    { id: uuid(), name: "Фантастика", created_at: now, updated_at: now },
+    { id: uuid(), name: "Фэнтези", created_at: now, updated_at: now },
+    { id: uuid(), name: "Детектив", created_at: now, updated_at: now },
+    { id: uuid(), name: "Роман", created_at: now, updated_at: now },
+    { id: uuid(), name: "Приключения", created_at: now, updated_at: now },
+    { id: uuid(), name: "Ужасы", created_at: now, updated_at: now },
+    { id: uuid(), name: "Классика", created_at: now, updated_at: now },
+    { id: uuid(), name: "Поэзия", created_at: now, updated_at: now },
+    // Нон-фикшн
     { id: uuid(), name: "Саморазвитие", created_at: now, updated_at: now },
     { id: uuid(), name: "Финансы", created_at: now, updated_at: now },
     { id: uuid(), name: "Психология", created_at: now, updated_at: now },
     { id: uuid(), name: "Бизнес", created_at: now, updated_at: now },
     { id: uuid(), name: "Здоровье", created_at: now, updated_at: now },
+    { id: uuid(), name: "История", created_at: now, updated_at: now },
+    { id: uuid(), name: "Наука", created_at: now, updated_at: now },
+    { id: uuid(), name: "Образование", created_at: now, updated_at: now },
+    { id: uuid(), name: "Биография", created_at: now, updated_at: now },
+    { id: uuid(), name: "Путешествия", created_at: now, updated_at: now },
+    // Детям
+    { id: uuid(), name: "Детская", created_at: now, updated_at: now },
+    { id: uuid(), name: "Сказки", created_at: now, updated_at: now },
+    // Другое
+    { id: uuid(), name: "Искусство", created_at: now, updated_at: now },
+    { id: uuid(), name: "Кулинария", created_at: now, updated_at: now },
+    { id: uuid(), name: "Спорт", created_at: now, updated_at: now },
+    { id: uuid(), name: "Техника", created_at: now, updated_at: now },
+    { id: uuid(), name: "Компьютеры", created_at: now, updated_at: now },
   ]
 
   // ============================================

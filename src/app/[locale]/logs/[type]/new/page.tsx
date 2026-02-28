@@ -14,10 +14,6 @@ import {
   TrendingUp,
   TrendingDown,
   Repeat,
-  Croissant,
-  Soup,
-  Sandwich,
-  Coffee,
   Footprints,
   Wind,
   Activity,
@@ -66,10 +62,10 @@ import type {
 // ============================================
 
 export const foodTypeOptions = [
-  { value: "breakfast", label: "Breakfast" },
-  { value: "lunch", label: "Lunch" },
-  { value: "dinner", label: "Dinner" },
-  { value: "snack", label: "Snack" },
+  { value: "breakfast", label: "Breakfast", emoji: "🥐" },
+  { value: "lunch", label: "Lunch", emoji: "🍲" },
+  { value: "dinner", label: "Dinner", emoji: "🥪" },
+  { value: "snack", label: "Snack", emoji: "☕" },
 ]
 
 export const workoutTypeOptions = [
@@ -495,10 +491,7 @@ export default function NewLogPage() {
                           value={opt.value}
                           className={categoryColors[opt.label] || ""}
                         >
-                          {opt.value === "breakfast" && <Croissant className="h-4 w-4 mr-2" />}
-                          {opt.value === "lunch" && <Soup className="h-4 w-4 mr-2" />}
-                          {opt.value === "dinner" && <Sandwich className="h-4 w-4 mr-2" />}
-                          {opt.value === "snack" && <Coffee className="h-4 w-4 mr-2" />}
+                          <span className="mr-1">{opt.emoji}</span>
                           {opt.label}
                         </TabsTrigger>
                       ))}

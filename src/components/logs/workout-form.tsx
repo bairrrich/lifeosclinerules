@@ -196,32 +196,88 @@ export function getEquipmentOptions(t: any): Record<string, string[]> {
   }
 }
 
-export function getGoalOptions(t: any): Record<string, { value: string; label: string }[]> {
+export function getGoalOptions(
+  t: any
+): Record<string, { value: string; label: string; emoji: string }[]> {
   return {
     strength: [
-      { value: "mass", label: t("workout.goals.mass") },
-      { value: "relief", label: t("workout.goals.relief") },
-      { value: "strength", label: t("workout.goals.strength") },
-      { value: "endurance", label: t("workout.goals.endurance") },
+      { value: "mass", label: t("workout.goals.mass"), emoji: "💪" },
+      { value: "relief", label: t("workout.goals.relief"), emoji: "🔥" },
+      { value: "strength", label: t("workout.goals.strength"), emoji: "🏋️" },
+      { value: "endurance", label: t("workout.goals.endurance"), emoji: "⏱️" },
     ],
     cardio: [
-      { value: "endurance", label: t("workout.goals.endurance") },
-      { value: "fat_loss", label: t("workout.goals.fatLoss") },
-      { value: "recovery", label: t("workout.goals.recovery") },
+      { value: "endurance", label: t("workout.goals.endurance"), emoji: "⏱️" },
+      { value: "fat_loss", label: t("workout.goals.fatLoss"), emoji: "🔥" },
+      { value: "recovery", label: t("workout.goals.recovery"), emoji: "🧘" },
     ],
     yoga: [
-      { value: "flexibility", label: t("workout.goals.flexibility") },
-      { value: "strength", label: t("workout.goals.strength") },
-      { value: "relaxation", label: t("workout.goals.relaxation") },
-      { value: "balance", label: t("workout.goals.balance") },
+      { value: "flexibility", label: t("workout.goals.flexibility"), emoji: "🤸" },
+      { value: "strength", label: t("workout.goals.strength"), emoji: "🏋️" },
+      { value: "relaxation", label: t("workout.goals.relaxation"), emoji: "🧘" },
+      { value: "balance", label: t("workout.goals.balance"), emoji: "⚖️" },
     ],
     stretching: [
-      { value: "flexibility", label: t("workout.goals.flexibility") },
-      { value: "mobility", label: t("workout.goals.mobility") },
-      { value: "recovery", label: t("workout.goals.recovery") },
-      { value: "relaxation", label: t("workout.goals.relaxation") },
+      { value: "flexibility", label: t("workout.goals.flexibility"), emoji: "🤸" },
+      { value: "mobility", label: t("workout.goals.mobility"), emoji: "🏃" },
+      { value: "recovery", label: t("workout.goals.recovery"), emoji: "🧘" },
+      { value: "relaxation", label: t("workout.goals.relaxation"), emoji: "🧘" },
     ],
   }
+}
+
+// Emoji для интенсивности
+export function getIntensityEmoji(intensity: string): string {
+  const emojis: Record<string, string> = {
+    low: "🟢",
+    medium: "🟡",
+    high: "🔴",
+  }
+  return emojis[intensity] || ""
+}
+
+// Emoji для оборудования
+export function getEquipmentEmoji(equipment: string): string {
+  const emojis: Record<string, string> = {
+    // Strength
+    Dumbbels: "🏋️",
+    Barbell: "🏋️",
+    Kettlebell: "🔔",
+    Bench: "🪑",
+    "Pull-up Bar": "🤸",
+    "Parallel Bars": "🤸",
+    "Cable Crossover": "🔗",
+    "Smith Machine": "🏗️",
+    "Resistance Bands": "🎯",
+    "Medicine Ball": "⚽",
+    TRX: "🔗",
+    "No Equipment": "🙅",
+    // Cardio
+    Treadmill: "🏃",
+    Elliptical: "🚴",
+    "Exercise Bike": "🚲",
+    "Rowing Machine": "🚣",
+    "Jump Rope": "🪢",
+    Stepper: "🪜",
+    // Yoga
+    Mat: "🧘",
+    Blocks: "🧱",
+    Strap: "🎯",
+    Bolster: "🛋️",
+    Blanket: "🛏️",
+    Chair: "🪑",
+    Wall: "🧱",
+    // Stretching
+    "Foam Roller": "🌀",
+    Ball: "⚽",
+  }
+  // Поиск по ключу (частичное совпадение)
+  for (const [key, emoji] of Object.entries(emojis)) {
+    if (equipment.toLowerCase().includes(key.toLowerCase())) {
+      return emoji
+    }
+  }
+  return "🏋️" // Default
 }
 
 // Функция для получения метки подкатегории
@@ -626,9 +682,18 @@ export function WorkoutForm({
               <Label>{t("workout.intensity")}</Label>
               <Combobox
                 options={[
-                  { id: "low", label: t("workout.intensityLevels.low") },
-                  { id: "medium", label: t("workout.intensityLevels.medium") },
-                  { id: "high", label: t("workout.intensityLevels.high") },
+                  {
+                    id: "low",
+                    label: `${getIntensityEmoji("low")} ${t("workout.intensityLevels.low")}`,
+                  },
+                  {
+                    id: "medium",
+                    label: `${getIntensityEmoji("medium")} ${t("workout.intensityLevels.medium")}`,
+                  },
+                  {
+                    id: "high",
+                    label: `${getIntensityEmoji("high")} ${t("workout.intensityLevels.high")}`,
+                  },
                 ]}
                 value={workoutIntensity}
                 onChange={(value) => {
@@ -638,6 +703,7 @@ export function WorkoutForm({
                 placeholder={t("workout.intensity")}
                 allowCustom={false}
                 searchable={false}
+                className="emoji"
               />
             </div>
           </div>
@@ -649,12 +715,16 @@ export function WorkoutForm({
               <div className="space-y-2">
                 <Label>{t("workout.equipment")}</Label>
                 <Combobox
-                  options={currentEquipment.map((opt) => ({ id: opt, label: opt }))}
+                  options={currentEquipment.map((opt) => ({
+                    id: opt,
+                    label: `${getEquipmentEmoji(opt)} ${opt}`,
+                  }))}
                   value={workoutEquipment}
                   onChange={(value) => setWorkoutEquipment(value as string)}
                   placeholder={t("workout.equipment")}
                   allowCustom={true}
                   searchable={false}
+                  className="emoji"
                 />
               </div>
             )}
@@ -664,12 +734,16 @@ export function WorkoutForm({
               <div className="space-y-2">
                 <Label>{t("workout.goal")}</Label>
                 <Combobox
-                  options={currentGoals.map((g) => ({ id: g.value, label: g.label }))}
+                  options={currentGoals.map((g) => ({
+                    id: g.value,
+                    label: `${g.emoji} ${g.label}`,
+                  }))}
                   value={workoutGoal}
                   onChange={(value) => setWorkoutGoal(value as string)}
                   placeholder={t("workout.goal")}
                   allowCustom={false}
                   searchable={false}
+                  className="emoji"
                 />
               </div>
             )}

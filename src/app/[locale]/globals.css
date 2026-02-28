@@ -1,5 +1,34 @@
 @import "tailwindcss";
 
+/* Emoji font support - force emoji fonts for all elements */
+html {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
+}
+
+body {
+  font-family: inherit;
+}
+
+/* Force emoji font for emoji characters - exact class match and contains */
+.emoji {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Twemoji Mozilla", sans-serif !important;
+  font-style: normal;
+  font-feature-settings: "calt" 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Also apply to any element with emoji in class name */
+[class*="emoji"] {
+  font-family: inherit;
+}
+
+/* Force emoji font for button text in combobox */
+button span,
+[role="button"] span {
+  font-family: inherit;
+}
+
 :root {
   --radius: 0.75rem;
   --background: oklch(1 0 0);

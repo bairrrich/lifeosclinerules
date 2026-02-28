@@ -76,6 +76,34 @@ interface ProductNutrition {
   carbs: number
 }
 
+// Emoji для категорий продуктов
+export function getProductCategoryEmoji(category: string): string {
+  const emojis: Record<string, string> = {
+    dairy: "🥛",
+    meat: "🥩",
+    fish: "🐟",
+    vegetables: "🥬",
+    fruits: "🍎",
+    berries: "🍓",
+    grainsAndLegumes: "🌾",
+    breadAndBakery: "🍞",
+    eggs: "🥚",
+    nutsAndSeeds: "🥜",
+    oilsAndFats: "🫒",
+    drinks: "🥤",
+    sweets: "🍬",
+    groceries: "🛒",
+  }
+
+  // Поиск по ключу (частичное совпадение)
+  for (const [key, emoji] of Object.entries(emojis)) {
+    if (category.toLowerCase().includes(key.toLowerCase())) {
+      return emoji
+    }
+  }
+  return "🍽️" // Default
+}
+
 // Функция для получения продуктов по категориям с КБЖУ (на 100г)
 export function getFoodProducts(t: any): Record<string, Record<string, ProductNutrition>> {
   return {
@@ -1090,7 +1118,10 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
               <div className="space-y-2">
                 <Label>{t("food.productCategory")}</Label>
                 <Combobox
-                  options={Object.keys(getFoodProducts(t)).map((opt) => ({ id: opt, label: opt }))}
+                  options={Object.keys(getFoodProducts(t)).map((opt) => ({
+                    id: opt,
+                    label: `${getProductCategoryEmoji(opt)} ${opt}`,
+                  }))}
                   value={productCategory}
                   onChange={(value) => {
                     setProductCategory(value as string)
@@ -1099,6 +1130,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                   placeholder={t("food.productCategory")}
                   allowCustom={false}
                   searchable={false}
+                  className="emoji"
                 />
               </div>
 

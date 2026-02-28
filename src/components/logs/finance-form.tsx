@@ -117,7 +117,106 @@ export function FinanceForm({
       investment: "📊",
       crypto: "₿",
     }
-    return `${icons[type] || ""} ${labels[type] || type}`
+
+    const label = labels[type]
+    const icon = icons[type]
+
+    // Если перевод не найден, используем ключ типа
+    if (!label) {
+      return icon ? `${icon} ${type}` : type
+    }
+
+    return icon ? `${icon} ${label}` : label
+  }
+
+  // Emoji для финансовых категорий
+  const categoryEmojis: Record<string, string> = {
+    // Income
+    salary: "💰",
+    freelance: "💻",
+    investments: "📈",
+    other: "📦",
+    // Expense
+    product: "🛒",
+    transport: "🚗",
+    entertainment: "🎬",
+    health: "💊",
+    clothing: "👕",
+    housing: "🏠",
+    communication: "📱",
+    education: "📚",
+    // Transfer
+    transfer: "💸",
+    topUp: "➕",
+  }
+
+  // Emoji для подкатегорий
+  const subcategoryEmojis: Record<string, string> = {
+    main: "💼",
+    bonus: "🎁",
+    allowance: "💵",
+    development: "💻",
+    design: "🎨",
+    consulting: "💡",
+    dividends: "💹",
+    interest: "🏦",
+    coupons: "🎫",
+    gifts: "🎁",
+    refund: "↩️",
+    // Products
+    dairy: "🥛",
+    meat: "🥩",
+    fish: "🐟",
+    vegetables: "🥬",
+    fruits: "🍎",
+    berries: "🍓",
+    cereals: "🌾",
+    bread: "🍞",
+    drinks: "🥤",
+    groceries: "🛒",
+    confectionery: "🍬",
+    frozen: "🧊",
+    // Transport
+    taxi: "🚕",
+    public: "🚌",
+    fuel: "⛽",
+    // Entertainment
+    cinema: "🎬",
+    concerts: "🎵",
+    cafe: "☕",
+    subscriptions: "📺",
+    // Health
+    pharmacy: "💊",
+    doctor: "🩺",
+    gym: "💪",
+    // Housing
+    rent: "🏠",
+    utilities: "💡",
+    repair: "🔧",
+    // Communication
+    mobile: "📱",
+    internet: "🌐",
+    tv: "📺",
+    // Education
+    courses: "📖",
+    books: "📚",
+    tutor: "👨‍🏫",
+    // Transfer
+    toCard: "💳",
+    toAccount: "🏦",
+    toCash: "💵",
+    fromCard: "💳",
+    inCash: "💵",
+  }
+
+  // Получение emoji для категории
+  const getCategoryEmoji = (category: string) => {
+    return categoryEmojis[category] || ""
+  }
+
+  // Получение emoji для подкатегории
+  const getSubcategoryEmoji = (subcategory: string) => {
+    return subcategoryEmojis[subcategory] || ""
   }
 
   // Структура финансовых категорий с ключами переводов
@@ -221,7 +320,7 @@ export function FinanceForm({
   const currentFinanceCategoriesObj = financeCategoriesStructure[financeType] || {}
   const currentFinanceCategories = Object.keys(currentFinanceCategoriesObj).map((key) => ({
     value: key,
-    label: tFinCat(key),
+    label: `${getCategoryEmoji(key)} ${tFinCat(key)}`,
   }))
 
   // Получаем подкатегории для выбранной категории
@@ -230,7 +329,7 @@ export function FinanceForm({
     : {}
   const currentSubcategories = Object.keys(currentSubcategoriesObj).map((key) => ({
     value: key,
-    label: tFinCat(`subcategories.${key}`),
+    label: `${getSubcategoryEmoji(key)} ${tFinCat(`subcategories.${key}`)}`,
   }))
 
   // Получаем товары/услуги для выбранной подкатегории
@@ -274,7 +373,7 @@ export function FinanceForm({
           <Combobox
             options={accounts.map((acc) => ({
               id: acc.id,
-              label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ₽)`,
+              label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ${acc.currency})`,
             }))}
             value={selectedAccountId}
             onChange={(value) => {
@@ -284,6 +383,7 @@ export function FinanceForm({
             placeholder={t("finance.account")}
             allowCustom={false}
             searchable={true}
+            className="emoji"
           />
         </div>
       )}
@@ -310,19 +410,21 @@ export function FinanceForm({
               .filter((acc) => acc.id !== selectedAccountId)
               .map((acc) => ({
                 id: acc.id,
-                label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ₽)`,
+                label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ${acc.currency})`,
               }))}
             value={targetAccountId}
             onChange={(value) => setTargetAccountId(value as string)}
             placeholder={t("finance.account")}
             allowCustom={false}
             searchable={true}
+            className="emoji"
           />
         </div>
       )}
 
       {/* Зависимые выпадающие списки */}
       <DependentSelect
+        className="emoji"
         levels={[
           {
             label: t("finance.category"),
@@ -368,6 +470,7 @@ export function FinanceForm({
           placeholder={t("finance.supplier")}
           allowCustom={true}
           searchable={false}
+          className="emoji"
         />
       </div>
     </>

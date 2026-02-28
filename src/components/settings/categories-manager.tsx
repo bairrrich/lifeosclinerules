@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useTranslations } from "next-intl"
 import { Tag } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Button } from "@/components/ui/button"
+import { IconPicker } from "@/components/ui/icon-picker"
 import { CrudManager } from "@/components/shared"
 import { useSettings } from "./settings-context"
 import { LogType, FinanceType } from "@/types"
@@ -56,8 +57,20 @@ export function CategoriesManager() {
   ) => {
     return (
       <div className="space-y-3">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-4 gap-2 items-end">
           <div className="space-y-2">
+            <Label>{t("categories.icon")}</Label>
+            <div className="flex items-center gap-2">
+              <IconPicker value={item?.icon} onChange={(icon) => onChange({ icon })} />
+              <Input
+                value={item?.icon || ""}
+                onChange={(e) => onChange({ icon: e.target.value })}
+                placeholder={t("categories.iconPlaceholder")}
+                className="flex-1"
+              />
+            </div>
+          </div>
+          <div className="space-y-2 col-span-2">
             <Label>{t("categories.name")}</Label>
             <Input
               value={item?.name || ""}
@@ -79,16 +92,9 @@ export function CategoriesManager() {
             </NativeSelect>
           </div>
         </div>
-        <div className="flex items-end gap-2">
-          <div className="flex-1 space-y-2">
-            <Label className="sr-only">{t("categories.icon")}</Label>
-            <Input
-              value={item?.icon || ""}
-              onChange={(e) => onChange({ icon: e.target.value })}
-              placeholder={t("categories.icon")}
-            />
-          </div>
-          <div className="flex gap-2 pt-2">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground">{t("categories.iconHelp")}</p>
+          <div className="flex gap-2">
             <Button size="action-sm" onClick={onSave}>
               {tCommon("save")}
             </Button>
@@ -105,7 +111,7 @@ export function CategoriesManager() {
     return (
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          {item.icon && <span>{item.icon}</span>}
+          {item.icon ? <CategoryIcon name={item.icon} /> : <div className="w-5 h-5" />}
           <div className="flex flex-col min-w-0">
             <span className="font-medium truncate">{item.name}</span>
             <span className="text-xs text-muted-foreground">
@@ -164,4 +170,24 @@ export function CategoriesManager() {
       showActions={false}
     />
   )
+}
+
+// Компонент для рендеринга иконки категории
+function CategoryIcon({ name }: { name: string }) {
+  const [IconComponent, setIconComponent] = useState<React.ComponentType<{
+    className?: string
+    strokeWidth?: number
+  }> | null>(null)
+
+  useMemo(() => {
+    import(`lucide-react/dist/esm/icons/${name.toLowerCase()}`)
+      .then((module) => setIconComponent(() => module.default))
+      .catch(() => setIconComponent(null))
+  }, [name])
+
+  if (!IconComponent) {
+    return <Tag className="h-5 w-5 text-muted-foreground" />
+  }
+
+  return <IconComponent className="h-5 w-5" strokeWidth={1.5} />
 }

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { CrudManager } from "@/components/shared"
 import { useSettings, useUnitTypes } from "./settings-context"
 import type { Unit } from "@/types"
-import { getLocalizedEntityName } from "@/lib/db"
+import { getLocalizedEntityName, getLocalizedAbbreviation } from "@/lib/db"
 
 export function UnitsManager() {
   const t = useTranslations("settings")
@@ -21,17 +21,27 @@ export function UnitsManager() {
   const { units, editingUnit, setEditingUnit, createUnit, updateUnitData, deleteUnitData } =
     useSettings()
   const [localizedUnitNames, setLocalizedUnitNames] = useState<Record<string, string>>({})
+  const [localizedUnitAbbreviations, setLocalizedUnitAbbreviations] = useState<
+    Record<string, string>
+  >({})
 
   useEffect(() => {
-    loadLocalizedNames()
+    loadLocalizedData()
   }, [locale, units])
 
-  async function loadLocalizedNames() {
+  async function loadLocalizedData() {
     const localizedNames: Record<string, string> = {}
+    const localizedAbbreviations: Record<string, string> = {}
     for (const unit of units) {
       localizedNames[unit.id] = await getLocalizedEntityName("unit", unit.id, locale, unit.name)
+      localizedAbbreviations[unit.id] = await getLocalizedAbbreviation(
+        unit.id,
+        locale,
+        unit.abbreviation
+      )
     }
     setLocalizedUnitNames(localizedNames)
+    setLocalizedUnitAbbreviations(localizedAbbreviations)
   }
 
   // Получаем название типа на русском
@@ -110,7 +120,8 @@ export function UnitsManager() {
   const renderItem = (item: Unit, onEdit: () => void, onDelete: () => void) => {
     return (
       <div className="font-medium">
-        {localizedUnitNames[item.id] || item.name} ({item.abbreviation})
+        {localizedUnitNames[item.id] || item.name} (
+        {localizedUnitAbbreviations[item.id] || item.abbreviation})
       </div>
     )
   }

@@ -131,15 +131,408 @@ export default function NewItemPage() {
 
   const tFinCat = useTranslations("financeCategories")
 
-  // Получаем категории для текущего типа
-  const getCategoryOptions = (): string[] => {
-    if (type === "product") {
-      // Для продуктов используем подкатегории из финансов
-      const productSubcats = financeCategoriesStructure.expense?.product?.subcategories || {}
-      const productCats = Object.keys(productSubcats).map((key) => tFinCat(`subcategories.${key}`))
-      return [...productCats, ...existingCategories.filter((c) => !productCats.includes(c))]
+  // Emoji для категорий (зависит от типа предмета)
+  const getCategoryEmoji = (category: string, itemType: ItemType = type): string => {
+    const emojiSets: Record<ItemType, Record<string, string>> = {
+      // Vitamins (Витамины)
+      vitamin: {
+        // Russian
+        Витамины: "💊",
+        Минералы: "🧂",
+        БАД: "🌿",
+        Пробиотики: "🦠",
+        Омега: "🐟",
+        Протеин: "🥤",
+        Аминокислоты: "🧪",
+        Коллаген: "🧴",
+        Антиоксиданты: "🫐",
+        "Для иммунитета": "🛡️",
+        "Для энергии": "⚡",
+        "Для костей": "🦴",
+        "Для суставов": "🦵",
+        "Для сердца": "❤️",
+        "Для зрения": "👁️",
+        "Для волос": "💇",
+        "Для ногтей": "💅",
+        "Для кожи": "🧴",
+        // English - default categories
+        "Vitamin A": "🥕",
+        "Vitamin B": "💊",
+        "Vitamin C": "🍊",
+        "Vitamin D": "☀️",
+        "Vitamin E": "🌻",
+        "Vitamin K": "🥬",
+        Multivitamins: "💊",
+        Minerals: "🧂",
+        // English - other
+        Vitamins: "💊",
+        Supplements: "🌿",
+        Probiotics: "🦠",
+        Omega: "🐟",
+        Protein: "🥤",
+        "Amino acids": "🧪",
+        Collagen: "🧴",
+        Antioxidants: "🫐",
+        "For immunity": "🛡️",
+        "For energy": "⚡",
+        "For bones": "🦴",
+        "For joints": "🦵",
+        "For heart": "❤️",
+        "For vision": "👁️",
+        "For hair": "💇",
+        "For nails": "💅",
+        "For skin": "🧴",
+      },
+      // Medicines (Лекарства)
+      medicine: {
+        // Russian
+        Обезболивающие: "💉",
+        "Сердечно-сосудистые": "❤️",
+        Противовирусные: "🦠",
+        Антибиотики: "💊",
+        Жаропонижающие: "🌡️",
+        "От давления": "🩺",
+        "Для желудка": "🤢",
+        Антигистаминные: "🤧",
+        Успокоительные: "😴",
+        Противовоспалительные: "🔥",
+        Гормональные: "🧪",
+        Мочегонные: "💧",
+        "От кашля": "😷",
+        "Для горла": "🗣️",
+        "Для носа": "👃",
+        "Для глаз": "👁️",
+        Антисептики: "🧼",
+        Перевязочные: "🩹",
+        Сиропы: "🍯",
+        Таблетки: "💊",
+        Капли: "💧",
+        Мази: "🧴",
+        Спреи: "💨",
+        Порошки: "🧂",
+        Свечи: "🕯️",
+        Пластыри: "🩹",
+        // English - default categories
+        "Pain relievers": "💉",
+        Antipyretics: "🌡️",
+        Antivirals: "🦠",
+        Antibiotics: "💊",
+        Allergy: "🤧",
+        Digestive: "🤢",
+        Heart: "❤️",
+        "Nervous system": "🧠",
+        // English - other
+        Painkillers: "💉",
+        Cardiovascular: "❤️",
+        Antipyretic: "🌡️",
+        "For blood pressure": "🩺",
+        "For stomach": "🤢",
+        Antihistamines: "🤧",
+        Sedatives: "😴",
+        "Anti-inflammatory": "🔥",
+        Hormonal: "🧪",
+        Diuretics: "💧",
+        "For cough": "😷",
+        "For throat": "🗣️",
+        "For nose": "👃",
+        "For eyes": "👁️",
+        Antiseptics: "🧼",
+        Bandages: "🩹",
+        Syrups: "🍯",
+        Tablets: "💊",
+        Drops: "💧",
+        Ointments: "🧴",
+        Sprays: "💨",
+        Powders: "🧂",
+        Suppositories: "🕯️",
+        Plasters: "🩹",
+      },
+      // Herbs (Травы)
+      herb: {
+        // Russian
+        Травы: "🌿",
+        Корни: "🥕",
+        Цветы: "🌸",
+        Ягоды: "🍓",
+        Семена: "🌱",
+        Кора: "🪵",
+        Листва: "🍃",
+        Почки: "🌳",
+        Грибы: "🍄",
+        Чаи: "🍵",
+        Настойки: "🧪",
+        Отвары: "🍲",
+        Сборы: "🌿",
+        Экстракты: "💧",
+        Масла: "🫗",
+        Порошки: "🧂",
+        // English - default categories
+        Sedatives: "😴",
+        Immunity: "🛡️",
+        Digestion: "🤢",
+        Sleep: "😴",
+        Respiratory: "🫁",
+        Heart: "❤️",
+        Liver: "🫀",
+        Kidneys: "🫘",
+        // English - other
+        Herbs: "🌿",
+        Roots: "🥕",
+        Flowers: "🌸",
+        Berries: "🍓",
+        Seeds: "🌱",
+        Bark: "🪵",
+        Leaves: "🍃",
+        Buds: "🌳",
+        Mushrooms: "🍄",
+        Teas: "🍵",
+        Tinctures: "🧪",
+        Decoctions: "🍲",
+        Collections: "🌿",
+        Extracts: "💧",
+        Oils: "🫗",
+        Powders: "🧂",
+      },
+      // Cosmetics (Косметика)
+      cosmetic: {
+        // Russian
+        "Уход за лицом": "🧴",
+        "Уход за телом": "🛁",
+        "Уход за волосами": "💇",
+        Декоративная: "💄",
+        Парфюмерия: "🌺",
+        Гигиена: "🪥",
+        "Защита от солнца": "☀️",
+        "Для рук": "🤲",
+        "Для ног": "🦶",
+        "Для губ": "👄",
+        "Для ногтей": "💅",
+        Кремы: "🧴",
+        Маски: "🎭",
+        Скрабы: "🧽",
+        Шампуни: "🧴",
+        Бальзамы: "🧴",
+        Лосьоны: "🧴",
+        Гели: "🧴",
+        Сыворотки: "💧",
+        Тоники: "💧",
+        Пенки: "🫧",
+        Мыло: "🧼",
+        Дезодоранты: "💨",
+        Лаки: "💅",
+        Тушь: "👁️",
+        Помада: "💄",
+        Тени: "👁️",
+        Румяна: "🌸",
+        Пудра: "🧂",
+        Тональные: "🧴",
+        // English
+        "Face care": "🧴",
+        "Body care": "🛁",
+        "Hair care": "💇",
+        "Hand care": "🤲",
+        "Foot care": "🦶",
+        "Sun protection": "☀️",
+        "Decorative cosmetics": "💄",
+        "Nail care": "💅",
+        "Lip care": "👄",
+        Perfume: "🌺",
+        Hygiene: "🪥",
+        Creams: "🧴",
+        Masks: "🎭",
+        Scrubs: "🧽",
+        Shampoos: "🧴",
+        Balms: "🧴",
+        Lotions: "🧴",
+        Gels: "🧴",
+        Serums: "💧",
+        Toners: "💧",
+        Foams: "🫧",
+        Soaps: "🧼",
+        Deodorants: "💨",
+        Varnishes: "💅",
+        Mascara: "👁️",
+        Lipstick: "💄",
+        Eyeshadow: "👁️",
+        Blush: "🌸",
+        Powder: "🧂",
+        Foundation: "🧴",
+      },
+      // Products (Продукты) - includes finance subcategories
+      product: {
+        // Finance subcategories (from tFinCat)
+        dairy: "🥛",
+        meat: "🥩",
+        fish: "🐟",
+        vegetables: "🥬",
+        fruits: "🍎",
+        berries: "🫐",
+        cereals: "🌾",
+        bread: "🍞",
+        drinks: "🥤",
+        groceries: "🛒",
+        confectionery: "🍬",
+        frozen: "🧊",
+        // Russian names
+        Молочные: "🥛",
+        Мясо: "🥩",
+        Рыба: "🐟",
+        Овощи: "🥬",
+        Фрукты: "🍎",
+        Ягоды: "🫐",
+        Зёрна: "🌾",
+        Хлеб: "🍞",
+        Яйца: "🥚",
+        Орехи: "🥜",
+        Напитки: "🥤",
+        Сладости: "🍬",
+        Бакалея: "🛒",
+        Соусы: "🥫",
+        Специи: "🧂",
+        Консервы: "🥫",
+        Полуфабрикаты: "🍱",
+        Фастфуд: "🍔",
+        Масла: "🫒",
+        Чай: "🍵",
+        Кофе: "☕",
+        Соки: "🧃",
+        Вода: "💧",
+        Газировка: "🥤",
+        Алкоголь: "🍷",
+        Снеки: "🍿",
+        Чипсы: "🥔",
+        Шоколад: "🍫",
+        Конфеты: "🍬",
+        Печенье: "🍪",
+        Торты: "🎂",
+        Мороженое: "🍦",
+        Мёд: "🍯",
+        Варенье: "🍓",
+        Сгущёнка: "🥛",
+        Сыр: "🧀",
+        Колбаса: "🥓",
+        Сосиски: "🌭",
+        Пельмени: "🥟",
+        Макароны: "🍝",
+        Рис: "🍚",
+        Гречка: "🌾",
+        Овсянка: "🥣",
+      },
     }
-    return existingCategories.length > 0 ? existingCategories : getDefaultCategories(type, t)
+
+    const emojis = emojiSets[itemType] || emojiSets.product
+
+    // Поиск по ключу (частичное совпадение)
+    for (const [key, emoji] of Object.entries(emojis)) {
+      if (category.includes(key)) {
+        return emoji
+      }
+    }
+    return "📦" // Default
+  }
+
+  // Получаем emoji для формы выпуска
+  const getFormEmoji = (form: string): string => {
+    const emojis: Record<string, string> = {
+      // English
+      Tablets: "💊",
+      Capsules: "💊",
+      Pills: "💊",
+      Liquid: "💧",
+      Syrup: "🍯",
+      Drops: "💧",
+      Powder: "🧂",
+      Cream: "🧴",
+      Ointment: "🧴",
+      Gel: "🧴",
+      Spray: "💨",
+      Injection: "💉",
+      Patch: "🩹",
+      Suppository: "🕯️",
+      Tea: "🍵",
+      Tincture: "🧪",
+      Extract: "💧",
+      Oil: "🫗",
+      Balm: "🧴",
+      Lotion: "🧴",
+      Solution: "💧",
+      Suspension: "💧",
+      Granules: "🧂",
+      Chewable: "🍬",
+      Effervescent: "🫧",
+      // Russian
+      Таблетки: "💊",
+      Капсулы: "💊",
+      Пилюли: "💊",
+      Жидкость: "💧",
+      Сироп: "🍯",
+      Капли: "💧",
+      Порошок: "🧂",
+      Крем: "🧴",
+      Мазь: "🧴",
+      Гель: "🧴",
+      Спрей: "💨",
+      Инъекция: "💉",
+      Пластырь: "🩹",
+      Свечи: "🕯️",
+      Чай: "🍵",
+      Настойка: "🧪",
+      Экстракт: "💧",
+      Масло: "🫗",
+      Бальзам: "🧴",
+      Лосьон: "🧴",
+      Раствор: "💧",
+      Суспензия: "💧",
+      Гранулы: "🧂",
+      Жевательные: "🍬",
+      Шипучие: "🫧",
+    }
+
+    for (const [key, emoji] of Object.entries(emojis)) {
+      if (form.includes(key)) {
+        return emoji
+      }
+    }
+    return "💊" // Default
+  }
+
+  // Получаем категории для текущего типа с emoji
+  const getCategoryOptions = (): { id: string; label: string }[] => {
+    if (type === "product") {
+      // Для продуктов используем подкатегории из финансов с emoji
+      const productSubcats = financeCategoriesStructure.expense?.product?.subcategories || {}
+      const productCats = Object.keys(productSubcats).map((key) => ({
+        id: tFinCat(`subcategories.${key}`),
+        label: `${getCategoryEmoji(key, "product" as ItemType)} ${tFinCat(`subcategories.${key}`)}`,
+      }))
+
+      // Добавляем существующие категории
+      const existing = existingCategories
+        .filter((c) => !productCats.some((pc) => pc.id === c))
+        .map((c) => ({
+          id: c,
+          label: `${getCategoryEmoji(c, "product" as ItemType)} ${c}`,
+        }))
+
+      const result = [...productCats, ...existing]
+      console.log("[CategoryOptions] Product:", result)
+      return result
+    }
+
+    // Для витаминов, лекарств, трав, косметики
+    const categories =
+      existingCategories.length > 0 ? existingCategories : getDefaultCategories(type, t)
+
+    const result = categories.map((c) => ({
+      id: c,
+      label: `${getCategoryEmoji(c, type)} ${c}`,
+    }))
+
+    console.log("[CategoryOptions]", type, ":", result)
+    console.log("[CategoryOptions] existingCategories:", existingCategories)
+    console.log("[CategoryOptions] getDefaultCategories:", getDefaultCategories(type, t))
+
+    return result
   }
 
   const getDefaultCategories = (itemType: ItemType, t: any): string[] => {
@@ -212,7 +605,7 @@ export default function NewItemPage() {
               <div className="space-y-2">
                 <Label>{t("fields.category")}</Label>
                 <Combobox
-                  options={getCategoryOptions().map((opt) => ({ id: opt, label: opt }))}
+                  options={getCategoryOptions()}
                   value={selectedCategory}
                   onChange={(value) => {
                     setSelectedCategory(value as string)
@@ -221,6 +614,7 @@ export default function NewItemPage() {
                   placeholder={t("new.categoryPlaceholder")}
                   allowCustom={true}
                   searchable={false}
+                  className="emoji"
                 />
               </div>
 
@@ -263,7 +657,10 @@ export default function NewItemPage() {
                 <div className="space-y-2">
                   <Label>{t("fields.form")}</Label>
                   <Combobox
-                    options={formOptionsList.map((opt) => ({ id: opt, label: opt }))}
+                    options={formOptionsList.map((opt) => ({
+                      id: opt,
+                      label: `${getFormEmoji(opt)} ${opt}`,
+                    }))}
                     value={selectedForm}
                     onChange={(value) => {
                       setSelectedForm(value as string)
@@ -272,6 +669,7 @@ export default function NewItemPage() {
                     placeholder={t("new.formPlaceholder")}
                     allowCustom={true}
                     searchable={false}
+                    className="emoji"
                   />
                 </div>
               </div>

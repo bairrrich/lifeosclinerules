@@ -21,10 +21,11 @@ interface BookFormProps {
   data?: Partial<Book>
   authors: Author[]
   genres: Genre[]
+  publishers: string[]
   onChange: (data: Partial<Book>) => void
 }
 
-export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
+export function BookForm({ data, authors, genres, publishers, onChange }: BookFormProps) {
   const t = useTranslations("books")
   const [tags, setTags] = useState<string[]>(data?.tags || [])
 
@@ -39,6 +40,9 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
     id: genre.id,
     label: genre.name,
   }))
+
+  // Преобразуем издателей в опции для combobox
+  const publisherOptions = publishers.map((p) => ({ id: p, label: p }))
 
   const updateField = <K extends keyof Book>(field: K, value: Book[K]) => {
     onChange({ ...data, [field]: value })
@@ -167,11 +171,13 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="publisher">{t("fields.publisher")}</Label>
-            <Input
-              id="publisher"
-              placeholder={t("fields.publisher")}
+            <Combobox
+              options={publisherOptions}
               value={data?.publisher || ""}
-              onChange={(e) => updateField("publisher", e.target.value)}
+              onChange={(value) => updateField("publisher", value as string)}
+              placeholder={t("fields.publisher")}
+              allowCustom={true}
+              searchable={true}
             />
           </div>
         </CardContent>
