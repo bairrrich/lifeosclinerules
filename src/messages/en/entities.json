@@ -25,7 +25,8 @@
       "health": "Health",
       "education": "Education",
       "rent": "Rent",
-      "other_expense": "Other Expense"
+      "other_expense": "Other Expense",
+      "item": "Item/Service"
     }
   },
   "units": {
@@ -46,7 +47,16 @@
     "min": "Minutes",
     "h": "Hours",
     "sec": "Seconds",
-    "days": "Days"
+    "days": "Days",
+    "штука": "Pieces",
+    "зубчик": "Cloves",
+    "щепотка": "Pinch",
+    "по вкусу": "To Taste",
+    "минута": "Minutes",
+    "час": "Hours",
+    "рубль": "Rubles",
+    "доллар": "Dollars",
+    "евро": "Euros"
   },
   "accounts": {
     "cash": "Cash",
@@ -54,6 +64,81 @@
     "bank": "Bank Account",
     "deposit": "Deposit",
     "investment": "Investment Account",
-    "crypto": "Crypto Wallet"
+    "crypto": "Crypto Wallet",
+    "Вклад": "Deposit Account",
+    "Брокерский счёт": "Brokerage Account",
+    "ИИС": "Individual Investment Account",
+    "Крипто-кошелёк": "Crypto Wallet"
+  },
+  "tags": {
+    "полезно": "Healthy",
+    "вкусно": "Tasty",
+    "быстро": "Quick",
+    "важно": "Important",
+    "проверено": "Verified",
+    "любимое": "Favorite"
+  },
+  "itemCategories": {
+    "Витамины": "Vitamins",
+    "Лекарства": "Medicines",
+    "Травы": "Herbs",
+    "Косметика": "Cosmetics",
+    "Продукты": "Products",
+    "Обезболивающие": "Painkillers",
+    "Сердечно-сосудистые": "Cardiovascular",
+    "Уход за лицом": "Face Care",
+    "Уход за волосами": "Hair Care",
+    "Защита от солнца": "Sun Protection",
+    "Молочные": "Dairy Products",
+    "Выпечка": "Bakery"
+  },
+  "bookGenres": {
+    "Саморазвитие": "Self-Help",
+    "Финансы": "Finance",
+    "Психология": "Psychology",
+    "Бизнес": "Business",
+    "Здоровье": "Health"
+  },
+  "financeSuppliers": {
+    "Продукты": ["Magnit", "Pyaterochka", "Azbuka Vkusa", "Perekrestok", "Yandex.Eda", "Samokat"],
+    "Транспорт": ["Yandex.Taxi", "Uber", "Sitimobil", "Lukoil", "Gazprom"],
+    "Развлечения": ["Netflix", "Yandex.Plus", "YouTube Premium", "Cinema"],
+    "Здоровье": ["Apteka.ru", "Rigla", "Zivika", "Gorzdrav"],
+    "Связь": ["MTS", "Beeline", "MegaFon", "Tele2", "Rostelecom"]
+  },
+  "recipeIngredients": {
+    "vegetable": {
+      "Помидоры": "Tomatoes",
+      "Лук репчатый": "Onion",
+      "Чеснок": "Garlic",
+      "Морковь": "Carrot",
+      "Картофель": "Potato",
+      "Огурцы": "Cucumbers",
+      "Перец болгарский": "Bell Pepper"
+    },
+    "meat": {
+      "Куриное филе": "Chicken Fillet",
+      "Говядина": "Beef",
+      "Бекон": "Bacon"
+    },
+    "dairy": {
+      "Яйца": "Eggs",
+      "Сливки 20%": "Cream 20%",
+      "Сыр Пармезан": "Parmesan Cheese",
+      "Молоко": "Milk"
+    },
+    "grains": {
+      "Спагетти": "Spaghetti",
+      "Рис": "Rice",
+      "Овсяные хлопья": "Oatmeal"
+    },
+    "spice": {
+      "Соль": "Salt",
+      "Чёрный перец": "Black Pepper"
+    },
+    "herb": {
+      "Базилик": "Basil",
+      "Орегано": "Oregano"
+    }
   }
 }

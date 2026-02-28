@@ -959,7 +959,15 @@ export interface RecurringTransaction extends BaseEntity {
 // Локализация сущностей
 // ============================================
 
-export type EntityType = "category" | "unit" | "account"
+export type EntityType =
+  | "category"
+  | "unit"
+  | "account"
+  | "tag"
+  | "itemCategory"
+  | "bookGenre"
+  | "recipeIngredient"
+  | "financeSupplier"
 
 export interface EntityTranslation extends BaseEntity {
   entity_type: EntityType

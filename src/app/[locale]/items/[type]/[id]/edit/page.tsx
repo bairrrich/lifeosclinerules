@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ComboboxSelect } from "@/components/logs/combobox-select"
 import { db, getEntityById, updateEntity, getAllEntities } from "@/lib/db"
 import type { ItemType, Item } from "@/types"
-import { financeCategories } from "@/components/logs/finance-form"
+import { financeCategoriesStructure } from "@/lib/finance-categories"
 
 const itemSchema = z.object({
   name: z.string().min(1, "Введите название"),
@@ -155,6 +155,8 @@ export default function EditItemPage() {
   const [existingManufacturers, setExistingManufacturers] = useState<string[]>([])
   const [existingCategories, setExistingCategories] = useState<string[]>([])
 
+  const tFinCat = useTranslations("financeCategories")
+
   const {
     register,
     handleSubmit,
@@ -169,7 +171,8 @@ export default function EditItemPage() {
   const getCategoryOptions = (): string[] => {
     if (type === "product") {
       // Для продуктов используем подкатегории из финансов
-      const productCats = Object.keys(financeCategories.expense?.["Продукты"]?.subcategories || {})
+      const productSubcats = financeCategoriesStructure.expense?.product?.subcategories || {}
+      const productCats = Object.keys(productSubcats).map((key) => tFinCat(`subcategories.${key}`))
       return [...productCats, ...existingCategories.filter((c) => !productCats.includes(c))]
     }
     return existingCategories.length > 0 ? existingCategories : getDefaultCategories(type)
@@ -351,7 +354,7 @@ export default function EditItemPage() {
 
               <ComboboxSelect
                 label={t("fields.category")}
-                options={getCategoryOptions()}
+                options={getCategoryOptions().map((opt) => ({ value: opt, label: opt }))}
                 value={selectedCategory}
                 onChange={(value) => {
                   setSelectedCategory(value)
@@ -383,7 +386,7 @@ export default function EditItemPage() {
               </div>
               <ComboboxSelect
                 label={t("fields.form")}
-                options={formOptionsList}
+                options={formOptionsList.map((opt) => ({ value: opt, label: opt }))}
                 value={selectedForm}
                 onChange={(value) => {
                   setSelectedForm(value)
@@ -488,7 +491,7 @@ export default function EditItemPage() {
             <CardContent className="space-y-4">
               <ComboboxSelect
                 label={t("fields.manufacturer")}
-                options={manufacturerOptionsList}
+                options={manufacturerOptionsList.map((opt) => ({ value: opt, label: opt }))}
                 value={selectedManufacturer}
                 onChange={(value) => {
                   setSelectedManufacturer(value)

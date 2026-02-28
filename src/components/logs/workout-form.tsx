@@ -653,7 +653,7 @@ export function WorkoutForm({
             {currentEquipment.length > 0 && (
               <ComboboxSelect
                 label={t("workout.equipment")}
-                options={currentEquipment}
+                options={currentEquipment.map((opt) => ({ value: opt, label: opt }))}
                 value={workoutEquipment}
                 onChange={setWorkoutEquipment}
                 placeholder={t("workout.equipment")}

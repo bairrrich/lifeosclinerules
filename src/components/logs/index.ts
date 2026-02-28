@@ -11,13 +11,11 @@ export {
   getEquipmentOptions,
   getGoalOptions,
 } from "./workout-form"
+export { FinanceForm, type FinanceFormData, accountTypeLabels } from "./finance-form"
 export {
-  FinanceForm,
-  type FinanceFormData,
-  financeCategories,
-  suppliers,
-  accountTypeLabels,
-} from "./finance-form"
+  financeCategoriesStructure as financeCategories,
+  financeSuppliers as suppliers,
+} from "@/lib/finance-categories"
 
 // Общие константы
 export const categoryColors: Record<string, string> = {

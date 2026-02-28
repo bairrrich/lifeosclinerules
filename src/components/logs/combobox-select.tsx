@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 
 interface ComboboxSelectProps {
   label: string
-  options: string[]
+  options: { value: string; label: string }[]
   value: string
   onChange: (value: string) => void
   placeholder?: string
@@ -53,7 +53,9 @@ export function ComboboxSelect({
             className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
             <span className={value ? "" : "text-muted-foreground"}>
-              {value || placeholder || t("combobox.selectPlaceholder")}
+              {value
+                ? options.find((opt) => opt.value === value)?.label || value
+                : placeholder || t("combobox.selectPlaceholder")}
             </span>
             <ChevronDown className="h-4 w-4 opacity-50" />
           </button>
@@ -62,17 +64,17 @@ export function ComboboxSelect({
               <div className="max-h-60 overflow-auto p-1">
                 {options.map((option) => (
                   <button
-                    key={option}
+                    key={option.value}
                     type="button"
                     onClick={() => {
-                      onChange(option)
+                      onChange(option.value)
                       setIsOpen(false)
                     }}
                     className={`w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-accent ${
-                      value === option ? "bg-accent" : ""
+                      value === option.value ? "bg-accent" : ""
                     }`}
                   >
-                    {option}
+                    {option.label}
                   </button>
                 ))}
               </div>

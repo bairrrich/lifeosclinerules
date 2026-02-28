@@ -16,7 +16,15 @@ import {
 import { db, getLocalizedEntityName, saveEntityTranslation, getEntityTranslations } from "@/lib/db"
 
 export interface EntityTranslationsProps {
-  entityType: "category" | "unit" | "account"
+  entityType:
+    | "category"
+    | "unit"
+    | "account"
+    | "tag"
+    | "itemCategory"
+    | "bookGenre"
+    | "recipeIngredient"
+    | "financeSupplier"
   entityId: string
   defaultName: string
 }

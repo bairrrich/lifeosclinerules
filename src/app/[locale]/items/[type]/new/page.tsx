@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ComboboxSelect } from "@/components/logs/combobox-select"
 import { db, createEntity, initializeDatabase, getAllEntities } from "@/lib/db"
 import type { ItemType, Item } from "@/types"
-import { financeCategories } from "@/components/logs/finance-form"
+import { financeCategoriesStructure } from "@/lib/finance-categories"
 
 // Form schema
 const itemSchema = z.object({
@@ -118,13 +118,14 @@ export default function NewItemPage() {
     loadData()
   }, [type])
 
+  const tFinCat = useTranslations("financeCategories")
+
   // Получаем категории для текущего типа
   const getCategoryOptions = (): string[] => {
     if (type === "product") {
       // Для продуктов используем подкатегории из финансов
-      const productCats = Object.keys(
-        financeCategories.expense?.[t("financeCategories.product")]?.subcategories || {}
-      )
+      const productSubcats = financeCategoriesStructure.expense?.product?.subcategories || {}
+      const productCats = Object.keys(productSubcats).map((key) => tFinCat(`subcategories.${key}`))
       return [...productCats, ...existingCategories.filter((c) => !productCats.includes(c))]
     }
     return existingCategories.length > 0 ? existingCategories : getDefaultCategories(type, t)
@@ -199,7 +200,7 @@ export default function NewItemPage() {
 
               <ComboboxSelect
                 label={t("fields.category")}
-                options={getCategoryOptions()}
+                options={getCategoryOptions().map((opt) => ({ value: opt, label: opt }))}
                 value={selectedCategory}
                 onChange={(value) => {
                   setSelectedCategory(value)
@@ -245,7 +246,7 @@ export default function NewItemPage() {
 
               <ComboboxSelect
                 label={t("fields.form")}
-                options={formOptionsList}
+                options={formOptionsList.map((opt) => ({ value: opt, label: opt }))}
                 value={selectedForm}
                 onChange={(value) => {
                   setSelectedForm(value)
@@ -359,7 +360,7 @@ export default function NewItemPage() {
             <CardContent className="space-y-4">
               <ComboboxSelect
                 label={t("fields.manufacturer")}
-                options={manufacturerOptionsList}
+                options={manufacturerOptionsList.map((opt) => ({ value: opt, label: opt }))}
                 value={selectedManufacturer}
                 onChange={(value) => {
                   setSelectedManufacturer(value)

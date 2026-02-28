@@ -252,13 +252,21 @@ const entityTranslations: Record<string, typeof enEntities> = {
 
 /**
  * Получить перевод сущности из статических файлов
- * @param entityType - тип сущности (categories, units, accounts)
+ * @param entityType - тип сущности (categories, units, accounts, tags, itemCategories, bookGenres, recipeIngredients, financeSuppliers)
  * @param entityKey - ключ сущности (например, "food", "salary")
  * @param locale - язык (en, ru)
- * @param subKey - подкатегория (например, "finance" для категорий)
+ * @param subKey - подкатегория (например, "finance" для категорий или "vegetable" для ингредиентов)
  */
 export function getStaticEntityTranslation(
-  entityType: "categories" | "units" | "accounts",
+  entityType:
+    | "categories"
+    | "units"
+    | "accounts"
+    | "tags"
+    | "itemCategories"
+    | "bookGenres"
+    | "recipeIngredients"
+    | "financeSuppliers",
   entityKey: string,
   locale: string,
   subKey?: string
@@ -278,7 +286,23 @@ export function getStaticEntityTranslation(
     }
   }
 
-  // Для units и accounts - прямой перевод по ключу
+  // Для recipeIngredients используем подкатегорию (vegetable, meat, dairy, etc.)
+  if (entityType === "recipeIngredients" && subKey) {
+    const subData = entityData[subKey] as Record<string, string> | undefined
+    if (subData && subData[entityKey]) {
+      return subData[entityKey]
+    }
+  }
+
+  // Для financeSuppliers возвращаем список поставщиков по категории
+  if (entityType === "financeSuppliers" && subKey) {
+    const subData = entityData[subKey] as string[] | undefined
+    if (subData) {
+      return subData.join(", ")
+    }
+  }
+
+  // Для units, accounts, tags, itemCategories, bookGenres - прямой перевод по ключу
   const directTranslation = (entityData as Record<string, string>)[entityKey]
   return directTranslation || entityKey
 }
@@ -287,26 +311,45 @@ export function getStaticEntityTranslation(
  * Получить все переводы для типа сущности
  */
 export function getEntityTranslationsByType(
-  entityType: "categories" | "units" | "accounts",
+  entityType:
+    | "categories"
+    | "units"
+    | "accounts"
+    | "tags"
+    | "itemCategories"
+    | "bookGenres"
+    | "recipeIngredients"
+    | "financeSuppliers",
   locale: string
-): Record<string, string> | Record<string, Record<string, string>> {
+): Record<string, string> | Record<string, Record<string, string>> | Record<string, string[]> {
   const translations = entityTranslations[locale] || entityTranslations["en"]
 
   if (!translations) return {}
 
-  return (translations as Record<string, Record<string, unknown>>)[entityType] || {}
+  return ((translations as Record<string, Record<string, unknown>>)[entityType] || {}) as
+    | Record<string, string>
+    | Record<string, Record<string, string>>
+    | Record<string, string[]>
 }
 
 /**
  * Получить локализованное название сущности
- * @param entityType - тип сущности (category, unit, account)
+ * @param entityType - тип сущности (category, unit, account, tag, itemCategory, bookGenre, recipeIngredient, financeSupplier)
  * @param entityId - ID сущности
  * @param locale - язык (en, ru)
  * @param defaultName - название по умолчанию (из основной таблицы)
- * @param categoryType - тип категории для категорий (food, workout, finance)
+ * @param categoryType - тип категории для категорий (food, workout, finance) или подкатегория для ингредиентов (vegetable, meat, dairy) или поставщиков (Продукты, Транспорт)
  */
 export async function getLocalizedEntityName(
-  entityType: "category" | "unit" | "account",
+  entityType:
+    | "category"
+    | "unit"
+    | "account"
+    | "tag"
+    | "itemCategory"
+    | "bookGenre"
+    | "recipeIngredient"
+    | "financeSupplier",
   entityId: string,
   locale: string,
   defaultName: string,
@@ -316,17 +359,19 @@ export async function getLocalizedEntityName(
     return defaultName
   }
 
-  // Сначала пробуем найти перевод по ID в базе данных
-  const translation = await db.entityTranslations
-    .where({
-      entity_type: entityType,
-      entity_id: entityId,
-      locale: locale as "en" | "ru",
-    })
-    .first()
+  // Сначала пробуем найти перевод по ID в базе данных (для category, unit, account)
+  if (["category", "unit", "account"].includes(entityType)) {
+    const translation = await db.entityTranslations
+      .where({
+        entity_type: entityType as "category" | "unit" | "account",
+        entity_id: entityId,
+        locale: locale as "en" | "ru",
+      })
+      .first()
 
-  if (translation?.name) {
-    return translation.name
+    if (translation?.name) {
+      return translation.name
+    }
   }
 
   // Если нет в БД, пробуем статический перевод по ключу
@@ -335,13 +380,42 @@ export async function getLocalizedEntityName(
   if (entityType === "category" && categoryType) {
     // Для категорий используем подкатегорию (food, workout, finance)
     staticTranslation = getStaticEntityTranslation("categories", defaultName, locale, categoryType)
-  } else {
-    // Для units и accounts - прямой перевод по ключу
+  } else if (entityType === "recipeIngredient" && categoryType) {
+    // Для ингредиентов рецептов используем подкатегорию (vegetable, meat, dairy, grains, spice, herb)
     staticTranslation = getStaticEntityTranslation(
-      entityType === "category" ? "categories" : entityType === "unit" ? "units" : "accounts",
+      "recipeIngredients",
       defaultName,
-      locale
+      locale,
+      categoryType
     )
+  } else if (entityType === "financeSupplier" && categoryType) {
+    // Для поставщиков используем категорию (Продукты, Транспорт, etc.)
+    staticTranslation = getStaticEntityTranslation(
+      "financeSuppliers",
+      defaultName,
+      locale,
+      categoryType
+    )
+  } else {
+    // Для units, accounts, tags, itemCategories, bookGenres - прямой перевод по ключу
+    const staticEntityType =
+      entityType === "category"
+        ? "categories"
+        : entityType === "unit"
+          ? "units"
+          : entityType === "account"
+            ? "accounts"
+            : entityType === "tag"
+              ? "tags"
+              : entityType === "itemCategory"
+                ? "itemCategories"
+                : entityType === "bookGenre"
+                  ? "bookGenres"
+                  : entityType === "financeSupplier"
+                    ? "financeSuppliers"
+                    : "recipeIngredients"
+
+    staticTranslation = getStaticEntityTranslation(staticEntityType, defaultName, locale)
   }
 
   return staticTranslation !== defaultName ? staticTranslation : defaultName
@@ -351,7 +425,15 @@ export async function getLocalizedEntityName(
  * Сохранить перевод названия сущности
  */
 export async function saveEntityTranslation(
-  entityType: "category" | "unit" | "account",
+  entityType:
+    | "category"
+    | "unit"
+    | "account"
+    | "tag"
+    | "itemCategory"
+    | "bookGenre"
+    | "recipeIngredient"
+    | "financeSupplier",
   entityId: string,
   locale: "en" | "ru",
   name: string
@@ -383,7 +465,15 @@ export async function saveEntityTranslation(
  * Удалить перевод сущности
  */
 export async function deleteEntityTranslation(
-  entityType: "category" | "unit" | "account",
+  entityType:
+    | "category"
+    | "unit"
+    | "account"
+    | "tag"
+    | "itemCategory"
+    | "bookGenre"
+    | "recipeIngredient"
+    | "financeSupplier",
   entityId: string,
   locale: "en" | "ru"
 ): Promise<void> {
@@ -404,7 +494,15 @@ export async function deleteEntityTranslation(
  * Получить все переводы для сущности
  */
 export async function getEntityTranslations(
-  entityType: "category" | "unit" | "account",
+  entityType:
+    | "category"
+    | "unit"
+    | "account"
+    | "tag"
+    | "itemCategory"
+    | "bookGenre"
+    | "recipeIngredient"
+    | "financeSupplier",
   entityId: string
 ): Promise<{ en?: string; ru?: string }> {
   const translations = await db.entityTranslations

@@ -9,6 +9,7 @@ import { ComboboxSelect } from "./combobox-select"
 import { useTranslations } from "next-intl"
 import { DependentSelect } from "@/components/shared/forms"
 import type { FinanceType, Account } from "@/types"
+import { financeSuppliers } from "@/lib/finance-categories"
 
 // ============================================
 // Схема валидации
@@ -33,90 +34,8 @@ const financeSchema = baseLogSchema.extend({
 export type FinanceFormData = z.infer<typeof financeSchema>
 
 // ============================================
-// Константы
-// ============================================
-
-// Финансовые категории по типам
-export const financeCategories: Record<
-  string,
-  Record<string, { subcategories: Record<string, string[]> }>
-> = {
-  income: {
-    Зарплата: { subcategories: { Основная: [], Премия: [], Надбавка: [] } },
-    Фриланс: { subcategories: { Разработка: [], Дизайн: [], Консультации: [] } },
-    Инвестиции: { subcategories: { Дивиденды: [], Проценты: [], Купоны: [] } },
-    Прочее: { subcategories: { Подарки: [], Возврат: [], Другое: [] } },
-  },
-  expense: {
-    Продукты: {
-      subcategories: {
-        Молочные: ["Молоко", "Сыр", "Творог", "Сметана", "Кефир", "Йогурт", "Масло сливочное"],
-        Мясо: ["Говядина", "Свинина", "Баранина", "Курица", "Индейка", "Утка"],
-        Рыба: ["Форель", "Сельдь", "Лосось", "Треска", "Карп", "Судак", "Скумбрия"],
-        Овощи: ["Картофель", "Морковь", "Лук", "Свекла", "Огурцы", "Помидоры", "Капуста", "Перец"],
-        Фрукты: ["Яблоки", "Бананы", "Апельсины", "Мандарины", "Груши", "Виноград", "Киви"],
-        Ягоды: ["Клубника", "Малина", "Черника", "Смородина", "Вишня", "Клюква"],
-        Крупы: ["Рис", "Гречка", "Овсянка", "Манка", "Пшено", "Перловка"],
-        Хлеб: ["Белый хлеб", "Чёрный хлеб", "Батон", "Булочки", "Лаваш"],
-        Напитки: ["Чай", "Кофе", "Соки", "Вода", "Газировка", "Квас"],
-        Бакалея: ["Макароны", "Сахар", "Соль", "Мука", "Масло растительное", "Уксус"],
-        Кондитерские: ["Шоколад", "Конфеты", "Печенье", "Торты", "Мёд", "Варенье"],
-        Заморозка: ["Пельмени", "Вареники", "Овощная смесь", "Ягоды замороженные", "Мороженое"],
-      },
-    },
-    Транспорт: {
-      subcategories: {
-        Такси: ["Яндекс.Такси", "Uber", "Ситимобил"],
-        Общественный: ["Метро", "Автобус", "Трамвай"],
-        Топливо: ["Лукойл", "Газпром", "Роснефть"],
-      },
-    },
-    Развлечения: {
-      subcategories: {
-        Кино: [],
-        Концерты: [],
-        "Кафе/Рестораны": [],
-        Подписки: ["Netflix", "Яндекс.Плюс", "YouTube Premium"],
-      },
-    },
-    Здоровье: {
-      subcategories: { Аптека: ["Аптека.ру", "Ригла", "Живика"], Врач: [], Спортзал: [] },
-    },
-    Одежда: { subcategories: { Обувь: [], "Верхняя одежда": [], Повседневное: [] } },
-    Жильё: { subcategories: { Аренда: [], Коммунальные: [], Ремонт: [] } },
-    Связь: {
-      subcategories: {
-        Мобильная: ["МТС", "Билайн", "Мегафон", "Tele2"],
-        Интернет: ["Ростелеком", "Дом.ру"],
-        ТВ: [],
-      },
-    },
-    Образование: { subcategories: { Курсы: [], Книги: [], Репетитор: [] } },
-    Прочее: { subcategories: { Подарки: [], Бытовое: [], Другое: [] } },
-  },
-  transfer: {
-    Перевод: {
-      subcategories: {
-        "На карту": ["Сбербанк", "Тинькофф", "Альфа"],
-        "На счёт": [],
-        "В наличные": [],
-      },
-    },
-    Пополнение: { subcategories: { "С карты": ["Сбербанк", "Тинькофф", "Альфа"], Наличными: [] } },
-  },
-}
-
-// Поставщики по категориям
-export const suppliers: Record<string, string[]> = {
-  Продукты: ["Магнит", "Пятёрочка", "Азбука Вкуса", "Перекрёсток", "Яндекс.Еда", "Самокат"],
-  Транспорт: ["Яндекс.Такси", "Uber", "Ситимобил", "Лукойл", "Газпром"],
-  Развлечения: ["Netflix", "Яндекс.Плюс", "YouTube Premium", "Кинотеатр"],
-  Здоровье: ["Аптека.ру", "Ригла", "Живика", "Горздрав"],
-  Связь: ["МТС", "Билайн", "Мегафон", "Tele2", "Ростелеком"],
-  default: [],
-}
-
 // Типы аккаунтов с иконками
+// ============================================
 export const accountTypeLabels: Record<string, string> = {
   cash: "💵 Cash",
   card: "💳 Card",
@@ -129,7 +48,6 @@ export const accountTypeLabels: Record<string, string> = {
 // ============================================
 // Интерфейсы
 // ============================================
-
 interface FinanceFormProps {
   register: UseFormRegister<FinanceFormData>
   watch: UseFormWatch<FinanceFormData>
@@ -180,6 +98,7 @@ export function FinanceForm({
   const t = useTranslations("logs")
   const tCommon = useTranslations("common")
   const tSettings = useTranslations("settings")
+  const tFinCat = useTranslations("financeCategories")
 
   // Get account type label with translation
   const getAccountTypeLabel = (type: string) => {
@@ -202,25 +121,136 @@ export function FinanceForm({
     return `${icons[type] || ""} ${labels[type] || type}`
   }
 
+  // Структура финансовых категорий с ключами переводов
+  const financeCategoriesStructure: Record<
+    string,
+    Record<string, { subcategories: Record<string, string[]> }>
+  > = {
+    income: {
+      salary: { subcategories: { main: [], bonus: [], allowance: [] } },
+      freelance: { subcategories: { development: [], design: [], consulting: [] } },
+      investments: { subcategories: { dividends: [], interest: [], coupons: [] } },
+      other: { subcategories: { gifts: [], refund: [], other: [] } },
+    },
+    expense: {
+      product: {
+        subcategories: {
+          dairy: ["milk", "cheese", "cottageCheese", "sourCream", "kefir", "yogurt", "butter"],
+          meat: ["beef", "pork", "lamb", "chicken", "turkey", "duck"],
+          fish: ["trout", "herring", "salmon", "cod", "carp", "pikeperch", "mackerel"],
+          vegetables: [
+            "potato",
+            "carrot",
+            "onion",
+            "beet",
+            "cucumber",
+            "tomato",
+            "cabbage",
+            "pepper",
+          ],
+          fruits: ["apples", "bananas", "oranges", "tangerines", "pears", "grape", "kiwi"],
+          berries: ["strawberry", "raspberry", "blueberry", "currant", "cherry", "cranberry"],
+          cereals: ["rice", "buckwheat", "oatmeal", "semolina", "millet", "barley"],
+          bread: ["whiteBread", "blackBread", "baton", "buns", "lavash"],
+          drinks: ["tea", "coffee", "juices", "water", "soda", "kvass"],
+          groceries: ["pasta", "sugar", "salt", "flour", "vegetableOil", "vinegar"],
+          confectionery: ["chocolate", "candy", "cookies", "cakes", "honey", "jam"],
+          frozen: ["dumplings", "vareniki", "vegetableMix", "frozenBerries", "iceCream"],
+        },
+      },
+      transport: {
+        subcategories: {
+          taxi: ["yandexTaxi", "uber", "sitimobil"],
+          public: ["metro", "bus", "tram"],
+          fuel: ["lukoil", "gazprom", "rosneft"],
+        },
+      },
+      entertainment: {
+        subcategories: {
+          cinema: [],
+          concerts: [],
+          cafe: [],
+          subscriptions: ["netflix", "yandexPlus", "youtubePremium"],
+        },
+      },
+      health: {
+        subcategories: {
+          pharmacy: ["aptekaRu", "rigla", "zivika", "gordrav"],
+          doctor: [],
+          gym: [],
+        },
+      },
+      clothing: { subcategories: { shoes: [], outerwear: [], casual: [] } },
+      housing: { subcategories: { rent: [], utilities: [], repair: [] } },
+      communication: {
+        subcategories: {
+          mobile: ["mts", "beeline", "megafon", "tele2"],
+          internet: ["rostelecom", "domRu"],
+          tv: [],
+        },
+      },
+      education: { subcategories: { courses: [], books: [], tutor: [] } },
+      other: { subcategories: { gifts: [], other: [] } },
+    },
+    transfer: {
+      transfer: {
+        subcategories: {
+          toCard: ["sberbank", "tinkoff", "alfa"],
+          toAccount: [],
+          toCash: [],
+        },
+      },
+      topUp: {
+        subcategories: {
+          fromCard: ["sberbank", "tinkoff", "alfa"],
+          inCash: [],
+        },
+      },
+    },
+  }
+
+  // Маппинг категорий для suppliers
+  const categoryToSupplierKey: Record<string, string> = {
+    product: "product",
+    transport: "transport",
+    entertainment: "entertainment",
+    health: "health",
+    communication: "communication",
+  }
+
   // Получаем категории для текущего типа финансов
-  const currentFinanceCategories = Object.keys(financeCategories[financeType] || {})
+  const currentFinanceCategoriesObj = financeCategoriesStructure[financeType] || {}
+  const currentFinanceCategories = Object.keys(currentFinanceCategoriesObj).map((key) => ({
+    value: key,
+    label: tFinCat(key),
+  }))
 
   // Получаем подкатегории для выбранной категории
-  const currentSubcategories =
-    financeCategory && financeCategories[financeType]?.[financeCategory]
-      ? Object.keys(financeCategories[financeType][financeCategory].subcategories)
-      : []
+  const currentSubcategoriesObj = financeCategory
+    ? currentFinanceCategoriesObj[financeCategory]?.subcategories || {}
+    : {}
+  const currentSubcategories = Object.keys(currentSubcategoriesObj).map((key) => ({
+    value: key,
+    label: tFinCat(`subcategories.${key}`),
+  }))
 
   // Получаем товары/услуги для выбранной подкатегории
-  const currentItems =
-    financeCategory &&
-    financeSubcategory &&
-    financeCategories[financeType]?.[financeCategory]?.subcategories[financeSubcategory]
-      ? financeCategories[financeType][financeCategory].subcategories[financeSubcategory]
-      : []
+  const currentItemsObj =
+    financeCategory && financeSubcategory ? currentSubcategoriesObj[financeSubcategory] || [] : []
+  const currentItems = currentItemsObj.map((key) => ({
+    value: key,
+    label: tFinCat(`items.${key}`),
+  }))
 
   // Получаем поставщиков для категории
-  const currentSuppliers = financeCategory ? suppliers[financeCategory] || suppliers["default"] : []
+  const supplierKey = financeCategory ? categoryToSupplierKey[financeCategory] : null
+  const currentSuppliersObj = supplierKey
+    ? financeSuppliers[supplierKey] || financeSuppliers["default"]
+    : []
+  const currentSuppliers = currentSuppliersObj.map((key) => ({
+    value: key,
+    label: tFinCat(`suppliers.${key}`),
+  }))
 
   return (
     <>

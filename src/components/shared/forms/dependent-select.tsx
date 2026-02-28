@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 
 export interface DependentLevel {
   label: string
-  options: string[]
+  options: { value: string; label: string }[]
   value: string
   onChange: (value: string) => void
   placeholder?: string
@@ -92,7 +92,11 @@ export function DependentSelect({ levels, className }: DependentSelectProps) {
                     !level.value && "text-muted-foreground"
                   )}
                 >
-                  <span>{level.value || level.placeholder || t("combobox.selectPlaceholder")}</span>
+                  <span>
+                    {level.value
+                      ? level.options.find((opt) => opt.value === level.value)?.label || level.value
+                      : level.placeholder || t("combobox.selectPlaceholder")}
+                  </span>
                   <ChevronDown
                     className={cn(
                       "h-4 w-4 opacity-50 transition-transform",
@@ -106,15 +110,15 @@ export function DependentSelect({ levels, className }: DependentSelectProps) {
                     <div className="max-h-60 overflow-auto p-1">
                       {level.options.map((option) => (
                         <button
-                          key={option}
+                          key={option.value}
                           type="button"
-                          onClick={() => handleSelect(levelIndex, option)}
+                          onClick={() => handleSelect(levelIndex, option.value)}
                           className={cn(
                             "w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-accent",
-                            level.value === option && "bg-accent"
+                            level.value === option.value && "bg-accent"
                           )}
                         >
-                          {option}
+                          {option.label}
                         </button>
                       ))}
                     </div>

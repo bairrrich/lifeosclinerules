@@ -1119,7 +1119,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             <>
               <ComboboxSelect
                 label={t("food.productCategory")}
-                options={Object.keys(getFoodProducts(t))}
+                options={Object.keys(getFoodProducts(t)).map((opt) => ({ value: opt, label: opt }))}
                 value={productCategory}
                 onChange={(value) => {
                   setProductCategory(value)
@@ -1131,7 +1131,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
               {productCategory && (
                 <ComboboxSelect
                   label={t("food.product")}
-                  options={currentSubcategories}
+                  options={currentSubcategories.map((opt) => ({ value: opt, label: opt }))}
                   value={productSubcategory}
                   onChange={setProductSubcategory}
                   placeholder={t("food.product")}
