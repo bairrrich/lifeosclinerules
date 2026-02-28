@@ -608,8 +608,6 @@ export default function NewLogPage() {
                   setFinanceSubcategory={setFinanceSubcategory}
                   financeItem={financeItem}
                   setFinanceItem={setFinanceItem}
-                  workoutIntensity={workoutIntensity}
-                  setWorkoutIntensity={setWorkoutIntensity}
                   financeSupplier={financeSupplier}
                   setFinanceSupplier={setFinanceSupplier}
                 />
@@ -628,6 +626,8 @@ export default function NewLogPage() {
                   setWorkoutEquipment={setWorkoutEquipment}
                   workoutGoal={workoutGoal}
                   setWorkoutGoal={setWorkoutGoal}
+                  workoutIntensity={workoutIntensity}
+                  setWorkoutIntensity={setWorkoutIntensity}
                   caloriesBurned={caloriesBurned}
                   setCaloriesBurned={setCaloriesBurned}
                   distance={distance}
