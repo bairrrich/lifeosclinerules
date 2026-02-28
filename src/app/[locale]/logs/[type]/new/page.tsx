@@ -131,6 +131,7 @@ export default function NewLogPage() {
   const [financeType, setFinanceType] = useState<string>("expense")
   const [selectedAccountId, setSelectedAccountId] = useState<string>("")
   const [targetAccountId, setTargetAccountId] = useState<string>("")
+  const [workoutIntensity, setWorkoutIntensity] = useState<string>("")
 
   // Состояния для зависимых списков финансов
   const [financeCategory, setFinanceCategory] = useState("")
@@ -607,6 +608,8 @@ export default function NewLogPage() {
                   setFinanceSubcategory={setFinanceSubcategory}
                   financeItem={financeItem}
                   setFinanceItem={setFinanceItem}
+                  workoutIntensity={workoutIntensity}
+                  setWorkoutIntensity={setWorkoutIntensity}
                   financeSupplier={financeSupplier}
                   setFinanceSupplier={setFinanceSupplier}
                 />

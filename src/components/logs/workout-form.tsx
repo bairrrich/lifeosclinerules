@@ -270,6 +270,8 @@ interface WorkoutFormProps {
   setWorkoutEquipment: (value: string) => void
   workoutGoal: string
   setWorkoutGoal: (value: string) => void
+  workoutIntensity: string
+  setWorkoutIntensity: (value: string) => void
   caloriesBurned?: number
   setCaloriesBurned: (value: number | undefined) => void
   distance?: number
@@ -313,6 +315,8 @@ export function WorkoutForm({
   setWorkoutEquipment,
   workoutGoal,
   setWorkoutGoal,
+  workoutIntensity,
+  setWorkoutIntensity,
   caloriesBurned,
   setCaloriesBurned,
   distance,
@@ -626,8 +630,11 @@ export function WorkoutForm({
                   { id: "medium", label: t("workout.intensityLevels.medium") },
                   { id: "high", label: t("workout.intensityLevels.high") },
                 ]}
-                value={watch("intensity") || ""}
-                onChange={(value) => setValue("intensity", value as "low" | "medium" | "high")}
+                value={workoutIntensity}
+                onChange={(value) => {
+                  setWorkoutIntensity(value as string)
+                  setValue("intensity", value as "low" | "medium" | "high")
+                }}
                 placeholder={t("workout.intensity")}
                 allowCustom={false}
                 searchable={false}

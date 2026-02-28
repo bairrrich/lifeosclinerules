@@ -113,6 +113,7 @@ export default function EditLogPage() {
   const [workoutSubcategory, setWorkoutSubcategory] = useState<string>("")
   const [workoutEquipment, setWorkoutEquipment] = useState<string>("")
   const [workoutGoal, setWorkoutGoal] = useState<string>("")
+  const [workoutIntensity, setWorkoutIntensity] = useState<string>("")
   const [caloriesBurned, setCaloriesBurned] = useState<number | undefined>()
   const [distance, setDistance] = useState<number | undefined>()
   const [heartRateAvg, setHeartRateAvg] = useState<number | undefined>()
@@ -539,6 +540,8 @@ export default function EditLogPage() {
                   setWorkoutSubcategory={setWorkoutSubcategory}
                   workoutEquipment={workoutEquipment}
                   setWorkoutEquipment={setWorkoutEquipment}
+                  workoutIntensity={workoutIntensity}
+                  setWorkoutIntensity={setWorkoutIntensity}
                   workoutGoal={workoutGoal}
                   setWorkoutGoal={setWorkoutGoal}
                   caloriesBurned={caloriesBurned}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { useTranslations } from "next-intl"
 import { ChevronDown, Plus, X, Check } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
@@ -17,7 +17,7 @@ export interface ComboboxOption {
 export interface ComboboxProps {
   label?: string
   options: ComboboxOption[]
-  value: string | string[]
+  value: string | string[] | undefined | null
   onChange: (value: string | string[], newItem?: string) => void
   mode?: "single" | "multiple"
   placeholder?: string
@@ -51,7 +51,14 @@ export function Combobox({
   const inputRef = useRef<HTMLInputElement>(null)
   const t = useTranslations("common")
 
-  const selectedIds = mode === "multiple" ? (value as string[]) : value ? [value as string] : []
+  const selectedIds = useMemo(() => {
+    if (mode === "multiple") {
+      return Array.isArray(value) ? value : []
+    }
+    // Для single mode: value может быть string, undefined, или null
+    return typeof value === "string" ? [value] : []
+  }, [value, mode])
+
   const selectedOptions = options.filter((opt) => selectedIds.includes(opt.id))
 
   // Фильтрация опций по поиску
