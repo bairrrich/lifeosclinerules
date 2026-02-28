@@ -58,6 +58,8 @@ export { default as Pill } from "lucide-react/dist/esm/icons/pill"
 export { default as Bandage } from "lucide-react/dist/esm/icons/bandage"
 export { default as Leaf } from "lucide-react/dist/esm/icons/leaf"
 export { default as Apple } from "lucide-react/dist/esm/icons/apple"
+export { default as Footprints } from "lucide-react/dist/esm/icons/footprints"
+export { default as Wind } from "lucide-react/dist/esm/icons/wind"
 
 // Wellness
 export { default as Droplet } from "lucide-react/dist/esm/icons/droplet"
@@ -107,6 +109,9 @@ export { default as CupSoda } from "lucide-react/dist/esm/icons/cup-soda"
 export { default as GlassWater } from "lucide-react/dist/esm/icons/glass-water"
 export { default as Martini } from "lucide-react/dist/esm/icons/martini"
 export { default as Calculator } from "lucide-react/dist/esm/icons/calculator"
+export { default as Croissant } from "lucide-react/dist/esm/icons/croissant"
+export { default as Soup } from "lucide-react/dist/esm/icons/soup"
+export { default as Sandwich } from "lucide-react/dist/esm/icons/sandwich"
 
 // Shopping & Items
 export { default as Package } from "lucide-react/dist/esm/icons/package"

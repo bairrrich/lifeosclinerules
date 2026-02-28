@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChevronDown } from "@/lib/icons"
+import { Combobox } from "@/components/ui/combobox"
 import type { Template } from "@/types"
 
 // ============================================
@@ -241,29 +241,19 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
         </div>
         <div className="space-y-2">
           <Label>Интенсивность</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm"
-              value={data.intensity || ""}
-              onChange={(e) =>
-                onChange({
-                  ...data,
-                  intensity: (e.target.value as "low" | "medium" | "high") || undefined,
-                })
-              }
-              style={{ backgroundImage: "none", WebkitAppearance: "none", appearance: "none" }}
-            >
-              <option value="" disabled>
-                Выберите
-              </option>
-              {intensityOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-          </div>
+          <Combobox
+            options={intensityOptions.map((opt) => ({ id: opt.value, label: opt.label }))}
+            value={data.intensity || ""}
+            onChange={(value) =>
+              onChange({
+                ...data,
+                intensity: (value as "low" | "medium" | "high") || undefined,
+              })
+            }
+            placeholder="Выберите"
+            allowCustom={false}
+            searchable={false}
+          />
         </div>
       </div>
 

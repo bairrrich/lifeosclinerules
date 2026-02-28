@@ -448,6 +448,13 @@
       "title": "Language",
       "description": "Interface language settings"
     },
+    "firstDayOfWeek": {
+      "title": "First Day of Week",
+      "description": "Calendar display settings",
+      "label": "Week Start",
+      "monday": "Monday",
+      "sunday": "Sunday"
+    },
     "dataStats": {
       "title": "Data Statistics",
       "description": "Overview of stored data",
@@ -777,9 +784,9 @@
     "newRecipe": "New Recipe",
     "noRecipes": "No recipes yet",
     "types": {
-      "food": "Food Recipe",
-      "drink": "Drink Recipe",
-      "cocktail": "Cocktail Recipe"
+      "food": "Food",
+      "drink": "Drink",
+      "cocktail": "Cocktail"
     },
     "forms": {
       "main": "Main",
@@ -956,13 +963,13 @@
       "calculate": "Calculate"
     },
     "steps": {
-      "addStep": "Add Step",
+      "addStep": "Add",
       "stepText": "Step Description",
       "timer": "Timer (min)",
       "image": "Image",
       "minutes": "minutes",
       "removeStep": "Remove step",
-      "empty": "No steps. Click \"Add Step\" to create.",
+      "empty": "No steps. Click \"Add\" to create.",
       "noInstructions": "No instructions"
     },
     "forms": {
@@ -977,11 +984,11 @@
       "selectPlaceholder": "Select...",
       "notSpecified": "Not specified",
       "steps": {
-        "addStep": "Add Step",
+        "addStep": "Add",
         "stepText": "Step Description",
         "timer": "Timer (min)",
         "minutes": "minutes",
-        "empty": "No steps. Click \"Add Step\" to create."
+        "empty": "No steps. Click \"Add\" to create."
       }
     },
     "common": {
@@ -1167,7 +1174,7 @@
     "freelance": "Freelance",
     "investments": "Investments",
     "other": "Other",
-    "product": "Groceries",
+    "food": "Food",
     "transport": "Transport",
     "entertainment": "Entertainment",
     "health": "Health",
@@ -1175,6 +1182,7 @@
     "housing": "Housing",
     "communication": "Communication",
     "education": "Education",
+    "product": "Groceries",
     "transfer": "Transfer",
     "topUp": "Top Up",
     "subcategories": {
@@ -1435,6 +1443,7 @@
     },
     "edit": {
       "title": "Edit: {type}",
+      "loading": "Loading...",
       "basic": "Basic",
       "type": "Type",
       "additional": "Additional",
@@ -1693,6 +1702,7 @@
         "power": "Power Yoga",
         "relax": "Relax / Recovery",
         "breathing": "Breathing & Meditation",
+        "meditation": "Meditation",
         "beginner": "Beginner",
         "intermediate": "Intermediate",
         "advanced": "Advanced"
@@ -1784,6 +1794,10 @@
         "investment": "Investment",
         "crypto": "Crypto"
       }
+    },
+    "deleteDialog": {
+      "title": "Delete entry?",
+      "description": "This action cannot be undone. \"{title}\" will be deleted permanently."
     }
   },
   "habits": {

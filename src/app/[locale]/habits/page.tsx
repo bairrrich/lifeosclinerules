@@ -2,7 +2,17 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "@/lib/navigation"
-import { Plus, Flame, Check, X, Settings, Clock, AlertCircle, ListChecks } from "@/lib/icons"
+import {
+  Plus,
+  Flame,
+  Check,
+  X,
+  Settings,
+  Clock,
+  AlertCircle,
+  ListChecks,
+  Calendar as CalendarIcon,
+} from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -14,6 +24,11 @@ import {
 } from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { cn } from "@/lib/utils"
 import {
   db,
   initializeDatabase,
@@ -22,7 +37,7 @@ import {
   deleteEntity,
   updateStreak,
 } from "@/lib/db"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import type { Habit, HabitLog, Streak, HabitSubtask } from "@/types"
 
 const habitColors = [
@@ -60,6 +75,8 @@ function HabitsContent() {
   const searchParams = useSearchParams()
   const t = useTranslations("habits")
   const tCommon = useTranslations("common")
+  const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
   const [isLoading, setIsLoading] = useState(true)
   const [habits, setHabits] = useState<Habit[]>([])
   const [habitLogs, setHabitLogs] = useState<HabitLog[]>([])
@@ -589,21 +606,63 @@ function HabitsContent() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="start-date">{t("fields.startDate")}</Label>
-                  <Input
-                    id="start-date"
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !startDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {startDate ? (
+                          format(new Date(startDate), "LLL dd, y", { locale: dateFnsLocale })
+                        ) : (
+                          <span>{t("fields.startDate")}</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={startDate ? new Date(startDate) : undefined}
+                        onSelect={(date) => setStartDate(date ? format(date, "yyyy-MM-dd") : "")}
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="end-date">{t("fields.endDate")}</Label>
-                  <Input
-                    id="end-date"
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !endDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {endDate ? (
+                          format(new Date(endDate), "LLL dd, y", { locale: dateFnsLocale })
+                        ) : (
+                          <span>{t("fields.endDate")}</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={endDate ? new Date(endDate) : undefined}
+                        onSelect={(date) => setEndDate(date ? format(date, "yyyy-MM-dd") : "")}
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
 
@@ -705,21 +764,63 @@ function HabitsContent() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-start-date">{t("fields.startDate")}</Label>
-                  <Input
-                    id="edit-start-date"
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !startDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {startDate ? (
+                          format(new Date(startDate), "LLL dd, y", { locale: dateFnsLocale })
+                        ) : (
+                          <span>{t("fields.startDate")}</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={startDate ? new Date(startDate) : undefined}
+                        onSelect={(date) => setStartDate(date ? format(date, "yyyy-MM-dd") : "")}
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="edit-end-date">{t("fields.endDate")}</Label>
-                  <Input
-                    id="edit-end-date"
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !endDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {endDate ? (
+                          format(new Date(endDate), "LLL dd, y", { locale: dateFnsLocale })
+                        ) : (
+                          <span>{t("fields.endDate")}</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={endDate ? new Date(endDate) : undefined}
+                        onSelect={(date) => setEndDate(date ? format(date, "yyyy-MM-dd") : "")}
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
 

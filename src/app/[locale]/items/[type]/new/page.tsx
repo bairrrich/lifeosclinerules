@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "@/lib/navigation"
+import { useLocale } from "next-intl"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -12,7 +13,14 @@ import { CreateFormActions } from "@/components/shared/form-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ComboboxSelect } from "@/components/logs/combobox-select"
+import { Combobox } from "@/components/ui/combobox"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { Calendar as CalendarIcon } from "@/lib/icons"
+import { cn } from "@/lib/utils"
 import { db, createEntity, initializeDatabase, getAllEntities } from "@/lib/db"
 import type { ItemType, Item } from "@/types"
 import { financeCategoriesStructure } from "@/lib/finance-categories"
@@ -77,6 +85,8 @@ export default function NewItemPage() {
   const params = useParams()
   const type = params.type as ItemType
   const t = useTranslations("items")
+  const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
   const typeLabels = getTypeLabels(t)
   const formOptions = getFormOptions(t)
   const manufacturerOptions = getManufacturerOptions(t)
@@ -92,6 +102,7 @@ export default function NewItemPage() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(itemSchema),
@@ -198,16 +209,20 @@ export default function NewItemPage() {
                 {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
               </div>
 
-              <ComboboxSelect
-                label={t("fields.category")}
-                options={getCategoryOptions().map((opt) => ({ value: opt, label: opt }))}
-                value={selectedCategory}
-                onChange={(value) => {
-                  setSelectedCategory(value)
-                  setValue("category", value)
-                }}
-                placeholder={t("new.categoryPlaceholder")}
-              />
+              <div className="space-y-2">
+                <Label>{t("fields.category")}</Label>
+                <Combobox
+                  options={getCategoryOptions().map((opt) => ({ id: opt, label: opt }))}
+                  value={selectedCategory}
+                  onChange={(value) => {
+                    setSelectedCategory(value as string)
+                    setValue("category", value as string)
+                  }}
+                  placeholder={t("new.categoryPlaceholder")}
+                  allowCustom={true}
+                  searchable={false}
+                />
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description">{t("fields.description")}</Label>
@@ -235,25 +250,31 @@ export default function NewItemPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="dosage">{t("fields.dosage")}</Label>
-                <Input
-                  id="dosage"
-                  placeholder={t("new.dosagePlaceholder")}
-                  {...register("dosage")}
-                />
-              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dosage">{t("fields.dosage")}</Label>
+                  <Input
+                    id="dosage"
+                    placeholder={t("new.dosagePlaceholder")}
+                    {...register("dosage")}
+                  />
+                </div>
 
-              <ComboboxSelect
-                label={t("fields.form")}
-                options={formOptionsList.map((opt) => ({ value: opt, label: opt }))}
-                value={selectedForm}
-                onChange={(value) => {
-                  setSelectedForm(value)
-                  setValue("form", value)
-                }}
-                placeholder={t("new.formPlaceholder")}
-              />
+                <div className="space-y-2">
+                  <Label>{t("fields.form")}</Label>
+                  <Combobox
+                    options={formOptionsList.map((opt) => ({ id: opt, label: opt }))}
+                    value={selectedForm}
+                    onChange={(value) => {
+                      setSelectedForm(value as string)
+                      setValue("form", value as string)
+                    }}
+                    placeholder={t("new.formPlaceholder")}
+                    allowCustom={true}
+                    searchable={false}
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -358,20 +379,59 @@ export default function NewItemPage() {
               <CardTitle>{t("new.additional")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <ComboboxSelect
-                label={t("fields.manufacturer")}
-                options={manufacturerOptionsList.map((opt) => ({ value: opt, label: opt }))}
-                value={selectedManufacturer}
-                onChange={(value) => {
-                  setSelectedManufacturer(value)
-                  setValue("manufacturer", value)
-                }}
-                placeholder={t("new.manufacturerPlaceholder")}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>{t("fields.manufacturer")}</Label>
+                  <Combobox
+                    options={manufacturerOptionsList.map((opt) => ({ id: opt, label: opt }))}
+                    value={selectedManufacturer}
+                    onChange={(value) => {
+                      setSelectedManufacturer(value as string)
+                      setValue("manufacturer", value as string)
+                    }}
+                    placeholder={t("new.manufacturerPlaceholder")}
+                    allowCustom={true}
+                    searchable={false}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="expiration">{t("fields.expiration")}</Label>
-                <Input id="expiration" type="date" {...register("expiration")} />
+                <div className="space-y-2">
+                  <Label htmlFor="expiration">{t("fields.expiration")}</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !watch("expiration") && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {(() => {
+                          const expiration = watch("expiration")
+                          return expiration ? (
+                            format(new Date(expiration), "LLL dd, y", {
+                              locale: dateFnsLocale,
+                            })
+                          ) : (
+                            <span>{t("fields.expiration")}</span>
+                          )
+                        })()}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={watch("expiration") ? new Date(watch("expiration")!) : undefined}
+                        onSelect={(date) =>
+                          setValue("expiration", date ? format(date, "yyyy-MM-dd") : "")
+                        }
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
 
               <div className="space-y-2">

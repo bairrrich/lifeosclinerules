@@ -58,19 +58,25 @@ export function FormActions({
   if (type === "page") {
     return (
       <div className="flex justify-between gap-4">
-        <Button type="button" variant="destructive" onClick={onDelete} disabled={isDeleting}>
+        <Button
+          type="button"
+          variant="destructive"
+          size="action-sm"
+          onClick={onDelete}
+          disabled={isDeleting}
+        >
           <Trash2 className="h-4 w-4 mr-2" />
           {isDeleting ? tl("deleting") : deleteLabel}
         </Button>
         <div className="flex gap-2">
           {showBackButton && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" size="action-sm" onClick={onCancel}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               {cancelLabel}
             </Button>
           )}
           {onSave && (
-            <Button type="submit" disabled={isSaving}>
+            <Button type="submit" size="action-sm" disabled={isSaving}>
               <Save className="h-4 w-4 mr-2" />
               {isSaving ? tl("saving") : saveLabel}
             </Button>
@@ -84,16 +90,22 @@ export function FormActions({
   return (
     <div className="flex justify-between gap-4 sm:justify-end sm:gap-2">
       {showDelete && (
-        <Button type="button" variant="destructive" onClick={onDelete} disabled={isDeleting}>
+        <Button
+          type="button"
+          variant="destructive"
+          size="action-sm"
+          onClick={onDelete}
+          disabled={isDeleting}
+        >
           <Trash2 className="h-4 w-4" />
         </Button>
       )}
       <div className="flex gap-2 ml-auto">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" size="action-sm" onClick={onCancel}>
           {cancelLabel}
         </Button>
         {onSave && (
-          <Button type="button" onClick={onSave} disabled={isSaving}>
+          <Button type="button" size="action-sm" onClick={onSave} disabled={isSaving}>
             {isSaving ? tl("saving") : saveLabel}
           </Button>
         )}
@@ -119,10 +131,16 @@ export function DeleteConfirmActions({
 
   return (
     <div className="flex justify-end gap-2">
-      <Button type="button" variant="outline" onClick={onCancel}>
+      <Button type="button" variant="outline" size="action-sm" onClick={onCancel}>
         {t("cancel")}
       </Button>
-      <Button type="button" variant="destructive" onClick={onConfirm} disabled={isLoading}>
+      <Button
+        type="button"
+        variant="destructive"
+        size="action-sm"
+        onClick={onConfirm}
+        disabled={isLoading}
+      >
         {isLoading ? tl("deleting") : t("delete")}
       </Button>
     </div>
@@ -150,11 +168,11 @@ export function CreateFormActions({
 
   return (
     <div className="flex justify-end gap-2">
-      <Button type="button" variant="outline" onClick={onCancel}>
+      <Button type="button" variant="outline" size="action-sm" onClick={onCancel}>
         {t("cancel")}
       </Button>
       {onSave && (
-        <Button type="button" onClick={onSave} disabled={isSaving}>
+        <Button type="button" size="action-sm" onClick={onSave} disabled={isSaving}>
           {isSaving ? tl("creating") : saveLabel}
         </Button>
       )}

@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react"
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form"
 import { z } from "zod"
-import { ChevronDown, Search, ChefHat, Package, Edit3 } from "@/lib/icons"
+import { Search, ChefHat, Package, Edit3 } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ComboboxSelect } from "./combobox-select"
+import { Combobox } from "@/components/ui/combobox"
 import { useTranslations } from "next-intl"
 import { db, getAllEntities } from "@/lib/db"
 import { NutritionFields, SourceTypeSelector } from "@/components/shared/forms"
@@ -997,29 +997,14 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
           <div className="space-y-2">
             <Label>{t("food.selectRecipe")}</Label>
             {recipes.length > 0 ? (
-              <div className="relative">
-                <select
-                  className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={selectedRecipeId}
-                  onChange={(e) => setSelectedRecipeId(e.target.value)}
-                  style={{
-                    backgroundImage: "none",
-                    WebkitAppearance: "none",
-                    MozAppearance: "none",
-                    appearance: "none",
-                  }}
-                >
-                  <option value="" disabled>
-                    {t("food.selectRecipe")}
-                  </option>
-                  {recipes.map((recipe) => (
-                    <option key={recipe.id} value={recipe.id}>
-                      {recipe.title}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-              </div>
+              <Combobox
+                options={recipes.map((recipe) => ({ id: recipe.id, label: recipe.title }))}
+                value={selectedRecipeId}
+                onChange={(value) => setSelectedRecipeId(value as string)}
+                placeholder={t("food.selectRecipe")}
+                allowCustom={false}
+                searchable={true}
+              />
             ) : (
               <div className="rounded-xl border border-dashed p-4 text-center text-muted-foreground">
                 <ChefHat className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -1064,29 +1049,14 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             <>
               <div className="space-y-2">
                 <Label>{t("food.selectProduct")}</Label>
-                <div className="relative">
-                  <select
-                    className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    value={selectedProductId}
-                    onChange={(e) => setSelectedProductId(e.target.value)}
-                    style={{
-                      backgroundImage: "none",
-                      WebkitAppearance: "none",
-                      MozAppearance: "none",
-                      appearance: "none",
-                    }}
-                  >
-                    <option value="" disabled>
-                      {t("food.selectProduct")}
-                    </option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-                </div>
+                <Combobox
+                  options={products.map((product) => ({ id: product.id, label: product.name }))}
+                  value={selectedProductId}
+                  onChange={(value) => setSelectedProductId(value as string)}
+                  placeholder={t("food.selectProduct")}
+                  allowCustom={false}
+                  searchable={true}
+                />
               </div>
 
               {selectedProduct && (selectedProduct.calories || selectedProduct.protein) && (
@@ -1117,25 +1087,33 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
           ) : (
             /* Если нет продуктов в каталоге, показываем справочник */
             <>
-              <ComboboxSelect
-                label={t("food.productCategory")}
-                options={Object.keys(getFoodProducts(t)).map((opt) => ({ value: opt, label: opt }))}
-                value={productCategory}
-                onChange={(value) => {
-                  setProductCategory(value)
-                  setProductSubcategory("")
-                }}
-                placeholder={t("food.productCategory")}
-              />
+              <div className="space-y-2">
+                <Label>{t("food.productCategory")}</Label>
+                <Combobox
+                  options={Object.keys(getFoodProducts(t)).map((opt) => ({ id: opt, label: opt }))}
+                  value={productCategory}
+                  onChange={(value) => {
+                    setProductCategory(value as string)
+                    setProductSubcategory("")
+                  }}
+                  placeholder={t("food.productCategory")}
+                  allowCustom={false}
+                  searchable={false}
+                />
+              </div>
 
               {productCategory && (
-                <ComboboxSelect
-                  label={t("food.product")}
-                  options={currentSubcategories.map((opt) => ({ value: opt, label: opt }))}
-                  value={productSubcategory}
-                  onChange={setProductSubcategory}
-                  placeholder={t("food.product")}
-                />
+                <div className="space-y-2">
+                  <Label>{t("food.product")}</Label>
+                  <Combobox
+                    options={currentSubcategories.map((opt) => ({ id: opt, label: opt }))}
+                    value={productSubcategory}
+                    onChange={(value) => setProductSubcategory(value as string)}
+                    placeholder={t("food.product")}
+                    allowCustom={false}
+                    searchable={false}
+                  />
+                </div>
               )}
 
               {productCategory && productSubcategory && (

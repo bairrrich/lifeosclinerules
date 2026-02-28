@@ -16,6 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Combobox } from "@/components/ui/combobox"
 import {
   Dialog,
   DialogContent,
@@ -472,17 +473,16 @@ export function BackupManager() {
 
             {autoBackupEnabled && (
               <div className="space-y-2">
-                <select
-                  value={autoBackupInterval}
-                  onChange={(e) => updateInterval(parseInt(e.target.value))}
-                  className="w-full text-sm bg-muted border rounded-md px-3 py-2"
-                >
-                  {BACKUP_INTERVALS.map((interval) => (
-                    <option key={interval.value} value={interval.value}>
-                      {interval.label}
-                    </option>
-                  ))}
-                </select>
+                <Combobox
+                  options={BACKUP_INTERVALS.map((interval) => ({
+                    id: String(interval.value),
+                    label: interval.label,
+                  }))}
+                  value={String(autoBackupInterval)}
+                  onChange={(value) => updateInterval(parseInt(value as string))}
+                  allowCustom={false}
+                  searchable={false}
+                />
 
                 {lastBackup && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">

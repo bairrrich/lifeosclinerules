@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "@/lib/navigation"
+import { useLocale } from "next-intl"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -14,6 +15,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { Calendar as CalendarIcon } from "@/lib/icons"
+import { cn } from "@/lib/utils"
 import { db, getEntityById, updateEntity, getCategoriesByType, initializeDatabase } from "@/lib/db"
 import {
   FoodForm,
@@ -84,6 +91,8 @@ export default function EditLogPage() {
   const type = params.type as LogType
   const id = params.id as string
   const t = useTranslations("logs")
+  const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
 
   const [categories, setCategories] = useState<Category[]>([])
   const [accounts, setAccounts] = useState<Account[]>([])
@@ -381,7 +390,38 @@ export default function EditLogPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>{t("edit.basic")}</CardTitle>
                 <div className="flex items-center gap-2">
-                  <Input type="date" className="w-auto" {...register("date")} />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-auto justify-start text-left font-normal",
+                          !watch("date") && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {(() => {
+                          const dateValue = watch("date")
+                          return dateValue ? (
+                            format(new Date(dateValue), "LLL dd, y", { locale: dateFnsLocale })
+                          ) : (
+                            <span>{t("fields.date")}</span>
+                          )
+                        })()}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={watch("date") ? new Date(watch("date")!) : undefined}
+                        onSelect={(date) =>
+                          setValue("date", date ? format(date, "yyyy-MM-dd") : "")
+                        }
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <Input type="time" className="w-auto" {...register("time")} />
                 </div>
               </div>

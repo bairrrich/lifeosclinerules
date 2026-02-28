@@ -7,6 +7,7 @@ import {
   SettingsProvider,
   ThemeSwitcher,
   LanguageSwitcher,
+  FirstDayOfWeekSwitcher,
   DataStats,
   BackupManager,
   ExportManager,
@@ -85,6 +86,7 @@ export default function SettingsPage() {
               aria-labelledby="tab-general"
             >
               <LanguageSwitcher />
+              <FirstDayOfWeekSwitcher />
               <ThemeSwitcher />
               <DataStats />
               <SyncManager />

@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { ChevronDown } from "@/lib/icons"
+import { Combobox } from "@/components/ui/combobox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -133,59 +133,29 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
         <CardTitle className="text-base">{t("forms.dishParameters")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Тип блюда */}
-        <div className="space-y-2">
-          <Label>{t("fields.courseType")}</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        {/* Тип блюда и Кухня */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>{t("fields.courseType")}</Label>
+            <Combobox
+              options={getCourseTypes(t).map((ct) => ({ id: ct.value, label: ct.label }))}
               value={metadata.course_type || ""}
-              onChange={(e) =>
-                updateField("course_type", (e.target.value as CourseType) || undefined)
-              }
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              <option value="" disabled>
-                {t("forms.selectPlaceholder")}
-              </option>
-              {getCourseTypes(t).map((ct) => (
-                <option key={ct.value} value={ct.value}>
-                  {ct.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+              onChange={(value) => updateField("course_type", (value as CourseType) || undefined)}
+              placeholder={t("forms.selectPlaceholder")}
+              allowCustom={false}
+              searchable={false}
+            />
           </div>
-        </div>
-
-        {/* Кухня */}
-        <div className="space-y-2">
-          <Label>{t("fields.cuisine")}</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          <div className="space-y-2">
+            <Label>{t("fields.cuisine")}</Label>
+            <Combobox
+              options={getCuisines(t).map((c) => ({ id: c, label: c }))}
               value={metadata.cuisine || ""}
-              onChange={(e) => updateField("cuisine", e.target.value || undefined)}
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              <option value="">{t("forms.notSpecified")}</option>
-              {getCuisines(t).map((c, index) => (
-                <option key={index} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+              onChange={(value) => updateField("cuisine", (value as string) || undefined)}
+              placeholder={t("forms.notSpecified")}
+              allowCustom={false}
+              searchable={false}
+            />
           </div>
         </div>
 

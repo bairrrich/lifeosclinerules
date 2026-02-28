@@ -1,12 +1,23 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useTranslations } from "next-intl"
-import { Plus, Trash2, Edit, Calendar, Wallet, TrendingDown, TrendingUp, Repeat } from "@/lib/icons"
+import { useTranslations, useLocale } from "next-intl"
+import {
+  Plus,
+  Trash2,
+  Edit,
+  Calendar,
+  Wallet,
+  TrendingDown,
+  TrendingUp,
+  Repeat,
+  Calendar as CalendarIcon,
+} from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Combobox } from "@/components/ui/combobox"
 import {
   Dialog,
   DialogContent,
@@ -14,12 +25,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { cn } from "@/lib/utils"
 import { db, initializeDatabase } from "@/lib/db"
 import type { RecurringTransaction, Account } from "@/types"
-import { cn } from "@/lib/utils"
 
 export function RecurringTransactions() {
   const t = useTranslations("finance.recurring")
+  const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
   const [recurring, setRecurring] = useState<RecurringTransaction[]>([])
   const [accounts, setAccounts] = useState<Account[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -239,7 +256,7 @@ export function RecurringTransactions() {
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button size="sm">
+              <Button size="action-sm" variant="outline">
                 <Plus className="h-4 w-4 mr-1" />
                 {t("add")}
               </Button>
@@ -328,28 +345,46 @@ export function RecurringTransactions() {
                 {accounts.length > 0 && (
                   <div className="space-y-2">
                     <Label>{t("form.account")}</Label>
-                    <select
-                      className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+                    <Combobox
+                      options={accounts.map((acc) => ({ id: acc.id, label: acc.name }))}
                       value={accountId}
-                      onChange={(e) => setAccountId(e.target.value)}
-                    >
-                      {accounts.map((acc) => (
-                        <option key={acc.id} value={acc.id}>
-                          {acc.name}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(value) => setAccountId(value as string)}
+                      allowCustom={false}
+                      searchable={false}
+                    />
                   </div>
                 )}
 
                 {/* Start Date */}
                 <div className="space-y-2">
                   <Label>{t("form.startDate")}</Label>
-                  <Input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !startDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {startDate ? (
+                          format(new Date(startDate), "LLL dd, y", { locale: dateFnsLocale })
+                        ) : (
+                          <span>{t("form.startDate")}</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={startDate ? new Date(startDate) : undefined}
+                        onSelect={(date) => setStartDate(date ? format(date, "yyyy-MM-dd") : "")}
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 {/* Save */}

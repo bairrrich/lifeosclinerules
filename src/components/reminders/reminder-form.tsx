@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar } from "@/components/ui/calendar"
 import { TimePicker } from "@/components/ui/time-picker"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Combobox } from "@/components/ui/combobox"
 import { Plus, X, Bell, Calendar as CalendarIcon } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 import { db } from "@/lib/db"
@@ -238,18 +239,17 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           <Label>
             {formData.type === "medicine" ? t("form.medicineSelect") : t("form.itemSelect")}
           </Label>
-          <select
-            className="w-full h-10 px-3 rounded-md border border-input bg-background"
+          <Combobox
+            options={items.map((item) => ({
+              id: item.id,
+              label: `${item.name} ${item.form ? `(${item.form})` : ""}`,
+            }))}
             value={formData.related_id || ""}
-            onChange={(e) => handleItemSelect(e.target.value)}
-          >
-            <option value="">{t("form.selectPlaceholder")}</option>
-            {items.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name} {item.form ? `(${item.form})` : ""}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => handleItemSelect(value as string)}
+            placeholder={t("form.selectPlaceholder")}
+            allowCustom={false}
+            searchable={true}
+          />
         </div>
       )}
 
@@ -360,23 +360,18 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
         {/* Упреждение */}
         <div className="space-y-2">
           <Label>{t("form.advance")}</Label>
-          <div className="relative">
-            <select
-              className="h-10 pl-8 pr-2 w-full max-w-[200px] rounded-md border border-input bg-background text-sm appearance-none cursor-pointer"
-              value={formData.advance_minutes}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, advance_minutes: Number(e.target.value) }))
-              }
-              title={t("advance.onTime")}
-            >
-              {getAdvanceOptions(t).map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <Bell className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          </div>
+          <Combobox
+            options={getAdvanceOptions(t).map((opt) => ({
+              id: String(opt.value),
+              label: opt.label,
+            }))}
+            value={String(formData.advance_minutes)}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, advance_minutes: Number(value) }))
+            }
+            allowCustom={false}
+            searchable={false}
+          />
         </div>
 
         {/* Быстрый выбор времени суток */}
@@ -590,22 +585,22 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
                 }))
               }
             />
-            <select
-              className="h-10 px-3 rounded-md border border-input bg-background"
+            <Combobox
+              options={getCustomIntervalUnits(t).map((unit) => ({
+                id: unit.value,
+                label: t(`form.${unit.value}`),
+              }))}
               value={formData.custom_unit || "days"}
-              onChange={(e) =>
+              onChange={(value) =>
                 setFormData((prev) => ({
                   ...prev,
-                  custom_unit: e.target.value as "days" | "weeks" | "months",
+                  custom_unit: value as "days" | "weeks" | "months",
                 }))
               }
-            >
-              {getCustomIntervalUnits(t).map((unit) => (
-                <option key={unit.value} value={unit.value}>
-                  {t(`form.${unit.value}`)}
-                </option>
-              ))}
-            </select>
+              allowCustom={false}
+              searchable={false}
+              className="flex-1"
+            />
           </div>
 
           {/* Если выбраны недели - показать выбор дней */}

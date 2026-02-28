@@ -15,8 +15,8 @@ export interface CrudManagerProps<T extends { id?: string | number }> {
 
   // Данные и состояния
   items: T[]
-  editingItem: T | null
-  setEditingItem: (item: T | null) => void
+  editingItem?: T | null
+  setEditingItem?: (item: T | null) => void
 
   // CRUD операции
   onCreate: (item: T) => Promise<void>
@@ -80,33 +80,39 @@ export function CrudManager<T extends { id?: string | number }>({
   const [isLoading, setIsLoading] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
 
-  const handleCreate = async () => {
-    // Создаём пустой объект для формы
-    const tempItem = {} as T
-    setEditingItem(tempItem)
-    setIsCreating(true)
-  }
+  // Локальное состояние для editingItem, если не передано извне
+  const [localEditingItem, setLocalEditingItem] = useState<T | null>(null)
+  const editingItemInternal = editingItem ?? localEditingItem
+  const setEditingItemInternal = setEditingItem ?? setLocalEditingItem
 
   const handleSaveCreate = async () => {
-    if (!editingItem) return
+    if (!editingItemInternal) return
     setIsLoading(true)
     try {
-      await onCreate(editingItem)
-      setEditingItem(null)
+      // Передаём editingItemInternal в onCreate, который сам разберётся с данными
+      await onCreate(editingItemInternal)
+      setEditingItemInternal(null)
       setIsCreating(false)
     } finally {
       setIsLoading(false)
     }
   }
 
+  const handleCreate = () => {
+    // Создаём пустой объект для формы
+    const tempItem = {} as T
+    setEditingItemInternal(tempItem)
+    setIsCreating(true)
+  }
+
   const handleUpdate = async () => {
-    if (!editingItem) return
+    if (!editingItemInternal) return
     setIsLoading(true)
     try {
-      const id = getKey(editingItem)
+      const id = getKey(editingItemInternal)
       if (id) {
-        await onUpdate(String(id), editingItem)
-        setEditingItem(null)
+        await onUpdate(String(id), editingItemInternal)
+        setEditingItemInternal(null)
         setIsCreating(false)
       }
     } finally {
@@ -115,7 +121,7 @@ export function CrudManager<T extends { id?: string | number }>({
   }
 
   const handleCancel = () => {
-    setEditingItem(null)
+    setEditingItemInternal(null)
     setIsCreating(false)
   }
 
@@ -155,7 +161,7 @@ export function CrudManager<T extends { id?: string | number }>({
             </div>
           </div>
           {showCreateForm && !isCreating && (
-            <Button size="sm" onClick={handleCreate}>
+            <Button size="action-sm" variant="outline" onClick={handleCreate}>
               <Plus className="h-4 w-4 mr-1" />
               {createButtonText || t("add")}
             </Button>
@@ -164,14 +170,15 @@ export function CrudManager<T extends { id?: string | number }>({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Форма создания/редактирования */}
-        {(isCreating || editingItem) && (
+        {(isCreating || editingItemInternal) && (
           <div className="p-3 rounded-xl border-2 border-dashed space-y-3">
             <div className="text-sm font-medium">
               {isCreating ? tSettings("addItem") : tSettings("editItem")}
             </div>
             {renderForm(
-              editingItem,
-              (updates: Partial<T>) => setEditingItem({ ...editingItem, ...updates } as T),
+              editingItemInternal,
+              (updates: Partial<T>) =>
+                setEditingItemInternal({ ...editingItemInternal, ...updates } as T),
               isCreating ? handleSaveCreate : handleUpdate,
               handleCancel,
               isCreating
@@ -196,7 +203,9 @@ export function CrudManager<T extends { id?: string | number }>({
                     {groupItems.map((item) => {
                       const key = getKey(item)
                       const isEditing =
-                        editingItem !== null && getKey(editingItem) === key && !isCreating
+                        editingItemInternal !== null &&
+                        getKey(editingItemInternal) === key &&
+                        !isCreating
                       const canItemEdit = canEdit(item)
                       const canItemDelete = canDelete(item)
 
@@ -205,9 +214,12 @@ export function CrudManager<T extends { id?: string | number }>({
                           {isEditing && canItemEdit ? (
                             <div className="space-y-3">
                               {renderForm(
-                                editingItem,
+                                editingItemInternal,
                                 (updates: Partial<T>) =>
-                                  setEditingItem({ ...editingItem, ...updates } as T),
+                                  setEditingItemInternal({
+                                    ...editingItemInternal,
+                                    ...updates,
+                                  } as T),
                                 handleUpdate,
                                 handleCancel,
                                 false
@@ -218,7 +230,7 @@ export function CrudManager<T extends { id?: string | number }>({
                               <div className="flex-1">
                                 {renderItem(
                                   item,
-                                  () => setEditingItem(item),
+                                  () => setEditingItemInternal(item),
                                   () => handleDelete(String(key))
                                 )}
                               </div>
@@ -227,7 +239,7 @@ export function CrudManager<T extends { id?: string | number }>({
                                   <Button
                                     size="icon"
                                     variant="ghost"
-                                    onClick={() => setEditingItem(item)}
+                                    onClick={() => setEditingItemInternal(item)}
                                     aria-label={t("edit")}
                                     disabled={isLoading}
                                   >

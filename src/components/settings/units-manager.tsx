@@ -95,10 +95,10 @@ export function UnitsManager() {
             </NativeSelect>
           </div>
           <div className="flex gap-2 pt-2">
-            <Button size="sm" onClick={onSave}>
+            <Button size="action-sm" onClick={onSave}>
               {tCommon("save")}
             </Button>
-            <Button size="sm" variant="outline" onClick={onCancel}>
+            <Button size="action-sm" variant="outline" onClick={onCancel}>
               {tCommon("cancel")}
             </Button>
           </div>

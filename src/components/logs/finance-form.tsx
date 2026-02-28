@@ -2,10 +2,9 @@
 
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form"
 import { z } from "zod"
-import { ChevronDown } from "@/lib/icons"
+import { Combobox } from "@/components/ui/combobox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ComboboxSelect } from "./combobox-select"
 import { useTranslations } from "next-intl"
 import { DependentSelect } from "@/components/shared/forms"
 import type { FinanceType, Account } from "@/types"
@@ -272,29 +271,20 @@ export function FinanceForm({
       {accounts.length > 0 && (
         <div className="space-y-2">
           <Label>{financeType === "transfer" ? t("finance.from") : t("finance.account")}</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
-              value={selectedAccountId}
-              onChange={(e) => {
-                setSelectedAccountId(e.target.value)
-                setValue("account_id", e.target.value)
-              }}
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              {accounts.map((acc) => (
-                <option key={acc.id} value={acc.id}>
-                  {getAccountTypeLabel(acc.type)} • {acc.name} ({acc.balance.toLocaleString()} ₽)
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-          </div>
+          <Combobox
+            options={accounts.map((acc) => ({
+              id: acc.id,
+              label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ₽)`,
+            }))}
+            value={selectedAccountId}
+            onChange={(value) => {
+              setSelectedAccountId(value as string)
+              setValue("account_id", value as string)
+            }}
+            placeholder={t("finance.account")}
+            allowCustom={false}
+            searchable={true}
+          />
         </div>
       )}
 
@@ -315,31 +305,19 @@ export function FinanceForm({
       {financeType === "transfer" && accounts.length > 1 && (
         <div className="space-y-2">
           <Label>{t("finance.to")}</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
-              value={targetAccountId}
-              onChange={(e) => setTargetAccountId(e.target.value)}
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              <option value="" disabled>
-                {t("finance.account")}
-              </option>
-              {accounts
-                .filter((acc) => acc.id !== selectedAccountId)
-                .map((acc) => (
-                  <option key={acc.id} value={acc.id}>
-                    {getAccountTypeLabel(acc.type)} • {acc.name} ({acc.balance.toLocaleString()} ₽)
-                  </option>
-                ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-          </div>
+          <Combobox
+            options={accounts
+              .filter((acc) => acc.id !== selectedAccountId)
+              .map((acc) => ({
+                id: acc.id,
+                label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ₽)`,
+              }))}
+            value={targetAccountId}
+            onChange={(value) => setTargetAccountId(value as string)}
+            placeholder={t("finance.account")}
+            allowCustom={false}
+            searchable={true}
+          />
         </div>
       )}
 
@@ -381,20 +359,17 @@ export function FinanceForm({
         ]}
       />
 
-      {currentItems.length === 0 && !financeItem && (
-        <div className="space-y-2">
-          <Label htmlFor="title">{t("finance.item")}</Label>
-          <Input id="title" placeholder={t("finance.item")} {...register("title")} />
-        </div>
-      )}
-
-      <ComboboxSelect
-        label={t("finance.supplier")}
-        options={currentSuppliers}
-        value={financeSupplier}
-        onChange={setFinanceSupplier}
-        placeholder={t("finance.supplier")}
-      />
+      <div className="space-y-2">
+        <Label>{t("finance.supplier")}</Label>
+        <Combobox
+          options={currentSuppliers.map((s) => ({ id: s.value, label: s.label }))}
+          value={financeSupplier}
+          onChange={(value) => setFinanceSupplier(value as string)}
+          placeholder={t("finance.supplier")}
+          allowCustom={true}
+          searchable={false}
+        />
+      </div>
     </>
   )
 }

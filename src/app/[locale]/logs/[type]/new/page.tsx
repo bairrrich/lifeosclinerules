@@ -5,7 +5,23 @@ import { useRouter, useParams } from "@/lib/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Bell } from "@/lib/icons"
+import {
+  ArrowLeft,
+  Bell,
+  Utensils,
+  Dumbbell,
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  Repeat,
+  Croissant,
+  Soup,
+  Sandwich,
+  Coffee,
+  Footprints,
+  Wind,
+  Activity,
+} from "@/lib/icons"
 import { CreateFormActions } from "@/components/shared/form-actions"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,8 +30,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { Calendar as CalendarIcon } from "@/lib/icons"
+import { cn } from "@/lib/utils"
 import { db, createEntity, initializeDatabase, getCategoriesByType } from "@/lib/db"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import {
   FoodForm,
   WorkoutForm,
@@ -99,6 +121,8 @@ export default function NewLogPage() {
   const router = useRouter()
   const params = useParams()
   const type = params.type as LogType
+  const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
 
   const [categories, setCategories] = useState<Category[]>([])
   const [accounts, setAccounts] = useState<Account[]>([])
@@ -415,7 +439,38 @@ export default function NewLogPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>{tCommon("main")}</CardTitle>
                 <div className="flex items-center gap-2">
-                  <Input type="date" className="w-auto" {...register("date")} />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-auto justify-start text-left font-normal",
+                          !watch("date") && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {(() => {
+                          const dateValue = watch("date")
+                          return dateValue ? (
+                            format(new Date(dateValue), "LLL dd, y", { locale: dateFnsLocale })
+                          ) : (
+                            <span>{t("fields.date")}</span>
+                          )
+                        })()}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={watch("date") ? new Date(watch("date")!) : undefined}
+                        onSelect={(date) =>
+                          setValue("date", date ? format(date, "yyyy-MM-dd") : "")
+                        }
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <Input type="time" className="w-auto" {...register("time")} />
                 </div>
               </div>
@@ -439,6 +494,10 @@ export default function NewLogPage() {
                           value={opt.value}
                           className={categoryColors[opt.label] || ""}
                         >
+                          {opt.value === "breakfast" && <Croissant className="h-4 w-4 mr-2" />}
+                          {opt.value === "lunch" && <Soup className="h-4 w-4 mr-2" />}
+                          {opt.value === "dinner" && <Sandwich className="h-4 w-4 mr-2" />}
+                          {opt.value === "snack" && <Coffee className="h-4 w-4 mr-2" />}
                           {opt.label}
                         </TabsTrigger>
                       ))}
@@ -470,6 +529,10 @@ export default function NewLogPage() {
                             value={opt.value}
                             className={categoryColors[labelKey] || ""}
                           >
+                            {opt.value === "strength" && <Dumbbell className="h-4 w-4 mr-2" />}
+                            {opt.value === "cardio" && <Activity className="h-4 w-4 mr-2" />}
+                            {opt.value === "yoga" && <Wind className="h-4 w-4 mr-2" />}
+                            {opt.value === "stretching" && <Footprints className="h-4 w-4 mr-2" />}
                             {tCommon(`workout.types.${opt.value}`)}
                           </TabsTrigger>
                         )
@@ -498,12 +561,15 @@ export default function NewLogPage() {
                   >
                     <TabsList className="grid grid-cols-3">
                       <TabsTrigger value="income" className={financeTypeColors["income"]}>
+                        <TrendingUp className="h-4 w-4 mr-2" />
                         {t("finance.types.income")}
                       </TabsTrigger>
                       <TabsTrigger value="expense" className={financeTypeColors["expense"]}>
+                        <TrendingDown className="h-4 w-4 mr-2" />
                         {t("finance.types.expense")}
                       </TabsTrigger>
                       <TabsTrigger value="transfer" className={financeTypeColors["transfer"]}>
+                        <Repeat className="h-4 w-4 mr-2" />
                         {t("finance.types.transfer")}
                       </TabsTrigger>
                     </TabsList>

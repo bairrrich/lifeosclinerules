@@ -2,11 +2,10 @@
 
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form"
 import { z } from "zod"
-import { ChevronDown } from "@/lib/icons"
+import { Combobox } from "@/components/ui/combobox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ComboboxSelect } from "./combobox-select"
 import { useTranslations } from "next-intl"
 import type { StrengthSubcategory, CardioSubcategory, YogaSubcategory, WorkoutGoal } from "@/types"
 
@@ -621,29 +620,18 @@ export function WorkoutForm({
             </div>
             <div className="space-y-2">
               <Label>{t("workout.intensity")}</Label>
-              <div className="relative">
-                <select
-                  className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
-                  onChange={(e) =>
-                    setValue("intensity", e.target.value as "low" | "medium" | "high")
-                  }
-                  defaultValue={watch("intensity") || ""}
-                  style={{
-                    backgroundImage: "none",
-                    WebkitAppearance: "none",
-                    MozAppearance: "none",
-                    appearance: "none",
-                  }}
-                >
-                  <option value="" disabled>
-                    {t("workout.intensity")}
-                  </option>
-                  <option value="low">{t("workout.intensityLevels.low")}</option>
-                  <option value="medium">{t("workout.intensityLevels.medium")}</option>
-                  <option value="high">{t("workout.intensityLevels.high")}</option>
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-              </div>
+              <Combobox
+                options={[
+                  { id: "low", label: t("workout.intensityLevels.low") },
+                  { id: "medium", label: t("workout.intensityLevels.medium") },
+                  { id: "high", label: t("workout.intensityLevels.high") },
+                ]}
+                value={watch("intensity") || ""}
+                onChange={(value) => setValue("intensity", value as "low" | "medium" | "high")}
+                placeholder={t("workout.intensity")}
+                allowCustom={false}
+                searchable={false}
+              />
             </div>
           </div>
 
@@ -651,42 +639,31 @@ export function WorkoutForm({
           <div className="grid grid-cols-2 gap-4">
             {/* Инвентарь */}
             {currentEquipment.length > 0 && (
-              <ComboboxSelect
-                label={t("workout.equipment")}
-                options={currentEquipment.map((opt) => ({ value: opt, label: opt }))}
-                value={workoutEquipment}
-                onChange={setWorkoutEquipment}
-                placeholder={t("workout.equipment")}
-              />
+              <div className="space-y-2">
+                <Label>{t("workout.equipment")}</Label>
+                <Combobox
+                  options={currentEquipment.map((opt) => ({ id: opt, label: opt }))}
+                  value={workoutEquipment}
+                  onChange={(value) => setWorkoutEquipment(value as string)}
+                  placeholder={t("workout.equipment")}
+                  allowCustom={true}
+                  searchable={false}
+                />
+              </div>
             )}
 
             {/* Цель тренировки */}
             {currentGoals.length > 0 && (
               <div className="space-y-2">
                 <Label>{t("workout.goal")}</Label>
-                <div className="relative">
-                  <select
-                    className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
-                    value={workoutGoal}
-                    onChange={(e) => setWorkoutGoal(e.target.value)}
-                    style={{
-                      backgroundImage: "none",
-                      WebkitAppearance: "none",
-                      MozAppearance: "none",
-                      appearance: "none",
-                    }}
-                  >
-                    <option value="" disabled>
-                      {t("workout.goal")}
-                    </option>
-                    {currentGoals.map((g) => (
-                      <option key={g.value} value={g.value}>
-                        {g.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-                </div>
+                <Combobox
+                  options={currentGoals.map((g) => ({ id: g.value, label: g.label }))}
+                  value={workoutGoal}
+                  onChange={(value) => setWorkoutGoal(value as string)}
+                  placeholder={t("workout.goal")}
+                  allowCustom={false}
+                  searchable={false}
+                />
               </div>
             )}
           </div>
@@ -864,55 +841,35 @@ export function WorkoutForm({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>{t("workout.level")}</Label>
-                <div className="relative">
-                  <select
-                    className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
-                    value={yogaLevel}
-                    onChange={(e) => setYogaLevel(e.target.value)}
-                    style={{
-                      backgroundImage: "none",
-                      WebkitAppearance: "none",
-                      MozAppearance: "none",
-                      appearance: "none",
-                    }}
-                  >
-                    <option value="" disabled>
-                      {t("workout.level")}
-                    </option>
-                    <option value="beginner">{t("workout.yogaSubcategories.beginner")}</option>
-                    <option value="intermediate">
-                      {t("workout.yogaSubcategories.intermediate")}
-                    </option>
-                    <option value="advanced">{t("workout.yogaSubcategories.advanced")}</option>
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-                </div>
+                <Combobox
+                  options={[
+                    { id: "beginner", label: t("workout.yogaSubcategories.beginner") },
+                    { id: "intermediate", label: t("workout.yogaSubcategories.intermediate") },
+                    { id: "advanced", label: t("workout.yogaSubcategories.advanced") },
+                  ]}
+                  value={yogaLevel}
+                  onChange={(value) => setYogaLevel(value as string)}
+                  placeholder={t("workout.level")}
+                  allowCustom={false}
+                  searchable={false}
+                />
               </div>
               <div className="space-y-2">
                 <Label>{t("workout.focus")}</Label>
-                <div className="relative">
-                  <select
-                    className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-ms-expand]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
-                    value={yogaFocus}
-                    onChange={(e) => setYogaFocus(e.target.value)}
-                    style={{
-                      backgroundImage: "none",
-                      WebkitAppearance: "none",
-                      MozAppearance: "none",
-                      appearance: "none",
-                    }}
-                  >
-                    <option value="" disabled>
-                      {t("workout.focus")}
-                    </option>
-                    <option value="flexibility">{t("workout.goals.flexibility")}</option>
-                    <option value="strength">{t("workout.goals.strength")}</option>
-                    <option value="relaxation">{t("workout.goals.relaxation")}</option>
-                    <option value="meditation">{t("workout.yogaSubcategories.breathing")}</option>
-                    <option value="breathing">{t("workout.yogaSubcategories.breathing")}</option>
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-                </div>
+                <Combobox
+                  options={[
+                    { id: "flexibility", label: t("workout.goals.flexibility") },
+                    { id: "strength", label: t("workout.goals.strength") },
+                    { id: "relaxation", label: t("workout.goals.relaxation") },
+                    { id: "meditation", label: t("workout.yogaSubcategories.meditation") },
+                    { id: "breathing", label: t("workout.yogaSubcategories.breathing") },
+                  ]}
+                  value={yogaFocus}
+                  onChange={(value) => setYogaFocus(value as string)}
+                  placeholder={t("workout.focus")}
+                  allowCustom={false}
+                  searchable={false}
+                />
               </div>
             </div>
           )}

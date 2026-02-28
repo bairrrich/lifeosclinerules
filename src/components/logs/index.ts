@@ -1,4 +1,4 @@
-export { ComboboxSelect } from "./combobox-select"
+// Exports removed: ComboboxSelect has been replaced with universal Combobox
 export { FoodForm, type FoodFormData, getFoodSourceTypes, getFoodProducts } from "./food-form"
 export {
   WorkoutForm,

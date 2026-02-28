@@ -28,6 +28,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { Calendar as CalendarIcon } from "@/lib/icons"
+import { cn } from "@/lib/utils"
 import { db, getEntityById, deleteEntity, createEntity } from "@/lib/db"
 import type { Item, ItemType, ReminderType, ReminderPriority } from "@/types"
 
@@ -62,6 +68,7 @@ export default function ItemDetailPage() {
   const id = params.id as string
   const t = useTranslations("items")
   const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
 
   const [item, setItem] = useState<Item | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -414,21 +421,69 @@ export default function ItemDetailPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">{t("detail.reminderStartDate")}</label>
-                  <input
-                    type="date"
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                    value={reminderStartDate}
-                    onChange={(e) => setReminderStartDate(e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !reminderStartDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {reminderStartDate ? (
+                          format(new Date(reminderStartDate), "LLL dd, y", {
+                            locale: dateFnsLocale,
+                          })
+                        ) : (
+                          <span>{t("detail.reminderStartDate")}</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={reminderStartDate ? new Date(reminderStartDate) : undefined}
+                        onSelect={(date) =>
+                          setReminderStartDate(date ? format(date, "yyyy-MM-dd") : "")
+                        }
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">{t("detail.reminderEndDate")}</label>
-                  <input
-                    type="date"
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                    value={reminderEndDate}
-                    onChange={(e) => setReminderEndDate(e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !reminderEndDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {reminderEndDate ? (
+                          format(new Date(reminderEndDate), "LLL dd, y", { locale: dateFnsLocale })
+                        ) : (
+                          <span>{t("detail.reminderEndDate")}</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={reminderEndDate ? new Date(reminderEndDate) : undefined}
+                        onSelect={(date) =>
+                          setReminderEndDate(date ? format(date, "yyyy-MM-dd") : "")
+                        }
+                        initialFocus
+                        locale={dateFnsLocale}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
 

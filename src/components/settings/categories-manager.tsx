@@ -1,23 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTranslations } from "next-intl"
-import { useLocale } from "next-intl"
 import { Tag } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Button } from "@/components/ui/button"
-import { CrudManager, EntityTranslations } from "@/components/shared"
+import { CrudManager } from "@/components/shared"
 import { useSettings } from "./settings-context"
 import { LogType, FinanceType } from "@/types"
 import type { Category } from "@/types"
-import { getLocalizedEntityName } from "@/lib/db"
 
 export function CategoriesManager() {
   const t = useTranslations("settings")
   const tCommon = useTranslations("common")
-  const locale = useLocale()
   const {
     categories,
     editingCategory,
@@ -26,25 +23,6 @@ export function CategoriesManager() {
     updateCategoryData,
     deleteCategoryData,
   } = useSettings()
-  const [localizedCategoryNames, setLocalizedCategoryNames] = useState<Record<string, string>>({})
-
-  useEffect(() => {
-    loadLocalizedNames()
-  }, [locale, categories])
-
-  async function loadLocalizedNames() {
-    const localizedNames: Record<string, string> = {}
-    for (const category of categories) {
-      localizedNames[category.id] = await getLocalizedEntityName(
-        "category",
-        category.id,
-        locale,
-        category.name,
-        category.type
-      )
-    }
-    setLocalizedCategoryNames(localizedNames)
-  }
 
   // Опции для выпадающего списка
   const financeTypeOptions = [
@@ -111,10 +89,10 @@ export function CategoriesManager() {
             />
           </div>
           <div className="flex gap-2 pt-2">
-            <Button size="sm" onClick={onSave}>
+            <Button size="action-sm" onClick={onSave}>
               {tCommon("save")}
             </Button>
-            <Button size="sm" variant="outline" onClick={onCancel}>
+            <Button size="action-sm" variant="outline" onClick={onCancel}>
               {tCommon("cancel")}
             </Button>
           </div>
@@ -129,16 +107,13 @@ export function CategoriesManager() {
         <div className="flex items-center gap-2 flex-1 min-w-0">
           {item.icon && <span>{item.icon}</span>}
           <div className="flex flex-col min-w-0">
-            <span className="font-medium truncate">
-              {localizedCategoryNames[item.id] || item.name}
-            </span>
+            <span className="font-medium truncate">{item.name}</span>
             <span className="text-xs text-muted-foreground">
               {getFinanceTypeLabel(item.finance_type)}
             </span>
           </div>
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <EntityTranslations entityType="category" entityId={item.id} defaultName={item.name} />
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
             <span className="sr-only">Редактировать</span>
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Save } from "@/lib/icons"
+import { ArrowLeft, Save, Utensils, Coffee, Martini } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -188,12 +188,15 @@ export default function NewRecipePage() {
               >
                 <TabsList className="grid grid-cols-3">
                   <TabsTrigger value="food" className={recipeTypeColors["food"]}>
+                    <Utensils className="h-4 w-4 mr-2" />
                     {tRecipes("types.food")}
                   </TabsTrigger>
                   <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
+                    <Coffee className="h-4 w-4 mr-2" />
                     {tRecipes("types.drink")}
                   </TabsTrigger>
                   <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
+                    <Martini className="h-4 w-4 mr-2" />
                     {tRecipes("types.cocktail")}
                   </TabsTrigger>
                 </TabsList>

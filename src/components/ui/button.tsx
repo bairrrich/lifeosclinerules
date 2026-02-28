@@ -27,6 +27,10 @@ const buttonVariants = cva(
         "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-8",
         "icon-lg": "size-10",
+        // Фиксированная ширина для кнопок действий
+        "action-sm": "h-8 w-24 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 sm:w-28",
+        action: "h-9 w-28 rounded-md px-4 has-[>svg]:px-3 sm:w-32",
+        "action-lg": "h-10 w-32 rounded-md px-6 has-[>svg]:px-4 sm:w-36",
       },
     },
     defaultVariants: {

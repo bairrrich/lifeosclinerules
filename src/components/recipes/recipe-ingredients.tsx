@@ -5,6 +5,7 @@ import { Plus, X, ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Combobox } from "@/components/ui/combobox"
 import { useUnits } from "@/hooks/use-units"
 import {
   ArrayManager,
@@ -93,43 +94,31 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
           </div>
 
           {/* Единица */}
-          <div className="col-span-3 relative">
-            <select
-              className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          <div className="col-span-3">
+            <Combobox
+              options={
+                isLoading
+                  ? [{ id: ingredient.unit, label: ingredient.unit }]
+                  : recipeUnitOptions.length > 0
+                    ? recipeUnitOptions.map((u) => ({ id: u.value, label: u.abbreviation }))
+                    : [
+                        { id: "г", label: "г" },
+                        { id: "кг", label: "кг" },
+                        { id: "мл", label: "мл" },
+                        { id: "л", label: "л" },
+                        { id: "шт", label: "шт" },
+                        { id: "ст.л.", label: "ст.л." },
+                        { id: "ч.л.", label: "ч.л." },
+                        { id: "стакан", label: "стакан" },
+                        { id: "по вкусу", label: "по вкусу" },
+                        { id: "щепотка", label: "щепотка" },
+                      ]
+              }
               value={ingredient.unit}
-              onChange={(e) => onUpdate("unit", e.target.value)}
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              {isLoading ? (
-                <option value={ingredient.unit}>{ingredient.unit}</option>
-              ) : recipeUnitOptions.length > 0 ? (
-                recipeUnitOptions.map((u) => (
-                  <option key={u.value} value={u.value}>
-                    {u.abbreviation}
-                  </option>
-                ))
-              ) : (
-                // Fallback если БД пуста
-                <>
-                  <option value="г">г</option>
-                  <option value="кг">кг</option>
-                  <option value="мл">мл</option>
-                  <option value="л">л</option>
-                  <option value="шт">шт</option>
-                  <option value="ст.л.">ст.л.</option>
-                  <option value="ч.л.">ч.л.</option>
-                  <option value="стакан">стакан</option>
-                  <option value="по вкусу">по вкусу</option>
-                  <option value="щепотка">щепотка</option>
-                </>
-              )}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+              onChange={(value) => onUpdate("unit", value as string)}
+              allowCustom={true}
+              searchable={false}
+            />
           </div>
 
           {/* Удалить - обрабатывается в ArrayManager */}

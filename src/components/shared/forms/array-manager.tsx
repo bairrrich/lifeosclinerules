@@ -88,7 +88,7 @@ export function ArrayManager<T extends { id?: string | number | null }>({
           <CardTitle className="text-base">
             {items.length > 0 ? `${items.length} ${t("items")}` : emptyMessage || t("noItems")}
           </CardTitle>
-          <Button type="button" variant="outline" size="sm" onClick={handleAdd}>
+          <Button type="button" size="action-sm" variant="outline" onClick={handleAdd}>
             <Plus className="h-4 w-4 mr-1" />
             {addButtonText || t("add")}
           </Button>

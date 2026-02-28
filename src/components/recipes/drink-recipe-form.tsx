@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { ChevronDown } from "@/lib/icons"
+import { Combobox } from "@/components/ui/combobox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -80,60 +80,29 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
         {/* Тип напитка */}
         <div className="space-y-2">
           <Label>{t("fields.drinkType")}</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              value={metadata.drink_type || ""}
-              onChange={(e) =>
-                updateField(
-                  "drink_type",
-                  (e.target.value as DrinkRecipeMetadata["drink_type"]) || undefined
-                )
-              }
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              <option value="" disabled>
-                {t("forms.selectPlaceholder")}
-              </option>
-              {getDrinkTypes(t).map((dt) => (
-                <option key={dt.value} value={dt.value}>
-                  {dt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-          </div>
+          <Combobox
+            options={getDrinkTypes(t).map((dt) => ({ id: dt.value, label: dt.label }))}
+            value={metadata.drink_type || ""}
+            onChange={(value) =>
+              updateField("drink_type", (value as DrinkRecipeMetadata["drink_type"]) || undefined)
+            }
+            placeholder={t("forms.selectPlaceholder")}
+            allowCustom={false}
+            searchable={false}
+          />
         </div>
 
         {/* Основа */}
         <div className="space-y-2">
           <Label>{t("fields.base")}</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              value={metadata.base || ""}
-              onChange={(e) => updateField("base", e.target.value || undefined)}
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              <option value="">{t("forms.notSpecified")}</option>
-              {getDrinkBases(t).map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-          </div>
+          <Combobox
+            options={getDrinkBases(t).map((b) => ({ id: b, label: b }))}
+            value={metadata.base || ""}
+            onChange={(value) => updateField("base", (value as string) || undefined)}
+            placeholder={t("forms.notSpecified")}
+            allowCustom={false}
+            searchable={false}
+          />
         </div>
 
         {/* Температура подачи */}

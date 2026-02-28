@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { useTranslations } from "next-intl"
-import { ChevronDown, Plus, X } from "@/lib/icons"
+import { Plus, X } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Combobox } from "@/components/ui/combobox"
 import type { CocktailRecipeMetadata, CocktailMethod, GlassType, IceType } from "@/types"
 
 // ============================================
@@ -234,53 +235,27 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
             {/* Базовый спирт */}
             <div className="space-y-2">
               <Label>{t("fields.baseSpirit")}</Label>
-              <div className="relative">
-                <select
-                  className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  value={metadata.base_spirit || ""}
-                  onChange={(e) => updateField("base_spirit", e.target.value || undefined)}
-                  style={{
-                    backgroundImage: "none",
-                    WebkitAppearance: "none",
-                    MozAppearance: "none",
-                    appearance: "none",
-                  }}
-                >
-                  <option value="">{t("forms.notSpecified")}</option>
-                  {getBaseSpirits(t).map((s, index) => (
-                    <option key={index} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-              </div>
+              <Combobox
+                options={getBaseSpirits(t).map((s) => ({ id: s, label: s }))}
+                value={metadata.base_spirit || ""}
+                onChange={(value) => updateField("base_spirit", (value as string) || undefined)}
+                placeholder={t("forms.notSpecified")}
+                allowCustom={false}
+                searchable={false}
+              />
             </div>
 
             {/* IBA категория */}
             <div className="space-y-2">
               <Label>{t("fields.ibaCategory")}</Label>
-              <div className="relative">
-                <select
-                  className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  value={metadata.iba_category || ""}
-                  onChange={(e) => updateField("iba_category", e.target.value || undefined)}
-                  style={{
-                    backgroundImage: "none",
-                    WebkitAppearance: "none",
-                    MozAppearance: "none",
-                    appearance: "none",
-                  }}
-                >
-                  <option value="">{t("forms.notSpecified")}</option>
-                  {getIBACategories(t).map((c, index) => (
-                    <option key={index} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-              </div>
+              <Combobox
+                options={getIBACategories(t).map((c) => ({ id: c, label: c }))}
+                value={metadata.iba_category || ""}
+                onChange={(value) => updateField("iba_category", (value as string) || undefined)}
+                placeholder={t("forms.notSpecified")}
+                allowCustom={false}
+                searchable={false}
+              />
             </div>
           </>
         )}
@@ -310,29 +285,14 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
         {/* Бокал */}
         <div className="space-y-2">
           <Label>{t("fields.glassType")}</Label>
-          <div className="relative">
-            <select
-              className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              value={metadata.glass_type || ""}
-              onChange={(e) =>
-                updateField("glass_type", (e.target.value as GlassType) || undefined)
-              }
-              style={{
-                backgroundImage: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                appearance: "none",
-              }}
-            >
-              <option value="">{t("forms.notSpecified")}</option>
-              {getGlassTypes(t).map((gt) => (
-                <option key={gt.value} value={gt.value}>
-                  {gt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
-          </div>
+          <Combobox
+            options={getGlassTypes(t).map((gt) => ({ id: gt.value, label: gt.label }))}
+            value={metadata.glass_type || ""}
+            onChange={(value) => updateField("glass_type", (value as GlassType) || undefined)}
+            placeholder={t("forms.notSpecified")}
+            allowCustom={false}
+            searchable={false}
+          />
         </div>
 
         {/* Тип льда */}

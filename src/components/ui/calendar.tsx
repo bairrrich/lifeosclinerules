@@ -7,6 +7,8 @@ import { DayPicker, getDefaultClassNames, type DayButton } from "react-day-picke
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 
+type FirstDayOfWeek = "sunday" | "monday"
+
 function Calendar({
   className,
   classNames,
@@ -20,10 +22,43 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
 }) {
   const defaultClassNames = getDefaultClassNames()
+  const [firstDayOfWeek, setFirstDayOfWeek] = React.useState<FirstDayOfWeek>("monday")
+
+  // Читаем настройку первого дня недели из localStorage
+  React.useEffect(() => {
+    const stored = localStorage.getItem("first-day-of-week") as FirstDayOfWeek | null
+    if (stored) {
+      setFirstDayOfWeek(stored)
+    }
+
+    // Слушаем изменения настройки
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "first-day-of-week" && e.newValue) {
+        setFirstDayOfWeek(e.newValue as FirstDayOfWeek)
+      }
+    }
+
+    // Слушаем кастомное событие для изменения в реальном времени
+    const handleCustomChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ firstDay: FirstDayOfWeek }>
+      if (customEvent.detail?.firstDay) {
+        setFirstDayOfWeek(customEvent.detail.firstDay)
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    window.addEventListener("first-day-of-week-change", handleCustomChange)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+      window.removeEventListener("first-day-of-week-change", handleCustomChange)
+    }
+  }, [])
 
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      weekStartsOn={firstDayOfWeek === "sunday" ? 0 : 1}
       className={cn(
         "bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,

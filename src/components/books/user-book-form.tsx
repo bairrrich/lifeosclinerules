@@ -4,9 +4,16 @@ import { useTranslations, useLocale } from "next-intl"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { NativeSelect } from "@/components/ui/native-select"
+import { Combobox } from "@/components/ui/combobox"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FormSection } from "@/components/shared/forms"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { Calendar as CalendarIcon } from "@/lib/icons"
+import { cn } from "@/lib/utils"
 import type { UserBook, ReadingStatus, BookFormat } from "@/types"
 
 // Локализованные placeholder для дат
@@ -23,6 +30,7 @@ interface UserBookFormProps {
 
 export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
   const t = useTranslations("books")
+  const locale = useLocale()
 
   // Статусы чтения с переводами
   const readingStatuses: { value: ReadingStatus; label: string; color: string }[] = [
@@ -44,6 +52,9 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
   const updateField = <K extends keyof UserBook>(field: K, value: UserBook[K]) => {
     onChange({ ...data, [field]: value })
   }
+
+  // Получаем текущую локаль для date-fns
+  const dateFnsLocale = locale === "ru" ? ru : enUS
 
   // Вычисляем процент прогресса
   const progressPercent =
@@ -122,45 +133,67 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="started_at">{t("userBook.startedAt")}</Label>
-              <div className="relative">
-                <Input
-                  id="started_at"
-                  type="date"
-                  value={data?.started_at?.split("T")[0] || ""}
-                  onChange={(e) => updateField("started_at", e.target.value || undefined)}
-                  className={data?.started_at ? "" : "text-muted-foreground"}
-                />
-                {data?.started_at && (
-                  <button
-                    type="button"
-                    onClick={() => updateField("started_at", undefined)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !data?.started_at && "text-muted-foreground"
+                    )}
                   >
-                    ×
-                  </button>
-                )}
-              </div>
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {data?.started_at ? (
+                      format(new Date(data.started_at), "LLL dd, y", { locale: dateFnsLocale })
+                    ) : (
+                      <span>{t("userBook.startedAt")}</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={data?.started_at ? new Date(data.started_at) : undefined}
+                    onSelect={(date) =>
+                      updateField("started_at", date ? format(date, "yyyy-MM-dd") : undefined)
+                    }
+                    initialFocus
+                    locale={dateFnsLocale}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
               <Label htmlFor="finished_at">{t("userBook.finishedAt")}</Label>
-              <div className="relative">
-                <Input
-                  id="finished_at"
-                  type="date"
-                  value={data?.finished_at?.split("T")[0] || ""}
-                  onChange={(e) => updateField("finished_at", e.target.value || undefined)}
-                  className={data?.finished_at ? "" : "text-muted-foreground"}
-                />
-                {data?.finished_at && (
-                  <button
-                    type="button"
-                    onClick={() => updateField("finished_at", undefined)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !data?.finished_at && "text-muted-foreground"
+                    )}
                   >
-                    ×
-                  </button>
-                )}
-              </div>
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {data?.finished_at ? (
+                      format(new Date(data.finished_at), "LLL dd, y", { locale: dateFnsLocale })
+                    ) : (
+                      <span>{t("userBook.finishedAt")}</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={data?.finished_at ? new Date(data.finished_at) : undefined}
+                    onSelect={(date) =>
+                      updateField("finished_at", date ? format(date, "yyyy-MM-dd") : undefined)
+                    }
+                    initialFocus
+                    locale={dateFnsLocale}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>
@@ -220,17 +253,13 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
             <>
               <div className="space-y-2">
                 <Label htmlFor="owned_format">{t("userBook.ownedFormat")}</Label>
-                <NativeSelect
-                  id="owned_format"
+                <Combobox
+                  options={ownedFormats.map((f) => ({ id: f.value, label: f.label }))}
                   value={data?.owned_format || "paperback"}
-                  onChange={(e) => updateField("owned_format", e.target.value as BookFormat)}
-                >
-                  {ownedFormats.map((f) => (
-                    <option key={f.value} value={f.value}>
-                      {f.label}
-                    </option>
-                  ))}
-                </NativeSelect>
+                  onChange={(value) => updateField("owned_format", value as BookFormat)}
+                  allowCustom={false}
+                  searchable={false}
+                />
               </div>
 
               <div className="space-y-2">

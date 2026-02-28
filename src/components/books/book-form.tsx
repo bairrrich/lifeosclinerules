@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { NativeSelect } from "@/components/ui/native-select"
 import { Combobox } from "@/components/ui/combobox"
 import { TagManager } from "@/components/shared/forms"
 import type { Book, BookFormat, Author, Genre } from "@/types"
@@ -187,31 +186,23 @@ export function BookForm({ data, authors, genres, onChange }: BookFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="format">{t("fields.format")}</Label>
-              <NativeSelect
-                id="format"
+              <Combobox
+                options={bookFormatValues.map((f) => ({ id: f, label: t(`formats.${f}`) }))}
                 value={data?.format || "paperback"}
-                onChange={(e) => updateField("format", e.target.value as BookFormat)}
-              >
-                {bookFormatValues.map((f) => (
-                  <option key={f} value={f}>
-                    {t(`formats.${f}`)}
-                  </option>
-                ))}
-              </NativeSelect>
+                onChange={(value) => updateField("format", value as BookFormat)}
+                allowCustom={false}
+                searchable={false}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="language">{t("fields.language")}</Label>
-              <NativeSelect
-                id="language"
+              <Combobox
+                options={languageValues.map((l) => ({ id: l, label: t(`languages.${l}`) }))}
                 value={data?.language || "ru"}
-                onChange={(e) => updateField("language", e.target.value)}
-              >
-                {languageValues.map((l) => (
-                  <option key={l} value={l}>
-                    {t(`languages.${l}`)}
-                  </option>
-                ))}
-              </NativeSelect>
+                onChange={(value) => updateField("language", value as string)}
+                allowCustom={false}
+                searchable={false}
+              />
             </div>
           </div>
 

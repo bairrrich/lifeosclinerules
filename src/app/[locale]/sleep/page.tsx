@@ -10,6 +10,12 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
+import { Calendar as CalendarIcon } from "@/lib/icons"
+import { cn } from "@/lib/utils"
 import {
   FormActions,
   CreateFormActions,
@@ -46,6 +52,7 @@ function SleepContent() {
   const searchParams = useSearchParams()
   const t = useTranslations("sleep")
   const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
   const [isLoading, setIsLoading] = useState(true)
   const [sleepLogs, setSleepLogs] = useState<SleepLog[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -337,12 +344,35 @@ function SleepContent() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="date">{t("dialogs.dateLabel")}</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !formData.date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.date ? (
+                        format(new Date(formData.date), "LLL dd, y", { locale: dateFnsLocale })
+                      ) : (
+                        <span>{t("dialogs.dateLabel")}</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.date ? new Date(formData.date) : undefined}
+                      onSelect={(date) =>
+                        setFormData({ ...formData, date: date ? format(date, "yyyy-MM-dd") : "" })
+                      }
+                      initialFocus
+                      locale={dateFnsLocale}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -416,12 +446,35 @@ function SleepContent() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-date">{t("dialogs.dateLabel")}</Label>
-                <Input
-                  id="edit-date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !formData.date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.date ? (
+                        format(new Date(formData.date), "LLL dd, y", { locale: dateFnsLocale })
+                      ) : (
+                        <span>{t("dialogs.dateLabel")}</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.date ? new Date(formData.date) : undefined}
+                      onSelect={(date) =>
+                        setFormData({ ...formData, date: date ? format(date, "yyyy-MM-dd") : "" })
+                      }
+                      initialFocus
+                      locale={dateFnsLocale}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
