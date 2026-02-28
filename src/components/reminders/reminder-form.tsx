@@ -1,15 +1,22 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
+import { format } from "date-fns"
+import { ru, enUS } from "date-fns/locale"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Plus, X, Bell } from "@/lib/icons"
+import { Calendar } from "@/components/ui/calendar"
+import { TimePicker } from "@/components/ui/time-picker"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Plus, X, Bell, Calendar as CalendarIcon } from "@/lib/icons"
+import { cn } from "@/lib/utils"
 import { db } from "@/lib/db"
 import type { ReminderType, ReminderPriority, ReminderRepeatType, Item } from "@/types"
+import type { DateRange } from "react-day-picker"
 
 // Функции для получения локализованных конфигураций
 export function getReminderTypesConfig(
@@ -72,13 +79,13 @@ export function getTimeOfDayOptions(t: any) {
 
 export function getDayNames(t: any) {
   return [
-    t("common.reminders.daysOfWeek.su"),
-    t("common.reminders.daysOfWeek.mo"),
-    t("common.reminders.daysOfWeek.tu"),
-    t("common.reminders.daysOfWeek.we"),
-    t("common.reminders.daysOfWeek.th"),
-    t("common.reminders.daysOfWeek.fr"),
-    t("common.reminders.daysOfWeek.sa"),
+    t("daysOfWeek.su"),
+    t("daysOfWeek.mo"),
+    t("daysOfWeek.tu"),
+    t("daysOfWeek.we"),
+    t("daysOfWeek.th"),
+    t("daysOfWeek.fr"),
+    t("daysOfWeek.sa"),
   ]
 }
 
@@ -115,6 +122,8 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const t = useTranslations("reminders")
   const tCommon = useTranslations("common")
+  const locale = useLocale()
+  const dateFnsLocale = locale === "ru" ? ru : enUS
 
   useEffect(() => {
     if (formData.type === "item" || formData.type === "medicine") {
@@ -302,23 +311,58 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           )}
         </div>
 
-        {/* Дата, время и упреждение в одной строке */}
-        <div className="flex flex-wrap gap-2">
-          <Input
-            type="date"
-            value={formData.date}
-            onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
-            className="flex-1 min-w-[140px]"
-          />
-          <Input
-            type="time"
-            value={formData.time}
-            onChange={(e) => setFormData((prev) => ({ ...prev, time: e.target.value }))}
-            className="flex-1 min-w-[100px]"
-          />
+        {/* Дата и время */}
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-2">
+            <Label>{t("form.date")}</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !formData.date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formData.date ? (
+                    format(new Date(formData.date), "LLL dd, y", { locale: dateFnsLocale })
+                  ) : (
+                    <span>{t("form.selectDate")}</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" side="bottom" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.date ? new Date(formData.date) : undefined}
+                  onSelect={(date) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      date: date ? format(date, "yyyy-MM-dd") : "",
+                    }))
+                  }
+                  initialFocus
+                  locale={dateFnsLocale}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="space-y-2">
+            <Label>{t("form.time")}</Label>
+            <TimePicker
+              value={formData.time}
+              onChange={(time) => setFormData((prev) => ({ ...prev, time }))}
+            />
+          </div>
+        </div>
+
+        {/* Упреждение */}
+        <div className="space-y-2">
+          <Label>{t("form.advance")}</Label>
           <div className="relative">
             <select
-              className="h-10 pl-8 pr-2 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer max-w-[120px]"
+              className="h-10 pl-8 pr-2 w-full max-w-[200px] rounded-md border border-input bg-background text-sm appearance-none cursor-pointer"
               value={formData.advance_minutes}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, advance_minutes: Number(e.target.value) }))
@@ -461,7 +505,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
         <div className="space-y-2">
           <Label>{t("form.daysOfWeek")}</Label>
           <div className="grid grid-cols-7 gap-1">
-            {getDayNames(tCommon).map((day, i) => (
+            {getDayNames(t).map((day, i) => (
               <Button
                 key={i}
                 type="button"
@@ -569,7 +613,7 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
             <div className="space-y-2">
               <Label className="text-sm">{t("form.onDays")}</Label>
               <div className="grid grid-cols-7 gap-1">
-                {getDayNames(tCommon).map((day, i) => (
+                {getDayNames(t).map((day, i) => (
                   <Button
                     key={i}
                     type="button"
@@ -688,25 +732,49 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
       </div>
 
       {/* Даты курса */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="start_date">{t("form.courseStart")}</Label>
-          <Input
-            id="start_date"
-            type="date"
-            value={formData.start_date}
-            onChange={(e) => setFormData((prev) => ({ ...prev, start_date: e.target.value }))}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="end_date">{t("form.courseEnd")}</Label>
-          <Input
-            id="end_date"
-            type="date"
-            value={formData.end_date}
-            onChange={(e) => setFormData((prev) => ({ ...prev, end_date: e.target.value }))}
-          />
-        </div>
+      <div className="space-y-2">
+        <Label>{t("form.courseDates")}</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                (!formData.start_date || !formData.end_date) && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {formData.start_date && formData.end_date ? (
+                <>
+                  {format(new Date(formData.start_date), "LLL dd, y", { locale: dateFnsLocale })} -{" "}
+                  {format(new Date(formData.end_date), "LLL dd, y", { locale: dateFnsLocale })}
+                </>
+              ) : (
+                <span>{t("form.selectDateRange")}</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" side="bottom" align="start">
+            <Calendar
+              mode="range"
+              selected={{
+                from: formData.start_date ? new Date(formData.start_date) : undefined,
+                to: formData.end_date ? new Date(formData.end_date) : undefined,
+              }}
+              onSelect={(range: DateRange | undefined) => {
+                if (range) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    start_date: range.from ? format(range.from, "yyyy-MM-dd") : "",
+                    end_date: range.to ? format(range.to, "yyyy-MM-dd") : "",
+                  }))
+                }
+              }}
+              initialFocus
+              locale={dateFnsLocale}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Настройки уведомлений */}

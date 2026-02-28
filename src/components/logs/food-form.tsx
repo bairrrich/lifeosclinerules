@@ -45,9 +45,9 @@ export type FoodFormData = z.infer<typeof foodSchema>
 // Функции для получения локализованных конфигураций
 export function getFoodSourceTypes(t: any) {
   return [
-    { value: "custom", label: t("logs.food.sourceTypes.custom"), icon: Edit3 },
-    { value: "recipe", label: t("logs.food.sourceTypes.recipe"), icon: ChefHat },
-    { value: "product", label: t("logs.food.sourceTypes.product"), icon: Package },
+    { value: "custom", label: t("food.sourceTypes.custom"), icon: Edit3 },
+    { value: "recipe", label: t("food.sourceTypes.recipe"), icon: ChefHat },
+    { value: "product", label: t("food.sourceTypes.product"), icon: Package },
   ]
 }
 
@@ -63,106 +63,106 @@ interface ProductNutrition {
 // Функция для получения продуктов по категориям с КБЖУ (на 100г)
 export function getFoodProducts(t: any): Record<string, Record<string, ProductNutrition>> {
   return {
-    [t("logs.food.productCategories.dairy")]: {
-      [t("logs.food.products.dairy.milk32")]: {
+    [t("food.productCategories.dairy")]: {
+      [t("food.products.dairy.milk32")]: {
         variants: [],
         calories: 61,
         protein: 3,
         fat: 3.2,
         carbs: 4.7,
       },
-      [t("logs.food.products.dairy.milk25")]: {
+      [t("food.products.dairy.milk25")]: {
         variants: [],
         calories: 52,
         protein: 2.8,
         fat: 2.5,
         carbs: 4.7,
       },
-      [t("logs.food.products.dairy.milk15")]: {
+      [t("food.products.dairy.milk15")]: {
         variants: [],
         calories: 44,
         protein: 2.8,
         fat: 1.5,
         carbs: 4.7,
       },
-      [t("logs.food.products.dairy.hardCheese")]: {
+      [t("food.products.dairy.hardCheese")]: {
         variants: [],
         calories: 352,
         protein: 26,
         fat: 28,
         carbs: 0.1,
       },
-      [t("logs.food.products.dairy.softCheese")]: {
+      [t("food.products.dairy.softCheese")]: {
         variants: [],
         calories: 300,
         protein: 20,
         fat: 24,
         carbs: 0.5,
       },
-      [t("logs.food.products.dairy.cottageCheese0")]: {
+      [t("food.products.dairy.cottageCheese0")]: {
         variants: [],
         calories: 71,
         protein: 16.5,
         fat: 0,
         carbs: 1.3,
       },
-      [t("logs.food.products.dairy.cottageCheese5")]: {
+      [t("food.products.dairy.cottageCheese5")]: {
         variants: [],
         calories: 121,
         protein: 17,
         fat: 5,
         carbs: 1.8,
       },
-      [t("logs.food.products.dairy.cottageCheese9")]: {
+      [t("food.products.dairy.cottageCheese9")]: {
         variants: [],
         calories: 159,
         protein: 16.7,
         fat: 9,
         carbs: 2,
       },
-      [t("logs.food.products.dairy.sourCream15")]: {
+      [t("food.products.dairy.sourCream15")]: {
         variants: [],
         calories: 158,
         protein: 2.7,
         fat: 15,
         carbs: 3.2,
       },
-      [t("logs.food.products.dairy.sourCream20")]: {
+      [t("food.products.dairy.sourCream20")]: {
         variants: [],
         calories: 204,
         protein: 2.5,
         fat: 20,
         carbs: 3.4,
       },
-      [t("logs.food.products.dairy.kefir25")]: {
+      [t("food.products.dairy.kefir25")]: {
         variants: [],
         calories: 54,
         protein: 3,
         fat: 2.5,
         carbs: 4,
       },
-      [t("logs.food.products.dairy.kefir32")]: {
+      [t("food.products.dairy.kefir32")]: {
         variants: [],
         calories: 59,
         protein: 3.2,
         fat: 3.2,
         carbs: 4.1,
       },
-      [t("logs.food.products.dairy.naturalYogurt")]: {
+      [t("food.products.dairy.naturalYogurt")]: {
         variants: [],
         calories: 66,
         protein: 4,
         fat: 3.5,
         carbs: 4.7,
       },
-      [t("logs.food.products.dairy.greekYogurt")]: {
+      [t("food.products.dairy.greekYogurt")]: {
         variants: [],
         calories: 97,
         protein: 8,
         fat: 5,
         carbs: 3.5,
       },
-      [t("logs.food.products.dairy.butter825")]: {
+      [t("food.products.dairy.butter825")]: {
         variants: [],
         calories: 748,
         protein: 0.6,
@@ -170,71 +170,71 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 0.8,
       },
     },
-    [t("logs.food.productCategories.meat")]: {
-      [t("logs.food.products.meat.beefFillet")]: {
+    [t("food.productCategories.meat")]: {
+      [t("food.products.meat.beefFillet")]: {
         variants: [],
         calories: 170,
         protein: 20,
         fat: 9,
         carbs: 0,
       },
-      [t("logs.food.products.meat.beefBrisket")]: {
+      [t("food.products.meat.beefBrisket")]: {
         variants: [],
         calories: 217,
         protein: 18,
         fat: 16,
         carbs: 0,
       },
-      [t("logs.food.products.meat.beefMince")]: {
+      [t("food.products.meat.beefMince")]: {
         variants: [],
         calories: 254,
         protein: 17,
         fat: 20,
         carbs: 0,
       },
-      [t("logs.food.products.meat.porkNeck")]: {
+      [t("food.products.meat.porkNeck")]: {
         variants: [],
         calories: 269,
         protein: 16,
         fat: 22,
         carbs: 0,
       },
-      [t("logs.food.products.meat.porkLoin")]: {
+      [t("food.products.meat.porkLoin")]: {
         variants: [],
         calories: 242,
         protein: 17,
         fat: 18,
         carbs: 0,
       },
-      [t("logs.food.products.meat.chickenBreast")]: {
+      [t("food.products.meat.chickenBreast")]: {
         variants: [],
         calories: 113,
         protein: 23,
         fat: 1,
         carbs: 0,
       },
-      [t("logs.food.products.meat.chickenThigh")]: {
+      [t("food.products.meat.chickenThigh")]: {
         variants: [],
         calories: 185,
         protein: 19,
         fat: 11,
         carbs: 0,
       },
-      [t("logs.food.products.meat.chickenMince")]: {
+      [t("food.products.meat.chickenMince")]: {
         variants: [],
         calories: 143,
         protein: 17,
         fat: 8,
         carbs: 0,
       },
-      [t("logs.food.products.meat.turkeyBreast")]: {
+      [t("food.products.meat.turkeyBreast")]: {
         variants: [],
         calories: 84,
         protein: 19,
         fat: 0.5,
         carbs: 0,
       },
-      [t("logs.food.products.meat.turkeyThigh")]: {
+      [t("food.products.meat.turkeyThigh")]: {
         variants: [],
         calories: 142,
         protein: 18,
@@ -242,64 +242,64 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 0,
       },
     },
-    [t("logs.food.productCategories.fish")]: {
-      [t("logs.food.products.fish.troutFresh")]: {
+    [t("food.productCategories.fish")]: {
+      [t("food.products.fish.troutFresh")]: {
         variants: [],
         calories: 97,
         protein: 19,
         fat: 2,
         carbs: 0,
       },
-      [t("logs.food.products.fish.troutLightlySalted")]: {
+      [t("food.products.fish.troutLightlySalted")]: {
         variants: [],
         calories: 186,
         protein: 20,
         fat: 11,
         carbs: 0,
       },
-      [t("logs.food.products.fish.salmonFresh")]: {
+      [t("food.products.fish.salmonFresh")]: {
         variants: [],
         calories: 142,
         protein: 20,
         fat: 6,
         carbs: 0,
       },
-      [t("logs.food.products.fish.salmonLightlySalted")]: {
+      [t("food.products.fish.salmonLightlySalted")]: {
         variants: [],
         calories: 201,
         protein: 20,
         fat: 13,
         carbs: 0,
       },
-      [t("logs.food.products.fish.codFresh")]: {
+      [t("food.products.fish.codFresh")]: {
         variants: [],
         calories: 78,
         protein: 17,
         fat: 0.7,
         carbs: 0,
       },
-      [t("logs.food.products.fish.herringSalted")]: {
+      [t("food.products.fish.herringSalted")]: {
         variants: [],
         calories: 145,
         protein: 17,
         fat: 8,
         carbs: 0,
       },
-      [t("logs.food.products.fish.mackerelFresh")]: {
+      [t("food.products.fish.mackerelFresh")]: {
         variants: [],
         calories: 191,
         protein: 18,
         fat: 13,
         carbs: 0,
       },
-      [t("logs.food.products.fish.mackerelSmoked")]: {
+      [t("food.products.fish.mackerelSmoked")]: {
         variants: [],
         calories: 317,
         protein: 23,
         fat: 24,
         carbs: 0,
       },
-      [t("logs.food.products.fish.tunaCanned")]: {
+      [t("food.products.fish.tunaCanned")]: {
         variants: [],
         calories: 116,
         protein: 23,
@@ -307,78 +307,78 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 0,
       },
     },
-    [t("logs.food.productCategories.vegetables")]: {
-      [t("logs.food.products.vegetables.potato")]: {
+    [t("food.productCategories.vegetables")]: {
+      [t("food.products.vegetables.potato")]: {
         variants: [],
         calories: 77,
         protein: 2,
         fat: 0.4,
         carbs: 17,
       },
-      [t("logs.food.products.vegetables.carrot")]: {
+      [t("food.products.vegetables.carrot")]: {
         variants: [],
         calories: 32,
         protein: 1.3,
         fat: 0.1,
         carbs: 7,
       },
-      [t("logs.food.products.vegetables.onion")]: {
+      [t("food.products.vegetables.onion")]: {
         variants: [],
         calories: 40,
         protein: 1.4,
         fat: 0.2,
         carbs: 9,
       },
-      [t("logs.food.products.vegetables.cucumber")]: {
+      [t("food.products.vegetables.cucumber")]: {
         variants: [],
         calories: 15,
         protein: 0.8,
         fat: 0.1,
         carbs: 3,
       },
-      [t("logs.food.products.vegetables.tomato")]: {
+      [t("food.products.vegetables.tomato")]: {
         variants: [],
         calories: 18,
         protein: 0.9,
         fat: 0.2,
         carbs: 4,
       },
-      [t("logs.food.products.vegetables.whiteCabbage")]: {
+      [t("food.products.vegetables.whiteCabbage")]: {
         variants: [],
         calories: 28,
         protein: 1.8,
         fat: 0.1,
         carbs: 5,
       },
-      [t("logs.food.products.vegetables.pepper")]: {
+      [t("food.products.vegetables.pepper")]: {
         variants: [],
         calories: 27,
         protein: 1.3,
         fat: 0.1,
         carbs: 5,
       },
-      [t("logs.food.products.vegetables.garlic")]: {
+      [t("food.products.vegetables.garlic")]: {
         variants: [],
         calories: 149,
         protein: 6.5,
         fat: 0.5,
         carbs: 30,
       },
-      [t("logs.food.products.vegetables.zucchini")]: {
+      [t("food.products.vegetables.zucchini")]: {
         variants: [],
         calories: 24,
         protein: 0.6,
         fat: 0.3,
         carbs: 5,
       },
-      [t("logs.food.products.vegetables.eggplant")]: {
+      [t("food.products.vegetables.eggplant")]: {
         variants: [],
         calories: 25,
         protein: 1.2,
         fat: 0.1,
         carbs: 6,
       },
-      [t("logs.food.products.vegetables.beet")]: {
+      [t("food.products.vegetables.beet")]: {
         variants: [],
         calories: 43,
         protein: 1.6,
@@ -386,57 +386,57 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 9,
       },
     },
-    [t("logs.food.productCategories.fruits")]: {
-      [t("logs.food.products.fruits.apple")]: {
+    [t("food.productCategories.fruits")]: {
+      [t("food.products.fruits.apple")]: {
         variants: [],
         calories: 47,
         protein: 0.4,
         fat: 0.4,
         carbs: 10,
       },
-      [t("logs.food.products.fruits.banana")]: {
+      [t("food.products.fruits.banana")]: {
         variants: [],
         calories: 89,
         protein: 1.1,
         fat: 0.3,
         carbs: 23,
       },
-      [t("logs.food.products.fruits.orange")]: {
+      [t("food.products.fruits.orange")]: {
         variants: [],
         calories: 43,
         protein: 0.9,
         fat: 0.2,
         carbs: 9,
       },
-      [t("logs.food.products.fruits.tangerine")]: {
+      [t("food.products.fruits.tangerine")]: {
         variants: [],
         calories: 38,
         protein: 0.8,
         fat: 0.2,
         carbs: 8,
       },
-      [t("logs.food.products.fruits.pear")]: {
+      [t("food.products.fruits.pear")]: {
         variants: [],
         calories: 42,
         protein: 0.4,
         fat: 0.3,
         carbs: 11,
       },
-      [t("logs.food.products.fruits.kiwi")]: {
+      [t("food.products.fruits.kiwi")]: {
         variants: [],
         calories: 61,
         protein: 1.1,
         fat: 0.5,
         carbs: 14,
       },
-      [t("logs.food.products.fruits.grape")]: {
+      [t("food.products.fruits.grape")]: {
         variants: [],
         calories: 65,
         protein: 0.6,
         fat: 0.2,
         carbs: 16,
       },
-      [t("logs.food.products.fruits.pineapple")]: {
+      [t("food.products.fruits.pineapple")]: {
         variants: [],
         calories: 50,
         protein: 0.5,
@@ -444,43 +444,43 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 12,
       },
     },
-    [t("logs.food.productCategories.berries")]: {
-      [t("logs.food.products.berries.strawberry")]: {
+    [t("food.productCategories.berries")]: {
+      [t("food.products.berries.strawberry")]: {
         variants: [],
         calories: 32,
         protein: 0.8,
         fat: 0.3,
         carbs: 7,
       },
-      [t("logs.food.products.berries.raspberry")]: {
+      [t("food.products.berries.raspberry")]: {
         variants: [],
         calories: 46,
         protein: 0.8,
         fat: 0.5,
         carbs: 9,
       },
-      [t("logs.food.products.berries.blueberry")]: {
+      [t("food.products.berries.blueberry")]: {
         variants: [],
         calories: 44,
         protein: 1.1,
         fat: 0.3,
         carbs: 10,
       },
-      [t("logs.food.products.berries.blackcurrant")]: {
+      [t("food.products.berries.blackcurrant")]: {
         variants: [],
         calories: 44,
         protein: 1,
         fat: 0.2,
         carbs: 8,
       },
-      [t("logs.food.products.berries.cherry")]: {
+      [t("food.products.berries.cherry")]: {
         variants: [],
         calories: 52,
         protein: 0.8,
         fat: 0.2,
         carbs: 11,
       },
-      [t("logs.food.products.berries.cranberry")]: {
+      [t("food.products.berries.cranberry")]: {
         variants: [],
         calories: 43,
         protein: 0.7,
@@ -488,64 +488,64 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 9,
       },
     },
-    [t("logs.food.productCategories.grainsAndLegumes")]: {
-      [t("logs.food.products.grains.riceWhiteDry")]: {
+    [t("food.productCategories.grainsAndLegumes")]: {
+      [t("food.products.grains.riceWhiteDry")]: {
         variants: [],
         calories: 344,
         protein: 6.7,
         fat: 0.7,
         carbs: 78,
       },
-      [t("logs.food.products.grains.riceBrownDry")]: {
+      [t("food.products.grains.riceBrownDry")]: {
         variants: [],
         calories: 337,
         protein: 7.4,
         fat: 2.2,
         carbs: 72,
       },
-      [t("logs.food.products.grains.buckwheatDry")]: {
+      [t("food.products.grains.buckwheatDry")]: {
         variants: [],
         calories: 313,
         protein: 12.6,
         fat: 3.3,
         carbs: 62,
       },
-      [t("logs.food.products.grains.oatmealDry")]: {
+      [t("food.products.grains.oatmealDry")]: {
         variants: [],
         calories: 342,
         protein: 12,
         fat: 6,
         carbs: 60,
       },
-      [t("logs.food.products.grains.semolinaDry")]: {
+      [t("food.products.grains.semolinaDry")]: {
         variants: [],
         calories: 333,
         protein: 10,
         fat: 1,
         carbs: 72,
       },
-      [t("logs.food.products.grains.milletDry")]: {
+      [t("food.products.grains.milletDry")]: {
         variants: [],
         calories: 324,
         protein: 11,
         fat: 3,
         carbs: 66,
       },
-      [t("logs.food.products.grains.lentilsDry")]: {
+      [t("food.products.grains.lentilsDry")]: {
         variants: [],
         calories: 284,
         protein: 24,
         fat: 1.5,
         carbs: 46,
       },
-      [t("logs.food.products.grains.beansDry")]: {
+      [t("food.products.grains.beansDry")]: {
         variants: [],
         calories: 285,
         protein: 21,
         fat: 1.5,
         carbs: 47,
       },
-      [t("logs.food.products.grains.peasDry")]: {
+      [t("food.products.grains.peasDry")]: {
         variants: [],
         calories: 298,
         protein: 20,
@@ -553,36 +553,36 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 49,
       },
     },
-    [t("logs.food.productCategories.breadAndBakery")]: {
-      [t("logs.food.products.bakery.whiteBread")]: {
+    [t("food.productCategories.breadAndBakery")]: {
+      [t("food.products.bakery.whiteBread")]: {
         variants: [],
         calories: 242,
         protein: 7,
         fat: 1,
         carbs: 49,
       },
-      [t("logs.food.products.bakery.blackBread")]: {
+      [t("food.products.bakery.blackBread")]: {
         variants: [],
         calories: 201,
         protein: 6.6,
         fat: 1.4,
         carbs: 41,
       },
-      [t("logs.food.products.bakery.slicedLoaf")]: {
+      [t("food.products.bakery.slicedLoaf")]: {
         variants: [],
         calories: 262,
         protein: 7.5,
         fat: 2.9,
         carbs: 51,
       },
-      [t("logs.food.products.bakery.borodinskyBread")]: {
+      [t("food.products.bakery.borodinskyBread")]: {
         variants: [],
         calories: 201,
         protein: 6.8,
         fat: 1.3,
         carbs: 41,
       },
-      [t("logs.food.products.bakery.armenianLavash")]: {
+      [t("food.products.bakery.armenianLavash")]: {
         variants: [],
         calories: 236,
         protein: 7.9,
@@ -590,22 +590,22 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 48,
       },
     },
-    [t("logs.food.productCategories.eggs")]: {
-      [t("logs.food.products.eggs.chickenEggOnePiece")]: {
+    [t("food.productCategories.eggs")]: {
+      [t("food.products.eggs.chickenEggOnePiece")]: {
         variants: [],
         calories: 155,
         protein: 13,
         fat: 11,
         carbs: 1.1,
       },
-      [t("logs.food.products.eggs.eggWhite")]: {
+      [t("food.products.eggs.eggWhite")]: {
         variants: [],
         calories: 52,
         protein: 11,
         fat: 0.2,
         carbs: 0.7,
       },
-      [t("logs.food.products.eggs.eggYolk")]: {
+      [t("food.products.eggs.eggYolk")]: {
         variants: [],
         calories: 352,
         protein: 16,
@@ -613,43 +613,43 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 1,
       },
     },
-    [t("logs.food.productCategories.nutsAndSeeds")]: {
-      [t("logs.food.products.nuts.walnut")]: {
+    [t("food.productCategories.nutsAndSeeds")]: {
+      [t("food.products.nuts.walnut")]: {
         variants: [],
         calories: 656,
         protein: 16,
         fat: 61,
         carbs: 11,
       },
-      [t("logs.food.products.nuts.almond")]: {
+      [t("food.products.nuts.almond")]: {
         variants: [],
         calories: 645,
         protein: 18,
         fat: 58,
         carbs: 13,
       },
-      [t("logs.food.products.nuts.hazelnut")]: {
+      [t("food.products.nuts.hazelnut")]: {
         variants: [],
         calories: 679,
         protein: 15,
         fat: 65,
         carbs: 10,
       },
-      [t("logs.food.products.nuts.cashew")]: {
+      [t("food.products.nuts.cashew")]: {
         variants: [],
         calories: 600,
         protein: 18,
         fat: 49,
         carbs: 22,
       },
-      [t("logs.food.products.nuts.peanut")]: {
+      [t("food.products.nuts.peanut")]: {
         variants: [],
         calories: 567,
         protein: 26,
         fat: 49,
         carbs: 16,
       },
-      [t("logs.food.products.nuts.sunflowerSeeds")]: {
+      [t("food.products.nuts.sunflowerSeeds")]: {
         variants: [],
         calories: 578,
         protein: 21,
@@ -657,29 +657,29 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 17,
       },
     },
-    [t("logs.food.productCategories.oilsAndFats")]: {
-      [t("logs.food.products.fats.sunflowerOil")]: {
+    [t("food.productCategories.oilsAndFats")]: {
+      [t("food.products.fats.sunflowerOil")]: {
         variants: [],
         calories: 899,
         protein: 0,
         fat: 9.9,
         carbs: 0,
       },
-      [t("logs.food.products.fats.oliveOil")]: {
+      [t("food.products.fats.oliveOil")]: {
         variants: [],
         calories: 898,
         protein: 0,
         fat: 99.8,
         carbs: 0,
       },
-      [t("logs.food.products.fats.coconutOil")]: {
+      [t("food.products.fats.coconutOil")]: {
         variants: [],
         calories: 899,
         protein: 0,
         fat: 99.9,
         carbs: 0,
       },
-      [t("logs.food.products.fats.mayonnaise")]: {
+      [t("food.products.fats.mayonnaise")]: {
         variants: [],
         calories: 680,
         protein: 1,
@@ -687,43 +687,43 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 1.5,
       },
     },
-    [t("logs.food.productCategories.drinks")]: {
-      [t("logs.food.products.drinks.teaWithoutSugar")]: {
+    [t("food.productCategories.drinks")]: {
+      [t("food.products.drinks.teaWithoutSugar")]: {
         variants: [],
         calories: 0,
         protein: 0,
         fat: 0,
         carbs: 0,
       },
-      [t("logs.food.products.drinks.blackCoffee")]: {
+      [t("food.products.drinks.blackCoffee")]: {
         variants: [],
         calories: 2,
         protein: 0.2,
         fat: 0,
         carbs: 0.3,
       },
-      [t("logs.food.products.drinks.orangeJuice")]: {
+      [t("food.products.drinks.orangeJuice")]: {
         variants: [],
         calories: 45,
         protein: 0.7,
         fat: 0.2,
         carbs: 10,
       },
-      [t("logs.food.products.drinks.appleJuice")]: {
+      [t("food.products.drinks.appleJuice")]: {
         variants: [],
         calories: 46,
         protein: 0.1,
         fat: 0.1,
         carbs: 11,
       },
-      [t("logs.food.products.drinks.tomatoJuice")]: {
+      [t("food.products.drinks.tomatoJuice")]: {
         variants: [],
         calories: 17,
         protein: 1,
         fat: 0,
         carbs: 4,
       },
-      [t("logs.food.products.drinks.compote")]: {
+      [t("food.products.drinks.compote")]: {
         variants: [],
         calories: 60,
         protein: 0.2,
@@ -731,43 +731,43 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 15,
       },
     },
-    [t("logs.food.productCategories.sweets")]: {
-      [t("logs.food.products.sweets.sugar")]: {
+    [t("food.productCategories.sweets")]: {
+      [t("food.products.sweets.sugar")]: {
         variants: [],
         calories: 387,
         protein: 0,
         fat: 0,
         carbs: 100,
       },
-      [t("logs.food.products.sweets.honey")]: {
+      [t("food.products.sweets.honey")]: {
         variants: [],
         calories: 304,
         protein: 0.3,
         fat: 0,
         carbs: 82,
       },
-      [t("logs.food.products.sweets.milkChocolate")]: {
+      [t("food.products.sweets.milkChocolate")]: {
         variants: [],
         calories: 535,
         protein: 6.9,
         fat: 30,
         carbs: 59,
       },
-      [t("logs.food.products.sweets.darkChocolate")]: {
+      [t("food.products.sweets.darkChocolate")]: {
         variants: [],
         calories: 546,
         protein: 5,
         fat: 35,
         carbs: 52,
       },
-      [t("logs.food.products.sweets.cookies")]: {
+      [t("food.products.sweets.cookies")]: {
         variants: [],
         calories: 452,
         protein: 7,
         fat: 18,
         carbs: 68,
       },
-      [t("logs.food.products.sweets.candy")]: {
+      [t("food.products.sweets.candy")]: {
         variants: [],
         calories: 400,
         protein: 2,
@@ -775,29 +775,29 @@ export function getFoodProducts(t: any): Record<string, Record<string, ProductNu
         carbs: 75,
       },
     },
-    [t("logs.food.productCategories.groceries")]: {
-      [t("logs.food.products.groceries.pastaDry")]: {
+    [t("food.productCategories.groceries")]: {
+      [t("food.products.groceries.pastaDry")]: {
         variants: [],
         calories: 344,
         protein: 10,
         fat: 1.1,
         carbs: 72,
       },
-      [t("logs.food.products.groceries.wheatFlour")]: {
+      [t("food.products.groceries.wheatFlour")]: {
         variants: [],
         calories: 342,
         protein: 10,
         fat: 1,
         carbs: 73,
       },
-      [t("logs.food.products.groceries.ryeFlour")]: {
+      [t("food.products.groceries.ryeFlour")]: {
         variants: [],
         calories: 298,
         protein: 8,
         fat: 1.5,
         carbs: 63,
       },
-      [t("logs.food.products.groceries.starch")]: {
+      [t("food.products.groceries.starch")]: {
         variants: [],
         calories: 342,
         protein: 0.1,
@@ -955,7 +955,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
                 }`}
               >
                 <Icon className="h-5 w-5" />
-                {t(`logs.food.sourceTypes.${source.value}`)}
+                {t(`food.sourceTypes.${source.value}`)}
               </button>
             )
           })}
@@ -1177,13 +1177,13 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
       {/* КБЖУ */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t("common.nutrition.title")}</CardTitle>
+          <CardTitle className="text-base">{t("recipes.nutrition.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="calories" className="text-xs">
-                {t("common.nutrition.calories")}
+                {t("recipes.nutrition.calories")}
               </Label>
               <Input
                 id="calories"
@@ -1194,7 +1194,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="protein" className="text-xs">
-                {t("common.nutrition.protein")}
+                {t("recipes.nutrition.protein")}
               </Label>
               <Input
                 id="protein"
@@ -1206,7 +1206,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="fat" className="text-xs">
-                {t("common.nutrition.fat")}
+                {t("recipes.nutrition.fat")}
               </Label>
               <Input
                 id="fat"
@@ -1218,7 +1218,7 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="carbs" className="text-xs">
-                {t("common.nutrition.carbs")}
+                {t("recipes.nutrition.carbs")}
               </Label>
               <Input
                 id="carbs"

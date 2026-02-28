@@ -378,6 +378,14 @@
       "description": "Manage catalog reference books",
       "comingSoon": "Management of categories and forms of release for the substance catalog will be available in the next version."
     },
+    "books": {
+      "title": "Books",
+      "description": "Manage book library",
+      "totalBooks": "Total books",
+      "reading": "Reading",
+      "completed": "Completed",
+      "comingSoon": "Book management will be available in the next version."
+    },
     "recipes": {
       "title": "Recipes",
       "description": "Manage reference books for recipes",
@@ -1532,13 +1540,13 @@
       "afterCompletion": "After Completion"
     },
     "daysOfWeek": {
-      "sunday": "Sun",
-      "monday": "Mon",
-      "tuesday": "Tue",
-      "wednesday": "Wed",
-      "thursday": "Thu",
-      "friday": "Fri",
-      "saturday": "Sat"
+      "su": "Sun",
+      "mo": "Mon",
+      "tu": "Tue",
+      "we": "Wed",
+      "th": "Thu",
+      "fr": "Fri",
+      "sa": "Sat"
     },
     "stats": {
       "active": "Active",
@@ -1599,6 +1607,8 @@
       "messagePlaceholder": "Additional information",
       "time": "Reminder time",
       "date": "Date",
+      "selectDate": "Select date",
+      "advance": "Advance",
       "repeatType": "Repeat type",
       "repeatTypes": {
         "none": "No repeat",
@@ -1626,6 +1636,8 @@
       },
       "courseStart": "Course start",
       "courseEnd": "Course end",
+      "courseDates": "Course Dates",
+      "selectDateRange": "Select date range",
       "notificationSettings": "Notification settings",
       "sound": "Sound",
       "vibration": "Vibration",

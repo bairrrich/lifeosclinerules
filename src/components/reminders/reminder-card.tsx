@@ -76,7 +76,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
           return t("form.weekdays")
         if (reminder.days.length === 2 && reminder.days.includes(0) && reminder.days.includes(6))
           return t("form.weekends")
-        return reminder.days.map((d) => getDayNames(tCommon)[d]).join(", ")
+        return reminder.days.map((d) => getDayNames(t)[d]).join(", ")
       case "monthly":
         return t("repeatTypes.monthly")
       case "custom":
@@ -84,7 +84,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
         const unit = (reminder as any).custom_unit || "days"
         return t("repeatTypes.custom")
       default:
-        return reminder.days.map((d) => getDayNames(tCommon)[d]).join(", ")
+        return reminder.days.map((d) => getDayNames(t)[d]).join(", ")
     }
   }
 

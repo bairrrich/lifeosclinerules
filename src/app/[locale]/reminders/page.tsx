@@ -37,78 +37,6 @@ import { toast } from "@/components/ui/toast"
 import { useTranslations, useLocale } from "next-intl"
 import type { Reminder, ReminderType, ReminderPriority, ReminderLog } from "@/types"
 
-// Функция для тестового показа уведомления
-function TestNotification({ t }: { t: any }) {
-  const [showTest, setShowTest] = useState(false)
-
-  const testReminder: Reminder = {
-    id: "test-" + Date.now(),
-    title: t("testNotification.title"),
-    message: t("testNotification.message"),
-    type: "medicine",
-    time: new Date().toTimeString().slice(0, 5),
-    days: [0, 1, 2, 3, 4, 5, 6],
-    priority: "medium",
-    is_active: true,
-    sound: true,
-    vibration: true,
-    persistent: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  }
-
-  return (
-    <div className="fixed top-4 right-4 z-50">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setShowTest(!showTest)}
-        className="bg-yellow-500 text-white border-yellow-600"
-      >
-        {t("testNotification.button")}
-      </Button>
-      {showTest && (
-        <Card className="absolute top-10 right-0 w-80 bg-background/95 backdrop-blur shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="text-2xl">💊</div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-medium text-sm truncate">{testReminder.title}</p>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-5 w-5 ml-auto"
-                    onClick={() => setShowTest(false)}
-                    aria-label={t("close")}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">{testReminder.message}</p>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{testReminder.time}</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 mt-3">
-              <Button size="sm" className="flex-1" onClick={() => setShowTest(false)}>
-                <Check className="h-4 w-4 mr-1" />
-                {t("completed")}
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => setShowTest(false)}>
-                <Clock className="h-4 w-4 mr-1" />
-                {t("snooze")}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  )
-}
-
 type SmartFilter = "all" | "today" | "active" | "completed" | "inactive" | "overdue"
 
 const dayNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
@@ -698,9 +626,6 @@ function RemindersContent() {
             </div>
           </DialogContent>
         </Dialog>
-
-        {/* Тестовое уведомление */}
-        <TestNotification t={t} />
       </div>
     </AppLayout>
   )
