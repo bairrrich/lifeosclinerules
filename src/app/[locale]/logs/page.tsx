@@ -128,9 +128,8 @@ export default function LogsPage() {
               aria-controls="panel-all"
               id="tab-all"
             >
-              <Search className="h-4 w-4 hidden sm:inline sm:mr-1" />
-              <span className="hidden sm:inline">{t("filters.all")}</span>
-              <Search className="h-4 w-4 sm:hidden" />
+              <Search className="h-4 w-4" />
+              <span className="sr-only sm:not-sr-only sm:ml-1">{t("filters.all")}</span>
             </TabsTrigger>
             {logTypes.map((lt) => (
               <TabsTrigger
@@ -143,7 +142,7 @@ export default function LogsPage() {
                 id={`tab-${lt.type}`}
               >
                 <lt.icon className="h-4 w-4" />
-                <span className="hidden sm:inline sm:ml-1">{lt.label}</span>
+                <span className="sr-only sm:not-sr-only sm:ml-1">{lt.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>

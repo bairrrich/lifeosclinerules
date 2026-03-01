@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
 import { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Manrope } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/layout/theme-provider"
 import { PWAProvider } from "@/components/pwa-provider"
@@ -10,6 +10,7 @@ import { ReminderNotification } from "@/components/reminder-notification"
 import { DisableRightClick } from "@/components/shared/disable-right-click"
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] })
+const manrope = Manrope({ subsets: ["latin", "cyrillic"], variable: "--font-display" })
 
 export const metadata: Metadata = {
   title: "Life OS",
@@ -55,7 +56,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning data-scroll-behavior="smooth">
-      <body className={inter.className} role="main">
+      <body className={`${inter.className} ${manrope.variable}`} role="main">
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"

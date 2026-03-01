@@ -166,8 +166,8 @@ export default function RecipesPage() {
                   aria-controls={`panel-${filter.value}`}
                   id={`tab-${filter.value}`}
                 >
-                  {Icon && <Icon className="h-4 w-4 hidden sm:inline" />}
-                  <span className="hidden sm:inline sm:ml-1">
+                  {Icon && <Icon className="h-4 w-4" />}
+                  <span className="sr-only sm:not-sr-only sm:ml-1">
                     {t(`list.filters.${filter.value}`)}
                   </span>
                 </TabsTrigger>

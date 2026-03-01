@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "@/lib/navigation"
 import { useTranslations, useLocale } from "next-intl"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Log, Book, Content } from "@/types"
@@ -33,10 +33,10 @@ export function GlobalSearch() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Открытие по Cmd/Ctrl + K
+  // Открытие по Cmd/Ctrl + K или по клику
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "z") {
         e.preventDefault()
         setOpen(true)
       }
@@ -58,8 +58,15 @@ export function GlobalSearch() {
       }
     }
 
+    // Открытие по кастомному событию
+    const handleOpenSearch = () => setOpen(true)
+
     document.addEventListener("keydown", handleKeyDown)
-    return () => document.removeEventListener("keydown", handleKeyDown)
+    document.addEventListener("open-global-search", handleOpenSearch)
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+      document.removeEventListener("open-global-search", handleOpenSearch)
+    }
   }, [open, results, selectedIndex, router])
 
   // Поиск при изменении запроса
@@ -202,6 +209,7 @@ export function GlobalSearch() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="p-0 gap-0 max-w-lg">
+        <DialogTitle className="sr-only">{t("placeholder")}</DialogTitle>
         {/* Search Input */}
         <div className="flex items-center border-b px-3">
           <Search className="h-4 w-4 text-muted-foreground mr-2" />
