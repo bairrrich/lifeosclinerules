@@ -457,6 +457,7 @@ export function FinanceForm({
             onChange: (value) => {
               setFinanceSubcategory(value)
               setFinanceItem("")
+              setFinanceSupplier("")
             },
             placeholder: t("finance.subcategory"),
           },
@@ -473,8 +474,8 @@ export function FinanceForm({
         ]}
       />
 
+      {/* Поставщик - зависит от категории */}
       <div className="space-y-2">
-        <Label>{t("finance.supplier")}</Label>
         <Combobox
           options={currentSuppliers.map((s) => ({ id: s.value, label: s.label }))}
           value={financeSupplier}
@@ -483,6 +484,7 @@ export function FinanceForm({
           allowCustom={true}
           searchable={false}
           className="emoji"
+          disabled={!financeCategory}
         />
       </div>
     </>

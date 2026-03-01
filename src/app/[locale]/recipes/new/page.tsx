@@ -235,19 +235,22 @@ export default function NewRecipePage() {
               >
                 <TabsList className="grid grid-cols-3">
                   <TabsTrigger value="food" className={recipeTypeColors["food"] + " px-1 sm:px-2"}>
-                    <span className="text-base">🍳</span>
+                    <span className="mr-1">🍳</span>
+                    <span className="hidden sm:inline">{t("types.food")}</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="drink"
                     className={recipeTypeColors["drink"] + " px-1 sm:px-2"}
                   >
-                    <span className="text-base">☕</span>
+                    <span className="mr-1">☕</span>
+                    <span className="hidden sm:inline">{t("types.drink")}</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="cocktail"
                     className={recipeTypeColors["cocktail"] + " px-1 sm:px-2"}
                   >
-                    <span className="text-base">🍸</span>
+                    <span className="mr-1">🍸</span>
+                    <span className="hidden sm:inline">{t("types.cocktail")}</span>
                   </TabsTrigger>
                 </TabsList>
               </Tabs>

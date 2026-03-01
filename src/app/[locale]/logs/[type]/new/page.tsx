@@ -480,7 +480,7 @@ export default function NewLogPage() {
                           className={categoryColors[opt.label] || ""}
                         >
                           <span className="mr-1">{opt.emoji}</span>
-                          {opt.label}
+                          <span className="hidden sm:inline">{opt.label}</span>
                         </TabsTrigger>
                       ))}
                     </TabsList>
@@ -521,7 +521,7 @@ export default function NewLogPage() {
                             )}
                           >
                             <span className="mr-1 flex-shrink-0">{emojiMap[opt.value] || ""}</span>
-                            <span className="truncate">
+                            <span className="hidden sm:inline truncate">
                               {tCommon(`workout.types.${opt.value}`)}
                             </span>
                           </TabsTrigger>
