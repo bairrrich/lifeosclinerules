@@ -198,17 +198,20 @@ export default function NewRecipePage() {
                 onValueChange={(value) => setRecipeType(value as RecipeType)}
               >
                 <TabsList className="grid grid-cols-3">
-                  <TabsTrigger value="food" className={recipeTypeColors["food"]}>
-                    <Utensils className="h-4 w-4 mr-2" />
-                    {tRecipes("types.food")}
+                  <TabsTrigger value="food" className={recipeTypeColors["food"] + " px-1 sm:px-2"}>
+                    <span className="text-base">🍳</span>
                   </TabsTrigger>
-                  <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
-                    <Coffee className="h-4 w-4 mr-2" />
-                    {tRecipes("types.drink")}
+                  <TabsTrigger
+                    value="drink"
+                    className={recipeTypeColors["drink"] + " px-1 sm:px-2"}
+                  >
+                    <span className="text-base">☕</span>
                   </TabsTrigger>
-                  <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
-                    <Martini className="h-4 w-4 mr-2" />
-                    {tRecipes("types.cocktail")}
+                  <TabsTrigger
+                    value="cocktail"
+                    className={recipeTypeColors["cocktail"] + " px-1 sm:px-2"}
+                  >
+                    <span className="text-base">🍸</span>
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -282,10 +285,11 @@ export default function NewRecipePage() {
                     setValue("difficulty", (value as Difficulty) || undefined)
                   }
                 >
-                  <TabsList>
+                  <TabsList className="grid grid-cols-4 w-full">
                     <TabsTrigger value="easy">{t("new.difficulties.easy")}</TabsTrigger>
                     <TabsTrigger value="medium">{t("new.difficulties.medium")}</TabsTrigger>
                     <TabsTrigger value="hard">{t("new.difficulties.hard")}</TabsTrigger>
+                    <TabsTrigger value="pro">{t("new.difficulties.pro")}</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>

@@ -425,14 +425,23 @@ export default function EditContentPage() {
                     onValueChange={(value) => setRecipeType(value as RecipeType)}
                   >
                     <TabsList className="grid grid-cols-3">
-                      <TabsTrigger value="food" className={recipeTypeColors["food"]}>
-                        {t("types.food")}
+                      <TabsTrigger
+                        value="food"
+                        className={recipeTypeColors["food"] + " px-1 sm:px-2"}
+                      >
+                        <span className="text-base">🍳</span>
                       </TabsTrigger>
-                      <TabsTrigger value="drink" className={recipeTypeColors["drink"]}>
-                        {t("types.drink")}
+                      <TabsTrigger
+                        value="drink"
+                        className={recipeTypeColors["drink"] + " px-1 sm:px-2"}
+                      >
+                        <span className="text-base">☕</span>
                       </TabsTrigger>
-                      <TabsTrigger value="cocktail" className={recipeTypeColors["cocktail"]}>
-                        {t("types.cocktail")}
+                      <TabsTrigger
+                        value="cocktail"
+                        className={recipeTypeColors["cocktail"] + " px-1 sm:px-2"}
+                      >
+                        <span className="text-base">🍸</span>
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
@@ -507,10 +516,11 @@ export default function EditContentPage() {
                         )
                       }
                     >
-                      <TabsList>
+                      <TabsList className="grid grid-cols-4 w-full">
                         <TabsTrigger value="easy">Легко</TabsTrigger>
                         <TabsTrigger value="medium">Средне</TabsTrigger>
                         <TabsTrigger value="hard">Сложно</TabsTrigger>
+                        <TabsTrigger value="pro">Про</TabsTrigger>
                       </TabsList>
                     </Tabs>
                   </div>
