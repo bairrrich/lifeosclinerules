@@ -29,6 +29,23 @@ button span,
   font-family: inherit;
 }
 
+/* Center popovers on mobile for better UX */
+@media (max-width: 640px) {
+  [data-radix-popper-content-wrapper] {
+    inset: 50% auto auto 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  [data-radix-popper-content-wrapper] [data-side="bottom"],
+  [data-radix-popper-content-wrapper] [data-side="top"],
+  [data-radix-popper-content-wrapper] [data-side="left"],
+  [data-radix-popper-content-wrapper] [data-side="right"] {
+    position: fixed !important;
+    max-width: calc(100vw - 2rem) !important;
+    max-height: calc(100vh - 2rem) !important;
+  }
+}
+
 :root {
   --radius: 0.75rem;
   --background: oklch(1 0 0);

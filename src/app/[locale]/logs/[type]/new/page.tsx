@@ -5,19 +5,7 @@ import { useRouter, useParams } from "@/lib/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import {
-  ArrowLeft,
-  Bell,
-  Utensils,
-  Dumbbell,
-  Wallet,
-  TrendingUp,
-  TrendingDown,
-  Repeat,
-  Footprints,
-  Wind,
-  Activity,
-} from "@/lib/icons"
+import { ArrowLeft, Bell, Utensils, Wallet, Footprints, Wind, Activity } from "@/lib/icons"
 import { CreateFormActions } from "@/components/shared/form-actions"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -517,16 +505,19 @@ export default function NewLogPage() {
                     <TabsList className="grid grid-cols-4">
                       {workoutTypeOptions.map((opt) => {
                         const labelKey = opt.value.charAt(0).toUpperCase() + opt.value.slice(1)
+                        const emojiMap: Record<string, string> = {
+                          strength: "💪",
+                          cardio: "🏃",
+                          yoga: "🧘",
+                          stretching: "🤸",
+                        }
                         return (
                           <TabsTrigger
                             key={opt.value}
                             value={opt.value}
                             className={categoryColors[labelKey] || ""}
                           >
-                            {opt.value === "strength" && <Dumbbell className="h-4 w-4 mr-2" />}
-                            {opt.value === "cardio" && <Activity className="h-4 w-4 mr-2" />}
-                            {opt.value === "yoga" && <Wind className="h-4 w-4 mr-2" />}
-                            {opt.value === "stretching" && <Footprints className="h-4 w-4 mr-2" />}
+                            <span className="mr-1">{emojiMap[opt.value] || ""}</span>
                             {tCommon(`workout.types.${opt.value}`)}
                           </TabsTrigger>
                         )
@@ -555,15 +546,15 @@ export default function NewLogPage() {
                   >
                     <TabsList className="grid grid-cols-3">
                       <TabsTrigger value="income" className={financeTypeColors["income"]}>
-                        <TrendingUp className="h-4 w-4 mr-2" />
+                        <span className="mr-1">📈</span>
                         {t("finance.types.income")}
                       </TabsTrigger>
                       <TabsTrigger value="expense" className={financeTypeColors["expense"]}>
-                        <TrendingDown className="h-4 w-4 mr-2" />
+                        <span className="mr-1">📉</span>
                         {t("finance.types.expense")}
                       </TabsTrigger>
                       <TabsTrigger value="transfer" className={financeTypeColors["transfer"]}>
-                        <Repeat className="h-4 w-4 mr-2" />
+                        <span className="mr-1">🔄</span>
                         {t("finance.types.transfer")}
                       </TabsTrigger>
                     </TabsList>
