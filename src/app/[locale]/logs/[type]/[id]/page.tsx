@@ -280,10 +280,10 @@ export default function LogDetailPage() {
         carbs?: number
       }
       return [
-        { label: "Калории", value: m.calories ? `${m.calories} ккал` : "-" },
-        { label: "Белки", value: m.protein ? `${m.protein} г` : "-" },
-        { label: "Жиры", value: m.fat ? `${m.fat} г` : "-" },
-        { label: "Углеводы", value: m.carbs ? `${m.carbs} г` : "-" },
+        { label: t("food.calories"), value: m.calories ? `${m.calories} ккал` : "-" },
+        { label: t("food.protein"), value: m.protein ? `${m.protein} г` : "-" },
+        { label: t("food.fat"), value: m.fat ? `${m.fat} г` : "-" },
+        { label: t("food.carbs"), value: m.carbs ? `${m.carbs} г` : "-" },
       ]
     }
     if (type === "workout") {
@@ -295,57 +295,60 @@ export default function LogDetailPage() {
       const items: { label: string; value: string }[] = []
 
       if (m.duration) {
-        items.push({ label: "Длительность", value: `${m.duration} мин` })
+        items.push({ label: t("workout.duration"), value: `${m.duration} мин` })
       }
       if (m.intensity) {
-        items.push({ label: "Интенсивность", value: intensityLabels[m.intensity] || m.intensity })
+        items.push({
+          label: t("workout.intensity"),
+          value: intensityLabels[m.intensity] || m.intensity,
+        })
       }
       if (m.subcategory) {
         items.push({
-          label: "Подкатегория",
+          label: t("workout.subcategory"),
           value: getSubcategoryLabel(m.subcategory, categoryName),
         })
       }
       if (m.equipment) {
         const equipmentStr = Array.isArray(m.equipment) ? m.equipment.join(", ") : m.equipment
-        items.push({ label: "Инвентарь", value: equipmentStr })
+        items.push({ label: t("workout.equipment"), value: equipmentStr })
       }
       if (m.goal) {
-        items.push({ label: "Цель", value: goalLabels[m.goal] || m.goal })
+        items.push({ label: t("workout.goal"), value: goalLabels[m.goal] || m.goal })
       }
       if (m.calories_burned) {
-        items.push({ label: "Сожжено калорий", value: `${m.calories_burned} ккал` })
+        items.push({ label: t("workout.caloriesBurned"), value: `${m.calories_burned} ккал` })
       }
 
       // Специфические метрики для силовой
       if (workoutType === "strength") {
         if (m.exercises_count) {
-          items.push({ label: "Упражнений", value: `${m.exercises_count}` })
+          items.push({ label: t("workout.exercisesCount"), value: `${m.exercises_count}` })
         }
         if (m.sets_count) {
-          items.push({ label: "Подходов", value: `${m.sets_count}` })
+          items.push({ label: t("workout.setsCount"), value: `${m.sets_count}` })
         }
         if (m.reps_count) {
-          items.push({ label: "Повторов", value: `${m.reps_count}` })
+          items.push({ label: t("workout.repsCount"), value: `${m.reps_count}` })
         }
         if (m.total_weight) {
-          items.push({ label: "Общий вес", value: `${m.total_weight} кг` })
+          items.push({ label: t("workout.totalWeight"), value: `${m.total_weight} кг` })
         }
       }
 
       // Специфические метрики для кардио
       if (workoutType === "cardio") {
         if (m.distance) {
-          items.push({ label: "Дистанция", value: `${m.distance} км` })
+          items.push({ label: t("workout.distance"), value: `${m.distance} км` })
         }
         if (m.average_speed) {
-          items.push({ label: "Средняя скорость", value: `${m.average_speed} км/ч` })
+          items.push({ label: t("workout.averageSpeed"), value: `${m.average_speed} км/ч` })
         }
         if (m.average_pace) {
-          items.push({ label: "Средний темп", value: `${m.average_pace} мин/км` })
+          items.push({ label: t("workout.averagePace"), value: `${m.average_pace} мин/км` })
         }
         if (m.rounds) {
-          items.push({ label: "Раундов", value: `${m.rounds}` })
+          items.push({ label: t("workout.rounds"), value: `${m.rounds}` })
         }
       }
 

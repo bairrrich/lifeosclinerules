@@ -38,41 +38,58 @@ import type {
 } from "@/types"
 import { RecipeType } from "@/types"
 
-// Book schema
-const bookSchema = z.object({
-  title: z.string().min(1, "Введите название"),
-  description: z.string().optional(),
-  body: z.string().optional(),
-  rating: z.number().optional(),
-  tags: z.string().optional(),
-  author: z.string().optional(),
-  year: z.number().optional(),
-  pages: z.number().optional(),
-  status: z.enum(["planned", "reading", "done"]),
-})
+// Validation messages
+const validationMessages = {
+  title: "Введите название",
+}
 
-// Recipe schema
-const recipeSchema = z.object({
-  title: z.string().min(1, "Введите название"),
-  description: z.string().optional(),
-  body: z.string().optional(),
-  rating: z.number().optional(),
-  tags: z.string().optional(),
-  prep_time_min: z.number().optional(),
-  cook_time_min: z.number().optional(),
-  servings: z.number().optional(),
-  serving_unit: z.string().optional(),
-  difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
-  calories: z.number().optional(),
-  protein: z.number().optional(),
-  fat: z.number().optional(),
-  carbs: z.number().optional(),
-  sugar: z.number().optional(),
-  fiber: z.number().optional(),
-})
+// Book schema factory function
+function createBookSchema(t: (key: string) => string) {
+  const messages = {
+    title: t("validation.title") || validationMessages.title,
+  }
 
-type BookFormData = z.infer<typeof bookSchema>
-type RecipeFormData = z.infer<typeof recipeSchema>
+  return z.object({
+    title: z.string().min(1, messages.title),
+    description: z.string().optional(),
+    body: z.string().optional(),
+    rating: z.number().optional(),
+    tags: z.string().optional(),
+    author: z.string().optional(),
+    year: z.number().optional(),
+    pages: z.number().optional(),
+    status: z.enum(["planned", "reading", "done"]),
+  })
+}
+
+// Recipe schema factory function
+function createRecipeSchema(t: (key: string) => string) {
+  const messages = {
+    title: t("validation.title") || validationMessages.title,
+  }
+
+  return z.object({
+    title: z.string().min(1, messages.title),
+    description: z.string().optional(),
+    body: z.string().optional(),
+    rating: z.number().optional(),
+    tags: z.string().optional(),
+    prep_time_min: z.number().optional(),
+    cook_time_min: z.number().optional(),
+    servings: z.number().optional(),
+    serving_unit: z.string().optional(),
+    difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
+    calories: z.number().optional(),
+    protein: z.number().optional(),
+    fat: z.number().optional(),
+    carbs: z.number().optional(),
+    sugar: z.number().optional(),
+    fiber: z.number().optional(),
+  })
+}
+
+type BookFormData = z.infer<ReturnType<typeof createBookSchema>>
+type RecipeFormData = z.infer<ReturnType<typeof createRecipeSchema>>
 
 const typeLabels: Record<ContentType, string> = {
   book: "Книга",
@@ -109,7 +126,11 @@ export default function EditContentPage() {
     reset,
     formState: { errors },
   } = useForm<BookFormData | RecipeFormData>({
-    resolver: zodResolver(type === "book" ? bookSchema : recipeSchema),
+    resolver: zodResolver(
+      type === "book"
+        ? createBookSchema((key) => t(`validation.${key}`))
+        : createRecipeSchema((key) => t(`validation.${key}`))
+    ),
   })
 
   useEffect(() => {

@@ -48,42 +48,81 @@ import type {
   WorkoutGoal,
 } from "@/types"
 
-// Form schemas
-const baseLogSchema = z.object({
-  date: z.string().min(1, "Выберите дату"),
-  time: z.string().min(1, "Выберите время"),
-  title: z.string().optional(),
-  category_id: z.string().optional(),
-  quantity: z.number().optional(),
-  unit: z.string().optional(),
-  value: z.number().optional(),
-  notes: z.string().optional(),
-  tags: z.string().optional(),
-})
+// Messages for validation (will be used inside component with translations)
+const validationMessages = {
+  date: "Выберите дату",
+  time: "Выберите время",
+  title: "Введите название",
+}
 
-const foodSchema = baseLogSchema.extend({
-  title: z.string().min(1, "Введите название"),
-  calories: z.number().optional(),
-  protein: z.number().optional(),
-  fat: z.number().optional(),
-  carbs: z.number().optional(),
-})
+// Form schemas factory function
+function createSchemas(t: (key: string) => string) {
+  const messages = {
+    date: t("validation.date") || validationMessages.date,
+    time: t("validation.time") || validationMessages.time,
+    title: t("validation.title") || validationMessages.title,
+  }
 
-const workoutSchema = baseLogSchema.extend({
-  title: z.string().min(1, "Введите название"),
-  duration: z.number().optional(),
-  intensity: z.enum(["low", "medium", "high"]).optional(),
-})
-
-const financeSchema = baseLogSchema.extend({
-  finance_type: z.enum(["income", "expense", "transfer"]),
-  account_id: z.string().optional(),
-})
+  return {
+    baseLogSchema: z.object({
+      date: z.string().min(1, messages.date),
+      time: z.string().min(1, messages.time),
+      title: z.string().optional(),
+      category_id: z.string().optional(),
+      quantity: z.number().optional(),
+      unit: z.string().optional(),
+      value: z.number().optional(),
+      notes: z.string().optional(),
+      tags: z.string().optional(),
+    }),
+    foodSchema: z.object({
+      date: z.string().min(1, messages.date),
+      time: z.string().min(1, messages.time),
+      title: z.string().min(1, messages.title),
+      category_id: z.string().optional(),
+      quantity: z.number().optional(),
+      unit: z.string().optional(),
+      value: z.number().optional(),
+      notes: z.string().optional(),
+      tags: z.string().optional(),
+      calories: z.number().optional(),
+      protein: z.number().optional(),
+      fat: z.number().optional(),
+      carbs: z.number().optional(),
+    }),
+    workoutSchema: z.object({
+      date: z.string().min(1, messages.date),
+      time: z.string().min(1, messages.time),
+      title: z.string().min(1, messages.title),
+      category_id: z.string().optional(),
+      quantity: z.number().optional(),
+      unit: z.string().optional(),
+      value: z.number().optional(),
+      notes: z.string().optional(),
+      tags: z.string().optional(),
+      duration: z.number().optional(),
+      intensity: z.enum(["low", "medium", "high"]).optional(),
+    }),
+    financeSchema: z.object({
+      date: z.string().min(1, messages.date),
+      time: z.string().min(1, messages.time),
+      title: z.string().optional(),
+      category_id: z.string().optional(),
+      quantity: z.number().optional(),
+      unit: z.string().optional(),
+      value: z.number().optional(),
+      notes: z.string().optional(),
+      tags: z.string().optional(),
+      finance_type: z.enum(["income", "expense", "transfer"]),
+      account_id: z.string().optional(),
+    }),
+  }
+}
 
 type FormData =
-  | z.infer<typeof foodSchema>
-  | z.infer<typeof workoutSchema>
-  | z.infer<typeof financeSchema>
+  | z.infer<ReturnType<typeof createSchemas>["foodSchema"]>
+  | z.infer<ReturnType<typeof createSchemas>["workoutSchema"]>
+  | z.infer<ReturnType<typeof createSchemas>["financeSchema"]>
 
 export default function EditLogPage() {
   const router = useRouter()
@@ -137,7 +176,14 @@ export default function EditLogPage() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(
-      type === "food" ? foodSchema : type === "workout" ? workoutSchema : financeSchema
+      (() => {
+        const schemas = createSchemas((key) => t(`validation.${key}`))
+        return type === "food"
+          ? schemas.foodSchema
+          : type === "workout"
+            ? schemas.workoutSchema
+            : schemas.financeSchema
+      })()
     ),
   })
 
@@ -296,7 +342,12 @@ export default function EditLogPage() {
       let metadata: FoodMetadata | WorkoutMetadata | FinanceMetadata | undefined
 
       if (type === "food") {
-        const foodData = data as z.infer<typeof foodSchema>
+        const foodData = data as FormData & {
+          calories?: number
+          protein?: number
+          fat?: number
+          carbs?: number
+        }
         metadata = {
           calories: foodData.calories,
           protein: foodData.protein,
@@ -304,7 +355,10 @@ export default function EditLogPage() {
           carbs: foodData.carbs,
         }
       } else if (type === "workout") {
-        const workoutData = data as z.infer<typeof workoutSchema>
+        const workoutData = data as FormData & {
+          duration?: number
+          intensity?: "low" | "medium" | "high"
+        }
         metadata = {
           duration: workoutData.duration,
           intensity: workoutData.intensity,
@@ -336,7 +390,7 @@ export default function EditLogPage() {
             | undefined,
         }
       } else if (type === "finance") {
-        const financeData = data as z.infer<typeof financeSchema>
+        const financeData = data as FormData & { finance_type?: FinanceType; account_id?: string }
         metadata = {
           finance_type: financeData.finance_type as FinanceType,
           account_id: financeData.account_id,

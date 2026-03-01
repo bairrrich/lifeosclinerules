@@ -975,7 +975,38 @@
       "fat": "Жиры",
       "carbs": "Углеводы",
       "empty": "Нет ингредиентов. Нажмите «Добавить» для создания.",
-      "calculate": "Рассчитать"
+      "calculate": "Рассчитать",
+      "units": {
+        "g": "г",
+        "kg": "кг",
+        "mg": "мг",
+        "ml": "мл",
+        "l": "л",
+        "tsp": "ч.л.",
+        "tbsp": "ст.л.",
+        "cup": "стакан",
+        "oz": "oz",
+        "drop": "капля",
+        "dash": "dash",
+        "pcs": "шт",
+        "clove": "зубч.",
+        "pinch": "щеп.",
+        "taste": "по вкусу",
+        "servings": "порц.",
+        "portions": "порц.",
+        "min": "мин",
+        "hour": "ч",
+        "h": "ч",
+        "sec": "сек",
+        "days": "дн",
+        "piece": "шт",
+        "RUB": "₽",
+        "USD": "$",
+        "EUR": "€"
+      },
+      "validation": {
+        "title": "Введите название"
+      }
     },
     "steps": {
       "addStep": "Добавить",
@@ -2191,6 +2222,8 @@
     },
     "weekChart": "Последние 7 дней",
     "history": "История",
+    "hour": "ч",
+    "minute": "м",
     "dialogs": {
       "addTitle": "Записать сон",
       "editTitle": "Редактировать запись",
@@ -2268,12 +2301,12 @@
       "sleep": "Сон",
       "water": "Вода",
       "workout": "Тренировки",
-      "noConnection": "Нет связи",
+      "noCorrelation": "Нет связи",
       "strongPositive": "Сильная +",
-      "mediumPositive": "Средняя +",
+      "moderatePositive": "Средняя +",
       "weakPositive": "Слабая +",
       "strongNegative": "Сильная −",
-      "mediumNegative": "Средняя −",
+      "moderateNegative": "Средняя −",
       "weakNegative": "Слабая −",
       "tip": "💡 Положительная корреляция означает, что больше/лучше → лучше настроение"
     },
@@ -2481,6 +2514,9 @@
       "servingSize": "Размер порции (г)",
       "notes": "Заметки",
       "tags": "Теги"
+    },
+    "validation": {
+      "name": "Введите название"
     },
     "types": {
       "vitamin": "Витамин",
@@ -2994,6 +3030,66 @@
       "remaining": "Осталось",
       "overBudget": "Превышение на",
       "currency": "₽"
+    }
+  },
+  "templates": {
+    "intensity": {
+      "low": "Низкая",
+      "medium": "Средняя",
+      "high": "Высокая"
+    },
+    "quality": {
+      "1": "Ужасно",
+      "2": "Плохо",
+      "3": "Нормально",
+      "4": "Хорошо",
+      "5": "Отлично"
+    },
+    "mood": {
+      "great": "Отлично",
+      "good": "Хорошо",
+      "okay": "Нормально",
+      "bad": "Плохо",
+      "terrible": "Ужасно"
+    },
+    "drinkType": {
+      "water": "Вода",
+      "tea": "Чай",
+      "coffee": "Кофе",
+      "other": "Другое"
+    },
+    "activity": {
+      "work": "Работа",
+      "exercise": "Спорт",
+      "social": "Общение",
+      "hobby": "Хобби",
+      "rest": "Отдых",
+      "shopping": "Покупки",
+      "reading": "Чтение",
+      "gaming": "Игры",
+      "cooking": "Готовка",
+      "walk": "Прогулка"
+    },
+    "types": {
+      "food": "Питание",
+      "workout": "Тренировка",
+      "water": "Вода",
+      "sleep": "Сон",
+      "mood": "Настроение"
+    }
+  },
+  "timePicker": {
+    "placeholder": "Выберите время",
+    "label": "Время",
+    "hour": "Часы",
+    "minute": "Минуты",
+    "quickSelect": "Быстрый выбор"
+  },
+  "logs": {
+    "validation": {
+      "date": "Выберите дату",
+      "time": "Выберите время",
+      "title": "Введите название"
     }
   }
 }

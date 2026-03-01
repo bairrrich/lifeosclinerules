@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -62,50 +63,70 @@ export type TemplateData =
   | MoodTemplateData
 
 // ============================================
-// Константы
+// Функции для получения опций с переводами
 // ============================================
 
-export const intensityOptions = [
-  { value: "low", label: "Низкая" },
-  { value: "medium", label: "Средняя" },
-  { value: "high", label: "Высокая" },
-]
+export function getIntensityOptions(t: any) {
+  return [
+    { value: "low", label: t("templates.intensity.low") },
+    { value: "medium", label: t("templates.intensity.medium") },
+    { value: "high", label: t("templates.intensity.high") },
+  ]
+}
 
-export const qualityOptions = [
-  { value: 1, label: "Ужасно" },
-  { value: 2, label: "Плохо" },
-  { value: 3, label: "Нормально" },
-  { value: 4, label: "Хорошо" },
-  { value: 5, label: "Отлично" },
-]
+export function getQualityOptions(t: any) {
+  return [
+    { value: 1, label: t("templates.quality.1") },
+    { value: 2, label: t("templates.quality.2") },
+    { value: 3, label: t("templates.quality.3") },
+    { value: 4, label: t("templates.quality.4") },
+    { value: 5, label: t("templates.quality.5") },
+  ]
+}
 
-export const moodOptions = [
-  { value: "great", label: "great", emoji: "😄" },
-  { value: "good", label: "good", emoji: "🙂" },
-  { value: "okay", label: "okay", emoji: "😐" },
-  { value: "bad", label: "bad", emoji: "😕" },
-  { value: "terrible", label: "terrible", emoji: "😢" },
-]
+export function getMoodOptions(t: any) {
+  return [
+    { value: "great", label: t("templates.mood.great"), emoji: "😄" },
+    { value: "good", label: t("templates.mood.good"), emoji: "🙂" },
+    { value: "okay", label: t("templates.mood.okay"), emoji: "😐" },
+    { value: "bad", label: t("templates.mood.bad"), emoji: "😕" },
+    { value: "terrible", label: t("templates.mood.terrible"), emoji: "😢" },
+  ]
+}
 
-export const drinkTypeOptions = [
-  { value: "water", label: "Вода" },
-  { value: "tea", label: "Чай" },
-  { value: "coffee", label: "Кофе" },
-  { value: "other", label: "Другое" },
-]
+export function getDrinkTypeOptions(t: any) {
+  return [
+    { value: "water", label: t("templates.drinkType.water") },
+    { value: "tea", label: t("templates.drinkType.tea") },
+    { value: "coffee", label: t("templates.drinkType.coffee") },
+    { value: "other", label: t("templates.drinkType.other") },
+  ]
+}
 
-export const activityOptions = [
-  { value: "work", label: "Работа" },
-  { value: "exercise", label: "Спорт" },
-  { value: "social", label: "Общение" },
-  { value: "hobby", label: "Хобби" },
-  { value: "rest", label: "Отдых" },
-  { value: "shopping", label: "Покупки" },
-  { value: "reading", label: "Чтение" },
-  { value: "gaming", label: "Игры" },
-  { value: "cooking", label: "Готовка" },
-  { value: "walk", label: "Прогулка" },
-]
+export function getActivityOptions(t: any) {
+  return [
+    { value: "work", label: t("templates.activity.work") },
+    { value: "exercise", label: t("templates.activity.exercise") },
+    { value: "social", label: t("templates.activity.social") },
+    { value: "hobby", label: t("templates.activity.hobby") },
+    { value: "rest", label: t("templates.activity.rest") },
+    { value: "shopping", label: t("templates.activity.shopping") },
+    { value: "reading", label: t("templates.activity.reading") },
+    { value: "gaming", label: t("templates.activity.gaming") },
+    { value: "cooking", label: t("templates.activity.cooking") },
+    { value: "walk", label: t("templates.activity.walk") },
+  ]
+}
+
+// ============================================
+// Устаревшие константы (для обратной совместимости)
+// ============================================
+
+export const intensityOptions = getIntensityOptions((key: string) => key)
+export const qualityOptions = getQualityOptions((key: string) => key)
+export const moodOptions = getMoodOptions((key: string) => key)
+export const drinkTypeOptions = getDrinkTypeOptions((key: string) => key)
+export const activityOptions = getActivityOptions((key: string) => key)
 
 // ============================================
 // Форма для еды
@@ -216,6 +237,8 @@ interface WorkoutTemplateFormProps {
 }
 
 export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps) {
+  const t = useTranslations()
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -242,7 +265,7 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
         <div className="space-y-2">
           <Label>Интенсивность</Label>
           <Combobox
-            options={intensityOptions.map((opt) => ({ id: opt.value, label: opt.label }))}
+            options={getIntensityOptions(t).map((opt) => ({ id: opt.value, label: opt.label }))}
             value={data.intensity || ""}
             onChange={(value) =>
               onChange({
@@ -362,6 +385,7 @@ interface WaterTemplateFormProps {
 }
 
 export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
+  const t = useTranslations()
   const waterAmounts = [150, 200, 250, 300, 500]
 
   return (
@@ -398,7 +422,7 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
       <div className="space-y-2">
         <Label>Тип напитка</Label>
         <div className="flex gap-2 flex-wrap">
-          {drinkTypeOptions.map((opt) => (
+          {getDrinkTypeOptions(t).map((opt) => (
             <button
               key={opt.value}
               type="button"
@@ -428,6 +452,8 @@ interface SleepTemplateFormProps {
 }
 
 export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
+  const t = useTranslations()
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -452,7 +478,7 @@ export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
       <div className="space-y-2">
         <Label>Качество сна по умолчанию</Label>
         <div className="flex gap-2">
-          {qualityOptions.map((opt) => (
+          {getQualityOptions(t).map((opt) => (
             <button
               key={opt.value}
               type="button"
@@ -468,7 +494,7 @@ export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
           ))}
         </div>
         <p className="text-sm text-muted-foreground text-center">
-          {qualityOptions.find((o) => o.value === (data.quality || 3))?.label}
+          {getQualityOptions(t).find((o) => o.value === (data.quality || 3))?.label}
         </p>
       </div>
 
@@ -494,6 +520,8 @@ interface MoodTemplateFormProps {
 }
 
 export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
+  const t = useTranslations()
+
   const toggleActivity = (activity: string) => {
     const activities = data.activities || []
     onChange({
@@ -509,7 +537,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
       <div className="space-y-2">
         <Label>Настроение</Label>
         <div className="flex justify-between">
-          {moodOptions.map((opt) => (
+          {getMoodOptions(t).map((opt) => (
             <button
               key={opt.value}
               type="button"
@@ -570,7 +598,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
       <div className="space-y-2">
         <Label>Активности</Label>
         <div className="flex flex-wrap gap-2">
-          {activityOptions.map((opt) => (
+          {getActivityOptions(t).map((opt) => (
             <button
               key={opt.value}
               type="button"

@@ -50,10 +50,22 @@ const habitColors = [
   { bg: "bg-pink-500/10", text: "text-pink-500", name: "Розовый" },
 ]
 
-const habitTypes = [
-  { value: "positive", label: "Делать", description: "Привычка что-то делать", icon: "✓" },
-  { value: "negative", label: "Не делать", description: "Привычка чего-то избегать", icon: "✗" },
-]
+function getHabitTypes(t: any) {
+  return [
+    {
+      value: "positive",
+      label: t("types.positive"),
+      description: t("types.positiveDesc"),
+      icon: "✓",
+    },
+    {
+      value: "negative",
+      label: t("types.negative"),
+      description: t("types.negativeDesc"),
+      icon: "✗",
+    },
+  ]
+}
 
 const skipReasons = ["forgot", "noTime", "illness", "vacation", "weather", "other"]
 
@@ -568,7 +580,7 @@ function HabitsContent() {
               <div className="space-y-2">
                 <Label>{t("fields.type")}</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  {habitTypes.map((type) => (
+                  {getHabitTypes(t).map((type) => (
                     <button
                       key={type.value}
                       type="button"
@@ -726,7 +738,7 @@ function HabitsContent() {
               <div className="space-y-2">
                 <Label>{t("fields.type")}</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  {habitTypes.map((type) => (
+                  {getHabitTypes(t).map((type) => (
                     <button
                       key={type.value}
                       type="button"

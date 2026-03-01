@@ -31,15 +31,16 @@ import {
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { MoodLog, MoodType } from "@/types"
 
-const moodConfig: Record<
-  MoodType,
-  { label: string; icon: typeof Smile; color: string; emoji: string }
-> = {
-  great: { label: "great", icon: Smile, color: "text-green-500", emoji: "😄" },
-  good: { label: "good", icon: Smile, color: "text-lime-500", emoji: "🙂" },
-  okay: { label: "okay", icon: Meh, color: "text-yellow-500", emoji: "😐" },
-  bad: { label: "bad", icon: Frown, color: "text-orange-500", emoji: "😕" },
-  terrible: { label: "terrible", icon: Frown, color: "text-red-500", emoji: "😢" },
+function getMoodConfig(
+  t: any
+): Record<MoodType, { label: string; icon: typeof Smile; color: string; emoji: string }> {
+  return {
+    great: { label: t("moods.great"), icon: Smile, color: "text-green-500", emoji: "😄" },
+    good: { label: t("moods.good"), icon: Smile, color: "text-lime-500", emoji: "🙂" },
+    okay: { label: t("moods.okay"), icon: Meh, color: "text-yellow-500", emoji: "😐" },
+    bad: { label: t("moods.bad"), icon: Frown, color: "text-orange-500", emoji: "😕" },
+    terrible: { label: t("moods.terrible"), icon: Frown, color: "text-red-500", emoji: "😢" },
+  }
 }
 
 const activityOptions = [
@@ -194,15 +195,15 @@ export default function MoodPage() {
     function formatCorrelation(value: number): { label: string; trend: "up" | "down" | "neutral" } {
       const absValue = Math.abs(value)
       if (absValue < 0.3) {
-        return { label: "Нет связи", trend: "neutral" }
+        return { label: t("correlations.noCorrelation"), trend: "neutral" }
       } else if (value > 0) {
-        if (absValue >= 0.7) return { label: "Сильная +", trend: "up" }
-        if (absValue >= 0.5) return { label: "Средняя +", trend: "up" }
-        return { label: "Слабая +", trend: "up" }
+        if (absValue >= 0.7) return { label: t("correlations.strongPositive"), trend: "up" }
+        if (absValue >= 0.5) return { label: t("correlations.moderatePositive"), trend: "up" }
+        return { label: t("correlations.weakPositive"), trend: "up" }
       } else {
-        if (absValue >= 0.7) return { label: "Сильная −", trend: "down" }
-        if (absValue >= 0.5) return { label: "Средняя −", trend: "down" }
-        return { label: "Слабая −", trend: "down" }
+        if (absValue >= 0.7) return { label: t("correlations.strongNegative"), trend: "down" }
+        if (absValue >= 0.5) return { label: t("correlations.moderateNegative"), trend: "down" }
+        return { label: t("correlations.weakNegative"), trend: "down" }
       }
     }
 
@@ -320,7 +321,7 @@ export default function MoodPage() {
             {todayMood ? (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="text-5xl">{moodConfig[todayMood.mood].emoji}</div>
+                  <div className="text-5xl">{getMoodConfig(t)[todayMood.mood].emoji}</div>
                   <div>
                     <div className="text-2xl font-bold">{t(`moods.${todayMood.mood}`)}</div>
                     <div className="text-sm text-muted-foreground">
@@ -362,7 +363,7 @@ export default function MoodPage() {
             <div className="flex justify-between">
               {weekMoods.map((log, i) => (
                 <div key={i} className="flex flex-col items-center gap-1">
-                  <span className="text-2xl">{moodConfig[log.mood].emoji}</span>
+                  <span className="text-2xl">{getMoodConfig(t)[log.mood].emoji}</span>
                   <span className="text-xs text-muted-foreground">
                     {new Date(log.date).toLocaleDateString(locale, { weekday: "short" })}
                   </span>
@@ -526,7 +527,7 @@ export default function MoodPage() {
                 <Card key={log.id} className="group">
                   <CardContent className="p-3">
                     <div className="flex items-center gap-3">
-                      <div className="text-3xl">{moodConfig[log.mood].emoji}</div>
+                      <div className="text-3xl">{getMoodConfig(t)[log.mood].emoji}</div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
                           <span className="font-medium">{t(`moods.${log.mood}`)}</span>
@@ -580,14 +581,14 @@ export default function MoodPage() {
               <div className="space-y-2">
                 <Label>{t("fields.mood")}</Label>
                 <div className="flex justify-between">
-                  {(Object.keys(moodConfig) as MoodType[]).map((mood) => (
+                  {(Object.keys(getMoodConfig(t)) as MoodType[]).map((mood) => (
                     <Button
                       key={mood}
                       variant={formData.mood === mood ? "default" : "outline"}
                       className="flex flex-col items-center px-3 py-2 h-auto"
                       onClick={() => setFormData({ ...formData, mood })}
                     >
-                      <span className="text-2xl">{moodConfig[mood].emoji}</span>
+                      <span className="text-2xl">{getMoodConfig(t)[mood].emoji}</span>
                       <span className="text-xs mt-1">{t(`moods.${mood}`)}</span>
                     </Button>
                   ))}
@@ -674,14 +675,14 @@ export default function MoodPage() {
               <div className="space-y-2">
                 <Label>{t("fields.mood")}</Label>
                 <div className="flex justify-between">
-                  {(Object.keys(moodConfig) as MoodType[]).map((mood) => (
+                  {(Object.keys(getMoodConfig(t)) as MoodType[]).map((mood) => (
                     <Button
                       key={mood}
                       variant={formData.mood === mood ? "default" : "outline"}
                       className="flex flex-col items-center px-3 py-2 h-auto"
                       onClick={() => setFormData({ ...formData, mood })}
                     >
-                      <span className="text-2xl">{moodConfig[mood].emoji}</span>
+                      <span className="text-2xl">{getMoodConfig(t)[mood].emoji}</span>
                       <span className="text-xs mt-1">{t(`moods.${mood}`)}</span>
                     </Button>
                   ))}
@@ -690,7 +691,7 @@ export default function MoodPage() {
 
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <Battery className="h-4 w-4" /> Энергия
+                  <Battery className="h-4 w-4" /> {t("fields.energy")}
                 </Label>
                 <div className="flex gap-2">
                   {([1, 2, 3, 4, 5] as const).map((e) => (

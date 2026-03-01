@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useTranslations } from "next-intl"
 import { Clock } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -15,6 +16,7 @@ interface TimePickerProps {
 }
 
 export function TimePicker({ value = "", onChange, className }: TimePickerProps) {
+  const t = useTranslations("timePicker")
   const [open, setOpen] = React.useState(false)
   const [hour, setHour] = React.useState(() => value.split(":")[0] || "00")
   const [minute, setMinute] = React.useState(() => value.split(":")[1] || "00")
@@ -68,17 +70,17 @@ export function TimePicker({ value = "", onChange, className }: TimePickerProps)
           )}
         >
           <Clock className="mr-2 h-4 w-4" />
-          {value ? value : <span>Выберите время</span>}
+          {value ? value : <span>{t("placeholder")}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-4" align="end">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Время</Label>
+            <Label>{t("label")}</Label>
             <div className="flex items-center gap-2">
               <div className="space-y-1">
                 <Label htmlFor="hour" className="text-xs">
-                  Часы
+                  {t("hour")}
                 </Label>
                 <Input
                   id="hour"
@@ -93,7 +95,7 @@ export function TimePicker({ value = "", onChange, className }: TimePickerProps)
               <span className="text-2xl font-bold">:</span>
               <div className="space-y-1">
                 <Label htmlFor="minute" className="text-xs">
-                  Минуты
+                  {t("minute")}
                 </Label>
                 <Input
                   id="minute"
@@ -108,7 +110,7 @@ export function TimePicker({ value = "", onChange, className }: TimePickerProps)
             </div>
           </div>
           <div className="space-y-2">
-            <Label className="text-xs">Быстрый выбор</Label>
+            <Label className="text-xs">{t("quickSelect")}</Label>
             <div className="grid grid-cols-4 gap-1">
               {quickTimes.map((time) => (
                 <Button

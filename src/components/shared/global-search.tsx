@@ -24,6 +24,8 @@ interface SearchResult {
 export function GlobalSearch() {
   const router = useRouter()
   const t = useTranslations("globalSearch")
+  const tNav = useTranslations("navigation")
+  const tCommon = useTranslations("common")
   const locale = useLocale()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
@@ -74,7 +76,7 @@ export function GlobalSearch() {
       setResults(
         quickActions.map((action) => ({
           id: action.href,
-          title: action.title,
+          title: t(`quickActions.${action.translationKey}`),
           type: "action",
           href: action.href,
           icon: action.icon,
@@ -115,12 +117,12 @@ export function GlobalSearch() {
         const config = searchTypeConfig[log.type] || searchTypeConfig.food
         searchResults.push({
           id: log.id,
-          title: log.title || "Без названия",
+          title: log.title || tCommon("noData"),
           type: log.type,
           href: `/logs/${log.type}/${log.id}`,
           icon: config.icon,
           color: config.color,
-          subtitle: `${config.label} • ${new Date(log.date).toLocaleDateString(locale)}`,
+          subtitle: `${tNav(config.translationKey)} • ${new Date(log.date).toLocaleDateString(locale)}`,
         })
       })
 
@@ -138,7 +140,7 @@ export function GlobalSearch() {
           href: `/books/${book.id}`,
           icon: BookOpen,
           color: "text-amber-500",
-          subtitle: "Книга",
+          subtitle: tNav("books"),
         })
       })
 
@@ -158,7 +160,7 @@ export function GlobalSearch() {
           href: `/recipes/${recipe.id}`,
           icon: ChefHat,
           color: "text-rose-500",
-          subtitle: "Рецепт",
+          subtitle: tNav("recipes"),
         })
       })
 
@@ -178,7 +180,7 @@ export function GlobalSearch() {
           href: `/habits`,
           icon: Flame,
           color: "text-red-500",
-          subtitle: "Привычка",
+          subtitle: tNav("habits"),
         })
       })
 

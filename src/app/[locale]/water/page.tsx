@@ -13,12 +13,14 @@ import { WaterReminderSettings } from "@/components/water/water-reminder-setting
 
 const waterAmounts = [150, 200, 250, 300, 500]
 
-const drinkTypes = [
-  { type: "water", label: "Вода", icon: Droplet, color: "text-blue-500" },
-  { type: "tea", label: "Чай", icon: GlassWater, color: "text-amber-500" },
-  { type: "coffee", label: "Кофе", icon: Coffee, color: "text-orange-700" },
-  { type: "other", label: "Другое", icon: CupSoda, color: "text-purple-500" },
-]
+function getDrinkTypes(t: any) {
+  return [
+    { type: "water", label: t("types.water"), icon: Droplet, color: "text-blue-500" },
+    { type: "tea", label: t("types.tea"), icon: GlassWater, color: "text-amber-500" },
+    { type: "coffee", label: t("types.coffee"), icon: Coffee, color: "text-orange-700" },
+    { type: "other", label: t("types.other"), icon: CupSoda, color: "text-purple-500" },
+  ]
+}
 
 export default function WaterPage() {
   const t = useTranslations("water")
@@ -132,7 +134,7 @@ export default function WaterPage() {
                     className={`h-8 w-8 mb-1 ${progress >= 100 ? "text-green-500" : "text-blue-500"}`}
                   />
                   <span className="text-3xl font-bold">{totalMl}</span>
-                  <span className="text-sm text-muted-foreground">мл</span>
+                  <span className="text-sm text-muted-foreground">{t("unit")}</span>
                 </div>
               </div>
 
@@ -156,7 +158,7 @@ export default function WaterPage() {
             <div className="space-y-4">
               {/* Type Selection */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {drinkTypes.map((dt) => (
+                {getDrinkTypes(t).map((dt) => (
                   <Button
                     key={dt.type}
                     variant={selectedType === dt.type ? "default" : "outline"}
@@ -181,7 +183,7 @@ export default function WaterPage() {
                     onClick={() => setSelectedAmount(amount)}
                     className="text-xs sm:text-sm h-10"
                   >
-                    {amount} мл
+                    {amount} {t("unit")}
                   </Button>
                 ))}
               </div>
@@ -217,7 +219,8 @@ export default function WaterPage() {
           ) : (
             <div className="flex flex-col gap-2">
               {todayLogs.map((log) => {
-                const drinkType = drinkTypes.find((d) => d.type === log.type) || drinkTypes[0]
+                const drinkType =
+                  getDrinkTypes(t).find((d) => d.type === log.type) || getDrinkTypes(t)[0]
                 const IconComponent = drinkType.icon
 
                 return (
@@ -229,7 +232,9 @@ export default function WaterPage() {
                         <IconComponent className={`h-5 w-5 ${drinkType.color}`} />
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium">{log.amount_ml} мл</div>
+                        <div className="font-medium">
+                          {log.amount_ml} {t("unit")}
+                        </div>
                         <div className="text-sm text-muted-foreground">
                           {drinkType.label} • {log.time}
                         </div>

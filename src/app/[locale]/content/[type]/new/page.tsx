@@ -34,29 +34,40 @@ import type {
 } from "@/types"
 import { ContentType, RecipeType as RecipeTypeEnum } from "@/types"
 
-// Form schema
-const baseRecipeSchema = z.object({
-  title: z.string().min(1, "Введите название"),
-  description: z.string().optional(),
-  recipe_type: z.enum(["food", "drink", "cocktail"]),
-  servings: z.number().optional(),
-  serving_unit: z.string().optional(),
-  prep_time_min: z.number().optional(),
-  cook_time_min: z.number().optional(),
-  difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
-  rating: z.number().min(1).max(5).optional(),
-  tags: z.string().optional(),
+// Validation messages
+const validationMessages = {
+  title: "Введите название",
+}
 
-  // КБЖУ
-  calories: z.number().optional(),
-  protein: z.number().optional(),
-  fat: z.number().optional(),
-  carbs: z.number().optional(),
-  sugar: z.number().optional(),
-  fiber: z.number().optional(),
-})
+// Form schema factory function
+function createRecipeSchema(t: (key: string) => string) {
+  const messages = {
+    title: t("validation.title") || validationMessages.title,
+  }
 
-type FormData = z.infer<typeof baseRecipeSchema>
+  return z.object({
+    title: z.string().min(1, messages.title),
+    description: z.string().optional(),
+    recipe_type: z.enum(["food", "drink", "cocktail"]),
+    servings: z.number().optional(),
+    serving_unit: z.string().optional(),
+    prep_time_min: z.number().optional(),
+    cook_time_min: z.number().optional(),
+    difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
+    rating: z.number().min(1).max(5).optional(),
+    tags: z.string().optional(),
+
+    // КБЖУ
+    calories: z.number().optional(),
+    protein: z.number().optional(),
+    fat: z.number().optional(),
+    carbs: z.number().optional(),
+    sugar: z.number().optional(),
+    fiber: z.number().optional(),
+  })
+}
+
+type FormData = z.infer<ReturnType<typeof createRecipeSchema>>
 
 export default function NewRecipePage() {
   const router = useRouter()
@@ -90,7 +101,7 @@ export default function NewRecipePage() {
     watch,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(baseRecipeSchema),
+    resolver: zodResolver(createRecipeSchema((key) => t(`validation.${key}`))),
     defaultValues: {
       recipe_type: "food",
       servings: 2,

@@ -966,7 +966,38 @@
       "fat": "Fat",
       "carbs": "Carbs",
       "empty": "No ingredients. Click \"Add\" to create.",
-      "calculate": "Calculate"
+      "calculate": "Calculate",
+      "units": {
+        "g": "g",
+        "kg": "kg",
+        "mg": "mg",
+        "ml": "ml",
+        "l": "l",
+        "tsp": "tsp",
+        "tbsp": "tbsp",
+        "cup": "cup",
+        "oz": "oz",
+        "drop": "drop",
+        "dash": "dash",
+        "pcs": "pcs",
+        "clove": "clove",
+        "pinch": "pinch",
+        "taste": "to taste",
+        "servings": "servings",
+        "portions": "portions",
+        "min": "min",
+        "hour": "hr",
+        "h": "hr",
+        "sec": "sec",
+        "days": "days",
+        "piece": "pcs",
+        "RUB": "₽",
+        "USD": "$",
+        "EUR": "€"
+      },
+      "validation": {
+        "title": "Enter title"
+      }
     },
     "steps": {
       "addStep": "Add",
@@ -1804,6 +1835,11 @@
     "deleteDialog": {
       "title": "Delete entry?",
       "description": "This action cannot be undone. \"{title}\" will be deleted permanently."
+    },
+    "validation": {
+      "date": "Select date",
+      "time": "Select time",
+      "title": "Enter title"
     }
   },
   "habits": {
@@ -2216,7 +2252,9 @@
       "noRecords": "No records",
       "noSleep": "No sleep records"
     },
-    "edit": "Edit entry"
+    "edit": "Edit entry",
+    "hour": "Hour",
+    "minute": "Minute"
   },
   "mood": {
     "title": "Mood",
@@ -2274,12 +2312,12 @@
       "sleep": "Sleep",
       "water": "Water",
       "workout": "Workouts",
-      "noConnection": "No connection",
+      "noCorrelation": "No connection",
       "strongPositive": "Strong +",
-      "mediumPositive": "Medium +",
+      "moderatePositive": "Moderate +",
       "weakPositive": "Weak +",
       "strongNegative": "Strong −",
-      "mediumNegative": "Medium −",
+      "moderateNegative": "Moderate −",
       "weakNegative": "Weak −",
       "tip": "💡 Positive correlation means more/better → better mood"
     },
@@ -2487,6 +2525,9 @@
       "servingSize": "Serving Size (g)",
       "notes": "Notes",
       "tags": "Tags"
+    },
+    "validation": {
+      "name": "Enter name"
     },
     "types": {
       "vitamin": "Vitamin",
@@ -3001,5 +3042,58 @@
       "overBudget": "Over by",
       "currency": "₽"
     }
+  },
+  "templates": {
+    "intensity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "quality": {
+      "1": "Terrible",
+      "2": "Bad",
+      "3": "Okay",
+      "4": "Good",
+      "5": "Excellent"
+    },
+    "mood": {
+      "great": "Great",
+      "good": "Good",
+      "okay": "Okay",
+      "bad": "Bad",
+      "terrible": "Terrible"
+    },
+    "drinkType": {
+      "water": "Water",
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "other": "Other"
+    },
+    "activity": {
+      "work": "Work",
+      "exercise": "Exercise",
+      "social": "Social",
+      "hobby": "Hobby",
+      "rest": "Rest",
+      "shopping": "Shopping",
+      "reading": "Reading",
+      "gaming": "Gaming",
+      "cooking": "Cooking",
+      "walk": "Walk"
+    },
+    "types": {
+      "food": "Food",
+      "workout": "Workout",
+      "water": "Water",
+      "sleep": "Sleep",
+      "mood": "Mood"
+    }
+  },
+  "timePicker": {
+    "placeholder": "Select time",
+    "label": "Time",
+    "hour": "Hour",
+    "minute": "Minute",
+    "quickSelect": "Quick select"
   }
 }

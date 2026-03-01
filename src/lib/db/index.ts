@@ -852,13 +852,6 @@ export async function initializeDatabase(): Promise<void> {
       ])
     }
 
-    // Categories and units are created via seed functions
-    // They check existence before creating
-    const { seedCategories, seedUnits, seedAccounts } = await import("./seed")
-    await seedCategories()
-    await seedUnits()
-    await seedAccounts()
-
     initialized = true
     console.log("Database initialized successfully")
   } catch (error) {
@@ -867,6 +860,3 @@ export async function initializeDatabase(): Promise<void> {
     isInitializing = false
   }
 }
-
-// Re-export seed functions
-export { seedDatabase, clearDatabase, reseedDatabase } from "./seed"

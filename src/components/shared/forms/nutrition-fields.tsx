@@ -38,9 +38,9 @@ export function NutritionFields({ register, errors, labels, prefixes }: Nutritio
 
   const defaultPrefixes = {
     calories: prefixes?.calories || "",
-    protein: prefixes?.protein || "г",
-    fat: prefixes?.fat || "г",
-    carbs: prefixes?.carbs || "г",
+    protein: prefixes?.protein || t("common.grams"),
+    fat: prefixes?.fat || t("common.grams"),
+    carbs: prefixes?.carbs || t("common.grams"),
   }
 
   return (

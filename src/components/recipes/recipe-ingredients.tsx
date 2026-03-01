@@ -1,12 +1,12 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Plus, X, ChevronDown } from "@/lib/icons"
+import { Plus, ChevronDown } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Combobox } from "@/components/ui/combobox"
-import { useUnits } from "@/hooks/use-units"
+import { useUnits, useLocalizedUnits } from "@/hooks/use-units"
 import {
   ArrayManager,
   FormField,
@@ -47,6 +47,7 @@ interface IngredientFormData {
 export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsProps) {
   const t = useTranslations("recipes")
   const { units, isLoading, unitOptions } = useUnits()
+  const { getUnitTranslation } = useLocalizedUnits()
 
   // Фильтруем единицы для рецептов (вес, объём, штуки)
   const recipeUnitOptions = unitOptions.filter(
@@ -98,20 +99,23 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
             <Combobox
               options={
                 isLoading
-                  ? [{ id: ingredient.unit, label: ingredient.unit }]
+                  ? [{ id: ingredient.unit, label: getUnitTranslation(ingredient.unit) }]
                   : recipeUnitOptions.length > 0
-                    ? recipeUnitOptions.map((u) => ({ id: u.value, label: u.abbreviation }))
+                    ? recipeUnitOptions.map((u) => ({
+                        id: u.value,
+                        label: getUnitTranslation(u.abbreviation),
+                      }))
                     : [
-                        { id: "г", label: "г" },
-                        { id: "кг", label: "кг" },
-                        { id: "мл", label: "мл" },
-                        { id: "л", label: "л" },
-                        { id: "шт", label: "шт" },
-                        { id: "ст.л.", label: "ст.л." },
-                        { id: "ч.л.", label: "ч.л." },
-                        { id: "стакан", label: "стакан" },
-                        { id: "по вкусу", label: "по вкусу" },
-                        { id: "щепотка", label: "щепотка" },
+                        { id: "г", label: getUnitTranslation("г") },
+                        { id: "кг", label: getUnitTranslation("кг") },
+                        { id: "мл", label: getUnitTranslation("мл") },
+                        { id: "л", label: getUnitTranslation("л") },
+                        { id: "шт", label: getUnitTranslation("шт") },
+                        { id: "ст.л.", label: getUnitTranslation("ст.л.") },
+                        { id: "ч.л.", label: getUnitTranslation("ч.л.") },
+                        { id: "стакан", label: getUnitTranslation("стакан") },
+                        { id: "по вкусу", label: getUnitTranslation("по вкусу") },
+                        { id: "щепотка", label: getUnitTranslation("щепотка") },
                       ]
               }
               value={ingredient.unit}

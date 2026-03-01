@@ -25,30 +25,41 @@ import { db, createEntity, initializeDatabase, getAllEntities } from "@/lib/db"
 import type { ItemType, Item } from "@/types"
 import { financeCategoriesStructure } from "@/lib/finance-categories"
 
-// Form schema
-const itemSchema = z.object({
-  name: z.string().min(1, "Введите название"),
-  category: z.string().optional(),
-  description: z.string().optional(),
-  usage: z.string().optional(),
-  benefits: z.string().optional(),
-  contraindications: z.string().optional(),
-  dosage: z.string().optional(),
-  form: z.string().optional(),
-  manufacturer: z.string().optional(),
-  composition: z.string().optional(),
-  storage: z.string().optional(),
-  expiration: z.string().optional(),
-  notes: z.string().optional(),
-  tags: z.string().optional(),
-  calories: z.number().optional(),
-  protein: z.number().optional(),
-  fat: z.number().optional(),
-  carbs: z.number().optional(),
-  serving_size: z.number().optional(),
-})
+// Validation messages
+const validationMessages = {
+  name: "Введите название",
+}
 
-type FormData = z.infer<typeof itemSchema>
+// Form schema factory function
+function createItemSchema(t: (key: string) => string) {
+  const messages = {
+    name: t("validation.name") || validationMessages.name,
+  }
+
+  return z.object({
+    name: z.string().min(1, messages.name),
+    category: z.string().optional(),
+    description: z.string().optional(),
+    usage: z.string().optional(),
+    benefits: z.string().optional(),
+    contraindications: z.string().optional(),
+    dosage: z.string().optional(),
+    form: z.string().optional(),
+    manufacturer: z.string().optional(),
+    composition: z.string().optional(),
+    storage: z.string().optional(),
+    expiration: z.string().optional(),
+    notes: z.string().optional(),
+    tags: z.string().optional(),
+    calories: z.number().optional(),
+    protein: z.number().optional(),
+    fat: z.number().optional(),
+    carbs: z.number().optional(),
+    serving_size: z.number().optional(),
+  })
+}
+
+type FormData = z.infer<ReturnType<typeof createItemSchema>>
 
 function getTypeLabels(t: any): Record<ItemType, string> {
   return {
@@ -105,7 +116,7 @@ export default function NewItemPage() {
     watch,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(itemSchema),
+    resolver: zodResolver(createItemSchema((key) => t(`validation.${key}`))),
   })
 
   // Загружаем существующие категории и производителей

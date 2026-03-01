@@ -74,20 +74,30 @@ export interface SearchTypeConfig {
   icon: ElementType
   color: string
   href: string
-  label: string
+  translationKey: string
 }
 
 export const searchTypeConfig: Record<string, SearchTypeConfig> = {
-  food: { icon: Utensils, color: "text-orange-500", href: "/logs/food", label: "Питание" },
-  workout: { icon: Dumbbell, color: "text-blue-500", href: "/logs/workout", label: "Тренировка" },
-  finance: { icon: Wallet, color: "text-green-500", href: "/logs/finance", label: "Финансы" },
-  book: { icon: BookOpen, color: "text-amber-500", href: "/books", label: "Книга" },
-  recipe: { icon: ChefHat, color: "text-rose-500", href: "/recipes", label: "Рецепт" },
-  water: { icon: Droplet, color: "text-cyan-500", href: "/water", label: "Вода" },
-  sleep: { icon: Moon, color: "text-indigo-500", href: "/sleep", label: "Сон" },
-  mood: { icon: Smile, color: "text-yellow-500", href: "/mood", label: "Настроение" },
-  habit: { icon: Flame, color: "text-red-500", href: "/habits", label: "Привычка" },
-  goal: { icon: Target, color: "text-emerald-500", href: "/goals", label: "Цель" },
+  food: { icon: Utensils, color: "text-orange-500", href: "/logs/food", translationKey: "food" },
+  workout: {
+    icon: Dumbbell,
+    color: "text-blue-500",
+    href: "/logs/workout",
+    translationKey: "workout",
+  },
+  finance: {
+    icon: Wallet,
+    color: "text-green-500",
+    href: "/logs/finance",
+    translationKey: "finance",
+  },
+  book: { icon: BookOpen, color: "text-amber-500", href: "/books", translationKey: "books" },
+  recipe: { icon: ChefHat, color: "text-rose-500", href: "/recipes", translationKey: "recipes" },
+  water: { icon: Droplet, color: "text-cyan-500", href: "/water", translationKey: "water" },
+  sleep: { icon: Moon, color: "text-indigo-500", href: "/sleep", translationKey: "sleep" },
+  mood: { icon: Smile, color: "text-yellow-500", href: "/mood", translationKey: "mood" },
+  habit: { icon: Flame, color: "text-red-500", href: "/habits", translationKey: "habits" },
+  goal: { icon: Target, color: "text-emerald-500", href: "/goals", translationKey: "goals" },
 }
 
 // ============================================
@@ -95,28 +105,73 @@ export const searchTypeConfig: Record<string, SearchTypeConfig> = {
 // ============================================
 
 export interface QuickAction {
-  title: string
+  translationKey: string
   href: string
   icon: ElementType
   color: string
 }
 
 export const quickActions: QuickAction[] = [
-  { title: "Добавить питание", href: "/logs/food/new", icon: Utensils, color: "text-orange-500" },
   {
-    title: "Добавить тренировку",
+    translationKey: "addFood",
+    href: "/logs/food/new",
+    icon: Utensils,
+    color: "text-orange-500",
+  },
+  {
+    translationKey: "addWorkout",
     href: "/logs/workout/new",
     icon: Dumbbell,
     color: "text-blue-500",
   },
-  { title: "Добавить расход", href: "/logs/finance/new", icon: Wallet, color: "text-green-500" },
-  { title: "Добавить книгу", href: "/books/new", icon: BookOpen, color: "text-amber-500" },
-  { title: "Добавить рецепт", href: "/recipes/new", icon: ChefHat, color: "text-rose-500" },
-  { title: "Записать воду", href: "/water", icon: Droplet, color: "text-cyan-500" },
-  { title: "Записать сон", href: "/sleep", icon: Moon, color: "text-indigo-500" },
-  { title: "Записать настроение", href: "/mood", icon: Smile, color: "text-yellow-500" },
-  { title: "Аналитика", href: "/analytics", icon: Search, color: "text-purple-500" },
-  { title: "Настройки", href: "/settings", icon: Settings, color: "text-gray-500" },
+  {
+    translationKey: "addExpense",
+    href: "/logs/finance/new",
+    icon: Wallet,
+    color: "text-green-500",
+  },
+  {
+    translationKey: "addBook",
+    href: "/books/new",
+    icon: BookOpen,
+    color: "text-amber-500",
+  },
+  {
+    translationKey: "addRecipe",
+    href: "/recipes/new",
+    icon: ChefHat,
+    color: "text-rose-500",
+  },
+  {
+    translationKey: "logWater",
+    href: "/water",
+    icon: Droplet,
+    color: "text-cyan-500",
+  },
+  {
+    translationKey: "logSleep",
+    href: "/sleep",
+    icon: Moon,
+    color: "text-indigo-500",
+  },
+  {
+    translationKey: "logMood",
+    href: "/mood",
+    icon: Smile,
+    color: "text-yellow-500",
+  },
+  {
+    translationKey: "analytics",
+    href: "/analytics",
+    icon: Search,
+    color: "text-purple-500",
+  },
+  {
+    translationKey: "settings",
+    href: "/settings",
+    icon: Settings,
+    color: "text-gray-500",
+  },
 ]
 
 // ============================================

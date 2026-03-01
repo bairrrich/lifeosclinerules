@@ -36,12 +36,12 @@ import {
   WaterTemplateForm,
   SleepTemplateForm,
   MoodTemplateForm,
+  getMoodOptions,
   FoodTemplateData,
   WorkoutTemplateData,
   WaterTemplateData,
   SleepTemplateData,
   MoodTemplateData,
-  moodOptions,
 } from "@/components/templates/template-forms"
 import { useRouter } from "@/lib/navigation"
 import {
@@ -50,13 +50,15 @@ import {
   DeleteConfirmActions,
 } from "@/components/shared/form-actions"
 
-const templateTypes = [
-  { key: "food" as const, label: "food", icon: Utensils, color: "text-green-500" },
-  { key: "workout" as const, label: "workout", icon: Dumbbell, color: "text-blue-500" },
-  { key: "water" as const, label: "water", icon: Droplet, color: "text-cyan-500" },
-  { key: "sleep" as const, label: "sleep", icon: Moon, color: "text-purple-500" },
-  { key: "mood" as const, label: "mood", icon: Smile, color: "text-yellow-500" },
-]
+function getTemplateTypes(t: any) {
+  return [
+    { key: "food" as const, label: t("types.food"), icon: Utensils, color: "text-green-500" },
+    { key: "workout" as const, label: t("types.workout"), icon: Dumbbell, color: "text-blue-500" },
+    { key: "water" as const, label: t("types.water"), icon: Droplet, color: "text-cyan-500" },
+    { key: "sleep" as const, label: t("types.sleep"), icon: Moon, color: "text-purple-500" },
+    { key: "mood" as const, label: t("types.mood"), icon: Smile, color: "text-yellow-500" },
+  ]
+}
 
 // Дефолтные данные для каждого типа
 const getDefaultData = (type: Template["type"]) => {
@@ -321,7 +323,7 @@ export default function TemplatesPage() {
   }
 
   const getTypeInfo = (type: Template["type"]) => {
-    return templateTypes.find((t) => t.key === type) || templateTypes[0]
+    return getTemplateTypes(t).find((t) => t.key === type) || getTemplateTypes(t)[0]
   }
 
   const groupedTemplates = {
@@ -407,7 +409,7 @@ export default function TemplatesPage() {
       }
       case "mood": {
         const d = data as unknown as MoodTemplateData
-        const moodInfo = moodOptions.find((m) => m.value === d.mood)
+        const moodInfo = getMoodOptions(t).find((m) => m.value === d.mood)
         return `${moodInfo?.emoji} ${t(`moods.${d.mood}`)}`
       }
       default:
@@ -532,7 +534,7 @@ export default function TemplatesPage() {
               )}
 
               {/* По категориям */}
-              {templateTypes.map((type) => {
+              {getTemplateTypes(t).map((type) => {
                 const items = groupedTemplates[
                   type.key as keyof typeof groupedTemplates
                 ] as Template[]
@@ -653,7 +655,7 @@ export default function TemplatesPage() {
             <div className="space-y-2">
               <Label>{t("dialogs.typeLabel")}</Label>
               <div className="grid grid-cols-5 gap-2">
-                {templateTypes.map((type) => {
+                {getTemplateTypes(t).map((type) => {
                   const Icon = type.icon
                   return (
                     <button

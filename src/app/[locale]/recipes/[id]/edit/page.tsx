@@ -34,26 +34,37 @@ import type {
 } from "@/types"
 import { RecipeType as RecipeTypeEnum } from "@/types"
 
-// Recipe schema
-const recipeSchema = z.object({
-  title: z.string().min(1, "Введите название"),
-  description: z.string().optional(),
-  rating: z.number().optional(),
-  tags: z.string().optional(),
-  prep_time_min: z.number().optional(),
-  cook_time_min: z.number().optional(),
-  servings: z.number().optional(),
-  serving_unit: z.string().optional(),
-  difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
-  calories: z.number().optional(),
-  protein: z.number().optional(),
-  fat: z.number().optional(),
-  carbs: z.number().optional(),
-  sugar: z.number().optional(),
-  fiber: z.number().optional(),
-})
+// Validation messages
+const validationMessages = {
+  title: "Введите название",
+}
 
-type RecipeFormData = z.infer<typeof recipeSchema>
+// Recipe schema factory function
+function createRecipeSchema(t: (key: string) => string) {
+  const messages = {
+    title: t("validation.title") || validationMessages.title,
+  }
+
+  return z.object({
+    title: z.string().min(1, messages.title),
+    description: z.string().optional(),
+    rating: z.number().optional(),
+    tags: z.string().optional(),
+    prep_time_min: z.number().optional(),
+    cook_time_min: z.number().optional(),
+    servings: z.number().optional(),
+    serving_unit: z.string().optional(),
+    difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
+    calories: z.number().optional(),
+    protein: z.number().optional(),
+    fat: z.number().optional(),
+    carbs: z.number().optional(),
+    sugar: z.number().optional(),
+    fiber: z.number().optional(),
+  })
+}
+
+type RecipeFormData = z.infer<ReturnType<typeof createRecipeSchema>>
 
 export default function EditRecipePage() {
   const router = useRouter()
@@ -115,7 +126,7 @@ export default function EditRecipePage() {
     reset,
     formState: { errors },
   } = useForm<RecipeFormData>({
-    resolver: zodResolver(recipeSchema),
+    resolver: zodResolver(createRecipeSchema((key) => t(`validation.${key}`))),
   })
 
   useEffect(() => {
