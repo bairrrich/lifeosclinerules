@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Save, Trash2 } from "@/lib/icons"
+import { ArrowLeft, Save, Trash2, X, Plus } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { useTranslations } from "next-intl"
 
@@ -88,7 +88,7 @@ export function FormActions({
 
   // Dialog variant
   return (
-    <div className="flex justify-between gap-4 sm:justify-end sm:gap-2">
+    <div className="flex justify-between gap-2">
       {showDelete && (
         <Button
           type="button"
@@ -98,15 +98,18 @@ export function FormActions({
           disabled={isDeleting}
         >
           <Trash2 className="h-4 w-4" />
+          <span className="hidden sm:inline ml-2">{isDeleting ? tl("deleting") : deleteLabel}</span>
         </Button>
       )}
-      <div className="flex gap-2 ml-auto">
+      <div className="flex gap-2">
         <Button type="button" variant="outline" size="action-sm" onClick={onCancel}>
-          {cancelLabel}
+          <X className="h-4 w-4" />
+          <span className="hidden sm:inline ml-2">{cancelLabel}</span>
         </Button>
         {onSave && (
           <Button type="button" size="action-sm" onClick={onSave} disabled={isSaving}>
-            {isSaving ? tl("saving") : saveLabel}
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline ml-2">{isSaving ? tl("saving") : saveLabel}</span>
           </Button>
         )}
       </div>
@@ -167,13 +170,15 @@ export function CreateFormActions({
   const saveLabel = saveText || t("create")
 
   return (
-    <div className="flex justify-end gap-2">
+    <div className="flex gap-2">
       <Button type="button" variant="outline" size="action-sm" onClick={onCancel}>
-        {t("cancel")}
+        <X className="h-4 w-4" />
+        <span className="hidden sm:inline ml-2">{t("cancel")}</span>
       </Button>
       {onSave && (
         <Button type="button" size="action-sm" onClick={onSave} disabled={isSaving}>
-          {isSaving ? tl("creating") : saveLabel}
+          <Plus className="h-4 w-4" />
+          <span className="hidden sm:inline ml-2">{isSaving ? tl("creating") : saveLabel}</span>
         </Button>
       )}
     </div>
