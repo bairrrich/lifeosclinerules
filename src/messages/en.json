@@ -142,6 +142,15 @@
       "notificationTitle": "Enable notifications",
       "notificationDescription": "Get reminders for medications and workouts",
       "enable": "Enable"
+    },
+    "colors": {
+      "red": "Red",
+      "orange": "Orange",
+      "yellow": "Yellow",
+      "green": "Green",
+      "blue": "Blue",
+      "purple": "Purple",
+      "pink": "Pink"
     }
   },
   "navigation": {
@@ -1860,7 +1869,9 @@
     },
     "types": {
       "positive": "Positive (do)",
-      "negative": "Negative (don't do)"
+      "positiveDesc": "A habit to do something",
+      "negative": "Negative (don't do)",
+      "negativeDesc": "A habit to avoid something"
     },
     "typeDescriptions": {
       "positive": "A habit to do something",
@@ -1912,7 +1923,10 @@
     "deleteConfirm": {
       "title": "Delete habit?",
       "message": "Are you sure you want to delete habit \"{name}\"? This action cannot be undone."
-    }
+    },
+    "violation": "Violation",
+    "daysLeft": "days left",
+    "subtasksCount": "{count} subtasks"
   },
   "goals": {
     "title": "Goals",
@@ -2448,7 +2462,10 @@
     },
     "sections": {
       "favorite": "Favorites",
-      "usedCount": "Used: {count}"
+      "usedCount": "Used: {count}",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
     },
     "dialogs": {
       "createTitle": "Create Template",

@@ -1484,7 +1484,29 @@
       "tagsPlaceholder": "теги через запятую",
       "cancel": "Отмена",
       "saving": "Сохранение...",
-      "save": "Сохранить"
+      "save": "Сохранить",
+      "loading": "Загрузка..."
+    },
+    "foodTypes": {
+      "breakfast": "Завтрак",
+      "lunch": "Обед",
+      "dinner": "Ужин",
+      "snack": "Перекус"
+    },
+    "workoutTypes": {
+      "strength": "Силовая",
+      "cardio": "Кардио",
+      "yoga": "Йога",
+      "stretching": "Растяжка"
+    },
+    "deleteDialog": {
+      "title": "Удалить запись?",
+      "description": "Вы уверены, что хотите удалить \"{title}\"? Это действие нельзя отменить."
+    },
+    "validation": {
+      "date": "Выберите дату",
+      "time": "Выберите время",
+      "title": "Введите название"
     },
     "food": {
       "source": "Источник",
@@ -1735,6 +1757,7 @@
         "power": "Силовая йога",
         "relax": "Релакс / Восстановление",
         "breathing": "Дыхание и медитация",
+        "meditation": "Медитация",
         "beginner": "Для начинающих",
         "intermediate": "Для продолжающих",
         "advanced": "Для опытных"
@@ -1846,7 +1869,9 @@
     },
     "types": {
       "positive": "Делать",
-      "negative": "Не делать"
+      "positiveDesc": "Привычка что-то делать",
+      "negative": "Не делать",
+      "negativeDesc": "Привычка чего-то избегать"
     },
     "typeDescriptions": {
       "positive": "Привычка что-то делать",
@@ -3033,6 +3058,30 @@
     }
   },
   "templates": {
+    "header": {
+      "title": "Шаблоны",
+      "subtitle": "Быстрые шаблоны для частых записей"
+    },
+    "title": "Шаблоны",
+    "addTemplate": "Добавить шаблон",
+    "editTemplate": "Редактировать шаблон",
+    "noTemplates": "Пока нет шаблонов",
+    "applyTemplate": "Применить шаблон",
+    "deleteTemplate": "Удалить шаблон",
+    "actions": {
+      "create": "Создать шаблон",
+      "createFirst": "Создать первый шаблон",
+      "apply": "Применить",
+      "edit": "Редактировать шаблон",
+      "delete": "Удалить",
+      "removeFromFavorite": "Убрать из избранного",
+      "addToFavorite": "Добавить в избранное"
+    },
+    "sections": {
+      "low": "Низкая",
+      "medium": "Средняя",
+      "high": "Высокая"
+    },
     "intensity": {
       "low": "Низкая",
       "medium": "Средняя",
@@ -3084,12 +3133,5 @@
     "hour": "Часы",
     "minute": "Минуты",
     "quickSelect": "Быстрый выбор"
-  },
-  "logs": {
-    "validation": {
-      "date": "Выберите дату",
-      "time": "Выберите время",
-      "title": "Введите название"
-    }
   }
 }
