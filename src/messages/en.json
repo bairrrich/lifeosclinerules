@@ -16,7 +16,6 @@
     "search": "Search",
     "filter": "Filter",
     "sort": "Sort",
-    "settings": "Settings",
     "profile": "Profile",
     "logout": "Logout",
     "language": "Language",
@@ -57,11 +56,9 @@
     "updatedAt": "Updated",
     "grams": "grams",
     "notFound": "Not found",
-    "books": "Books",
     "records": "Records",
     "catalog": "Catalog",
     "content": "Content",
-    "recipes": "Recipes",
     "deleteDialog": {
       "title": "Delete entry?",
       "description": "This action cannot be undone. Entry \"{title}\" will be deleted permanently."
