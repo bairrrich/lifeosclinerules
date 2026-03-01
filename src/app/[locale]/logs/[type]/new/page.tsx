@@ -16,10 +16,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "@/lib/icons"
-import { cn } from "@/lib/utils"
 import { db, createEntity, initializeDatabase, getCategoriesByType } from "@/lib/db"
 import { useTranslations, useLocale } from "next-intl"
 import {
@@ -515,10 +515,15 @@ export default function NewLogPage() {
                           <TabsTrigger
                             key={opt.value}
                             value={opt.value}
-                            className={categoryColors[labelKey] || ""}
+                            className={cn(
+                              categoryColors[labelKey] || "",
+                              "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
+                            )}
                           >
-                            <span className="mr-1">{emojiMap[opt.value] || ""}</span>
-                            {tCommon(`workout.types.${opt.value}`)}
+                            <span className="mr-1 flex-shrink-0">{emojiMap[opt.value] || ""}</span>
+                            <span className="truncate">
+                              {tCommon(`workout.types.${opt.value}`)}
+                            </span>
                           </TabsTrigger>
                         )
                       })}
@@ -545,17 +550,35 @@ export default function NewLogPage() {
                     }}
                   >
                     <TabsList className="grid grid-cols-3">
-                      <TabsTrigger value="income" className={financeTypeColors["income"]}>
-                        <span className="mr-1">📈</span>
-                        {t("finance.types.income")}
+                      <TabsTrigger
+                        value="income"
+                        className={cn(
+                          financeTypeColors["income"],
+                          "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
+                        )}
+                      >
+                        <span className="mr-1 flex-shrink-0">📈</span>
+                        <span className="truncate">{t("finance.types.income")}</span>
                       </TabsTrigger>
-                      <TabsTrigger value="expense" className={financeTypeColors["expense"]}>
-                        <span className="mr-1">📉</span>
-                        {t("finance.types.expense")}
+                      <TabsTrigger
+                        value="expense"
+                        className={cn(
+                          financeTypeColors["expense"],
+                          "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
+                        )}
+                      >
+                        <span className="mr-1 flex-shrink-0">📉</span>
+                        <span className="truncate">{t("finance.types.expense")}</span>
                       </TabsTrigger>
-                      <TabsTrigger value="transfer" className={financeTypeColors["transfer"]}>
-                        <span className="mr-1">🔄</span>
-                        {t("finance.types.transfer")}
+                      <TabsTrigger
+                        value="transfer"
+                        className={cn(
+                          financeTypeColors["transfer"],
+                          "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
+                        )}
+                      >
+                        <span className="mr-1 flex-shrink-0">🔄</span>
+                        <span className="truncate">{t("finance.types.transfer")}</span>
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>

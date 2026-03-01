@@ -455,6 +455,10 @@
       "monday": "Monday",
       "sunday": "Sunday"
     },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Language, theme and calendar settings"
+    },
     "dataStats": {
       "title": "Data Statistics",
       "description": "Overview of stored data",

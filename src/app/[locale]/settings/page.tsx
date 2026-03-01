@@ -5,9 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   SettingsProvider,
-  ThemeSwitcher,
-  LanguageSwitcher,
-  FirstDayOfWeekSwitcher,
+  AppearanceSettings,
   DataStats,
   BackupManager,
   ExportManager,
@@ -85,9 +83,7 @@ export default function SettingsPage() {
               id="panel-general"
               aria-labelledby="tab-general"
             >
-              <LanguageSwitcher />
-              <FirstDayOfWeekSwitcher />
-              <ThemeSwitcher />
+              <AppearanceSettings />
               <DataStats />
               <SyncManager />
               <BackupManager />
@@ -104,8 +100,8 @@ export default function SettingsPage() {
               id="panel-logs"
               aria-labelledby="tab-logs"
             >
-              <AccountsManager />
               <RecurringTransactions />
+              <AccountsManager />
               <CategoriesManager />
               <UnitsManager />
             </TabsContent>

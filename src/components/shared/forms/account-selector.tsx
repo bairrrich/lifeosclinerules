@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { ChevronDown } from "@/lib/icons"
 import { FormField } from "./form-field"
 import { cn } from "@/lib/utils"
@@ -33,14 +32,11 @@ export function AccountSelector({
   disabled = false,
   className,
 }: AccountSelectorProps) {
-  const t = useTranslations("settings")
-  const tCommon = useTranslations("common")
-
   const filteredAccounts = excludeId ? accounts.filter((acc) => acc.id !== excludeId) : accounts
 
   const selectedAccount = accounts.find((acc) => acc.id === value)
 
-  const getAccountTypeLabel = (type: Account["type"]) => {
+  const getAccountTypeIcon = (type: Account["type"]) => {
     const icons: Record<string, string> = {
       cash: "💵",
       card: "💳",
@@ -49,15 +45,7 @@ export function AccountSelector({
       investment: "📊",
       crypto: "₿",
     }
-    const labels: Record<string, string> = {
-      cash: t("accounts.accountTypes.cash"),
-      card: t("accounts.accountTypes.card"),
-      bank: t("accounts.accountTypes.bank"),
-      deposit: t("accounts.accountTypes.deposit"),
-      investment: t("accounts.accountTypes.investment"),
-      crypto: t("accounts.accountTypes.crypto"),
-    }
-    return `${icons[type] || ""} ${labels[type] || type}`
+    return icons[type] || ""
   }
 
   return (
@@ -75,14 +63,17 @@ export function AccountSelector({
             className
           )}
         >
-          <span>
+          <span className="flex items-center gap-2">
+            {selectedAccount && (
+              <span className="shrink-0">{getAccountTypeIcon(selectedAccount.type)}</span>
+            )}
             {selectedAccount
-              ? `${getAccountTypeLabel(selectedAccount.type)} • ${selectedAccount.name}${
+              ? `${selectedAccount.name}${
                   showBalance
-                    ? ` (${selectedAccount.balance.toLocaleString()} ${selectedAccount.currency})`
+                    ? ` • ${selectedAccount.balance.toLocaleString()} ${selectedAccount.currency}`
                     : ""
                 }`
-              : placeholder || t("accounts.selectAccount")}
+              : placeholder || "Select account"}
           </span>
           <ChevronDown className="h-4 w-4 opacity-50" />
         </button>
@@ -100,11 +91,12 @@ export function AccountSelector({
                     value === acc.id && "bg-accent"
                   )}
                 >
-                  <div className="font-medium">
-                    {getAccountTypeLabel(acc.type)} • {acc.name}
+                  <div className="flex items-center gap-2 font-medium">
+                    <span className="shrink-0">{getAccountTypeIcon(acc.type)}</span>
+                    <span>{acc.name}</span>
                   </div>
                   {showBalance && (
-                    <div className="text-xs text-muted-foreground">
+                    <div className="ml-6 text-xs text-muted-foreground">
                       {acc.balance.toLocaleString()} {acc.currency}
                     </div>
                   )}

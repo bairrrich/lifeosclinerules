@@ -199,6 +199,40 @@ class LifeOSDatabase extends Dexie {
         const items = await tx.table("items").toArray()
         console.log(`[DB v11] Updated ${items.length} items`)
       })
+
+    this.version(13)
+      .stores({
+        // Add name index for accounts
+        accounts: "id, type, name",
+      })
+      .upgrade(async (tx) => {
+        try {
+          // Remove duplicate accounts, keeping only the first one by name
+          const accounts = await tx.table("accounts").toArray()
+          const seen = new Map<string, string>() // name -> id to keep
+          const idsToDelete: string[] = []
+
+          for (const acc of accounts) {
+            if (seen.has(acc.name)) {
+              idsToDelete.push(acc.id)
+            } else {
+              seen.set(acc.name, acc.id)
+            }
+          }
+
+          // Delete duplicates
+          for (const id of idsToDelete) {
+            await tx.table("accounts").delete(id)
+          }
+
+          console.log(
+            `[DB v13] Removed ${idsToDelete.length} duplicate accounts, kept ${seen.size}`
+          )
+        } catch (error) {
+          console.error("[DB v13] Migration error:", error)
+          // Continue anyway - duplicates will be handled by seedAccounts
+        }
+      })
   }
 }
 
@@ -207,6 +241,16 @@ class LifeOSDatabase extends Dexie {
 // ============================================
 
 export const db = new LifeOSDatabase()
+
+// Handle database version change events
+db.on("versionchange", (event) => {
+  console.log("[DB] Version change event:", event)
+  // Close the database if another connection wants to upgrade
+  if (event.newVersion !== null) {
+    console.log("[DB] Another connection wants to upgrade the database, closing...")
+    db.close()
+  }
+})
 
 // ============================================
 // Helper Functions
@@ -734,7 +778,18 @@ export async function getGoalProgress(goal: Goal): Promise<number> {
 // Database Initialization
 // ============================================
 
+// Global lock to prevent concurrent initialization
+let isInitializing = false
+let initialized = false
+
 export async function initializeDatabase(): Promise<void> {
+  // Skip if already initialized or currently initializing
+  if (initialized || isInitializing) {
+    return
+  }
+
+  isInitializing = true
+
   try {
     const now = getTimestamp()
 
@@ -799,16 +854,17 @@ export async function initializeDatabase(): Promise<void> {
 
     // Categories and units are created via seed functions
     // They check existence before creating
-    const { seedCategories, seedUnits, cleanupDuplicateCategories } = await import("./seed")
+    const { seedCategories, seedUnits, seedAccounts } = await import("./seed")
     await seedCategories()
     await seedUnits()
+    await seedAccounts()
 
-    // Clean up duplicate categories if any
-    await cleanupDuplicateCategories()
-
+    initialized = true
     console.log("Database initialized successfully")
   } catch (error) {
     console.error("Failed to initialize database:", error)
+  } finally {
+    isInitializing = false
   }
 }
 

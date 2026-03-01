@@ -265,28 +265,28 @@ const WORKOUT_YOGA = [
 ]
 
 const FINANCE_INCOME = [
-  { title: "Зарплата", value: 85000, category: "Зарплата", subcategory: "Основная" },
-  { title: "Премия квартальная", value: 25000, category: "Зарплата", subcategory: "Премия" },
-  { title: "Фриланс проект", value: 35000, category: "Фриланс", subcategory: "Разработка" },
-  { title: "Кэшбэк", value: 1500, category: "Прочее", subcategory: "Кэшбэк" },
-  { title: "Проценты по вкладу", value: 3200, category: "Инвестиции", subcategory: "Проценты" },
+  { title: "Зарплата", value: 85000, category: "salary", subcategory: "Основная" },
+  { title: "Премия квартальная", value: 25000, category: "salary", subcategory: "Премия" },
+  { title: "Фриланс проект", value: 35000, category: "freelance", subcategory: "Разработка" },
+  { title: "Кэшбэк", value: 1500, category: "other", subcategory: "Кэшбэк" },
+  { title: "Проценты по вкладу", value: 3200, category: "investments", subcategory: "Проценты" },
 ]
 
 const FINANCE_EXPENSE = [
-  { title: "Продукты → Молочные", value: 1200, category: "Продукты", subcategory: "Молочные" },
-  { title: "Продукты → Мясо", value: 2500, category: "Продукты", subcategory: "Мясо" },
-  { title: "Продукты → Овощи", value: 800, category: "Продукты", subcategory: "Овощи" },
-  { title: "Продукты → Фрукты", value: 1000, category: "Продукты", subcategory: "Фрукты" },
-  { title: "Кафе/Рестораны", value: 2500, category: "Развлечения", subcategory: "Кафе" },
-  { title: "Такси", value: 450, category: "Транспорт", subcategory: "Такси" },
-  { title: "Метро (пополнение)", value: 2000, category: "Транспорт", subcategory: "Общественный" },
-  { title: "Аптека", value: 850, category: "Здоровье", subcategory: "Аптека" },
-  { title: "Мобильная связь", value: 500, category: "Связь", subcategory: "Мобильная" },
-  { title: "Интернет", value: 700, category: "Связь", subcategory: "Интернет" },
-  { title: "Подписка Netflix", value: 450, category: "Развлечения", subcategory: "Подписки" },
-  { title: "Фитнес-клуб", value: 3500, category: "Спорт", subcategory: "Абонемент" },
-  { title: "Одежда", value: 4500, category: "Покупки", subcategory: "Одежда" },
-  { title: "Книги", value: 1200, category: "Образование", subcategory: "Книги" },
+  { title: "Продукты → Молочные", value: 1200, category: "food", subcategory: "Молочные" },
+  { title: "Продукты → Мясо", value: 2500, category: "food", subcategory: "Мясо" },
+  { title: "Продукты → Овощи", value: 800, category: "food", subcategory: "Овощи" },
+  { title: "Продукты → Фрукты", value: 1000, category: "food", subcategory: "Фрукты" },
+  { title: "Кафе/Рестораны", value: 2500, category: "entertainment", subcategory: "Кафе" },
+  { title: "Такси", value: 450, category: "transport", subcategory: "Такси" },
+  { title: "Метро (пополнение)", value: 2000, category: "transport", subcategory: "Общественный" },
+  { title: "Аптека", value: 850, category: "health", subcategory: "Аптека" },
+  { title: "Мобильная связь", value: 500, category: "other", subcategory: "Мобильная" },
+  { title: "Интернет", value: 700, category: "other", subcategory: "Интернет" },
+  { title: "Подписка Netflix", value: 450, category: "entertainment", subcategory: "Подписки" },
+  { title: "Фитнес-клуб", value: 3500, category: "other", subcategory: "Абонемент" },
+  { title: "Одежда", value: 4500, category: "shopping", subcategory: "Одежда" },
+  { title: "Книги", value: 1200, category: "education", subcategory: "Книги" },
 ]
 
 // ============================================
@@ -397,7 +397,7 @@ export async function seedCategories(): Promise<Category[]> {
     {
       id: uuid(),
       type: LogType.FINANCE,
-      name: "other_income",
+      name: "other",
       icon: "more-horizontal",
       finance_type: FinanceType.INCOME,
       created_at: now,
@@ -479,7 +479,7 @@ export async function seedCategories(): Promise<Category[]> {
     {
       id: uuid(),
       type: LogType.FINANCE,
-      name: "other_expense",
+      name: "other",
       icon: "more-horizontal",
       finance_type: FinanceType.EXPENSE,
       created_at: now,
@@ -601,7 +601,7 @@ export async function seedUnits(): Promise<void> {
     // Штуки
     {
       id: "pcs",
-      name: "штука",
+      name: "piece",
       abbreviation: "шт",
       type: "count",
       created_at: now,
@@ -609,7 +609,7 @@ export async function seedUnits(): Promise<void> {
     },
     {
       id: "clove",
-      name: "зубчик",
+      name: "clove",
       abbreviation: "зубч.",
       type: "count",
       created_at: now,
@@ -617,15 +617,15 @@ export async function seedUnits(): Promise<void> {
     },
     {
       id: "pinch",
-      name: "щепотка",
-      abbreviation: "щепотка",
+      name: "pinch",
+      abbreviation: "щеп.",
       type: "count",
       created_at: now,
       updated_at: now,
     },
     {
       id: "taste",
-      name: "по вкусу",
+      name: "to taste",
       abbreviation: "по вкусу",
       type: "count",
       created_at: now,
@@ -635,117 +635,116 @@ export async function seedUnits(): Promise<void> {
     // Время
     {
       id: "min",
-      name: "минута",
+      name: "minute",
       abbreviation: "мин",
       type: "time",
       created_at: now,
       updated_at: now,
     },
-    { id: "hour", name: "час", abbreviation: "ч", type: "time", created_at: now, updated_at: now },
+    {
+      id: "hour",
+      name: "hour",
+      abbreviation: "ч",
+      type: "time",
+      created_at: now,
+      updated_at: now,
+    },
 
     // Деньги
     {
-      id: "rub",
-      name: "рубль",
+      id: "RUB",
+      name: "ruble",
       abbreviation: "₽",
       type: "money",
       created_at: now,
       updated_at: now,
     },
     {
-      id: "usd",
-      name: "доллар",
+      id: "USD",
+      name: "dollar",
       abbreviation: "$",
       type: "money",
       created_at: now,
       updated_at: now,
     },
-    { id: "eur", name: "евро", abbreviation: "€", type: "money", created_at: now, updated_at: now },
+    {
+      id: "EUR",
+      name: "euro",
+      abbreviation: "€",
+      type: "money",
+      created_at: now,
+      updated_at: now,
+    },
   ]
 
   await db.units.bulkAdd(units)
 }
 
-async function seedAccounts(): Promise<Account[]> {
-  const existingAccounts = await db.accounts.count()
-  if (existingAccounts > 0) {
+// Flag to prevent duplicate account creation
+let accountsSeeded = false
+
+export async function seedAccounts(): Promise<Account[]> {
+  // Check if accounts already exist in DB (e.g., after page reload)
+  const existingAccounts = await db.accounts.toArray()
+  if (existingAccounts.length > 0) {
+    accountsSeeded = true
+    return existingAccounts
+  }
+
+  // Return existing accounts if already seeded in this session
+  if (accountsSeeded) {
     return db.accounts.toArray()
   }
 
   const now = getTimestamp()
-  const accounts: Account[] = [
+  const accountsConfig: Omit<Account, "id" | "created_at" | "updated_at">[] = [
     // Наличные
     {
-      id: uuid(),
       name: "cash",
       type: "cash",
       balance: 0,
-      currency: "RUB",
-      created_at: now,
-      updated_at: now,
+      currency: "USD",
     },
-    // Банковские карты
+    // Банковская карта
     {
-      id: uuid(),
       name: "card",
       type: "card",
       balance: 0,
-      currency: "RUB",
-      created_at: now,
-      updated_at: now,
+      currency: "USD",
     },
-    // Банковские счета
+    // Вклад/Депозит
     {
-      id: uuid(),
-      name: "bank",
-      type: "bank",
-      balance: 0,
-      currency: "RUB",
-      created_at: now,
-      updated_at: now,
-    },
-    // Вклады
-    {
-      id: uuid(),
-      name: "Вклад",
+      name: "deposit",
       type: "deposit",
       balance: 0,
-      currency: "RUB",
-      created_at: now,
-      updated_at: now,
-    },
-    // Инвестиции
-    {
-      id: uuid(),
-      name: "Брокерский счёт",
-      type: "investment",
-      balance: 0,
-      currency: "RUB",
-      created_at: now,
-      updated_at: now,
-    },
-    {
-      id: uuid(),
-      name: "ИИС",
-      type: "investment",
-      balance: 0,
-      currency: "RUB",
-      created_at: now,
-      updated_at: now,
-    },
-    // Криптовалюты
-    {
-      id: uuid(),
-      name: "Крипто-кошелёк",
-      type: "crypto",
-      balance: 0,
       currency: "USD",
-      created_at: now,
-      updated_at: now,
     },
   ]
-  await db.accounts.bulkAdd(accounts)
-  return accounts
+
+  // Create accounts with error handling for duplicates
+  for (const config of accountsConfig) {
+    try {
+      // Check if account exists by name
+      const existing = await db.accounts.where("name").equals(config.name).first()
+      if (!existing) {
+        await db.accounts.add({
+          id: uuid(),
+          ...config,
+          created_at: now,
+          updated_at: now,
+        })
+      }
+    } catch (error) {
+      // Ignore duplicate key errors
+      const err = error as Record<string, unknown>
+      if (err.name !== "ConstraintError") {
+        console.error("Error creating account:", error)
+      }
+    }
+  }
+
+  accountsSeeded = true
+  return db.accounts.toArray()
 }
 
 async function seedLogs(categories: Category[], accounts: Account[]): Promise<void> {
@@ -756,17 +755,16 @@ async function seedLogs(categories: Category[], accounts: Account[]): Promise<vo
   const now = getTimestamp()
 
   // Получаем категории
-  const breakfastCat = categories.find((c) => c.type === LogType.FOOD && c.name === "Завтрак")!
-  const lunchCat = categories.find((c) => c.type === LogType.FOOD && c.name === "Обед")!
-  const dinnerCat = categories.find((c) => c.type === LogType.FOOD && c.name === "Ужин")!
-  const snackCat = categories.find((c) => c.type === LogType.FOOD && c.name === "Перекус")!
-  const strengthCat = categories.find((c) => c.type === LogType.WORKOUT && c.name === "Силовая")!
-  const cardioCat = categories.find((c) => c.type === LogType.WORKOUT && c.name === "Кардио")!
-  const yogaCat = categories.find((c) => c.type === LogType.WORKOUT && c.name === "Йога")!
+  const breakfastCat = categories.find((c) => c.type === LogType.FOOD && c.name === "breakfast")!
+  const lunchCat = categories.find((c) => c.type === LogType.FOOD && c.name === "lunch")!
+  const dinnerCat = categories.find((c) => c.type === LogType.FOOD && c.name === "dinner")!
+  const snackCat = categories.find((c) => c.type === LogType.FOOD && c.name === "snack")!
+  const strengthCat = categories.find((c) => c.type === LogType.WORKOUT && c.name === "strength")!
+  const cardioCat = categories.find((c) => c.type === LogType.WORKOUT && c.name === "cardio")!
+  const yogaCat = categories.find((c) => c.type === LogType.WORKOUT && c.name === "yoga")!
 
-  const cashAccount = accounts.find((a) => a.name === "Наличные")!
-  const sberAccount = accounts.find((a) => a.name === "Сбербанк")!
-  const tinkoffAccount = accounts.find((a) => a.name === "Тинькофф")!
+  const cashAccount = accounts.find((a) => a.name === "cash")!
+  const cardAccount = accounts.find((a) => a.name === "card")!
 
   // ============================================
   // ПИТАНИЕ: План на неделю (7 дней × 4 приёма пищи = 28 записей)
@@ -913,7 +911,7 @@ async function seedLogs(categories: Category[], accounts: Account[]): Promise<vo
         value: income.value,
         metadata: {
           finance_type: FinanceType.INCOME,
-          account_id: sberAccount.id,
+          account_id: cardAccount.id,
           category: income.category,
           subcategory: income.subcategory,
         },
@@ -927,7 +925,7 @@ async function seedLogs(categories: Category[], accounts: Account[]): Promise<vo
     for (let op = 0; op < 3; op++) {
       const expense = randomFromArray(FINANCE_EXPENSE)
       const cat = categories.find((c) => c.type === LogType.FINANCE && c.name === expense.category)
-      const account = randomFromArray([sberAccount, tinkoffAccount, cashAccount])
+      const account = randomFromArray([cardAccount, cashAccount])
       const hour = 10 + op * 3
 
       logs.push({
@@ -2065,11 +2063,11 @@ async function seedRecipes(): Promise<void> {
       updated_at: now,
     },
 
-    // Салат Цезарь
+    // Салат Цезар������
     {
       id: uuid(),
       recipe_id: foodRecipes[2].id,
-      ingredient_name: "Куриное филе",
+      ingredient_name: "Куриное ф��ле",
       amount: 250,
       unit: "г",
       order: 1,
@@ -2789,6 +2787,8 @@ export async function clearDatabase() {
     db.recipeIngredientItems.clear(),
     db.recipeSteps.clear(),
   ])
+  // Reset the accounts seeded flag
+  accountsSeeded = false
   console.log("Database cleared!")
   return true
 }
@@ -2805,7 +2805,7 @@ export async function seedDatabase() {
   const categories = await seedCategories()
   await seedTags()
   await seedUnits()
-  const accounts = await seedAccounts()
+  const accounts = await db.accounts.toArray()
   await seedLogs(categories, accounts)
   await seedItems()
   await seedBooks()

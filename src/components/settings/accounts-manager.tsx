@@ -1,19 +1,22 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 import { Wallet } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { NativeSelect } from "@/components/ui/native-select"
+import { Combobox } from "@/components/ui/combobox"
 import { Button } from "@/components/ui/button"
 import { CrudManager } from "@/components/shared"
 import { useSettings, useAccountTypes } from "./settings-context"
+import { getLocalizedEntityName } from "@/lib/db"
 import type { Account } from "@/types"
 
 export function AccountsManager() {
   const t = useTranslations("settings")
   const tCommon = useTranslations("common")
+  const locale = useLocale()
   const accountTypes = useAccountTypes()
   const {
     accounts,
@@ -26,8 +29,29 @@ export function AccountsManager() {
   } = useSettings()
 
   // Фильтруем валюты из единиц измерения (тип "money")
-  const currencyUnits = units.filter((u) => u.type === "money")
-  const defaultCurrency = currencyUnits[0]?.abbreviation || "RUB"
+  const currencyUnits = useMemo(() => units.filter((u) => u.type === "money"), [units])
+  const defaultCurrency = currencyUnits.find((u) => u.id === "USD")?.id || "USD"
+
+  // Локализованные названия валют
+  const [localizedCurrencyNames, setLocalizedCurrencyNames] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    loadLocalizedCurrencies()
+  }, [locale, units.length])
+
+  async function loadLocalizedCurrencies() {
+    const localizedNames: Record<string, string> = {}
+    for (const unit of currencyUnits) {
+      localizedNames[unit.id] = await getLocalizedEntityName(
+        "unit",
+        unit.id,
+        locale,
+        unit.name,
+        undefined
+      )
+    }
+    setLocalizedCurrencyNames(localizedNames)
+  }
 
   const getAccountTypeLabel = (type: Account["type"]) => {
     const labels: Record<string, string> = {
@@ -47,6 +71,18 @@ export function AccountsManager() {
     onSave: () => void,
     onCancel: () => void
   ) => {
+    // Преобразуем типы аккаунтов в формат Combobox
+    const accountTypeOptions = accountTypes.map((t) => ({
+      id: t.value,
+      label: `${t.emoji} ${t.label}`,
+    }))
+
+    // Преобразуем валюты в формат Combobox с локализованными названиями
+    const currencyOptions = currencyUnits.map((unit) => ({
+      id: unit.id,
+      label: `${localizedCurrencyNames[unit.id] || unit.name} (${unit.abbreviation})`,
+    }))
+
     return (
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
@@ -60,16 +96,15 @@ export function AccountsManager() {
           </div>
           <div className="space-y-1">
             <Label className="sr-only">{t("accounts.type")}</Label>
-            <NativeSelect
+            <Combobox
+              options={accountTypeOptions}
               value={item?.type || "card"}
-              onChange={(e) => onChange({ type: e.target.value as Account["type"] })}
-            >
-              {accountTypes.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.emoji} {t.label}
-                </option>
-              ))}
-            </NativeSelect>
+              onChange={(value) => onChange({ type: value as Account["type"] })}
+              mode="single"
+              allowCustom={false}
+              searchable={false}
+              placeholder={t("accounts.type")}
+            />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -84,16 +119,15 @@ export function AccountsManager() {
           </div>
           <div className="space-y-1">
             <Label className="sr-only">{t("accounts.currency")}</Label>
-            <NativeSelect
+            <Combobox
+              options={currencyOptions}
               value={item?.currency || defaultCurrency}
-              onChange={(e) => onChange({ currency: e.target.value })}
-            >
-              {currencyUnits.map((unit) => (
-                <option key={unit.id} value={unit.abbreviation}>
-                  {unit.name} ({unit.abbreviation})
-                </option>
-              ))}
-            </NativeSelect>
+              onChange={(value) => onChange({ currency: value as string })}
+              mode="single"
+              allowCustom={false}
+              searchable={false}
+              placeholder={t("accounts.currency")}
+            />
           </div>
         </div>
         <div className="flex gap-2">

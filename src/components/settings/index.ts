@@ -6,9 +6,7 @@ export {
   useLogTypeLabels,
   useItemTypeLabels,
 } from "./settings-context"
-export { ThemeSwitcher } from "./theme-switcher"
-export { LanguageSwitcher } from "./language-switcher"
-export { FirstDayOfWeekSwitcher } from "./first-day-of-week"
+export { AppearanceSettings } from "./appearance-settings"
 export { DataStats } from "./data-stats"
 export { BackupManager } from "./backup-manager"
 export { ExportManager } from "./export-manager"

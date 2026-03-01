@@ -123,10 +123,22 @@ export function FinanceForm({
 
     // Если перевод не найден, используем ключ типа
     if (!label) {
-      return icon ? `${icon} ${type}` : type
+      return type
     }
 
-    return icon ? `${icon} ${label}` : label
+    return label
+  }
+
+  const getAccountTypeIcon = (type: string) => {
+    const icons: Record<string, string> = {
+      cash: "💵",
+      card: "💳",
+      bank: "🏦",
+      deposit: "📈",
+      investment: "📊",
+      crypto: "₿",
+    }
+    return icons[type] || ""
   }
 
   // Emoji для финансовых категорий
@@ -373,7 +385,7 @@ export function FinanceForm({
           <Combobox
             options={accounts.map((acc) => ({
               id: acc.id,
-              label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ${acc.currency})`,
+              label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${acc.balance.toLocaleString()} ${acc.currency}`,
             }))}
             value={selectedAccountId}
             onChange={(value) => {
@@ -382,7 +394,7 @@ export function FinanceForm({
             }}
             placeholder={t("finance.account")}
             allowCustom={false}
-            searchable={true}
+            searchable={false}
             className="emoji"
           />
         </div>
@@ -410,13 +422,13 @@ export function FinanceForm({
               .filter((acc) => acc.id !== selectedAccountId)
               .map((acc) => ({
                 id: acc.id,
-                label: `${getAccountTypeLabel(acc.type)} • ${acc.name} (${acc.balance.toLocaleString()} ${acc.currency})`,
+                label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${acc.balance.toLocaleString()} ${acc.currency}`,
               }))}
             value={targetAccountId}
             onChange={(value) => setTargetAccountId(value as string)}
             placeholder={t("finance.account")}
             allowCustom={false}
-            searchable={true}
+            searchable={false}
             className="emoji"
           />
         </div>
