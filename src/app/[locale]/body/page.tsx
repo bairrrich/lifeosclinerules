@@ -65,6 +65,10 @@ function BodyContent() {
   useEffect(() => {
     if (searchParams.get("add") === "true") {
       setIsAddDialogOpen(true)
+      // Clear the query parameter after opening to allow re-opening the dialog
+      const url = new URL(window.location.href)
+      url.searchParams.delete("add")
+      window.history.replaceState({}, "", url.toString())
     }
   }, [searchParams])
 
