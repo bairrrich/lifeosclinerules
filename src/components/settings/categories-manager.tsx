@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { Tag } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { NativeSelect } from "@/components/ui/native-select"
+import { Combobox } from "@/components/ui/combobox"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CrudManager } from "@/components/shared"
@@ -208,9 +208,9 @@ export function CategoriesManager() {
 
   // Опции для выпадающего списка
   const financeTypeOptions = [
-    { value: FinanceType.INCOME, label: t("categories.financeTypes.income") },
-    { value: FinanceType.EXPENSE, label: t("categories.financeTypes.expense") },
-    { value: FinanceType.TRANSFER, label: t("categories.financeTypes.transfer") },
+    { id: FinanceType.INCOME, label: t("categories.financeTypes.income") },
+    { id: FinanceType.EXPENSE, label: t("categories.financeTypes.expense") },
+    { id: FinanceType.TRANSFER, label: t("categories.financeTypes.transfer") },
   ]
 
   // Фильтруем только финансовые категории
@@ -246,24 +246,22 @@ export function CategoriesManager() {
             placeholder={t("categories.name")}
             className="flex-1"
           />
-          <NativeSelect
+        </div>
+        <div className="flex items-center gap-2 justify-end">
+          <Combobox
+            options={financeTypeOptions}
             value={item?.finance_type || FinanceType.EXPENSE}
-            onChange={(e) => onChange({ finance_type: e.target.value as FinanceType })}
-          >
-            {financeTypeOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </NativeSelect>
-          <div className="flex gap-2">
-            <Button size="action-sm" onClick={onSave}>
-              {tCommon("save")}
-            </Button>
-            <Button size="action-sm" variant="outline" onClick={onCancel}>
-              {tCommon("cancel")}
-            </Button>
-          </div>
+            onChange={(value) => onChange({ finance_type: value as FinanceType })}
+            placeholder={t("categories.financeTypes.select")}
+            allowCustom={false}
+            className="w-32 mr-auto"
+          />
+          <Button size="action-sm" onClick={onSave}>
+            {tCommon("save")}
+          </Button>
+          <Button size="action-sm" variant="outline" onClick={onCancel}>
+            {tCommon("cancel")}
+          </Button>
         </div>
         <p className="text-xs text-muted-foreground">{t("categories.iconHelp")}</p>
       </div>

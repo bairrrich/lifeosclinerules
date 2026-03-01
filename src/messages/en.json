@@ -600,7 +600,8 @@
       "financeTypes": {
         "income": "Income",
         "expense": "Expense",
-        "transfer": "Transfer"
+        "transfer": "Transfer",
+        "select": "Select type"
       },
       "categoryTypes": {
         "food": "Nutrition",

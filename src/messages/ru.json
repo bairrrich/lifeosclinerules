@@ -600,7 +600,8 @@
       "financeTypes": {
         "income": "Доход",
         "expense": "Расход",
-        "transfer": "Перевод"
+        "transfer": "Перевод",
+        "select": "Выберите тип"
       },
       "categoryTypes": {
         "food": "Питание",

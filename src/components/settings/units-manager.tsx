@@ -6,7 +6,7 @@ import { useLocale } from "next-intl"
 import { Ruler } from "@/lib/icons"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { NativeSelect } from "@/components/ui/native-select"
+import { Combobox } from "@/components/ui/combobox"
 import { Button } from "@/components/ui/button"
 import { CrudManager } from "@/components/shared"
 import { useSettings, useUnitTypes } from "./settings-context"
@@ -92,17 +92,13 @@ export function UnitsManager() {
         <div className="flex items-end gap-2">
           <div className="flex-1 space-y-1">
             <Label className="sr-only">{t("units.type")}</Label>
-            <NativeSelect
+            <Combobox
+              options={unitTypes.map((t) => ({ id: t.value, label: t.label }))}
               value={item?.type || "weight"}
-              onChange={(e) => onChange({ type: e.target.value as Unit["type"] })}
-              className="h-9"
-            >
-              {unitTypes.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
-                </option>
-              ))}
-            </NativeSelect>
+              onChange={(value) => onChange({ type: value as Unit["type"] })}
+              placeholder={t("units.type")}
+              allowCustom={false}
+            />
           </div>
           <div className="flex gap-2 pt-2">
             <Button size="action-sm" onClick={onSave}>
