@@ -3,7 +3,14 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { useTranslations } from "next-intl"
 import { useLocale } from "next-intl"
-import { db, createEntity, updateEntity, deleteEntity, saveEntityTranslation } from "@/lib/db"
+import {
+  db,
+  createEntity,
+  updateEntity,
+  deleteEntity,
+  saveEntityTranslation,
+  initializeDatabase,
+} from "@/lib/db"
 import { LogType, ContentType, ItemType } from "@/types"
 import type { Account, Category, Unit } from "@/types"
 import type { LucideIcon } from "@/lib/icons"
@@ -215,6 +222,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const init = async () => {
       setMounted(true)
+      await initializeDatabase()
       await Promise.all([reloadStats(), reloadAccounts(), reloadCategories(), reloadUnits()])
     }
     init()

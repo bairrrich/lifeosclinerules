@@ -37,7 +37,7 @@ import type {
   RecurringTransaction,
   EntityTranslation,
 } from "@/types"
-import { LogType, ItemType, ContentType } from "@/types"
+import { LogType, ItemType, ContentType, FinanceType } from "@/types"
 
 // ============================================
 // Database Schema
@@ -1157,6 +1157,202 @@ export async function initializeDatabase(): Promise<void> {
           start_date: now.split("T")[0],
           is_active: true,
           unit: "min",
+          created_at: now,
+          updated_at: now,
+        },
+      ])
+    }
+
+    // Seed default currency units if empty
+    const unitsCount = await db.units.count()
+    if (unitsCount === 0) {
+      await db.units.bulkAdd([
+        {
+          id: "USD",
+          name: "US Dollar",
+          abbreviation: "$",
+          type: "money" as const,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "EUR",
+          name: "Euro",
+          abbreviation: "€",
+          type: "money" as const,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "RUB",
+          name: "Russian Ruble",
+          abbreviation: "₽",
+          type: "money" as const,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "kg",
+          name: "Kilogram",
+          abbreviation: "kg",
+          type: "weight" as const,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "g",
+          name: "Gram",
+          abbreviation: "g",
+          type: "weight" as const,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "ml",
+          name: "Milliliter",
+          abbreviation: "ml",
+          type: "volume" as const,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "l",
+          name: "Liter",
+          abbreviation: "l",
+          type: "volume" as const,
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "pcs",
+          name: "Pieces",
+          abbreviation: "pcs",
+          type: "count" as const,
+          created_at: now,
+          updated_at: now,
+        },
+      ])
+    }
+
+    // Seed default finance categories if empty
+    const categoriesCount = await db.categories.count()
+    if (categoriesCount === 0) {
+      await db.categories.bulkAdd([
+        // Income categories
+        {
+          id: "salary",
+          name: "Salary",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.INCOME,
+          icon: "💵",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "freelance",
+          name: "Freelance",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.INCOME,
+          icon: "💻",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "investments",
+          name: "Investments",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.INCOME,
+          icon: "📈",
+          created_at: now,
+          updated_at: now,
+        },
+        // Expense categories
+        {
+          id: "food",
+          name: "Food",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "🍔",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "transport",
+          name: "Transport",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "🚗",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "entertainment",
+          name: "Entertainment",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "🎬",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "health",
+          name: "Health",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "💊",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "shopping",
+          name: "Shopping",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "🛒",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "housing",
+          name: "Housing",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "🏠",
+          created_at: now,
+          updated_at: now,
+        },
+        // Transfer categories
+        {
+          id: "transfer",
+          name: "Transfer",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.TRANSFER,
+          icon: "🔄",
+          created_at: now,
+          updated_at: now,
+        },
+      ])
+    }
+
+    // Seed default accounts if empty
+    const accountsCount = await db.accounts.count()
+    if (accountsCount === 0) {
+      await db.accounts.bulkAdd([
+        {
+          id: "cash",
+          name: "Cash",
+          type: "cash" as const,
+          balance: 0,
+          currency: "RUB",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "card",
+          name: "Bank Card",
+          type: "card" as const,
+          balance: 0,
+          currency: "RUB",
           created_at: now,
           updated_at: now,
         },

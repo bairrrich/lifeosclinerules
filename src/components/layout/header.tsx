@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Menu, Settings } from "@/lib/icons"
+import { Menu, Settings, Search } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 
 interface HeaderProps {
@@ -32,8 +32,17 @@ export function Header({ title = "Life OS", showMenu = false, onMenuClick }: Hea
             </h1>
           </div>
 
-          {/* Right section - settings icon */}
-          <div className="flex items-center gap-2 w-24 justify-end">
+          {/* Right section - search and settings */}
+          <div className="flex items-center gap-1 w-24 justify-end">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-primary/10 hover:text-primary transition-colors"
+              onClick={() => document.dispatchEvent(new Event("open-global-search"))}
+            >
+              <Search className="h-5 w-5" />
+              <span className="sr-only">Поиск</span>
+            </Button>
             <Link href="/settings">
               <Button
                 variant="ghost"
