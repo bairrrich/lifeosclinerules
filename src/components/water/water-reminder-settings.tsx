@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { db } from "@/lib/db"
 import type { Reminder } from "@/types"
 import { useNotifications } from "@/hooks/use-notifications"
+import { toast } from "@/components/ui/toast"
 
 interface WaterReminderSettingsProps {
   onReminderChange?: () => void
@@ -57,7 +58,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
     if (!hasPermission) {
       const granted = await requestPermission()
       if (!granted) {
-        alert(t("reminder.permissionRequired"))
+        toast.error(t("reminder.permissionRequired"))
         return
       }
     }

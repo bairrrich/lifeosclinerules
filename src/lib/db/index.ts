@@ -197,7 +197,9 @@ class LifeOSDatabase extends Dexie {
       .upgrade(async (tx) => {
         // Clear emoji cache - force update
         const items = await tx.table("items").toArray()
-        console.log(`[DB v11] Updated ${items.length} items`)
+        if (process.env.NODE_ENV === "development") {
+          console.log(`[DB v11] Updated ${items.length} items`)
+        }
       })
 
     this.version(13)
@@ -225,11 +227,13 @@ class LifeOSDatabase extends Dexie {
             await tx.table("accounts").delete(id)
           }
 
-          console.log(
-            `[DB v13] Removed ${idsToDelete.length} duplicate accounts, kept ${seen.size}`
-          )
-        } catch (error) {
-          console.error("[DB v13] Migration error:", error)
+          // Log in development only
+          if (process.env.NODE_ENV === "development") {
+            console.log(
+              `[DB v13] Removed ${idsToDelete.length} duplicate accounts, kept ${seen.size}`
+            )
+          }
+        } catch {
           // Continue anyway - duplicates will be handled by seedAccounts
         }
       })
@@ -244,10 +248,8 @@ export const db = new LifeOSDatabase()
 
 // Handle database version change events
 db.on("versionchange", (event) => {
-  console.log("[DB] Version change event:", event)
   // Close the database if another connection wants to upgrade
   if (event.newVersion !== null) {
-    console.log("[DB] Another connection wants to upgrade the database, closing...")
     db.close()
   }
 })
@@ -853,7 +855,6 @@ export async function initializeDatabase(): Promise<void> {
     }
 
     initialized = true
-    console.log("Database initialized successfully")
   } catch (error) {
     console.error("Failed to initialize database:", error)
   } finally {

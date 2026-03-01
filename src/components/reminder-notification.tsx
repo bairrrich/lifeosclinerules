@@ -51,7 +51,6 @@ export function ReminderNotification({
 
       // Если лимит достигнут - просто закрываем уведомление
       if (todayCompletedLogs.length >= maxCompletionsPerDay) {
-        console.log(`[ReminderNotification] ${reminder.title}: already completed, not creating log`)
         dismissNotification(notification.id)
         return
       }
@@ -120,23 +119,16 @@ export function ReminderNotification({
       const currentMinutes = now.getMinutes()
       const currentTimeInMinutes = currentHours * 60 + currentMinutes
 
-      console.log(
-        `[ReminderNotification] Checking at ${currentHours}:${currentMinutes}, found ${reminders.length} active reminders`
-      )
-
       for (const reminder of reminders) {
         // Проверяем день недели
         if (!reminder.days.includes(currentDay)) {
-          console.log(`[ReminderNotification] ${reminder.title}: wrong day`)
           continue
         }
         // Проверяем даты курса
         if (reminder.start_date && today < reminder.start_date) {
-          console.log(`[ReminderNotification] ${reminder.title}: before start date`)
           continue
         }
         if (reminder.end_date && today > reminder.end_date) {
-          console.log(`[ReminderNotification] ${reminder.title}: after end date`)
           continue
         }
 
@@ -146,8 +138,8 @@ export function ReminderNotification({
           return currentTimeInMinutes === reminderTimeInMinutes
         }
 
-        const times = [reminder.time, ...((reminder as any).times || [])]
-        const maxCompletionsPerDay = 1 + ((reminder as any).times?.length || 0)
+        const times = [reminder.time, ...(reminder.times || [])]
+        const maxCompletionsPerDay = 1 + (reminder.times?.length || 0)
 
         // Проверяем, сколько раз уже выполнено сегодня
         const todayCompletedLogs = await db.reminderLogs
@@ -161,17 +153,12 @@ export function ReminderNotification({
 
         // Если лимит выполнений достигнут - не показываем уведомление
         if (todayCompletedLogs.length >= maxCompletionsPerDay) {
-          console.log(
-            `[ReminderNotification] ${reminder.title}: already completed ${todayCompletedLogs.length}/${maxCompletionsPerDay} times today`
-          )
           continue
         }
 
         for (const time of times) {
           if (checkTime(time)) {
             const notificationId = `${reminder.id}-${time}-${today}`
-
-            console.log(`[ReminderNotification] TRIGGER: ${reminder.title} at ${time}`)
 
             // Проверяем, не показано ли уже
             setNotifications((prev) => {

@@ -861,6 +861,7 @@ export interface Reminder extends BaseEntity {
 
   // Время
   time: string // "08:00"
+  times?: string[] // Дополнительные времена для нескольких напоминаний в день
   days: number[] // 0-6 для дней недели
   start_date?: ISODate // Начало курса/периода
   end_date?: ISODate // Окончание курса/периода

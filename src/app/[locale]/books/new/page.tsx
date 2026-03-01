@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "@/lib/navigation"
 import { useTranslations } from "next-intl"
 import { ArrowLeft, Save } from "@/lib/icons"
+import { toast } from "@/components/ui/toast"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Button } from "@/components/ui/button"
 import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
@@ -125,7 +126,7 @@ export default function NewBookPage() {
 
   const onSubmit = async () => {
     if (!bookData.title?.trim()) {
-      alert(t("new.validation.titleRequired"))
+      toast.error(t("new.validation.titleRequired"))
       return
     }
 
@@ -207,7 +208,7 @@ export default function NewBookPage() {
       router.push("/books")
     } catch (error) {
       console.error("Failed to create book:", error)
-      alert(t("new.error.failedToCreate"))
+      toast.error(t("new.error.failedToCreate"))
     } finally {
       setIsLoading(false)
     }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "@/lib/navigation"
 import { useTranslations } from "next-intl"
+import { toast } from "@/components/ui/toast"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
@@ -152,7 +153,7 @@ export default function EditBookPage() {
 
   const onSubmit = async () => {
     if (!bookData.title?.trim()) {
-      alert(t("edit.validation.titleRequired"))
+      toast.error(t("edit.validation.titleRequired"))
       return
     }
 
@@ -273,7 +274,7 @@ export default function EditBookPage() {
       router.push(`/books/${bookId}`)
     } catch (error) {
       console.error("Failed to update book:", error)
-      alert(t("edit.error.failedToUpdate"))
+      toast.error(t("edit.error.failedToUpdate"))
     } finally {
       setIsSaving(false)
     }
@@ -298,7 +299,7 @@ export default function EditBookPage() {
       router.push("/books")
     } catch (error) {
       console.error("Failed to delete book:", error)
-      alert(t("edit.error.failedToDelete"))
+      toast.error(t("edit.error.failedToDelete"))
     } finally {
       setIsDeleting(false)
     }

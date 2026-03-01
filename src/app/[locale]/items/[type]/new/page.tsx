@@ -526,7 +526,6 @@ export default function NewItemPage() {
         }))
 
       const result = [...productCats, ...existing]
-      console.log("[CategoryOptions] Product:", result)
       return result
     }
 
@@ -538,10 +537,6 @@ export default function NewItemPage() {
       id: c,
       label: `${getCategoryEmoji(c, type)} ${c}`,
     }))
-
-    console.log("[CategoryOptions]", type, ":", result)
-    console.log("[CategoryOptions] existingCategories:", existingCategories)
-    console.log("[CategoryOptions] getDefaultCategories:", getDefaultCategories(type, t))
 
     return result
   }

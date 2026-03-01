@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
+import { toast } from "@/components/ui/toast"
 import {
   Plus,
   Copy,
@@ -318,7 +319,7 @@ export default function TemplatesPage() {
       loadTemplates()
     } catch (error) {
       console.error("Failed to apply template:", error)
-      alert("Ошибка при применении шаблона")
+      toast.error("Ошибка при применении шаблона")
     }
   }
 

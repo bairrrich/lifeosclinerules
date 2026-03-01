@@ -6,6 +6,7 @@ import { Download, FileJson, FileSpreadsheet, Loader2 } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
+import { toast } from "@/components/ui/toast"
 
 export function ExportManager() {
   const t = useTranslations("settings")
@@ -88,7 +89,7 @@ export function ExportManager() {
       URL.revokeObjectURL(url)
     } catch (error) {
       console.error("Export failed:", error)
-      alert(tCommon("exportError"))
+      toast.error(tCommon("exportError"))
     } finally {
       setIsExporting(false)
     }
@@ -101,7 +102,7 @@ export function ExportManager() {
       const logs = await db.logs.toArray()
 
       if (logs.length === 0) {
-        alert(tCommon("noData"))
+        toast.error(tCommon("noData"))
         setIsExporting(false)
         return
       }
