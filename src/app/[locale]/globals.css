@@ -279,13 +279,45 @@ select {
   font-size: 16px !important; /* Prevents iOS zoom on focus */
 }
 
-/* Prevent text selection on interactive elements */
+/* Remove number input spinners (arrows) */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Disable mouse wheel change for number inputs */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Prevent text selection on interactive elements and globally */
 button,
 [role="button"],
 .btn,
 .nav-item {
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* Global text selection prevention - allow only in form elements */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection in input, textarea, and contenteditable elements */
+input,
+textarea,
+[contenteditable="true"],
+[contenteditable=""] {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 /* Smooth scroll behavior */

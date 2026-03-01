@@ -1,12 +1,13 @@
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
-import type { Metadata, Viewport } from "next"
+import { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/layout/theme-provider"
 import { PWAProvider } from "@/components/pwa-provider"
 import { ToastContainer } from "@/components/ui/toast"
 import { ReminderNotification } from "@/components/reminder-notification"
+import { DisableRightClick } from "@/components/shared/disable-right-click"
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] })
 
@@ -62,10 +63,12 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <PWAProvider />
-            {children}
-            <ToastContainer role="alert" aria-live="polite" />
-            <ReminderNotification role="status" aria-live="polite" />
+            <DisableRightClick>
+              <PWAProvider />
+              {children}
+              <ToastContainer role="alert" aria-live="polite" />
+              <ReminderNotification role="status" aria-live="polite" />
+            </DisableRightClick>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

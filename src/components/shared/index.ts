@@ -23,3 +23,5 @@ export type { LoadingStateProps } from "./loading-state"
 
 export { EntityTranslations } from "./entity-translations"
 export type { EntityTranslationsProps } from "./entity-translations"
+
+export { DisableRightClick } from "./disable-right-click"
