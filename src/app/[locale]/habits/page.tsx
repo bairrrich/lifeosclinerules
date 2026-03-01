@@ -39,16 +39,7 @@ import {
 } from "@/lib/db"
 import { useTranslations, useLocale } from "next-intl"
 import type { Habit, HabitLog, Streak, HabitSubtask } from "@/types"
-
-const habitColors = [
-  { bg: "bg-red-500/10", text: "text-red-500", name: "Красный" },
-  { bg: "bg-orange-500/10", text: "text-orange-500", name: "Оранжевый" },
-  { bg: "bg-amber-500/10", text: "text-amber-500", name: "Жёлтый" },
-  { bg: "bg-green-500/10", text: "text-green-500", name: "Зелёный" },
-  { bg: "bg-blue-500/10", text: "text-blue-500", name: "Синий" },
-  { bg: "bg-purple-500/10", text: "text-purple-500", name: "Фиолетовый" },
-  { bg: "bg-pink-500/10", text: "text-pink-500", name: "Розовый" },
-]
+import { habitColors } from "@/lib/theme-colors"
 
 function getHabitTypes(t: any) {
   return [

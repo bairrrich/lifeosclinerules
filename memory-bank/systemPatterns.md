@@ -9,7 +9,7 @@ src/
 ├── app/                    # Next.js App Router
 │   ├── page.tsx           # Dashboard
 │   ├── layout.tsx         # Root layout
-│   ├── globals.css        # Глобальные стили
+│   ├── globals.css        # Глобальные стили + CSS переменные
 │   ├── logs/              # Группа A — Учет
 │   │   └── [type]/        # food, workout, finance
 │   ├── items/             # Группа B — Каталог
@@ -28,6 +28,7 @@ src/
 │   └── ui/                # shadcn/ui компоненты
 ├── lib/
 │   ├── utils.ts           # Утилиты
+│   ├── theme-colors.ts    # Централизованная система цветов
 │   └── db/                # Dexie database
 ├── stores/                # Zustand stores
 ├── hooks/                 # React hooks
@@ -44,6 +45,7 @@ src/
 **Проблема**: Приложение должно работать без интернета
 
 **Решение**: IndexedDB через Dexie
+
 - Все данные хранятся локально
 - Sync queue для отложенной синхронизации
 - Last-write-wins для конфликтов
@@ -103,6 +105,26 @@ import { LazyLoad } from "@/components/shared/lazy-load"
 <LazyLoad><HeavyChart /></LazyLoad>
 ```
 
+### 5. Единообразие цветов (Theme Colors System)
+
+**Проблема**: Hardcoded цвета в компонентах нарушают консистентность UI
+
+**Решение**: Централизованная система цветов через CSS переменные
+
+```typescript
+// src/lib/theme-colors.ts
+import { moduleColors } from "@/lib/theme-colors"
+
+// Использование в компоненте
+const colors = moduleColors.food
+// colors.light → bg-[--color-warm-light]
+// colors.DEFAULT → bg-[--color-warm]
+// colors.text → text-[--color-warm]
+// colors.border → border-[--color-warm]/30
+```
+
+**Доступные модули:** food, workout, finance, water, sleep, mood, books, recipes, habits, goals, logs, settings
+
 ## Паттерны проектирования
 
 ### Repository Pattern (Database Layer)
@@ -124,7 +146,7 @@ export const useSettingsStore = create<SettingsState>()(
     (set) => ({
       // state & actions
     }),
-    { name: 'life-os-settings' }
+    { name: "life-os-settings" }
   )
 )
 ```
@@ -187,8 +209,19 @@ FAB
 │   ├── Сон → /sleep
 │   ├── Настроение → /mood
 │   ├── Книга → /books/new
-│   └── Рецепт → /recipes/new
+│   ├── Рецепт → /recipes/new
+│   └── ... (все используют moduleColors)
 └── Main Button (+ / ×)
+```
+
+### ModuleCard компоненты
+
+```
+ModuleCard
+├── ModuleCard — полная карточка с иконкой, заголовком, подзаголовком
+├── ModuleCardCompact — компактная карточка для сетки
+├── ModuleListItem — элемент списка
+└── ModuleBadge — бейдж с цветовой схемой модуля
 ```
 
 ## Критические пути реализации
@@ -293,7 +326,7 @@ useEffect(() => {
 
 ```typescript
 // Автоматическое сохранение через persist middleware
-persist(store, { name: 'life-os-settings' })
+persist(store, { name: "life-os-settings" })
 ```
 
 ### Virtual List ↔ Data
@@ -306,3 +339,4 @@ persist(store, { name: 'life-os-settings' })
   estimateSize={72}
   overscan={5}
 />
+```

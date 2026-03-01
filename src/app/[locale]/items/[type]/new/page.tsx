@@ -33,7 +33,7 @@ const validationMessages = {
 // Form schema factory function
 function createItemSchema(t: (key: string) => string) {
   const messages = {
-    name: t("validation.name") || validationMessages.name,
+    name: t("name") || validationMessages.name,
   }
 
   return z.object({
@@ -116,7 +116,7 @@ export default function NewItemPage() {
     watch,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(createItemSchema((key) => t(`validation.${key}`))),
+    resolver: zodResolver(createItemSchema(t)),
   })
 
   // Загружаем существующие категории и производителей

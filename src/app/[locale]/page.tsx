@@ -29,6 +29,7 @@ import { StreakWidget } from "@/components/shared/streak-widget"
 import { Onboarding } from "@/components/shared/onboarding"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Log, Goal, WaterLog, HabitLog } from "@/types"
+import { moduleColors, type ModuleType } from "@/lib/theme-colors"
 
 // Quick action cards data - labels will be translated in component
 const quickActions = [
@@ -36,36 +37,31 @@ const quickActions = [
     href: "/logs/food/new",
     translationKey: "food",
     icon: Utensils,
-    color: "text-orange-500",
-    bgColor: "bg-orange-500/10",
+    module: "food" as ModuleType,
   },
   {
     href: "/logs/workout/new",
     translationKey: "workout",
     icon: Dumbbell,
-    color: "text-blue-500",
-    bgColor: "bg-blue-500/10",
+    module: "workout" as ModuleType,
   },
   {
     href: "/logs/finance/new",
     translationKey: "finance",
     icon: Wallet,
-    color: "text-green-500",
-    bgColor: "bg-green-500/10",
+    module: "finance" as ModuleType,
   },
   {
     href: "/books/new",
     translationKey: "books",
     icon: BookOpen,
-    color: "text-amber-500",
-    bgColor: "bg-amber-500/10",
+    module: "books" as ModuleType,
   },
   {
     href: "/recipes/new",
     translationKey: "recipes",
     icon: ChefHat,
-    color: "text-rose-500",
-    bgColor: "bg-rose-500/10",
+    module: "recipes" as ModuleType,
   },
 ]
 
@@ -75,57 +71,49 @@ const trackerLinks = [
     href: "/water",
     translationKey: "water",
     icon: Droplet,
-    color: "text-blue-500",
-    bgColor: "bg-blue-500/10",
+    module: "water" as ModuleType,
   },
   {
     href: "/sleep",
     translationKey: "sleep",
     icon: Moon,
-    color: "text-indigo-500",
-    bgColor: "bg-indigo-500/10",
+    module: "sleep" as ModuleType,
   },
   {
     href: "/mood",
     translationKey: "mood",
     icon: Smile,
-    color: "text-yellow-500",
-    bgColor: "bg-yellow-500/10",
+    module: "mood" as ModuleType,
   },
   {
     href: "/body",
     translationKey: "body",
     icon: Scale,
-    color: "text-purple-500",
-    bgColor: "bg-purple-500/10",
+    module: "goals" as ModuleType,
   },
   {
     href: "/habits",
     translationKey: "habits",
     icon: Flame,
-    color: "text-orange-500",
-    bgColor: "bg-orange-500/10",
+    module: "habits" as ModuleType,
   },
   {
     href: "/goals",
     translationKey: "goals",
     icon: Target,
-    color: "text-green-500",
-    bgColor: "bg-green-500/10",
+    module: "goals" as ModuleType,
   },
   {
     href: "/reminders",
     translationKey: "reminders",
     icon: Bell,
-    color: "text-red-500",
-    bgColor: "bg-red-500/10",
+    module: "logs" as ModuleType,
   },
   {
     href: "/templates",
     translationKey: "templates",
     icon: Copy,
-    color: "text-cyan-500",
-    bgColor: "bg-cyan-500/10",
+    module: "settings" as ModuleType,
   },
 ]
 
@@ -135,12 +123,13 @@ const typeLabels: Record<string, string> = {
   finance: "logs.types.finance",
 }
 
-const typeColors: Record<string, string> = {
-  food: "bg-orange-500/10 text-orange-600",
-  workout: "bg-blue-500/10 text-blue-600",
-  finance: "bg-green-500/10 text-green-600",
-  finance_income: "bg-emerald-500/10 text-emerald-600",
-  finance_expense: "bg-red-500/10 text-red-600",
+// Type colors mapping for recent activity
+const typeColors: Record<string, ModuleType> = {
+  food: "food",
+  workout: "workout",
+  finance: "finance",
+  finance_income: "finance",
+  finance_expense: "finance",
 }
 
 const getTypeIcon = (type: string) => {
@@ -488,10 +477,10 @@ export default function HomePage() {
                 aria-label={`${t("quickActions")}: ${tNav(action.translationKey)}`}
               >
                 <div
-                  className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl ${action.bgColor}`}
+                  className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl ${moduleColors[action.module].light}`}
                   aria-hidden="true"
                 >
-                  <action.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${action.color}`} />
+                  <action.icon className={`h-5 w-5 sm:h-6 sm:w-6 text-white`} />
                 </div>
                 <span className="text-xs sm:text-sm font-medium">
                   {tNav(action.translationKey)}
@@ -544,10 +533,10 @@ export default function HomePage() {
                 aria-label={`${t("trackers")}: ${tNav(tracker.translationKey)}`}
               >
                 <div
-                  className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl ${tracker.bgColor}`}
+                  className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl ${moduleColors[tracker.module].light}`}
                   aria-hidden="true"
                 >
-                  <tracker.icon className={`h-5 w-5 ${tracker.color}`} />
+                  <tracker.icon className={`h-5 w-5 text-white`} />
                 </div>
                 <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">
                   {tNav(tracker.translationKey)}
@@ -572,13 +561,12 @@ export default function HomePage() {
             <div className="flex flex-col gap-2">
               {recentLogs.map((log) => {
                 const TypeIcon = getTypeIcon(log.type)
-                // Определяем цвет для финансов по типу транзакции
-                let colorKey: string = log.type
-                if (log.type === "finance" && log.metadata?.finance_type === "income") {
-                  colorKey = "finance_income"
-                } else if (log.type === "finance" && log.metadata?.finance_type === "expense") {
-                  colorKey = "finance_expense"
+                // Determine module for colors based on log type
+                let moduleKey: ModuleType = typeColors[log.type] || "logs"
+                if (log.type === "finance") {
+                  moduleKey = "finance"
                 }
+                const colors = moduleColors[moduleKey]
                 return (
                   <Link
                     key={log.id}
@@ -588,10 +576,10 @@ export default function HomePage() {
                     <Card className="hover:bg-accent transition-colors">
                       <CardContent className="p-3 flex items-center gap-3">
                         <div
-                          className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || "bg-muted"}`}
+                          className={`flex h-9 w-9 items-center justify-center rounded-xl ${colors.light}`}
                           aria-hidden="true"
                         >
-                          <TypeIcon className="h-4 w-4" />
+                          <TypeIcon className={`h-4 w-4 ${colors.text}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-medium text-sm truncate">{log.title}</h3>

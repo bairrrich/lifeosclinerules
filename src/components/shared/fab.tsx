@@ -26,12 +26,14 @@ import {
 } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { QuickMoodDialog } from "./quick-mood-dialog"
+import { moduleColors, fabColor, type ModuleType } from "@/lib/theme-colors"
+import { cn } from "@/lib/utils"
 
 interface FabAction {
   icon: React.ReactNode
   label: string
   href?: string
-  color: string
+  module: ModuleType
   action?: "mood" | "navigate"
 }
 
@@ -41,123 +43,123 @@ export function FAB() {
   const router = useRouter()
   const t = useTranslations("fab")
 
-  const actions = [
+  const actions: FabAction[] = [
     {
       icon: <Utensils className="h-5 w-5" />,
       label: t("food"),
       href: "/logs/food/new",
-      color: "bg-orange-500",
+      module: "food",
       action: "navigate" as const,
     },
     {
       icon: <Dumbbell className="h-5 w-5" />,
       label: t("workout"),
       href: "/logs/workout/new",
-      color: "bg-purple-500",
+      module: "workout",
       action: "navigate" as const,
     },
     {
       icon: <Wallet className="h-5 w-5" />,
       label: t("finance"),
       href: "/logs/finance/new",
-      color: "bg-green-500",
+      module: "finance",
       action: "navigate" as const,
     },
     {
       icon: <Droplets className="h-5 w-5" />,
       label: t("water"),
       href: "/water?add=true",
-      color: "bg-blue-500",
+      module: "water",
       action: "navigate" as const,
     },
     {
       icon: <Moon className="h-5 w-5" />,
       label: t("sleep"),
       href: "/sleep?add=true",
-      color: "bg-indigo-500",
+      module: "sleep",
       action: "navigate" as const,
     },
     {
       icon: <Smile className="h-5 w-5" />,
       label: t("mood"),
-      color: "bg-pink-500",
+      module: "mood",
       action: "mood" as const,
     },
     {
       icon: <Ruler className="h-5 w-5" />,
       label: t("measurements"),
       href: "/body?add=true",
-      color: "bg-cyan-500",
+      module: "goals",
       action: "navigate" as const,
     },
     {
       icon: <Flame className="h-5 w-5" />,
       label: t("habit"),
       href: "/habits?add=true",
-      color: "bg-rose-500",
+      module: "habits",
       action: "navigate" as const,
     },
     {
       icon: <Target className="h-5 w-5" />,
       label: t("goal"),
       href: "/goals?add=true",
-      color: "bg-emerald-500",
+      module: "goals",
       action: "navigate" as const,
     },
     {
       icon: <Bell className="h-5 w-5" />,
       label: t("reminder"),
       href: "/reminders?add=true",
-      color: "bg-yellow-500",
+      module: "logs",
       action: "navigate" as const,
     },
     {
       icon: <BookOpen className="h-5 w-5" />,
       label: t("book"),
       href: "/books/new",
-      color: "bg-amber-500",
+      module: "books",
       action: "navigate" as const,
     },
     {
       icon: <ChefHat className="h-5 w-5" />,
       label: t("recipe"),
       href: "/recipes/new",
-      color: "bg-red-500",
+      module: "recipes",
       action: "navigate" as const,
     },
     {
       icon: <HeartPulse className="h-5 w-5" />,
       label: t("vitamins"),
       href: "/items/vitamin/new",
-      color: "bg-lime-500",
+      module: "habits",
       action: "navigate" as const,
     },
     {
       icon: <Pill className="h-5 w-5" />,
       label: t("medicine"),
       href: "/items/medicine/new",
-      color: "bg-teal-500",
+      module: "mood",
       action: "navigate" as const,
     },
     {
       icon: <Leaf className="h-5 w-5" />,
       label: t("herbs"),
       href: "/items/herb/new",
-      color: "bg-green-600",
+      module: "food",
       action: "navigate" as const,
     },
     {
       icon: <Sparkles className="h-5 w-5" />,
       label: t("cosmetics"),
       href: "/items/cosmetic/new",
-      color: "bg-fuchsia-500",
+      module: "mood",
       action: "navigate" as const,
     },
     {
       icon: <ShoppingBag className="h-5 w-5" />,
       label: t("products"),
       href: "/items/product/new",
-      color: "bg-amber-600",
+      module: "food",
       action: "navigate" as const,
     },
   ]
@@ -187,18 +189,23 @@ export function FAB() {
         {isOpen && (
           <div className="absolute bottom-16 right-0 bg-card border rounded-2xl shadow-xl p-2 sm:p-3 z-50 w-[280px] sm:w-72 max-h-[60vh] sm:max-h-[70vh] overflow-y-auto overscroll-contain">
             <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-              {actions.map((action) => (
-                <button
-                  key={action.label}
-                  onClick={() => handleAction(action)}
-                  className="flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-xl hover:bg-accent transition-colors min-h-[64px] sm:min-h-[72px]"
-                >
-                  <div className={`${action.color} text-white p-2 rounded-full`}>{action.icon}</div>
-                  <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">
-                    {action.label}
-                  </span>
-                </button>
-              ))}
+              {actions.map((action) => {
+                const colors = moduleColors[action.module]
+                return (
+                  <button
+                    key={action.label}
+                    onClick={() => handleAction(action)}
+                    className="flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-xl hover:bg-accent transition-colors min-h-[64px] sm:min-h-[72px]"
+                  >
+                    <div className={cn(colors.DEFAULT, "text-white p-2 rounded-full")}>
+                      {action.icon}
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">
+                      {action.label}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}
@@ -206,9 +213,10 @@ export function FAB() {
         {/* Main FAB button */}
         <Button
           size="icon"
-          className={`h-14 w-14 rounded-full shadow-lg z-40 transition-transform duration-200 ${
-            isOpen ? "bg-destructive rotate-45" : "bg-primary"
-          }`}
+          className={cn(
+            "h-14 w-14 rounded-full shadow-lg z-40 transition-transform duration-200",
+            isOpen ? "bg-destructive rotate-45" : fabColor.DEFAULT
+          )}
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? t("closeMenu") : t("openMenu")}
         >
