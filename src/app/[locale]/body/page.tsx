@@ -24,16 +24,16 @@ const measurementTypes: {
   unit: string
   icon: typeof Scale
 }[] = [
-  { type: "height", label: "height", unit: "см", icon: Ruler },
-  { type: "weight", label: "weight", unit: "кг", icon: Scale },
-  { type: "waist", label: "waist", unit: "см", icon: Ruler },
-  { type: "chest", label: "chest", unit: "см", icon: Ruler },
-  { type: "hips", label: "hips", unit: "см", icon: Ruler },
-  { type: "biceps", label: "biceps", unit: "см", icon: Ruler },
-  { type: "thigh", label: "thigh", unit: "см", icon: Ruler },
-  { type: "neck", label: "neck", unit: "см", icon: Ruler },
-  { type: "body_fat", label: "body_fat", unit: "%", icon: TrendingDown },
-  { type: "muscle_mass", label: "muscle_mass", unit: "%", icon: TrendingUp },
+  { type: "height", label: "height", unit: "cm", icon: Ruler },
+  { type: "weight", label: "weight", unit: "kg", icon: Scale },
+  { type: "waist", label: "waist", unit: "cm", icon: Ruler },
+  { type: "chest", label: "chest", unit: "cm", icon: Ruler },
+  { type: "hips", label: "hips", unit: "cm", icon: Ruler },
+  { type: "biceps", label: "biceps", unit: "cm", icon: Ruler },
+  { type: "thigh", label: "thigh", unit: "cm", icon: Ruler },
+  { type: "neck", label: "neck", unit: "cm", icon: Ruler },
+  { type: "bodyFat", label: "bodyFat", unit: "percent", icon: TrendingDown },
+  { type: "muscleMass", label: "muscleMass", unit: "percent", icon: TrendingUp },
 ]
 
 export default function BodyPage() {
@@ -239,8 +239,8 @@ function BodyContent() {
                     {t(`bmi.${bmi.category}`)}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {getLatestMeasurement("height")?.value} см /{" "}
-                    {getLatestMeasurement("weight")?.value} кг
+                    {getLatestMeasurement("height")?.value} {t("units.cm")} /{" "}
+                    {getLatestMeasurement("weight")?.value} {t("units.kg")}
                   </div>
                 </div>
               </div>
@@ -267,7 +267,7 @@ function BodyContent() {
                     {change && (
                       <div
                         className={`flex items-center gap-1 text-xs ${
-                          item.type === "body_fat"
+                          item.type === "bodyFat"
                             ? change.trend === "down"
                               ? "text-green-500"
                               : "text-red-500"
@@ -286,7 +286,9 @@ function BodyContent() {
                     )}
                   </div>
                   <div className="text-xl font-bold">{latest ? `${latest.value}` : "-"}</div>
-                  <div className="text-xs text-muted-foreground">{item.label}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {t(`measurementTypes.${item.type}`)}
+                  </div>
                 </CardContent>
               </Card>
             )
@@ -303,23 +305,23 @@ function BodyContent() {
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <item.icon className="h-4 w-4 text-muted-foreground" />
-                  <h3 className="font-medium">{item.label}</h3>
+                  <h3 className="font-medium">{t(`measurementTypes.${item.type}`)}</h3>
                   <span className="text-xs text-muted-foreground ml-auto">
-                    {stats.count} записей
+                    {stats.count} {t("stats.recordsCount", { count: stats.count })}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <div className="text-lg font-bold text-red-500">{stats.max}</div>
-                    <div className="text-xs text-muted-foreground">Макс</div>
+                    <div className="text-xs text-muted-foreground">{t("stats.max")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-bold text-blue-500">{stats.avg}</div>
-                    <div className="text-xs text-muted-foreground">Средн</div>
+                    <div className="text-xs text-muted-foreground">{t("stats.avg")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-bold text-green-500">{stats.min}</div>
-                    <div className="text-xs text-muted-foreground">Мин</div>
+                    <div className="text-xs text-muted-foreground">{t("stats.min")}</div>
                   </div>
                 </div>
               </CardContent>
@@ -331,7 +333,7 @@ function BodyContent() {
         {weightMeasurements.length > 1 && (
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium mb-3">Вес за последний месяц</h3>
+              <h3 className="font-medium mb-3">{t("body.weightChart")}</h3>
               <div className="flex items-end justify-between h-24 gap-1">
                 {weightMeasurements
                   .slice(0, 14)
@@ -353,8 +355,12 @@ function BodyContent() {
                   })}
               </div>
               <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                <span>{weightMeasurements[weightMeasurements.length - 1]?.value || "-"} кг</span>
-                <span>{weightMeasurements[0]?.value || "-"} кг</span>
+                <span>
+                  {weightMeasurements[weightMeasurements.length - 1]?.value || "-"} {t("units.kg")}
+                </span>
+                <span>
+                  {weightMeasurements[0]?.value || "-"} {t("units.kg")}
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -384,7 +390,7 @@ function BodyContent() {
                 <div key={item.type} className="mb-4">
                   <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
                     <item.icon className="h-4 w-4" />
-                    {item.label}
+                    {t(`measurementTypes.${item.type}`)}
                   </h3>
                   <div className="flex flex-col gap-1">
                     {typeMeasurements.slice(0, 5).map((m) => (
@@ -392,7 +398,7 @@ function BodyContent() {
                         <CardContent className="p-3 flex items-center justify-between">
                           <div>
                             <span className="font-medium">
-                              {m.value} {m.unit}
+                              {m.value} {t(`units.${m.unit}`)}
                             </span>
                             {m.notes && (
                               <span className="text-sm text-muted-foreground ml-2">{m.notes}</span>
@@ -462,7 +468,7 @@ function BodyContent() {
                     className="flex-1"
                   />
                   <span className="flex items-center text-muted-foreground">
-                    {measurementTypes.find((t) => t.type === selectedType)?.unit}
+                    {t(`units.${measurementTypes.find((t) => t.type === selectedType)?.unit}`)}
                   </span>
                 </div>
               </div>
@@ -521,7 +527,7 @@ function BodyContent() {
                     className="flex-1"
                   />
                   <span className="flex items-center text-muted-foreground">
-                    {measurementTypes.find((t) => t.type === selectedType)?.unit}
+                    {t(`units.${measurementTypes.find((t) => t.type === selectedType)?.unit}`)}
                   </span>
                 </div>
               </div>

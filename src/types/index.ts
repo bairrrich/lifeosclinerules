@@ -820,8 +820,8 @@ export type BodyMeasurementType =
   | "forearm"
   | "thigh"
   | "calf"
-  | "body_fat"
-  | "muscle_mass"
+  | "bodyFat"
+  | "muscleMass"
 
 export interface BodyMeasurement extends BaseEntity {
   date: ISODate

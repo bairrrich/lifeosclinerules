@@ -151,6 +151,17 @@
       "blue": "Blue",
       "purple": "Purple",
       "pink": "Pink"
+    },
+    "unit": {
+      "kg": "kg",
+      "g": "g",
+      "cm": "cm",
+      "m": "m",
+      "percent": "%",
+      "ml": "ml",
+      "l": "l",
+      "kcal": "kcal",
+      "bpm": "bpm"
     }
   },
   "navigation": {
@@ -805,13 +816,19 @@
     },
     "forms": {
       "main": "Main",
+      "additional": "Additional",
+      "ingredients": "Ingredients",
+      "steps": {
+        "addStep": "Add",
+        "stepText": "Step Description",
+        "timer": "Timer (min)",
+        "minutes": "minutes",
+        "empty": "No steps. Click \"Add\" to create."
+      },
+      "recipeType": "Recipe Type",
       "dishParameters": "Dish Parameters",
       "drinkParameters": "Drink Parameters",
       "cocktailParameters": "Cocktail Parameters",
-      "ingredients": "Ingredients",
-      "steps": "Cooking Steps",
-      "recipeType": "Recipe Type",
-      "additional": "Additional",
       "selectPlaceholder": "Select...",
       "notSpecified": "Not specified"
     },
@@ -888,7 +905,8 @@
       "hot": "Hot",
       "warm": "Warm",
       "room": "Room Temperature",
-      "cold": "Cold"
+      "cold": "Cold",
+      "iced": "Iced"
     },
     "spicyLevels": {
       "none": "None",
@@ -951,13 +969,6 @@
       "plantMilk": "Plant Milk",
       "other": "Other"
     },
-    "servingTemperatures": {
-      "hot": "Hot",
-      "warm": "Warm",
-      "room": "Room Temperature",
-      "cold": "Cold",
-      "iced": "Iced"
-    },
     "ingredients": {
       "addIngredient": "Add Ingredient",
       "ingredientName": "Ingredient Name",
@@ -1017,25 +1028,6 @@
       "removeStep": "Remove step",
       "empty": "No steps. Click \"Add\" to create.",
       "noInstructions": "No instructions"
-    },
-    "forms": {
-      "main": "Main",
-      "additional": "Additional",
-      "ingredients": "Ingredients",
-      "steps": "Steps",
-      "recipeType": "Recipe Type",
-      "dishParameters": "Dish Parameters",
-      "drinkParameters": "Drink Parameters",
-      "cocktailParameters": "Cocktail Parameters",
-      "selectPlaceholder": "Select...",
-      "notSpecified": "Not specified",
-      "steps": {
-        "addStep": "Add",
-        "stepText": "Step Description",
-        "timer": "Timer (min)",
-        "minutes": "minutes",
-        "empty": "No steps. Click \"Add\" to create."
-      }
     },
     "common": {
       "loading": "Loading...",
@@ -1432,11 +1424,140 @@
       "finance": "Finance"
     },
     "workout": {
+      "workoutType": "Workout Type",
       "types": {
         "strength": "Strength",
         "cardio": "Cardio",
         "yoga": "Yoga",
         "stretching": "Stretching"
+      },
+      "subcategory": "Subcategory",
+      "duration": "Duration (min)",
+      "intensity": "Intensity",
+      "intensityLevels": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "equipment": "Equipment",
+      "goal": "Goal",
+      "caloriesBurned": "Calories Burned",
+      "distance": "Distance (km)",
+      "heartRateAvg": "Avg Heart Rate",
+      "heartRateMax": "Max Heart Rate",
+      "exercisesCount": "Number of Exercises",
+      "setsCount": "Number of Sets",
+      "repsCount": "Number of Reps",
+      "totalWeight": "Total Weight (kg)",
+      "averageSpeed": "Avg Speed (km/h)",
+      "averagePace": "Avg Pace (min/km)",
+      "rounds": "Rounds",
+      "level": "Level",
+      "focus": "Focus",
+      "strengthSubcategories": {
+        "anatomical": "By Anatomy",
+        "equipment": "By Equipment",
+        "chest": "Chest",
+        "back": "Back",
+        "legs": "Legs",
+        "shoulders": "Shoulders",
+        "arms": "Arms",
+        "core": "Core",
+        "freeWeights": "Free Weights",
+        "machines": "Machines",
+        "bodyweight": "Bodyweight",
+        "functional": "Functional"
+      },
+      "cardioSubcategories": {
+        "activity": "By Activity",
+        "byIntensity": "By Intensity",
+        "running": "Running",
+        "walking": "Walking",
+        "cycling": "Cycling",
+        "rowing": "Rowing",
+        "jumping": "Jumping",
+        "liss": "LISS (Low Intensity)",
+        "hiit": "HIIT (Interval)",
+        "tabata": "Tabata"
+      },
+      "yogaSubcategories": {
+        "style": "By Style",
+        "byGoal": "By Goal",
+        "byLevel": "By Level",
+        "hatha": "Hatha Yoga",
+        "vinyasa": "Vinyasa Yoga",
+        "ashtanga": "Ashtanga Yoga",
+        "kundalini": "Kundalini Yoga",
+        "iyengar": "Iyengar Yoga",
+        "stretching": "Stretching / Flexibility",
+        "power": "Power Yoga",
+        "relax": "Relax / Recovery",
+        "breathing": "Breathing & Meditation",
+        "meditation": "Meditation",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "stretchingSubcategories": {
+        "byType": "By Type",
+        "byFocus": "By Focus Area",
+        "static": "Static Stretching",
+        "dynamic": "Dynamic Stretching",
+        "ballistic": "Ballistic Stretching",
+        "pnf": "PNF Stretching",
+        "fullBody": "Full Body",
+        "upperBody": "Upper Body",
+        "lowerBody": "Lower Body",
+        "back": "Back & Spine",
+        "hips": "Hips & Glutes"
+      },
+      "goals": {
+        "mass": "Mass Gain",
+        "relief": "Definition",
+        "strength": "Strength",
+        "endurance": "Endurance",
+        "flexibility": "Flexibility",
+        "mobility": "Mobility",
+        "relaxation": "Relaxation",
+        "balance": "Balance",
+        "fatLoss": "Fat Loss",
+        "recovery": "Recovery"
+      },
+      "equipmentOptions": {
+        "Bench": "Bench",
+        "PullUpBar": "Pull-up Bar",
+        "ParallelBars": "Parallel Bars",
+        "CableCrossover": "Cable Crossover",
+        "SmithMachine": "Smith Machine",
+        "ResistanceBands": "Resistance Bands",
+        "MedicineBall": "Medicine Ball",
+        "TRX": "TRX",
+        "NoEquipment": "No Equipment",
+        "Treadmill": "Treadmill",
+        "Elliptical": "Elliptical",
+        "ExerciseBike": "Exercise Bike",
+        "RowingMachine": "Rowing Machine",
+        "JumpRope": "Jump Rope",
+        "Stepper": "Stepper",
+        "Mat": "Mat",
+        "Blocks": "Blocks",
+        "Strap": "Strap",
+        "Bolster": "Bolster",
+        "Blanket": "Blanket",
+        "Chair": "Chair",
+        "Wall": "Wall",
+        "FoamRoller": "Foam Roller",
+        "Ball": "Exercise Ball"
+      },
+      "placeholders": {
+        "calories": "cal",
+        "distance": "km",
+        "avgPulse": "bpm",
+        "maxPulse": "bpm",
+        "count": "count",
+        "weight": "kg",
+        "speed": "km/h",
+        "pace": "5:30"
       }
     },
     "stats": {
@@ -1676,143 +1797,6 @@
           "ryeFlour": "Rye Flour",
           "starch": "Starch"
         }
-      }
-    },
-    "workout": {
-      "workoutType": "Workout Type",
-      "types": {
-        "strength": "Strength",
-        "cardio": "Cardio",
-        "yoga": "Yoga",
-        "stretching": "Stretching"
-      },
-      "subcategory": "Subcategory",
-      "duration": "Duration (min)",
-      "intensity": "Intensity",
-      "intensityLevels": {
-        "low": "Low",
-        "medium": "Medium",
-        "high": "High"
-      },
-      "equipment": "Equipment",
-      "goal": "Goal",
-      "caloriesBurned": "Calories Burned",
-      "distance": "Distance (km)",
-      "heartRateAvg": "Avg Heart Rate",
-      "heartRateMax": "Max Heart Rate",
-      "exercisesCount": "Number of Exercises",
-      "setsCount": "Number of Sets",
-      "repsCount": "Number of Reps",
-      "totalWeight": "Total Weight (kg)",
-      "averageSpeed": "Avg Speed (km/h)",
-      "averagePace": "Avg Pace (min/km)",
-      "rounds": "Rounds",
-      "level": "Level",
-      "focus": "Focus",
-      "strengthSubcategories": {
-        "anatomical": "By Anatomy",
-        "equipment": "By Equipment",
-        "chest": "Chest",
-        "back": "Back",
-        "legs": "Legs",
-        "shoulders": "Shoulders",
-        "arms": "Arms",
-        "core": "Core",
-        "freeWeights": "Free Weights",
-        "machines": "Machines",
-        "bodyweight": "Bodyweight",
-        "functional": "Functional"
-      },
-      "cardioSubcategories": {
-        "activity": "By Activity",
-        "byIntensity": "By Intensity",
-        "running": "Running",
-        "walking": "Walking",
-        "cycling": "Cycling",
-        "rowing": "Rowing",
-        "jumping": "Jumping",
-        "liss": "LISS (Low Intensity)",
-        "hiit": "HIIT (Interval)",
-        "tabata": "Tabata"
-      },
-      "yogaSubcategories": {
-        "style": "By Style",
-        "byGoal": "By Goal",
-        "byLevel": "By Level",
-        "hatha": "Hatha Yoga",
-        "vinyasa": "Vinyasa Yoga",
-        "ashtanga": "Ashtanga Yoga",
-        "kundalini": "Kundalini Yoga",
-        "iyengar": "Iyengar Yoga",
-        "stretching": "Stretching / Flexibility",
-        "power": "Power Yoga",
-        "relax": "Relax / Recovery",
-        "breathing": "Breathing & Meditation",
-        "meditation": "Meditation",
-        "beginner": "Beginner",
-        "intermediate": "Intermediate",
-        "advanced": "Advanced"
-      },
-      "stretchingSubcategories": {
-        "byType": "By Type",
-        "byFocus": "By Focus Area",
-        "static": "Static Stretching",
-        "dynamic": "Dynamic Stretching",
-        "ballistic": "Ballistic Stretching",
-        "pnf": "PNF Stretching",
-        "fullBody": "Full Body",
-        "upperBody": "Upper Body",
-        "lowerBody": "Lower Body",
-        "back": "Back & Spine",
-        "hips": "Hips & Glutes"
-      },
-      "goals": {
-        "mass": "Mass Gain",
-        "relief": "Definition",
-        "strength": "Strength",
-        "endurance": "Endurance",
-        "flexibility": "Flexibility",
-        "mobility": "Mobility",
-        "relaxation": "Relaxation",
-        "balance": "Balance",
-        "fatLoss": "Fat Loss",
-        "recovery": "Recovery"
-      },
-      "equipmentOptions": {
-        "Bench": "Bench",
-        "PullUpBar": "Pull-up Bar",
-        "ParallelBars": "Parallel Bars",
-        "CableCrossover": "Cable Crossover",
-        "SmithMachine": "Smith Machine",
-        "ResistanceBands": "Resistance Bands",
-        "MedicineBall": "Medicine Ball",
-        "TRX": "TRX",
-        "NoEquipment": "No Equipment",
-        "Treadmill": "Treadmill",
-        "Elliptical": "Elliptical",
-        "ExerciseBike": "Exercise Bike",
-        "RowingMachine": "Rowing Machine",
-        "JumpRope": "Jump Rope",
-        "Stepper": "Stepper",
-        "Mat": "Mat",
-        "Blocks": "Blocks",
-        "Strap": "Strap",
-        "Bolster": "Bolster",
-        "Blanket": "Blanket",
-        "Chair": "Chair",
-        "Wall": "Wall",
-        "FoamRoller": "Foam Roller",
-        "Ball": "Exercise Ball"
-      },
-      "placeholders": {
-        "calories": "cal",
-        "distance": "km",
-        "avgPulse": "bpm",
-        "maxPulse": "bpm",
-        "count": "count",
-        "weight": "kg",
-        "speed": "km/h",
-        "pace": "5:30"
       }
     },
     "finance": {
@@ -2384,9 +2368,7 @@
       "thigh": "Thigh",
       "calf": "Calf",
       "bodyFat": "Body Fat",
-      "body_fat": "Body Fat",
-      "muscleMass": "Muscle Mass",
-      "muscle_mass": "Muscle Mass"
+      "muscleMass": "Muscle Mass"
     },
     "bmi": {
       "title": "BMI",
@@ -2418,54 +2400,49 @@
       "loading": "Loading...",
       "noRecords": "No records. Add the first measurement!"
     },
-    "edit": "Edit measurement"
+    "edit": "Edit measurement",
+    "units": {
+      "kg": "kg",
+      "g": "g",
+      "cm": "cm",
+      "m": "m",
+      "percent": "%",
+      "ml": "ml",
+      "l": "l",
+      "kcal": "kcal",
+      "bpm": "bpm"
+    }
   },
   "templates": {
-    "title": "Templates",
-    "addTemplate": "Add Template",
-    "editTemplate": "Edit Template",
-    "noTemplates": "No templates yet",
-    "fields": {
-      "name": "Template Name",
-      "type": "Type",
-      "data": "Data",
-      "isFavorite": "Favorite",
-      "useCount": "Use Count"
-    },
-    "types": {
-      "food": "Food",
-      "workout": "Workout",
-      "finance": "Finance",
-      "water": "Water",
-      "sleep": "Sleep",
-      "mood": "Mood"
-    },
-    "applyTemplate": "Apply Template",
-    "deleteTemplate": "Delete Template",
     "header": {
       "title": "Templates",
       "subtitle": "Quick templates for frequent entries"
     },
-    "actions": {
-      "create": "Create Template",
-      "createFirst": "Create First Template",
-      "apply": "Apply",
-      "edit": "Edit Template",
-      "delete": "Delete Template",
-      "addToFavorite": "Add to Favorites",
-      "removeFromFavorite": "Remove from Favorites"
+    "title": "Templates",
+    "addTemplate": "Add Template",
+    "editTemplate": "Edit Template",
+    "noTemplates": "No templates yet",
+    "applyTemplate": "Apply Template",
+    "deleteTemplate": "Delete Template",
+    "apply": {
+      "title": "Apply Template",
+      "success": "Template applied successfully!",
+      "stay": "Stay",
+      "goToRecord": "Go to Entry"
     },
     "empty": {
       "loading": "Loading...",
       "noTemplates": "No templates",
       "createHint": "Create templates for quick adding of frequent entries"
     },
-    "sections": {
-      "favorite": "Favorites",
-      "usedCount": "Used: {count}",
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
+    "actions": {
+      "create": "Create Template",
+      "createFirst": "Create First Template",
+      "apply": "Apply",
+      "edit": "Edit Template",
+      "delete": "Delete",
+      "removeFromFavorite": "Remove from Favorites",
+      "addToFavorite": "Add to Favorites"
     },
     "dialogs": {
       "createTitle": "Create Template",
@@ -2476,24 +2453,54 @@
       "namePlaceholder": "e.g., Breakfast - Oatmeal",
       "typeLabel": "Type"
     },
-    "apply": {
-      "title": "Apply Template",
-      "success": "Template applied successfully!",
-      "stay": "Stay",
-      "goToRecord": "Go to Entry"
+    "sections": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
     },
-    "noData": "No data",
-    "units": {
-      "kcal": "kcal",
-      "g": "g",
-      "min": "min"
+    "intensity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
     },
-    "moods": {
+    "quality": {
+      "1": "Terrible",
+      "2": "Bad",
+      "3": "Okay",
+      "4": "Good",
+      "5": "Excellent"
+    },
+    "mood": {
       "great": "Great",
       "good": "Good",
       "okay": "Okay",
       "bad": "Bad",
       "terrible": "Terrible"
+    },
+    "drinkType": {
+      "water": "Water",
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "other": "Other"
+    },
+    "activity": {
+      "work": "Work",
+      "exercise": "Exercise",
+      "social": "Social",
+      "hobby": "Hobby",
+      "rest": "Rest",
+      "shopping": "Shopping",
+      "reading": "Reading",
+      "gaming": "Gaming",
+      "cooking": "Cooking",
+      "walk": "Walk"
+    },
+    "types": {
+      "food": "Food",
+      "workout": "Workout",
+      "water": "Water",
+      "sleep": "Sleep",
+      "mood": "Mood"
     }
   },
   "items": {
@@ -3058,52 +3065,6 @@
       "remaining": "Remaining",
       "overBudget": "Over by",
       "currency": "₽"
-    }
-  },
-  "templates": {
-    "intensity": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
-    },
-    "quality": {
-      "1": "Terrible",
-      "2": "Bad",
-      "3": "Okay",
-      "4": "Good",
-      "5": "Excellent"
-    },
-    "mood": {
-      "great": "Great",
-      "good": "Good",
-      "okay": "Okay",
-      "bad": "Bad",
-      "terrible": "Terrible"
-    },
-    "drinkType": {
-      "water": "Water",
-      "tea": "Tea",
-      "coffee": "Coffee",
-      "other": "Other"
-    },
-    "activity": {
-      "work": "Work",
-      "exercise": "Exercise",
-      "social": "Social",
-      "hobby": "Hobby",
-      "rest": "Rest",
-      "shopping": "Shopping",
-      "reading": "Reading",
-      "gaming": "Gaming",
-      "cooking": "Cooking",
-      "walk": "Walk"
-    },
-    "types": {
-      "food": "Food",
-      "workout": "Workout",
-      "water": "Water",
-      "sleep": "Sleep",
-      "mood": "Mood"
     }
   },
   "timePicker": {

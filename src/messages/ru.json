@@ -151,7 +151,18 @@
     "csvExported": "CSV файлы экспортированы",
     "databaseNotEmpty": "База данных уже содержит данные. Сначала очистите данные.",
     "duplicatesRemoved": "Удалено {count} дубликатов категорий",
-    "noDuplicates": "Дубликаты не найдены"
+    "noDuplicates": "Дубликаты не найдены",
+    "unit": {
+      "kg": "кг",
+      "g": "г",
+      "cm": "см",
+      "m": "м",
+      "percent": "%",
+      "ml": "мл",
+      "l": "л",
+      "kcal": "ккал",
+      "bpm": "уд/мин"
+    }
   },
   "navigation": {
     "home": "Главная",
@@ -805,13 +816,19 @@
     },
     "forms": {
       "main": "Основное",
+      "additional": "Дополнительно",
+      "ingredients": "Ингредиенты",
+      "steps": {
+        "addStep": "Добавить",
+        "stepText": "Описание шага",
+        "timer": "Таймер (мин)",
+        "minutes": "минут",
+        "empty": "Нет шагов. Нажмите «Добавить» для создания."
+      },
+      "recipeType": "Тип рецепта",
       "dishParameters": "Параметры блюда",
       "drinkParameters": "Параметры напитка",
       "cocktailParameters": "Параметры коктейля",
-      "ingredients": "Ингредиенты",
-      "steps": "Шаги приготовления",
-      "recipeType": "Тип рецепта",
-      "additional": "Дополнительно",
       "selectPlaceholder": "Выберите...",
       "notSpecified": "Не указано"
     },
@@ -885,10 +902,11 @@
       "roast": "Обжаривать"
     },
     "servingTemperatures": {
-      "hot": "Горячее",
-      "warm": "Тёплое",
+      "hot": "Горячий",
+      "warm": "Тёплый",
       "room": "Комнатной температуры",
-      "cold": "Холодное"
+      "cold": "Холодный",
+      "iced": "Ледяной"
     },
     "spicyLevels": {
       "none": "Нет",
@@ -951,13 +969,6 @@
       "plantMilk": "Растительное молоко",
       "other": "Другое"
     },
-    "servingTemperatures": {
-      "hot": "Горячий",
-      "warm": "Тёплый",
-      "room": "Комнатной температуры",
-      "cold": "Холодный",
-      "iced": "Ледяной"
-    },
     "ingredients": {
       "addIngredient": "Добавить ингредиент",
       "ingredientName": "Название ингредиента",
@@ -1017,25 +1028,6 @@
       "removeStep": "Удалить шаг",
       "empty": "Нет шагов. Нажмите «Добавить» для создания.",
       "noInstructions": "Нет инструкций"
-    },
-    "forms": {
-      "main": "Основное",
-      "additional": "Дополнительно",
-      "ingredients": "Ингредиенты",
-      "steps": "Шаги",
-      "recipeType": "Тип рецепта",
-      "dishParameters": "Параметры блюда",
-      "drinkParameters": "Параметры напитка",
-      "cocktailParameters": "Параметры коктейля",
-      "selectPlaceholder": "Выберите...",
-      "notSpecified": "Не указано",
-      "steps": {
-        "addStep": "Добавить",
-        "stepText": "Описание шага",
-        "timer": "Таймер (мин)",
-        "minutes": "минут",
-        "empty": "Нет шагов. Нажмите «Добавить» для создания."
-      }
     },
     "common": {
       "loading": "Загрузка...",
@@ -1432,11 +1424,140 @@
       "finance": "Финансы"
     },
     "workout": {
+      "workoutType": "Тип тренировки",
       "types": {
         "strength": "Силовая",
         "cardio": "Кардио",
         "yoga": "Йога",
         "stretching": "Растяжка"
+      },
+      "subcategory": "Подкатегория",
+      "duration": "Длительность (мин)",
+      "intensity": "Интенсивность",
+      "intensityLevels": {
+        "low": "Низкая",
+        "medium": "Средняя",
+        "high": "Высокая"
+      },
+      "equipment": "Инвентарь",
+      "goal": "Цель",
+      "caloriesBurned": "Сожжено калорий",
+      "distance": "Дистанция (км)",
+      "heartRateAvg": "Средний пульс",
+      "heartRateMax": "Макс. пульс",
+      "exercisesCount": "Кол-во упражнений",
+      "setsCount": "Кол-во подходов",
+      "repsCount": "Кол-во повторов",
+      "totalWeight": "Общий вес (кг)",
+      "averageSpeed": "Средняя скорость (км/ч)",
+      "averagePace": "Средний темп (мин/км)",
+      "rounds": "Раунды",
+      "level": "Уровень",
+      "focus": "Фокус",
+      "strengthSubcategories": {
+        "anatomical": "По анатомическому принципу",
+        "equipment": "По типу оборудования",
+        "chest": "Грудь",
+        "back": "Спина",
+        "legs": "Ноги",
+        "shoulders": "Плечи",
+        "arms": "Руки",
+        "core": "Пресс (Кор)",
+        "freeWeights": "Свободные веса",
+        "machines": "Тренажеры",
+        "bodyweight": "С собственным весом",
+        "functional": "Функциональный тренинг"
+      },
+      "cardioSubcategories": {
+        "activity": "По типу активности",
+        "byIntensity": "По интенсивности",
+        "running": "Бег",
+        "walking": "Ходьба",
+        "cycling": "Велосипед",
+        "rowing": "Гребля",
+        "jumping": "Прыжки",
+        "liss": "LISS (низкоинтенсивное)",
+        "hiit": "HIIT (интервальное)",
+        "tabata": "Табата"
+      },
+      "yogaSubcategories": {
+        "style": "По стилю",
+        "byGoal": "По целям",
+        "byLevel": "По уровню",
+        "hatha": "Хатха-йога",
+        "vinyasa": "Виньяса-йога",
+        "ashtanga": "Аштанга-йога",
+        "kundalini": "Кундалини-йога",
+        "iyengar": "Айенгар-йога",
+        "stretching": "Стретчинг / Гибкость",
+        "power": "Силовая йога",
+        "relax": "Релакс / Восстановление",
+        "breathing": "Дыхание и медитация",
+        "meditation": "Медитация",
+        "beginner": "Для начинающих",
+        "intermediate": "Для продолжающих",
+        "advanced": "Для опытных"
+      },
+      "stretchingSubcategories": {
+        "byType": "По типу",
+        "byFocus": "По зоне воздействия",
+        "static": "Статическая растяжка",
+        "dynamic": "Динамическая растяжка",
+        "ballistic": "Баллистическая растяжка",
+        "pnf": "PNF-растяжка",
+        "fullBody": "Всё тело",
+        "upperBody": "Верхняя часть тела",
+        "lowerBody": "Нижняя часть тела",
+        "back": "Спина и позвоночник",
+        "hips": "Бёдра и ягодицы"
+      },
+      "goals": {
+        "mass": "Набор массы",
+        "relief": "Рельеф",
+        "strength": "Сила",
+        "endurance": "Выносливость",
+        "flexibility": "Гибкость",
+        "mobility": "Мобильность",
+        "relaxation": "Расслабление",
+        "balance": "Баланс",
+        "fatLoss": "Сжигание жира",
+        "recovery": "Восстановление"
+      },
+      "equipmentOptions": {
+        "Bench": "Скамья",
+        "PullUpBar": "Турник",
+        "ParallelBars": "Брусья",
+        "CableCrossover": "Кроссовер",
+        "SmithMachine": "Машина Смита",
+        "ResistanceBands": "Эспандеры",
+        "MedicineBall": "Медицинский мяч",
+        "TRX": "TRX петли",
+        "NoEquipment": "Без оборудования",
+        "Treadmill": "Беговая дорожка",
+        "Elliptical": "Эллиптический тренажёр",
+        "ExerciseBike": "Велотренажёр",
+        "RowingMachine": "Гребной тренажёр",
+        "JumpRope": "Скакалка",
+        "Stepper": "Степпер",
+        "Mat": "Коврик",
+        "Blocks": "Блоки для йоги",
+        "Strap": "Ремень для йоги",
+        "Bolster": "Болстер",
+        "Blanket": "Плед",
+        "Chair": "Стул",
+        "Wall": "Стена",
+        "FoamRoller": "МФР ролл",
+        "Ball": "Фитбол"
+      },
+      "placeholders": {
+        "calories": "ккал",
+        "distance": "км",
+        "avgPulse": "уд/мин",
+        "maxPulse": "уд/мин",
+        "count": "шт",
+        "weight": "кг",
+        "speed": "км/ч",
+        "pace": "5:30"
       }
     },
     "stats": {
@@ -1685,143 +1806,6 @@
           "ryeFlour": "Мука ржаная",
           "starch": "Крахмал"
         }
-      }
-    },
-    "workout": {
-      "workoutType": "Тип тренировки",
-      "types": {
-        "strength": "Силовая",
-        "cardio": "Кардио",
-        "yoga": "Йога",
-        "stretching": "Растяжка"
-      },
-      "subcategory": "Подкатегория",
-      "duration": "Длительность (мин)",
-      "intensity": "Интенсивность",
-      "intensityLevels": {
-        "low": "Низкая",
-        "medium": "Средняя",
-        "high": "Высокая"
-      },
-      "equipment": "Инвентарь",
-      "goal": "Цель",
-      "caloriesBurned": "Сожжено калорий",
-      "distance": "Дистанция (км)",
-      "heartRateAvg": "Средний пульс",
-      "heartRateMax": "Макс. пульс",
-      "exercisesCount": "Кол-во упражнений",
-      "setsCount": "Кол-во подходов",
-      "repsCount": "Кол-во повторов",
-      "totalWeight": "Общий вес (кг)",
-      "averageSpeed": "Средняя скорость (км/ч)",
-      "averagePace": "Средний темп (мин/км)",
-      "rounds": "Раунды",
-      "level": "Уровень",
-      "focus": "Фокус",
-      "strengthSubcategories": {
-        "anatomical": "По анатомическому принципу",
-        "equipment": "По типу оборудования",
-        "chest": "Грудь",
-        "back": "Спина",
-        "legs": "Ноги",
-        "shoulders": "Плечи",
-        "arms": "Руки",
-        "core": "Пресс (Кор)",
-        "freeWeights": "Свободные веса",
-        "machines": "Тренажеры",
-        "bodyweight": "С собственным весом",
-        "functional": "Функциональный тренинг"
-      },
-      "cardioSubcategories": {
-        "activity": "По типу активности",
-        "byIntensity": "По интенсивности",
-        "running": "Бег",
-        "walking": "Ходьба",
-        "cycling": "Велосипед",
-        "rowing": "Гребля",
-        "jumping": "Прыжки",
-        "liss": "LISS (низкоинтенсивное)",
-        "hiit": "HIIT (интервальное)",
-        "tabata": "Табата"
-      },
-      "yogaSubcategories": {
-        "style": "По стилю",
-        "byGoal": "По целям",
-        "byLevel": "По уровню",
-        "hatha": "Хатха-йога",
-        "vinyasa": "Виньяса-йога",
-        "ashtanga": "Аштанга-йога",
-        "kundalini": "Кундалини-йога",
-        "iyengar": "Айенгар-йога",
-        "stretching": "Стретчинг / Гибкость",
-        "power": "Силовая йога",
-        "relax": "Релакс / Восстановление",
-        "breathing": "Дыхание и медитация",
-        "meditation": "Медитация",
-        "beginner": "Для начинающих",
-        "intermediate": "Для продолжающих",
-        "advanced": "Для опытных"
-      },
-      "stretchingSubcategories": {
-        "byType": "По типу",
-        "byFocus": "По зоне воздействия",
-        "static": "Статическая растяжка",
-        "dynamic": "Динамическая растяжка",
-        "ballistic": "Баллистическая растяжка",
-        "pnf": "PNF-растяжка",
-        "fullBody": "Всё тело",
-        "upperBody": "Верхняя часть тела",
-        "lowerBody": "Нижняя часть тела",
-        "back": "Спина и позвоночник",
-        "hips": "Бёдра и ягодицы"
-      },
-      "goals": {
-        "mass": "Набор массы",
-        "relief": "Рельеф",
-        "strength": "Сила",
-        "endurance": "Выносливость",
-        "flexibility": "Гибкость",
-        "mobility": "Мобильность",
-        "relaxation": "Расслабление",
-        "balance": "Баланс",
-        "fatLoss": "Сжигание жира",
-        "recovery": "Восстановление"
-      },
-      "equipmentOptions": {
-        "Bench": "Скамья",
-        "PullUpBar": "Турник",
-        "ParallelBars": "Брусья",
-        "CableCrossover": "Кроссовер",
-        "SmithMachine": "Машина Смита",
-        "ResistanceBands": "Эспандеры",
-        "MedicineBall": "Медицинский мяч",
-        "TRX": "TRX петли",
-        "NoEquipment": "Без оборудования",
-        "Treadmill": "Беговая дорожка",
-        "Elliptical": "Эллиптический тренажёр",
-        "ExerciseBike": "Велотренажёр",
-        "RowingMachine": "Гребной тренажёр",
-        "JumpRope": "Скакалка",
-        "Stepper": "Степпер",
-        "Mat": "Коврик",
-        "Blocks": "Блоки для йоги",
-        "Strap": "Ремень для йоги",
-        "Bolster": "Болстер",
-        "Blanket": "Плед",
-        "Chair": "Стул",
-        "Wall": "Стена",
-        "FoamRoller": "МФР ролл",
-        "Ball": "Фитбол"
-      },
-      "placeholders": {
-        "calories": "ккал",
-        "distance": "км",
-        "avgPulse": "уд/мин",
-        "maxPulse": "уд/мин",
-        "count": "шт",
-        "weight": "кг",
-        "speed": "км/ч",
-        "pace": "5:30"
       }
     },
     "finance": {
@@ -2384,9 +2368,7 @@
       "thigh": "Бедро",
       "calf": "Икра",
       "bodyFat": "Процент жира",
-      "body_fat": "Процент жира",
-      "muscleMass": "Мышечная масса",
-      "muscle_mass": "Мышечная масса"
+      "muscleMass": "Мышечная масса"
     },
     "bmi": {
       "title": "BMI",
@@ -2418,79 +2400,107 @@
       "loading": "Загрузка...",
       "noRecords": "Нет записей. Добавьте первое измерение!"
     },
-    "edit": "Редактиров��ть изм��рение"
+    "edit": "Редактиров��ть изм��рение",
+    "units": {
+      "kg": "кг",
+      "g": "г",
+      "cm": "см",
+      "m": "м",
+      "percent": "%",
+      "ml": "мл",
+      "l": "л",
+      "kcal": "ккал",
+      "bpm": "уд/мин"
+    }
   },
   "templates": {
-    "title": "Шаблоны",
-    "addTemplate": "Добавить шаблон",
-    "editTemplate": "Редактировать шаблон",
-    "noTemplates": "Пока нет шаблонов",
-    "fields": {
-      "name": "Название шаблона",
-      "type": "Тип",
-      "data": "Данные",
-      "isFavorite": "Избранное",
-      "useCount": "Кол-во использований"
-    },
-    "types": {
-      "food": "Питание",
-      "workout": "Тренировка",
-      "finance": "Финансы",
-      "water": "Вода",
-      "sleep": "С��н",
-      "mood": "Настроение"
-    },
-    "applyTemplate": "Применить шаблон",
-    "deleteTemplate": "Удалить шаблон",
     "header": {
       "title": "Шаблоны",
       "subtitle": "Быстрые шаблоны для частых записей"
     },
-    "actions": {
-      "create": "Создать шаблон",
-      "createFirst": "Создать первый шаблон",
-      "apply": "Применить",
-      "edit": "Редактировать шаблон",
-      "delete": "Удалить шаблон",
-      "addToFavorite": "Добавить в избранное",
-      "removeFromFavorite": "Удалить из избранного"
-    },
-    "empty": {
-      "loading": "Загрузка...",
-      "noTemplates": "Нет шаблонов",
-      "createHint": "Создайте шаблоны для быстрого добавления частых записей"
-    },
-    "sections": {
-      "favorite": "Избранное",
-      "usedCount": "Использований: {count}"
-    },
-    "dialogs": {
-      "createTitle": "Создать шаблон",
-      "editTitle": "Редактировать шаблон",
-      "deleteTitle": "Удалить шаблон?",
-      "deleteConfirm": "Вы уверены, что хотите удали��ь шаблон \"{name}\"? Это действие нельзя отменить.",
-      "nameLabel": "Название шаблона",
-      "namePlaceholder": "Например: Завтрак - овсянка",
-      "typeLabel": "Тип"
-    },
+    "title": "Шаблоны",
+    "addTemplate": "Добавить шаблон",
+    "editTemplate": "Редактировать шаблон",
+    "noTemplates": "Пока нет шаблонов",
+    "applyTemplate": "Применить шаблон",
+    "deleteTemplate": "Удалить шаблон",
     "apply": {
       "title": "Применить шаблон",
       "success": "Шаблон успешно применён!",
       "stay": "Остаться",
       "goToRecord": "Перейти к записи"
     },
-    "noData": "Без данных",
-    "units": {
-      "kcal": "ккал",
-      "g": "г",
-      "min": "мин"
+    "empty": {
+      "loading": "Загрузка...",
+      "noTemplates": "Нет шаблонов",
+      "createHint": "Создайте шаблоны для быстрого добавления частых записей"
     },
-    "moods": {
-      "great": "Отлич��о",
+    "actions": {
+      "create": "Создать шаблон",
+      "createFirst": "Создать первый шаблон",
+      "apply": "Применить",
+      "edit": "Редактировать шаблон",
+      "delete": "Удалить",
+      "removeFromFavorite": "Убрать из избранного",
+      "addToFavorite": "Добавить в избранное"
+    },
+    "dialogs": {
+      "createTitle": "Создать шаблон",
+      "editTitle": "Редактировать шаблон",
+      "deleteTitle": "Удалить шаблон?",
+      "deleteConfirm": "Вы уверены, что хотите удалить шаблон \"{name}\"? Это действие нельзя отменить.",
+      "nameLabel": "Название шаблона",
+      "namePlaceholder": "например, Завтрак - Овсянка",
+      "typeLabel": "Тип"
+    },
+    "sections": {
+      "low": "Низкая",
+      "medium": "Средняя",
+      "high": "Высокая"
+    },
+    "intensity": {
+      "low": "Низкая",
+      "medium": "Средняя",
+      "high": "Высокая"
+    },
+    "quality": {
+      "1": "Ужасно",
+      "2": "Плохо",
+      "3": "Нормально",
+      "4": "Хорошо",
+      "5": "Отлично"
+    },
+    "mood": {
+      "great": "Отлично",
       "good": "Хорошо",
       "okay": "Нормально",
       "bad": "Плохо",
       "terrible": "Ужасно"
+    },
+    "drinkType": {
+      "water": "Вода",
+      "tea": "Чай",
+      "coffee": "Кофе",
+      "other": "Другое"
+    },
+    "activity": {
+      "work": "Работа",
+      "exercise": "Спорт",
+      "social": "Общение",
+      "hobby": "Хобби",
+      "rest": "Отдых",
+      "shopping": "Покупки",
+      "reading": "Чтение",
+      "gaming": "Игры",
+      "cooking": "Готовка",
+      "walk": "Прогулка"
+    },
+    "types": {
+      "food": "Питание",
+      "workout": "Тренировка",
+      "water": "Вода",
+      "sleep": "Сон",
+      "mood": "Настроение"
     }
   },
   "items": {
@@ -3055,76 +3065,6 @@
       "remaining": "Осталось",
       "overBudget": "Превышение на",
       "currency": "₽"
-    }
-  },
-  "templates": {
-    "header": {
-      "title": "Шаблоны",
-      "subtitle": "Быстрые шаблоны для частых записей"
-    },
-    "title": "Шаблоны",
-    "addTemplate": "Добавить шаблон",
-    "editTemplate": "Редактировать шаблон",
-    "noTemplates": "Пока нет шаблонов",
-    "applyTemplate": "Применить шаблон",
-    "deleteTemplate": "Удалить шаблон",
-    "actions": {
-      "create": "Создать шаблон",
-      "createFirst": "Создать первый шаблон",
-      "apply": "Применить",
-      "edit": "Редактировать шаблон",
-      "delete": "Удалить",
-      "removeFromFavorite": "Убрать из избранного",
-      "addToFavorite": "Добавить в избранное"
-    },
-    "sections": {
-      "low": "Низкая",
-      "medium": "Средняя",
-      "high": "Высокая"
-    },
-    "intensity": {
-      "low": "Низкая",
-      "medium": "Средняя",
-      "high": "Высокая"
-    },
-    "quality": {
-      "1": "Ужасно",
-      "2": "Плохо",
-      "3": "Нормально",
-      "4": "Хорошо",
-      "5": "Отлично"
-    },
-    "mood": {
-      "great": "Отлично",
-      "good": "Хорошо",
-      "okay": "Нормально",
-      "bad": "Плохо",
-      "terrible": "Ужасно"
-    },
-    "drinkType": {
-      "water": "Вода",
-      "tea": "Чай",
-      "coffee": "Кофе",
-      "other": "Другое"
-    },
-    "activity": {
-      "work": "Работа",
-      "exercise": "Спорт",
-      "social": "Общение",
-      "hobby": "Хобби",
-      "rest": "Отдых",
-      "shopping": "Покупки",
-      "reading": "Чтение",
-      "gaming": "Игры",
-      "cooking": "Готовка",
-      "walk": "Прогулка"
-    },
-    "types": {
-      "food": "Питание",
-      "workout": "Тренировка",
-      "water": "Вода",
-      "sleep": "Сон",
-      "mood": "Настроение"
     }
   },
   "timePicker": {
