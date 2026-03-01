@@ -364,7 +364,7 @@ function HabitsContent() {
 
   return (
     <AppLayout title={t("title")}>
-      <div className="container mx-auto px-4 py-6 space-y-4">
+      <div className="container mx-auto px-4 py-6 space-y-6">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -554,11 +554,11 @@ function HabitsContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
             <DialogHeader>
               <DialogTitle>{t("addHabit")}</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="space-y-4 py-4 overflow-x-hidden">
               <div className="space-y-2">
                 <Label htmlFor="name">{t("fields.name")}</Label>
                 <Input
@@ -599,7 +599,7 @@ function HabitsContent() {
               </div>
               <div className="space-y-2">
                 <Label>{t("fields.color")}</Label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 justify-items-center">
                   {habitColors.map((color, i) => (
                     <button
                       key={i}
@@ -717,7 +717,7 @@ function HabitsContent() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
             <DialogHeader>
               <DialogTitle>{t("editHabit")}</DialogTitle>
             </DialogHeader>
@@ -757,7 +757,7 @@ function HabitsContent() {
               </div>
               <div className="space-y-2">
                 <Label>{t("fields.color")}</Label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 justify-items-center">
                   {habitColors.map((color, i) => (
                     <button
                       key={i}

@@ -341,7 +341,7 @@ function SleepContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent>
+          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
             <DialogHeader>
               <DialogTitle>{t("dialogs.addTitle")}</DialogTitle>
             </DialogHeader>
@@ -443,7 +443,7 @@ function SleepContent() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
+          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
             <DialogHeader>
               <DialogTitle>{t("dialogs.editTitle")}</DialogTitle>
             </DialogHeader>

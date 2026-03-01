@@ -312,7 +312,10 @@ function GoalsContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="max-w-md" aria-label={t("addGoal")}>
+          <DialogContent
+            className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden"
+            aria-label={t("addGoal")}
+          >
             <DialogHeader>
               <DialogTitle>{t("addGoal")}</DialogTitle>
             </DialogHeader>
@@ -410,7 +413,10 @@ function GoalsContent() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-md" aria-label={t("editGoal")}>
+          <DialogContent
+            className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden"
+            aria-label={t("editGoal")}
+          >
             <DialogHeader>
               <DialogTitle>{t("editGoal")}</DialogTitle>
             </DialogHeader>

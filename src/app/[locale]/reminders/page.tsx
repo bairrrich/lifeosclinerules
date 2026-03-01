@@ -564,7 +564,7 @@ function RemindersContent() {
 
         {/* Stats Dialog */}
         <Dialog open={isStatsDialogOpen} onOpenChange={setIsStatsDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
             <DialogHeader>
               <DialogTitle>
                 {t.rich("dialogs.statsTitle", { title: selectedReminderForStats?.title || "" })}

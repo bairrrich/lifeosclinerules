@@ -382,7 +382,7 @@ export default function ItemDetailPage() {
 
         {/* Create Reminder Dialog */}
         <Dialog open={showReminderDialog} onOpenChange={setShowReminderDialog}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
             <DialogHeader>
               <DialogTitle>{t("detail.reminderDialogTitle")}</DialogTitle>
               <DialogDescription>
