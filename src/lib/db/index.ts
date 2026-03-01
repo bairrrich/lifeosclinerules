@@ -237,6 +237,50 @@ class LifeOSDatabase extends Dexie {
           // Continue anyway - duplicates will be handled by seedAccounts
         }
       })
+
+    // ============================================
+    // Version 14: Add Compound Indexes for Performance
+    // ============================================
+    this.version(14).stores({
+      // Logs - add compound index for type + date range queries
+      // Note: date must be indexed separately for compound index to work
+      logs: "id, type, [type+date], date, title, category_id, created_at, updated_at",
+
+      // Items - add compound index for type + category
+      items: "id, type, [type+category], category, name, created_at, updated_at",
+
+      // Content - add compound index for type + created_at
+      content: "id, type, [type+created_at], created_at, title, updated_at",
+
+      // Habit logs - critical for streak calculations
+      habitLogs: "id, habit_id, [habit_id+date], date, completed",
+
+      // Mood logs - add date+mood compound index
+      moodLogs: "id, date, [date+mood], mood, energy, stress",
+
+      // Water logs - add date+type compound index
+      waterLogs: "id, date, [date+type], type, amount_ml",
+
+      // Reminders - add type+is_active compound index for active queries
+      reminders: "id, type, [type+is_active], is_active, time, days, related_id, priority",
+
+      // Books - add compound indexes
+      books:
+        "id, title, [title+published_year], isbn13, published_year, language, format, series_id, created_at, updated_at",
+      userBooks:
+        "id, book_id, [book_id+status], status, rating, started_at, finished_at, created_at, updated_at",
+
+      // Recipe - add compound indexes for ingredient lookups
+      recipeIngredients: "id, name, [name+category], category, subcategory",
+      recipeIngredientItems: "id, recipe_id, [recipe_id+order], ingredient_id, order",
+      recipeSteps: "id, recipe_id, [recipe_id+order], order",
+
+      // Categories - add compound index
+      categories: "id, type, [type+name], name",
+
+      // Entity translations - add compound index
+      entityTranslations: "id, entity_type, entity_id, [entity_type+entity_id+locale], locale",
+    })
   }
 }
 
@@ -665,16 +709,169 @@ export async function getLogsByType(type: string): Promise<Log[]> {
   return await db.logs.where("type").equals(type).toArray()
 }
 
+/**
+ * Optimized date range query using compound index [type+date]
+ * Much faster than using .and() filter
+ */
 export async function getLogsByDateRange(
   type: string,
   startDate: string,
   endDate: string
 ): Promise<Log[]> {
-  return await db.logs
-    .where("type")
-    .equals(type)
-    .and((log) => log.date >= startDate && log.date <= endDate)
-    .toArray()
+  try {
+    // Use compound index [type+date] - O(log n) instead of O(n)
+    return await db.logs
+      .where(["type", "date"])
+      .between([type, startDate], [type, endDate], true, true)
+      .toArray()
+  } catch {
+    // Fallback for older data without compound index
+    return await db.logs
+      .where("type")
+      .equals(type)
+      .and((log) => log.date >= startDate && log.date <= endDate)
+      .toArray()
+  }
+}
+
+/**
+ * Get logs for a specific date using compound index
+ */
+export async function getLogsByDate(type: string, date: string): Promise<Log[]> {
+  try {
+    return await db.logs.where(["type", "date"]).equals([type, date]).toArray()
+  } catch {
+    return await db.logs
+      .where("type")
+      .equals(type)
+      .and((log) => log.date === date)
+      .toArray()
+  }
+}
+
+/**
+ * Get logs for today using compound index
+ */
+export async function getLogsByDateToday(type: string): Promise<Log[]> {
+  const today = new Date().toISOString().split("T")[0]
+  return getLogsByDate(type, today)
+}
+
+// ============================================
+// Pagination Helpers
+// ============================================
+
+export interface PaginationOptions {
+  page: number
+  pageSize: number
+  sortBy?: string
+  sortOrder?: "asc" | "desc"
+}
+
+export interface PaginatedResult<T> {
+  data: T[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
+/**
+ * Get paginated logs by type
+ */
+export async function getLogsPaginated(
+  type: string,
+  options: PaginationOptions
+): Promise<PaginatedResult<Log>> {
+  const { page = 1, pageSize = 20, sortBy = "date", sortOrder = "desc" } = options
+
+  const collection = db.logs.where("type").equals(type)
+  const total = await collection.count()
+
+  const data = await collection.toArray().then((items) => {
+    // Sort in memory
+    items.sort((a, b) => {
+      const aVal = (a as any)[sortBy] || ""
+      const bVal = (b as any)[sortBy] || ""
+      const cmp = String(aVal).localeCompare(String(bVal))
+      return sortOrder === "desc" ? -cmp : cmp
+    })
+    // Paginate
+    const start = (page - 1) * pageSize
+    return items.slice(start, start + pageSize)
+  })
+
+  return {
+    data,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  }
+}
+
+/**
+ * Get paginated items by type
+ */
+export async function getItemsPaginated(
+  type: string,
+  options: PaginationOptions
+): Promise<PaginatedResult<Item>> {
+  const { page = 1, pageSize = 20, sortBy = "name", sortOrder = "asc" } = options
+
+  const collection = db.items.where("type").equals(type)
+  const total = await collection.count()
+
+  const data = await collection.toArray().then((items) => {
+    items.sort((a, b) => {
+      const aVal = (a as any)[sortBy] || ""
+      const bVal = (b as any)[sortBy] || ""
+      const cmp = String(aVal).localeCompare(String(bVal))
+      return sortOrder === "desc" ? -cmp : cmp
+    })
+    const start = (page - 1) * pageSize
+    return items.slice(start, start + pageSize)
+  })
+
+  return {
+    data,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  }
+}
+
+/**
+ * Get paginated content by type
+ */
+export async function getContentPaginated(
+  type: string,
+  options: PaginationOptions
+): Promise<PaginatedResult<Content>> {
+  const { page = 1, pageSize = 20, sortBy = "title", sortOrder = "asc" } = options
+
+  const collection = db.content.where("type").equals(type)
+  const total = await collection.count()
+
+  const data = await collection.toArray().then((items) => {
+    items.sort((a, b) => {
+      const aVal = (a as any)[sortBy] || ""
+      const bVal = (b as any)[sortBy] || ""
+      const cmp = String(aVal).localeCompare(String(bVal))
+      return sortOrder === "desc" ? -cmp : cmp
+    })
+    const start = (page - 1) * pageSize
+    return items.slice(start, start + pageSize)
+  })
+
+  return {
+    data,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  }
 }
 
 // Items
@@ -692,22 +889,134 @@ export async function getCategoriesByType(type: string): Promise<Category[]> {
   return await db.categories.where("type").equals(type).toArray()
 }
 
-// Search
-export async function searchLogs(query: string): Promise<Log[]> {
-  const lowerQuery = query.toLowerCase()
-  return await db.logs.filter((log) => log.title.toLowerCase().includes(lowerQuery)).toArray()
+// ============================================
+// Search - Optimized with Indexes
+// ============================================
+
+/**
+ * Optimized search for logs using indexed queries
+ * Uses title index for prefix matching, then falls back to filter for partial matches
+ */
+export async function searchLogs(query: string, limit = 50): Promise<Log[]> {
+  if (!query || query.trim().length === 0) {
+    return []
+  }
+
+  const trimmedQuery = query.trim()
+  const lowerQuery = trimmedQuery.toLowerCase()
+
+  try {
+    // First try: exact prefix match using index (fastest)
+    const prefixMatches = await db.logs
+      .where("title")
+      .startsWithIgnoreCase(trimmedQuery)
+      .limit(limit)
+      .toArray()
+
+    if (prefixMatches.length >= limit) {
+      return prefixMatches
+    }
+
+    // Second: get remaining slots
+    const remaining = limit - prefixMatches.length
+    const prefixIds = new Set(prefixMatches.map((l) => l.id))
+
+    // Third: partial match with filter (slower but comprehensive)
+    const partialMatches = await db.logs
+      .filter((log) => !prefixIds.has(log.id) && log.title.toLowerCase().includes(lowerQuery))
+      .limit(remaining)
+      .toArray()
+
+    return [...prefixMatches, ...partialMatches]
+  } catch {
+    // Fallback to filter if index not available
+    return await db.logs
+      .filter((log) => log.title.toLowerCase().includes(lowerQuery))
+      .limit(limit)
+      .toArray()
+  }
 }
 
-export async function searchItems(query: string): Promise<Item[]> {
-  const lowerQuery = query.toLowerCase()
-  return await db.items.filter((item) => item.name.toLowerCase().includes(lowerQuery)).toArray()
+/**
+ * Optimized search for items using indexed queries
+ */
+export async function searchItems(query: string, limit = 50): Promise<Item[]> {
+  if (!query || query.trim().length === 0) {
+    return []
+  }
+
+  const trimmedQuery = query.trim()
+  const lowerQuery = trimmedQuery.toLowerCase()
+
+  try {
+    // First try: exact prefix match using index
+    const prefixMatches = await db.items
+      .where("name")
+      .startsWithIgnoreCase(trimmedQuery)
+      .limit(limit)
+      .toArray()
+
+    if (prefixMatches.length >= limit) {
+      return prefixMatches
+    }
+
+    const remaining = limit - prefixMatches.length
+    const prefixIds = new Set(prefixMatches.map((i) => i.id))
+
+    // Second: partial match
+    const partialMatches = await db.items
+      .filter((item) => !prefixIds.has(item.id) && item.name.toLowerCase().includes(lowerQuery))
+      .limit(remaining)
+      .toArray()
+
+    return [...prefixMatches, ...partialMatches]
+  } catch {
+    return await db.items
+      .filter((item) => item.name.toLowerCase().includes(lowerQuery))
+      .limit(limit)
+      .toArray()
+  }
 }
 
-export async function searchContent(query: string): Promise<Content[]> {
-  const lowerQuery = query.toLowerCase()
-  return await db.content
-    .filter((content) => content.title.toLowerCase().includes(lowerQuery))
-    .toArray()
+/**
+ * Optimized search for content using indexed queries
+ */
+export async function searchContent(query: string, limit = 50): Promise<Content[]> {
+  if (!query || query.trim().length === 0) {
+    return []
+  }
+
+  const trimmedQuery = query.trim()
+  const lowerQuery = trimmedQuery.toLowerCase()
+
+  try {
+    const prefixMatches = await db.content
+      .where("title")
+      .startsWithIgnoreCase(trimmedQuery)
+      .limit(limit)
+      .toArray()
+
+    if (prefixMatches.length >= limit) {
+      return prefixMatches
+    }
+
+    const remaining = limit - prefixMatches.length
+    const prefixIds = new Set(prefixMatches.map((c) => c.id))
+
+    const partialMatches = await db.content
+      .filter(
+        (content) => !prefixIds.has(content.id) && content.title.toLowerCase().includes(lowerQuery)
+      )
+      .limit(remaining)
+      .toArray()
+
+    return [...prefixMatches, ...partialMatches]
+  } catch {
+    return await db.content
+      .filter((content) => content.title.toLowerCase().includes(lowerQuery))
+      .limit(limit)
+      .toArray()
+  }
 }
 
 // ============================================
@@ -859,5 +1168,240 @@ export async function initializeDatabase(): Promise<void> {
     console.error("Failed to initialize database:", error)
   } finally {
     isInitializing = false
+  }
+}
+
+// ============================================
+// Database Stats
+// ============================================
+
+export interface DatabaseStats {
+  tables: Record<string, number>
+  totalRecords: number
+  dbSize: number // estimated bytes
+}
+
+/**
+ * Get database statistics
+ */
+export async function getDatabaseStats(): Promise<DatabaseStats> {
+  const tableNames = [
+    "logs",
+    "items",
+    "content",
+    "categories",
+    "tags",
+    "units",
+    "accounts",
+    "exercises",
+    "syncQueue",
+    "recipeIngredients",
+    "recipeIngredientItems",
+    "recipeSteps",
+    "books",
+    "userBooks",
+    "authors",
+    "bookAuthors",
+    "series",
+    "genres",
+    "bookGenres",
+    "bookQuotes",
+    "bookReviews",
+    "goals",
+    "habits",
+    "habitLogs",
+    "streaks",
+    "sleepLogs",
+    "waterLogs",
+    "moodLogs",
+    "bodyMeasurements",
+    "reminders",
+    "reminderLogs",
+    "templates",
+    "recurringTransactions",
+    "entityTranslations",
+  ]
+
+  const stats: Record<string, number> = {}
+  let totalRecords = 0
+
+  for (const tableName of tableNames) {
+    try {
+      const count = await (db as any)[tableName].count()
+      stats[tableName] = count
+      totalRecords += count
+    } catch {
+      stats[tableName] = 0
+    }
+  }
+
+  // Estimate size: ~2KB per record average
+  const estimatedSize = totalRecords * 2048
+
+  return {
+    tables: stats,
+    totalRecords,
+    dbSize: estimatedSize,
+  }
+}
+
+// ============================================
+// Database Cleanup Utilities
+// ============================================
+
+export interface CleanupResult {
+  deletedRecords: number
+  freedBytes: number
+  details: Record<string, number>
+}
+
+/**
+ * Clean up old data from the database
+ * @param daysToKeep - Keep records from the last N days (default: 90)
+ * @param options - Additional cleanup options
+ */
+export async function cleanupDatabase(
+  daysToKeep: number = 90,
+  options: {
+    cleanupOldLogs?: boolean
+    cleanupSyncedItems?: boolean
+    cleanupOldReminders?: boolean
+  } = {}
+): Promise<CleanupResult> {
+  const result: CleanupResult = {
+    deletedRecords: 0,
+    freedBytes: 0,
+    details: {},
+  }
+
+  const cutoffDate = new Date()
+  cutoffDate.setDate(cutoffDate.getDate() - daysToKeep)
+  const cutoffDateStr = cutoffDate.toISOString().split("T")[0]
+
+  // 1. Clean up old logs (optional)
+  if (options.cleanupOldLogs !== false) {
+    try {
+      const oldLogs = await db.logs.where("date").below(cutoffDateStr).toArray()
+
+      // Filter to only keep non-important logs
+      const logsToDelete = oldLogs.filter((log) => !(log as any).important)
+
+      if (logsToDelete.length > 0) {
+        await db.logs.bulkDelete(logsToDelete.map((l) => l.id))
+        result.deletedRecords += logsToDelete.length
+        result.details.logs = logsToDelete.length
+      }
+    } catch (e) {
+      console.error("Error cleaning up logs:", e)
+    }
+  }
+
+  // 2. Clean up synced items from sync queue
+  if (options.cleanupSyncedItems !== false) {
+    try {
+      const syncedItems = await db.syncQueue.where("synced").equals(1).toArray()
+
+      if (syncedItems.length > 0) {
+        await db.syncQueue.bulkDelete(syncedItems.map((s) => s.id))
+        result.deletedRecords += syncedItems.length
+        result.details.syncedQueue = syncedItems.length
+      }
+    } catch (e) {
+      console.error("Error cleaning up sync queue:", e)
+    }
+  }
+
+  // 3. Clean up old reminder logs (keep last 30 days)
+  if (options.cleanupOldReminders !== false) {
+    try {
+      const thirtyDaysAgo = new Date()
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+      const thirtyDaysAgoStr = thirtyDaysAgo.toISOString()
+
+      const oldReminderLogs = await db.reminderLogs
+        .filter((log) => log.triggered_at < thirtyDaysAgoStr)
+        .toArray()
+
+      if (oldReminderLogs.length > 0) {
+        await db.reminderLogs.bulkDelete(oldReminderLogs.map((l) => l.id))
+        result.deletedRecords += oldReminderLogs.length
+        result.details.reminderLogs = oldReminderLogs.length
+      }
+    } catch (e) {
+      console.error("Error cleaning up reminder logs:", e)
+    }
+  }
+
+  // Calculate estimated freed space (~2KB per record)
+  result.freedBytes = result.deletedRecords * 2048
+
+  return result
+}
+
+/**
+ * Vacuum/compact the database (rebuild indexes)
+ * This can help after major deletions
+ */
+export async function compactDatabase(): Promise<void> {
+  // IndexedDB doesn't have a direct vacuum, but we can export/import
+  // For now, this is a placeholder for future implementation
+  if (process.env.NODE_ENV === "development") {
+    console.log("[DB] Compact requested - no action needed for IndexedDB")
+  }
+}
+
+/**
+ * Export database to JSON for backup
+ */
+export async function exportDatabase(): Promise<Record<string, unknown[]>> {
+  const tables = [
+    "logs",
+    "items",
+    "content",
+    "categories",
+    "tags",
+    "units",
+    "accounts",
+    "exercises",
+    "goals",
+    "habits",
+    "habitLogs",
+    "streaks",
+    "sleepLogs",
+    "waterLogs",
+    "moodLogs",
+    "bodyMeasurements",
+    "reminders",
+    "reminderLogs",
+    "templates",
+    "recurringTransactions",
+  ]
+
+  const backup: Record<string, unknown[]> = {}
+
+  for (const table of tables) {
+    try {
+      backup[table] = await (db as any)[table].toArray()
+    } catch {
+      backup[table] = []
+    }
+  }
+
+  return backup
+}
+
+/**
+ * Import database from JSON backup
+ */
+export async function importDatabase(backup: Record<string, unknown[]>): Promise<void> {
+  for (const [table, records] of Object.entries(backup)) {
+    try {
+      await (db as any)[table].clear()
+      if (records.length > 0) {
+        await (db as any)[table].bulkAdd(records)
+      }
+    } catch (e) {
+      console.error(`Error importing ${table}:`, e)
+    }
   }
 }
