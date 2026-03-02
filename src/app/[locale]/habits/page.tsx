@@ -28,7 +28,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
-import { habitColors } from "@/lib/theme-colors"
+import { habitColors, habitStatusColors } from "@/lib/theme-colors"
 import { cn } from "@/lib/utils"
 import {
   db,
@@ -417,7 +417,7 @@ function HabitsContent() {
                       <Button
                         variant={isCompleted ? "default" : "outline"}
                         size="icon"
-                        className={`h-12 w-12 rounded-full ${isCompleted ? "bg-green-500 hover:bg-green-600" : ""}`}
+                        className={`h-12 w-12 rounded-full ${isCompleted ? `${habitStatusColors.completed.DEFAULT} hover:bg-[oklch(0.64_0.30_138)]` : ""}`}
                         onClick={() => toggleHabit(habit.id)}
                         aria-label={
                           isCompleted ? t("actions.markIncomplete") : t("actions.markComplete")
@@ -435,7 +435,9 @@ function HabitsContent() {
                         <div className="flex items-center gap-2">
                           <h3 className="font-medium">{habit.name}</h3>
                           {isNegativeHabit && (
-                            <span className="text-xs bg-red-500/10 text-red-500 px-2 py-0.5 rounded-full">
+                            <span
+                              className={`text-xs ${habitStatusColors.negative.light} ${habitStatusColors.negative.text} px-2 py-0.5 rounded-full`}
+                            >
                               {t("types.negative")}
                             </span>
                           )}
@@ -529,13 +531,13 @@ function HabitsContent() {
                           <div
                             className={`h-8 w-8 rounded-full flex items-center justify-center ${
                               day.completed
-                                ? "bg-green-500 text-white"
+                                ? habitStatusColors.completed.DEFAULT
                                 : day.skipped
-                                  ? "bg-orange-500/30 text-orange-500"
+                                  ? habitStatusColors.skipped.DEFAULT
                                   : day.isToday
                                     ? "border-2 border-dashed border-muted-foreground/30"
                                     : day.isWeekend
-                                      ? "bg-orange-500/10"
+                                      ? habitStatusColors.weekend.light
                                       : "bg-muted"
                             }`}
                           >
@@ -918,13 +920,15 @@ function HabitsContent() {
                 <div
                   key={st.id}
                   className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${
-                    st.completed ? "bg-green-500/10" : "bg-muted"
+                    st.completed ? habitStatusColors.completed.light : "bg-muted"
                   }`}
                   onClick={() => toggleSubtask(viewingSubtasks.id, st.id)}
                 >
                   <div
                     className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
-                      st.completed ? "border-green-500 bg-green-500" : "border-muted-foreground"
+                      st.completed
+                        ? "border-[oklch(0.74_0.30_138)] " + habitStatusColors.completed.DEFAULT
+                        : "border-muted-foreground"
                     }`}
                   >
                     {st.completed && <Check className="h-4 w-4 text-white" />}

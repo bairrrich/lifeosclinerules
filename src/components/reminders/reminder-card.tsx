@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge"
 import { db, updateEntity } from "@/lib/db"
 import { getReminderTypesConfig, getPriorityConfig, getDayNames } from "./reminder-form"
 import type { Reminder } from "@/types"
+import { priorityColors } from "@/lib/theme-colors"
 
 interface ReminderCardProps {
   reminder: Reminder
@@ -201,7 +202,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
                       key={i}
                       className={`w-4 h-4 rounded-full border-2 ${
                         i < completedToday
-                          ? "bg-green-500 border-green-500"
+                          ? priorityColors.high.DEFAULT + " border-[oklch(0.74_0.30_138)]"
                           : "border-muted-foreground/30"
                       }`}
                     />
@@ -226,7 +227,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
                 </Badge>
               )}
               {isLimitReached && (
-                <Badge variant="default" className="text-xs bg-green-500">
+                <Badge variant="default" className={`text-xs ${priorityColors.high.DEFAULT}`}>
                   <CheckCircle2 className="h-3 w-3 mr-1" />
                   {t("reminderCard.completed")}
                 </Badge>

@@ -307,7 +307,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                 onClick={() => updateField("ice_type", it.value)}
                 className={`px-2 py-1.5 text-xs rounded-lg border transition-colors ${
                   metadata.ice_type === it.value
-                    ? "bg-cyan-500 text-white border-cyan-500"
+                    ? `${recipeColors.drink.DEFAULT} text-white border-[oklch(0.70_0.30_208)]`
                     : "bg-background hover:bg-accent"
                 }`}
               >

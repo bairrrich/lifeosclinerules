@@ -19,6 +19,7 @@ import {
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { moduleColors } from "@/lib/theme-colors"
 import {
   Dialog,
   DialogContent,
@@ -53,11 +54,21 @@ import {
 
 function getTemplateTypes(t: any) {
   return [
-    { key: "food" as const, label: t("types.food"), icon: Utensils, color: "text-green-500" },
-    { key: "workout" as const, label: t("types.workout"), icon: Dumbbell, color: "text-blue-500" },
-    { key: "water" as const, label: t("types.water"), icon: Droplet, color: "text-cyan-500" },
-    { key: "sleep" as const, label: t("types.sleep"), icon: Moon, color: "text-purple-500" },
-    { key: "mood" as const, label: t("types.mood"), icon: Smile, color: "text-yellow-500" },
+    { key: "food" as const, label: t("types.food"), icon: Utensils, color: moduleColors.food.text },
+    {
+      key: "workout" as const,
+      label: t("types.workout"),
+      icon: Dumbbell,
+      color: moduleColors.workout.text,
+    },
+    {
+      key: "water" as const,
+      label: t("types.water"),
+      icon: Droplet,
+      color: moduleColors.water.text,
+    },
+    { key: "sleep" as const, label: t("types.sleep"), icon: Moon, color: moduleColors.sleep.text },
+    { key: "mood" as const, label: t("types.mood"), icon: Smile, color: moduleColors.mood.text },
   ]
 }
 

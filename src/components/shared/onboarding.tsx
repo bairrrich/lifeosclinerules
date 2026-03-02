@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { db } from "@/lib/db"
+import { moduleColors } from "@/lib/theme-colors"
 
 const ONBOARDING_KEY = "life-os-onboarding-completed"
 
@@ -116,7 +117,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       case "content":
         return { icon: null, color: "", bgColor: "" }
       case "offline":
-        return { icon: Check, color: "text-green-500", bgColor: "bg-green-500/10" }
+        return { icon: Check, color: moduleColors.habits.text, bgColor: moduleColors.habits.light }
       default:
         return { icon: null, color: "", bgColor: "" }
     }
@@ -129,16 +130,16 @@ export function Onboarding({ onComplete }: OnboardingProps) {
   const getFeatures = () => {
     if (stepId === "trackers") {
       return [
-        { icon: Utensils, label: t("trackers.nutrition"), color: "text-orange-500" },
-        { icon: Dumbbell, label: t("trackers.workouts"), color: "text-blue-500" },
-        { icon: Wallet, label: t("trackers.finance"), color: "text-green-500" },
-        { icon: Droplet, label: t("trackers.water"), color: "text-cyan-500" },
+        { icon: Utensils, label: t("trackers.nutrition"), color: moduleColors.food.text },
+        { icon: Dumbbell, label: t("trackers.workouts"), color: moduleColors.workout.text },
+        { icon: Wallet, label: t("trackers.finance"), color: moduleColors.finance.text },
+        { icon: Droplet, label: t("trackers.water"), color: moduleColors.water.text },
       ]
     }
     if (stepId === "content") {
       return [
-        { icon: BookOpen, label: t("content.books"), color: "text-amber-500" },
-        { icon: ChefHat, label: t("content.recipes"), color: "text-rose-500" },
+        { icon: BookOpen, label: t("content.books"), color: moduleColors.books.text },
+        { icon: ChefHat, label: t("content.recipes"), color: moduleColors.recipes.text },
       ]
     }
     return []

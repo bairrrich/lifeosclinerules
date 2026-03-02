@@ -26,6 +26,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { db } from "@/lib/db"
+import { priorityColors } from "@/lib/theme-colors"
 
 type ExportFormat = "json" | "csv"
 
@@ -573,7 +574,9 @@ export function BackupManager() {
       {toast && (
         <div
           className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 ${
-            toast.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"
+            toast.type === "success"
+              ? priorityColors.high.DEFAULT + " text-white"
+              : priorityColors.critical.DEFAULT + " text-white"
           }`}
         >
           {toast.type === "success" ? (

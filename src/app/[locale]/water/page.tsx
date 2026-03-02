@@ -9,16 +9,17 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { db, initializeDatabase, createEntity } from "@/lib/db"
 import type { WaterLog, Goal } from "@/types"
+import { moduleColors, waterDrinkColors } from "@/lib/theme-colors"
 import { WaterReminderSettings } from "@/components/water/water-reminder-settings"
 
 const waterAmounts = [150, 200, 250, 300, 500]
 
 function getDrinkTypes(t: any) {
   return [
-    { type: "water", label: t("types.water"), icon: Droplet, color: "text-blue-500" },
-    { type: "tea", label: t("types.tea"), icon: GlassWater, color: "text-amber-500" },
-    { type: "coffee", label: t("types.coffee"), icon: Coffee, color: "text-orange-700" },
-    { type: "other", label: t("types.other"), icon: CupSoda, color: "text-purple-500" },
+    { type: "water", label: t("types.water"), icon: Droplet, color: waterDrinkColors.water.text },
+    { type: "tea", label: t("types.tea"), icon: GlassWater, color: waterDrinkColors.tea.text },
+    { type: "coffee", label: t("types.coffee"), icon: Coffee, color: waterDrinkColors.coffee.text },
+    { type: "other", label: t("types.other"), icon: CupSoda, color: waterDrinkColors.other.text },
   ]
 }
 
@@ -227,7 +228,7 @@ export default function WaterPage() {
                   <Card key={log.id} className="group">
                     <CardContent className="p-3 flex items-center gap-3">
                       <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10`}
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl ${moduleColors.water.light}`}
                       >
                         <IconComponent className={`h-5 w-5 ${drinkType.color}`} />
                       </div>

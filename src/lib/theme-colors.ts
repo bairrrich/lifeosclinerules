@@ -5,12 +5,11 @@
  * Формат: oklch(L C H) - L (lightness 0-1), C (chroma), H (hue 0-360)
  *
  * @example
- * import { moduleColors } from "@/lib/theme-colors"
+ * import { moduleColors, getModuleColor } from "@/lib/theme-colors"
  *
  * <div className={moduleColors.food.light}>...</div>
- * <div className={moduleColors.workout.text}>...</div>
+ * <div className={getModuleColor('workout', 'DEFAULT')}>...</div>
  */
-
 import { cn } from "@/lib/utils"
 
 /** Типы модулей в приложении */
@@ -30,548 +29,525 @@ export type ModuleType =
 
 /** Интерфейс цветовой схемы модуля */
 export interface ModuleColorScheme {
-  /** Фоновый цвет (обычно light версия) */
   light: string
-  /** Основной фоновый цвет */
   DEFAULT: string
-  /** Цвет текста */
   text: string
-  /** Цвет границы */
   border: string
-  /** Glow тень (опционально) */
   shadow?: string
 }
 
 /**
- * OKLCH цветовые схемы для модулей
- * oklch(L C H) - L: lightness (0-1), C: chroma, H: hue (0-360)
+ * Яркая насыщенная OKLCH-палитра 2026
+ * chroma 0.18–0.34, lightness 66–90%
  */
 export const moduleColors: Record<ModuleType, ModuleColorScheme> = {
   food: {
-    // oklch(90% 0.055 70) - высокая lightness, низкая chroma
-    light: "bg-[oklch(0.90_0.055_70)]",
-    DEFAULT: "bg-[oklch(0.85_0.055_70)]",
-    text: "text-[oklch(0.90_0.055_70)]",
-    border: "border-[oklch(0.90_0.055_70)/0.3]",
-    shadow: "shadow-[oklch(0.90_0.055_70)/0.15]",
+    light: "bg-[oklch(0.88_0.22_68)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_68)]",
+    text: "text-[oklch(0.88_0.22_68)]",
+    border: "border-[oklch(0.76_0.28_68)/0.45]",
+    shadow: "shadow-[oklch(0.76_0.28_68)/0.32]",
   },
   workout: {
-    // oklch(84% 0.07 225)
-    light: "bg-[oklch(0.84_0.07_225)]",
-    DEFAULT: "bg-[oklch(0.79_0.07_225)]",
-    text: "text-[oklch(0.84_0.07_225)]",
-    border: "border-[oklch(0.84_0.07_225)/0.3]",
-    shadow: "shadow-[oklch(0.84_0.07_225)/0.15]",
+    light: "bg-[oklch(0.82_0.24_218)]",
+    DEFAULT: "bg-[oklch(0.70_0.30_218)]",
+    text: "text-[oklch(0.82_0.24_218)]",
+    border: "border-[oklch(0.70_0.30_218)/0.45]",
+    shadow: "shadow-[oklch(0.70_0.30_218)/0.32]",
   },
   finance: {
-    // oklch(85% 0.065 200) - информационный синий
-    light: "bg-[oklch(0.85_0.065_200)]",
-    DEFAULT: "bg-[oklch(0.80_0.065_200)]",
-    text: "text-[oklch(0.85_0.065_200)]",
-    border: "border-[oklch(0.85_0.065_200)/0.3]",
-    shadow: "shadow-[oklch(0.85_0.065_200)/0.15]",
+    light: "bg-[oklch(0.85_0.22_145)]",
+    DEFAULT: "bg-[oklch(0.73_0.28_145)]",
+    text: "text-[oklch(0.85_0.22_145)]",
+    border: "border-[oklch(0.73_0.28_145)/0.45]",
+    shadow: "shadow-[oklch(0.73_0.28_145)/0.32]",
   },
   water: {
-    // oklch(92% 0.04 210)
-    light: "bg-[oklch(0.92_0.04_210)]",
-    DEFAULT: "bg-[oklch(0.87_0.04_210)]",
-    text: "text-[oklch(0.92_0.04_210)]",
-    border: "border-[oklch(0.92_0.04_210)/0.3]",
-    shadow: "shadow-[oklch(0.92_0.04_210)/0.15]",
+    light: "bg-[oklch(0.90_0.20_208)]",
+    DEFAULT: "bg-[oklch(0.78_0.26_208)]",
+    text: "text-[oklch(0.90_0.20_208)]",
+    border: "border-[oklch(0.78_0.26_208)/0.45]",
+    shadow: "shadow-[oklch(0.78_0.26_208)/0.32]",
   },
   sleep: {
-    // oklch(80% 0.05 275) - индиго
-    light: "bg-[oklch(0.80_0.05_275)]",
-    DEFAULT: "bg-[oklch(0.75_0.05_275)]",
-    text: "text-[oklch(0.80_0.05_275)]",
-    border: "border-[oklch(0.80_0.05_275)/0.3]",
-    shadow: "shadow-[oklch(0.80_0.05_275)/0.15]",
+    light: "bg-[oklch(0.78_0.22_278)]",
+    DEFAULT: "bg-[oklch(0.66_0.28_278)]",
+    text: "text-[oklch(0.78_0.22_278)]",
+    border: "border-[oklch(0.66_0.28_278)/0.45]",
+    shadow: "shadow-[oklch(0.66_0.28_278)/0.32]",
   },
   mood: {
-    // oklch(89% 0.065 320)
-    light: "bg-[oklch(0.89_0.065_320)]",
-    DEFAULT: "bg-[oklch(0.84_0.065_320)]",
-    text: "text-[oklch(0.89_0.065_320)]",
-    border: "border-[oklch(0.89_0.065_320)/0.3]",
-    shadow: "shadow-[oklch(0.89_0.065_320)/0.15]",
+    light: "bg-[oklch(0.86_0.25_312)]",
+    DEFAULT: "bg-[oklch(0.74_0.31_312)]",
+    text: "text-[oklch(0.86_0.25_312)]",
+    border: "border-[oklch(0.74_0.31_312)/0.45]",
+    shadow: "shadow-[oklch(0.74_0.31_312)/0.32]",
   },
   books: {
-    // oklch(82% 0.035 45)
-    light: "bg-[oklch(0.82_0.035_45)]",
-    DEFAULT: "bg-[oklch(0.77_0.035_45)]",
-    text: "text-[oklch(0.82_0.035_45)]",
-    border: "border-[oklch(0.82_0.035_45)/0.3]",
-    shadow: "shadow-[oklch(0.82_0.035_45)/0.15]",
+    light: "bg-[oklch(0.82_0.18_48)]",
+    DEFAULT: "bg-[oklch(0.70_0.24_48)]",
+    text: "text-[oklch(0.82_0.18_48)]",
+    border: "border-[oklch(0.70_0.24_48)/0.45]",
+    shadow: "shadow-[oklch(0.70_0.24_48)/0.32]",
   },
   recipes: {
-    // oklch(93% 0.05 55)
-    light: "bg-[oklch(0.93_0.05_55)]",
-    DEFAULT: "bg-[oklch(0.88_0.05_55)]",
-    text: "text-[oklch(0.93_0.05_55)]",
-    border: "border-[oklch(0.93_0.05_55)/0.3]",
-    shadow: "shadow-[oklch(0.93_0.05_55)/0.15]",
+    light: "bg-[oklch(0.90_0.24_58)]",
+    DEFAULT: "bg-[oklch(0.80_0.30_58)]",
+    text: "text-[oklch(0.90_0.24_58)]",
+    border: "border-[oklch(0.80_0.30_58)/0.45]",
+    shadow: "shadow-[oklch(0.80_0.30_58)/0.32]",
   },
   habits: {
-    // oklch(88% 0.045 125)
-    light: "bg-[oklch(0.88_0.045_125)]",
-    DEFAULT: "bg-[oklch(0.83_0.045_125)]",
-    text: "text-[oklch(0.88_0.045_125)]",
-    border: "border-[oklch(0.88_0.045_125)/0.3]",
-    shadow: "shadow-[oklch(0.88_0.045_125)/0.15]",
+    light: "bg-[oklch(0.86_0.21_118)]",
+    DEFAULT: "bg-[oklch(0.74_0.27_118)]",
+    text: "text-[oklch(0.86_0.21_118)]",
+    border: "border-[oklch(0.74_0.27_118)/0.45]",
+    shadow: "shadow-[oklch(0.74_0.27_118)/0.32]",
   },
   goals: {
-    // oklch(83% 0.08 30)
-    light: "bg-[oklch(0.83_0.08_30)]",
-    DEFAULT: "bg-[oklch(0.78_0.08_30)]",
-    text: "text-[oklch(0.83_0.08_30)]",
-    border: "border-[oklch(0.83_0.08_30)/0.3]",
-    shadow: "shadow-[oklch(0.83_0.08_30)/0.15]",
+    light: "bg-[oklch(0.80_0.28_38)]",
+    DEFAULT: "bg-[oklch(0.68_0.34_38)]",
+    text: "text-[oklch(0.80_0.28_38)]",
+    border: "border-[oklch(0.68_0.34_38)/0.45]",
+    shadow: "shadow-[oklch(0.68_0.34_38)/0.38]",
   },
   logs: {
-    // oklch(86% 0.025 250)
-    light: "bg-[oklch(0.86_0.025_250)]",
-    DEFAULT: "bg-[oklch(0.81_0.025_250)]",
-    text: "text-[oklch(0.86_0.025_250)]",
-    border: "border-[oklch(0.86_0.025_250)/0.3]",
-    shadow: "shadow-[oklch(0.86_0.025_250)/0.08]",
+    light: "bg-[oklch(0.82_0.17_242)]",
+    DEFAULT: "bg-[oklch(0.70_0.23_242)]",
+    text: "text-[oklch(0.82_0.17_242)]",
+    border: "border-[oklch(0.70_0.23_242)/0.45]",
+    shadow: "shadow-[oklch(0.70_0.23_242)/0.28]",
   },
   settings: {
-    // oklch(55% 0.02 0) - нейтральный серый
-    light: "bg-[oklch(0.65_0.01_0)]",
-    DEFAULT: "bg-[oklch(0.55_0.02_0)]",
-    text: "text-[oklch(0.55_0.02_0)]",
-    border: "border-[oklch(0.55_0.02_0)/0.3]",
-    shadow: "shadow-[oklch(0.55_0.02_0)/0.08]",
+    light: "bg-[oklch(0.72_0.14_255)]",
+    DEFAULT: "bg-[oklch(0.58_0.18_255)]",
+    text: "text-[oklch(0.72_0.14_255)]",
+    border: "border-[oklch(0.58_0.18_255)/0.45]",
+    shadow: "shadow-[oklch(0.58_0.18_255)/0.22]",
   },
 }
 
-/**
- * Цвета для финансовых операций
- */
+/** Цвета для финансовых операций */
 export const financeColors = {
   income: {
-    // oklch(87% 0.06 150) - зелёный
-    light: "bg-[oklch(0.87_0.06_150)]",
-    DEFAULT: "bg-[oklch(0.82_0.06_150)]",
-    text: "text-[oklch(0.87_0.06_150)]",
+    light: "bg-[oklch(0.86_0.26_138)]", // ↑ chroma до 0.26
+    DEFAULT: "bg-[oklch(0.74_0.32_138)]", // 0.32 — как у goals/expense
+    text: "text-[oklch(0.86_0.26_138)]",
   },
   expense: {
-    // oklch(82% 0.075 25) - красный/розовато-оранжевый
-    light: "bg-[oklch(0.82_0.075_25)]",
-    DEFAULT: "bg-[oklch(0.77_0.075_25)]",
-    text: "text-[oklch(0.82_0.075_25)]",
+    light: "bg-[oklch(0.80_0.30_18)]", // было 0.28 → 0.30
+    DEFAULT: "bg-[oklch(0.68_0.36_18)]", // было 0.34 → 0.36 для максимального акцента
+    text: "text-[oklch(0.80_0.30_18)]",
   },
   transfer: {
-    // oklch(85% 0.065 200) - синий
-    light: "bg-[oklch(0.85_0.065_200)]",
-    DEFAULT: "bg-[oklch(0.80_0.065_200)]",
-    text: "text-[oklch(0.85_0.065_200)]",
+    light: "bg-[oklch(0.82_0.26_208)]", // ↑ до 0.26
+    DEFAULT: "bg-[oklch(0.70_0.32_208)]", // ↑ до 0.32
+    text: "text-[oklch(0.82_0.26_208)]",
   },
-} as const
-
-/**
- * Цвета для типов логов (food, workout, finance)
- * Используются для иконок в списках
- */
-export const logTypeColors = {
-  food: {
-    DEFAULT: "bg-[oklch(0.90_0.055_70)] text-white",
-    light: "bg-[oklch(0.90_0.055_70)]/10 text-[oklch(0.90_0.055_70)]",
-  },
-  workout: {
-    DEFAULT: "bg-[oklch(0.84_0.07_225)] text-white",
-    light: "bg-[oklch(0.84_0.07_225)]/10 text-[oklch(0.84_0.07_225)]",
-  },
-  finance: {
-    DEFAULT: "bg-[oklch(0.85_0.065_200)] text-white",
-    light: "bg-[oklch(0.85_0.065_200)]/10 text-[oklch(0.85_0.065_200)]",
-  },
-  finance_income: {
-    DEFAULT: "bg-[oklch(0.87_0.06_150)] text-white",
-    light: "bg-[oklch(0.87_0.06_150)]/10 text-[oklch(0.87_0.06_150)]",
-  },
-  finance_expense: {
-    DEFAULT: "bg-[oklch(0.82_0.075_25)] text-white",
-    light: "bg-[oklch(0.82_0.075_25)]/10 text-[oklch(0.82_0.075_25)]",
-  },
-  finance_transfer: {
-    DEFAULT: "bg-[oklch(0.85_0.065_200)] text-white",
-    light: "bg-[oklch(0.85_0.065_200)]/10 text-[oklch(0.85_0.065_200)]",
-  },
-} as const
-
-/**
- * Цвета для типов тренировок
- */
-export const workoutColors = {
-  strength: {
-    // oklch(82% 0.075 25) - красный
-    light: "bg-[oklch(0.82_0.075_25)]",
-    DEFAULT: "bg-[oklch(0.77_0.075_25)]",
-    text: "text-[oklch(0.82_0.075_25)]",
-  },
-  cardio: {
-    // oklch(84% 0.07 225) - синий
-    light: "bg-[oklch(0.84_0.07_225)]",
-    DEFAULT: "bg-[oklch(0.79_0.07_225)]",
-    text: "text-[oklch(0.84_0.07_225)]",
-  },
-  yoga: {
-    // oklch(88% 0.045 125) - зелёный
-    light: "bg-[oklch(0.88_0.045_125)]",
-    DEFAULT: "bg-[oklch(0.83_0.045_125)]",
-    text: "text-[oklch(0.88_0.045_125)]",
-  },
-  stretching: {
-    // oklch(92% 0.04 210) - бирюзовый
-    light: "bg-[oklch(0.92_0.04_210)]",
-    DEFAULT: "bg-[oklch(0.87_0.04_210)]",
-    text: "text-[oklch(0.92_0.04_210)]",
-  },
-} as const
-
-/**
- * Цвета для типов еды
- */
-export const foodColors = {
-  breakfast: {
-    // oklch(89% 0.065 320) - жёлтый
-    light: "bg-[oklch(0.89_0.065_320)]",
-    DEFAULT: "bg-[oklch(0.84_0.065_320)]",
-    text: "text-[oklch(0.89_0.065_320)]",
-  },
-  lunch: {
-    // oklch(90% 0.055 70) - оранжевый
-    light: "bg-[oklch(0.90_0.055_70)]",
-    DEFAULT: "bg-[oklch(0.85_0.055_70)]",
-    text: "text-[oklch(0.90_0.055_70)]",
-  },
-  dinner: {
-    // oklch(83% 0.08 30) - тёмный оранжевый
-    light: "bg-[oklch(0.83_0.08_30)]",
-    DEFAULT: "bg-[oklch(0.78_0.08_30)]",
-    text: "text-[oklch(0.83_0.08_30)]",
-  },
-  snack: {
-    // oklch(88% 0.045 125) - зелёный
-    light: "bg-[oklch(0.88_0.045_125)]",
-    DEFAULT: "bg-[oklch(0.83_0.045_125)]",
-    text: "text-[oklch(0.88_0.045_125)]",
-  },
-} as const
-
-/**
- * Цвета для типов рецептов
- */
-export const recipeColors = {
-  food: {
-    light: "bg-[oklch(0.90_0.055_70)]/10 text-[oklch(0.90_0.055_70)]",
-    DEFAULT: "bg-[oklch(0.85_0.055_70)] text-white",
-    text: "text-[oklch(0.90_0.055_70)]",
-  },
-  drink: {
-    light: "bg-[oklch(0.85_0.065_200)]/10 text-[oklch(0.85_0.065_200)]",
-    DEFAULT: "bg-[oklch(0.80_0.065_200)] text-white",
-    text: "text-[oklch(0.85_0.065_200)]",
-  },
-  cocktail: {
-    light: "bg-[oklch(0.83_0.08_30)]/10 text-[oklch(0.83_0.08_30)]",
-    DEFAULT: "bg-[oklch(0.78_0.08_30)] text-white",
-    text: "text-[oklch(0.83_0.08_30)]",
-  },
-} as const
-
-/**
- * Цвета для типов контента (book, recipe)
- */
-export const contentTypeColors = {
-  book: {
-    // oklch(82% 0.035 45) - коричневый
-    light: "bg-[oklch(0.82_0.035_45)]/10 text-[oklch(0.82_0.035_45)]",
-    DEFAULT: "bg-[oklch(0.82_0.035_45)] text-white",
-  },
-  recipe: {
-    // oklch(93% 0.05 55) - жёлтый
-    light: "bg-[oklch(0.93_0.05_55)]/10 text-[oklch(0.93_0.05_55)]",
-    DEFAULT: "bg-[oklch(0.93_0.05_55)] text-white",
-  },
-} as const
-
-/**
- * Цвета для статусов книг
- */
-export const bookStatusColors = {
-  planned: {
-    light: "bg-[oklch(0.86_0.025_250)]/10 text-[oklch(0.86_0.025_250)]",
-    DEFAULT: "bg-[oklch(0.81_0.025_250)] text-white",
-    text: "text-[oklch(0.86_0.025_250)]",
-  },
-  reading: {
-    light: "bg-[oklch(0.85_0.065_200)]/10 text-[oklch(0.85_0.065_200)]",
-    DEFAULT: "bg-[oklch(0.80_0.065_200)] text-white",
-    text: "text-[oklch(0.85_0.065_200)]",
-  },
-  completed: {
-    light: "bg-[oklch(0.87_0.06_150)]/10 text-[oklch(0.87_0.06_150)]",
-    DEFAULT: "bg-[oklch(0.82_0.06_150)] text-white",
-    text: "text-[oklch(0.87_0.06_150)]",
-  },
-  paused: {
-    light: "bg-[oklch(0.89_0.065_320)]/10 text-[oklch(0.89_0.065_320)]",
-    DEFAULT: "bg-[oklch(0.84_0.065_320)] text-white",
-    text: "text-[oklch(0.89_0.065_320)]",
-  },
-  dropped: {
-    light: "bg-[oklch(0.82_0.075_25)]/10 text-[oklch(0.82_0.075_25)]",
-    DEFAULT: "bg-[oklch(0.77_0.075_25)] text-white",
-    text: "text-[oklch(0.82_0.075_25)]",
-  },
-} as const
-
-/**
- * Цвета для приоритетов
- */
-export const priorityColors = {
-  low: {
-    light: "bg-[oklch(0.86_0.025_250)]/10 text-[oklch(0.86_0.025_250)]",
-    DEFAULT: "bg-[oklch(0.81_0.025_250)] text-white",
-    text: "text-[oklch(0.86_0.025_250)]",
-  },
-  medium: {
-    light: "bg-[oklch(0.85_0.065_200)]/10 text-[oklch(0.85_0.065_200)]",
-    DEFAULT: "bg-[oklch(0.80_0.065_200)] text-white",
-    text: "text-[oklch(0.85_0.065_200)]",
-  },
-  high: {
-    light: "bg-[oklch(0.90_0.055_70)]/10 text-[oklch(0.90_0.055_70)]",
-    DEFAULT: "bg-[oklch(0.85_0.055_70)] text-white",
-    text: "text-[oklch(0.90_0.055_70)]",
-  },
-  critical: {
-    light: "bg-[oklch(0.82_0.075_25)]/10 text-[oklch(0.82_0.075_25)]",
-    DEFAULT: "bg-[oklch(0.77_0.075_25)] text-white",
-    text: "text-[oklch(0.82_0.075_25)]",
-  },
-} as const
-
-/**
- * Цвета для типов items (витамины, лекарства, травы, косметика, средства)
- */
-export const itemColors = {
-  vitamin: {
-    light: "bg-[oklch(0.90_0.055_70)]/10 text-[oklch(0.90_0.055_70)]",
-    DEFAULT: "bg-[oklch(0.85_0.055_70)] text-white",
-    text: "text-[oklch(0.90_0.055_70)]",
-  },
-  medicine: {
-    light: "bg-[oklch(0.82_0.075_25)]/10 text-[oklch(0.82_0.075_25)]",
-    DEFAULT: "bg-[oklch(0.77_0.075_25)] text-white",
-    text: "text-[oklch(0.82_0.075_25)]",
-  },
-  herb: {
-    light: "bg-[oklch(0.88_0.045_125)]/10 text-[oklch(0.88_0.045_125)]",
-    DEFAULT: "bg-[oklch(0.83_0.045_125)] text-white",
-    text: "text-[oklch(0.88_0.045_125)]",
-  },
-  cosmetic: {
-    light: "bg-[oklch(0.89_0.065_320)]/10 text-[oklch(0.89_0.065_320)]",
-    DEFAULT: "bg-[oklch(0.84_0.065_320)] text-white",
-    text: "text-[oklch(0.89_0.065_320)]",
-  },
-  product: {
-    light: "bg-[oklch(0.90_0.08_90)]/10 text-[oklch(0.90_0.08_90)]",
-    DEFAULT: "bg-[oklch(0.85_0.08_90)] text-white",
-    text: "text-[oklch(0.90_0.08_90)]",
-  },
-} as const
-
-/**
- * Цвета для прогресса (goals)
- */
-export const progressColors = {
-  complete: {
-    DEFAULT: "bg-[oklch(0.87_0.06_150)]",
-  },
-  almost: {
-    DEFAULT: "bg-[oklch(0.90_0.055_70)]",
-  },
-  halfway: {
-    DEFAULT: "bg-[oklch(0.85_0.065_200)]",
-  },
-  low: {
-    DEFAULT: "bg-[oklch(0.80_0.065_200)]",
-  },
-} as const
-
-/**
- * Цвета для статусов привычек
- */
-export const habitStatusColors = {
-  completed: {
-    light: "bg-[oklch(0.87_0.06_150)]",
-    DEFAULT: "bg-[oklch(0.82_0.06_150)]",
-    text: "text-[oklch(0.87_0.06_150)]",
-  },
-  skipped: {
-    light: "bg-[oklch(0.90_0.055_70)]/30 text-[oklch(0.90_0.055_70)]",
-    DEFAULT: "bg-[oklch(0.85_0.055_70)]",
-    text: "text-[oklch(0.90_0.055_70)]",
-  },
-  negative: {
-    light: "bg-[oklch(0.82_0.075_25)]/10 text-[oklch(0.82_0.075_25)]",
-    DEFAULT: "bg-[oklch(0.77_0.075_25)]",
-    text: "text-[oklch(0.82_0.075_25)]",
-  },
-  weekend: {
-    light: "bg-[oklch(0.90_0.055_70)]/10",
-    DEFAULT: "",
-    text: "text-[oklch(0.90_0.055_70)]/70",
-  },
-} as const
-
-/**
- * Цвет для FAB - яркий терракотовый (oklch(0.70 0.25 40))
- */
-export const fabColor = {
-  light: "bg-[oklch(0.75_0.20_40)]",
-  DEFAULT: "bg-[oklch(0.70_0.25_40)]",
-  text: "text-white",
-  shadow: "shadow-[oklch(0.70_0.25_40)/0.25]",
 }
 
-/**
- * Палитра цветов для привычек
- */
+/** Цвета для типов тренировок */
+export const workoutColors = {
+  strength: {
+    light: "bg-[oklch(0.78_0.30_28)]", // ↑ chroma
+    DEFAULT: "bg-[oklch(0.66_0.36_28)]", // агрессивный красный/оранж
+    text: "text-[oklch(0.78_0.30_28)]",
+  },
+  cardio: {
+    light: "bg-[oklch(0.82_0.28_215)]",
+    DEFAULT: "bg-[oklch(0.70_0.34_215)]",
+    text: "text-[oklch(0.82_0.28_215)]",
+  },
+  yoga: {
+    light: "bg-[oklch(0.84_0.26_122)]",
+    DEFAULT: "bg-[oklch(0.72_0.32_122)]",
+    text: "text-[oklch(0.84_0.26_122)]",
+  },
+  stretching: {
+    light: "bg-[oklch(0.88_0.24_198)]",
+    DEFAULT: "bg-[oklch(0.76_0.30_198)]",
+    text: "text-[oklch(0.88_0.24_198)]",
+  },
+}
+
+/** Цвета для типов еды */
+export const foodColors = {
+  breakfast: {
+    light: "bg-[oklch(0.90_0.26_78)]", // ↑ chroma для утренней свежести
+    DEFAULT: "bg-[oklch(0.80_0.32_78)]",
+    text: "text-[oklch(0.90_0.26_78)]",
+  },
+  lunch: {
+    light: "bg-[oklch(0.88_0.28_65)]",
+    DEFAULT: "bg-[oklch(0.76_0.34_65)]",
+    text: "text-[oklch(0.88_0.28_65)]",
+  },
+  dinner: {
+    light: "bg-[oklch(0.82_0.28_45)]",
+    DEFAULT: "bg-[oklch(0.70_0.34_45)]",
+    text: "text-[oklch(0.82_0.28_45)]",
+  },
+  snack: {
+    light: "bg-[oklch(0.86_0.24_110)]",
+    DEFAULT: "bg-[oklch(0.74_0.30_110)]",
+    text: "text-[oklch(0.86_0.24_110)]",
+  },
+}
+
+/** Цвета для типов рецептов */
+export const recipeColors = {
+  food: {
+    light: "bg-[oklch(0.88_0.22_68)]/15 text-[oklch(0.88_0.22_68)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_68)] text-white",
+    text: "text-[oklch(0.88_0.22_68)]",
+  },
+  drink: {
+    light: "bg-[oklch(0.82_0.24_208)]/15 text-[oklch(0.82_0.24_208)]",
+    DEFAULT: "bg-[oklch(0.70_0.30_208)] text-white",
+    text: "text-[oklch(0.82_0.24_208)]",
+  },
+  cocktail: {
+    light: "bg-[oklch(0.80_0.26_38)]/15 text-[oklch(0.80_0.26_38)]",
+    DEFAULT: "bg-[oklch(0.68_0.32_38)] text-white",
+    text: "text-[oklch(0.80_0.26_38)]",
+  },
+}
+
+/** Цвета для статусов книг */
+export const bookStatusColors = {
+  planned: {
+    light: "bg-[oklch(0.82_0.17_242)]/15 text-[oklch(0.82_0.17_242)]",
+    DEFAULT: "bg-[oklch(0.70_0.23_242)] text-white",
+    text: "text-[oklch(0.82_0.17_242)]",
+  },
+  reading: {
+    light: "bg-[oklch(0.82_0.24_208)]/15 text-[oklch(0.82_0.24_208)]",
+    DEFAULT: "bg-[oklch(0.70_0.30_208)] text-white",
+    text: "text-[oklch(0.82_0.24_208)]",
+  },
+  completed: {
+    light: "bg-[oklch(0.86_0.24_138)]/15 text-[oklch(0.86_0.24_138)]",
+    DEFAULT: "bg-[oklch(0.74_0.30_138)] text-white",
+    text: "text-[oklch(0.86_0.24_138)]",
+  },
+  paused: {
+    light: "bg-[oklch(0.86_0.25_312)]/15 text-[oklch(0.86_0.25_312)]",
+    DEFAULT: "bg-[oklch(0.74_0.31_312)] text-white",
+    text: "text-[oklch(0.86_0.25_312)]",
+  },
+  dropped: {
+    light: "bg-[oklch(0.80_0.28_18)]/15 text-[oklch(0.80_0.28_18)]",
+    DEFAULT: "bg-[oklch(0.68_0.34_18)] text-white",
+    text: "text-[oklch(0.80_0.28_18)]",
+  },
+}
+
+/** Цвета для приоритетов */
+export const priorityColors = {
+  low: {
+    light: "bg-[oklch(0.82_0.17_242)]/15 text-[oklch(0.82_0.17_242)]",
+    DEFAULT: "bg-[oklch(0.70_0.23_242)] text-white",
+    text: "text-[oklch(0.82_0.17_242)]",
+  },
+  medium: {
+    light: "bg-[oklch(0.82_0.24_208)]/15 text-[oklch(0.82_0.24_208)]",
+    DEFAULT: "bg-[oklch(0.70_0.30_208)] text-white",
+    text: "text-[oklch(0.82_0.24_208)]",
+  },
+  high: {
+    light: "bg-[oklch(0.88_0.22_68)]/15 text-[oklch(0.88_0.22_68)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_68)] text-white",
+    text: "text-[oklch(0.88_0.22_68)]",
+  },
+  critical: {
+    light: "bg-[oklch(0.80_0.28_18)]/15 text-[oklch(0.80_0.28_18)]",
+    DEFAULT: "bg-[oklch(0.68_0.34_18)] text-white",
+    text: "text-[oklch(0.80_0.28_18)]",
+  },
+}
+
+/** Цвета для типов items (витамины, лекарства и т.д.) */
+export const itemColors = {
+  vitamin: {
+    light: "bg-[oklch(0.88_0.22_68)]/15 text-[oklch(0.88_0.22_68)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_68)] text-white",
+    text: "text-[oklch(0.88_0.22_68)]",
+  },
+  medicine: {
+    light: "bg-[oklch(0.80_0.28_18)]/15 text-[oklch(0.80_0.28_18)]",
+    DEFAULT: "bg-[oklch(0.68_0.34_18)] text-white",
+    text: "text-[oklch(0.80_0.28_18)]",
+  },
+  herb: {
+    light: "bg-[oklch(0.84_0.24_122)]/15 text-[oklch(0.84_0.24_122)]",
+    DEFAULT: "bg-[oklch(0.72_0.30_122)] text-white",
+    text: "text-[oklch(0.84_0.24_122)]",
+  },
+  cosmetic: {
+    light: "bg-[oklch(0.86_0.25_312)]/15 text-[oklch(0.86_0.25_312)]",
+    DEFAULT: "bg-[oklch(0.74_0.31_312)] text-white",
+    text: "text-[oklch(0.86_0.25_312)]",
+  },
+  product: {
+    light: "bg-[oklch(0.90_0.20_208)]/15 text-[oklch(0.90_0.20_208)]",
+    DEFAULT: "bg-[oklch(0.78_0.26_208)] text-white",
+    text: "text-[oklch(0.90_0.20_208)]",
+  },
+}
+
+/** Цвета для типов еды (breakfast, lunch, dinner, snack) */
+export const foodTypeColors: Record<string, string> = {
+  breakfast: "data-[state=active]:bg-[oklch(0.90_0.055_70)] data-[state=active]:text-white",
+  lunch: "data-[state=active]:bg-[oklch(0.87_0.06_150)] data-[state=active]:text-white",
+  dinner: "data-[state=active]:bg-[oklch(0.68_0.16_330)] data-[state=active]:text-white",
+  snack: "data-[state=active]:bg-[oklch(0.85_0.065_200)] data-[state=active]:text-white",
+}
+
+/** Цвета для типов тренировок (strength, cardio, yoga, stretching) */
+export const workoutTypeColors: Record<string, string> = {
+  strength: "data-[state=active]:bg-[oklch(0.82_0.075_25)] data-[state=active]:text-white",
+  cardio: "data-[state=active]:bg-[oklch(0.80_0.065_200)] data-[state=active]:text-white",
+  yoga: "data-[state=active]:bg-[oklch(0.83_0.045_125)] data-[state=active]:text-white",
+  stretching: "data-[state=active]:bg-[oklch(0.89_0.065_320)] data-[state=active]:text-white",
+}
+
+/** Цвета для финансовых типов (income, expense, transfer) */
+export const financeTypeColors: Record<string, string> = {
+  income: "data-[state=active]:bg-[oklch(0.87_0.06_150)] data-[state=active]:text-white",
+  expense: "data-[state=active]:bg-[oklch(0.82_0.075_25)] data-[state=active]:text-white",
+  transfer: "data-[state=active]:bg-[oklch(0.85_0.065_200)] data-[state=active]:text-white",
+}
+
+/** Цвета для прогресса (goals) */
+export const progressColors = {
+  complete: {
+    DEFAULT: "bg-[oklch(0.74_0.30_138)]",
+  },
+  almost: {
+    DEFAULT: "bg-[oklch(0.80_0.28_78)]",
+  },
+  halfway: {
+    DEFAULT: "bg-[oklch(0.70_0.30_208)]",
+  },
+  low: {
+    DEFAULT: "bg-[oklch(0.70_0.23_242)]",
+  },
+}
+
+/** Цвета для статусов привычек */
+export const habitStatusColors = {
+  completed: {
+    light: "bg-[oklch(0.86_0.24_138)]",
+    DEFAULT: "bg-[oklch(0.74_0.30_138)]",
+    text: "text-[oklch(0.86_0.24_138)]",
+  },
+  skipped: {
+    light: "bg-[oklch(0.88_0.22_68)]/30 text-[oklch(0.88_0.22_68)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_68)]",
+    text: "text-[oklch(0.88_0.22_68)]",
+  },
+  negative: {
+    light: "bg-[oklch(0.80_0.28_18)]/15 text-[oklch(0.80_0.28_18)]",
+    DEFAULT: "bg-[oklch(0.68_0.34_18)]",
+    text: "text-[oklch(0.80_0.28_18)]",
+  },
+  weekend: {
+    light: "bg-[oklch(0.88_0.22_68)]/10",
+    DEFAULT: "",
+    text: "text-[oklch(0.88_0.22_68)/0.70]",
+  },
+}
+
+/** Цвета для типов контента (book, recipe) */
+export const contentTypeColors = {
+  book: {
+    light: "bg-[oklch(0.82_0.18_48)]/15 text-[oklch(0.82_0.18_48)]",
+    DEFAULT: "bg-[oklch(0.70_0.24_48)] text-white",
+  },
+  recipe: {
+    light: "bg-[oklch(0.90_0.24_58)]/15 text-[oklch(0.90_0.24_58)]",
+    DEFAULT: "bg-[oklch(0.80_0.30_58)] text-white",
+  },
+}
+
+/** Цвета для источников еды (custom, recipe, product) */
+export const foodSourceColors = {
+  custom: {
+    light: "bg-[oklch(0.88_0.22_68)]/15 text-[oklch(0.88_0.22_68)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_68)] text-white",
+    text: "text-[oklch(0.88_0.22_68)]",
+  },
+  recipe: {
+    light: "bg-[oklch(0.90_0.24_58)]/15 text-[oklch(0.90_0.24_58)]",
+    DEFAULT: "bg-[oklch(0.80_0.30_58)] text-white",
+    text: "text-[oklch(0.90_0.24_58)]",
+  },
+  product: {
+    light: "bg-[oklch(0.86_0.24_138)]/15 text-[oklch(0.86_0.24_138)]",
+    DEFAULT: "bg-[oklch(0.74_0.30_138)] text-white",
+    text: "text-[oklch(0.86_0.24_138)]",
+  },
+}
+
+/** Цвета для типов напитков (вода, чай, кофе, другое) */
+export const waterDrinkColors = {
+  water: {
+    light: "bg-[oklch(0.90_0.20_208)]/15 text-[oklch(0.90_0.20_208)]",
+    DEFAULT: "bg-[oklch(0.78_0.26_208)] text-white",
+    text: "text-[oklch(0.90_0.20_208)]",
+  },
+  tea: {
+    light: "bg-[oklch(0.88_0.22_78)]/15 text-[oklch(0.88_0.22_78)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_78)] text-white",
+    text: "text-[oklch(0.88_0.22_78)]",
+  },
+  coffee: {
+    light: "bg-[oklch(0.80_0.28_45)]/15 text-[oklch(0.80_0.28_45)]",
+    DEFAULT: "bg-[oklch(0.68_0.34_45)] text-white",
+    text: "text-[oklch(0.80_0.28_45)]",
+  },
+  other: {
+    light: "bg-[oklch(0.78_0.26_285)]/15 text-[oklch(0.78_0.26_285)]",
+    DEFAULT: "bg-[oklch(0.66_0.32_285)] text-white",
+    text: "text-[oklch(0.78_0.26_285)]",
+  },
+}
+
+/** Цвета для типов логов (иконки в списках) */
+export const logTypeColors = {
+  food: {
+    DEFAULT: "bg-[oklch(0.76_0.28_68)] text-white",
+    light: "bg-[oklch(0.88_0.22_68)]/10 text-[oklch(0.88_0.22_68)]",
+  },
+  workout: {
+    DEFAULT: "bg-[oklch(0.70_0.30_218)] text-white",
+    light: "bg-[oklch(0.82_0.24_218)]/10 text-[oklch(0.82_0.24_218)]",
+  },
+  finance: {
+    DEFAULT: "bg-[oklch(0.73_0.28_145)] text-white",
+    light: "bg-[oklch(0.85_0.22_145)]/10 text-[oklch(0.85_0.22_145)]",
+  },
+  finance_income: {
+    DEFAULT: "bg-[oklch(0.74_0.30_138)] text-white",
+    light: "bg-[oklch(0.86_0.24_138)]/10 text-[oklch(0.86_0.24_138)]",
+  },
+  finance_expense: {
+    DEFAULT: "bg-[oklch(0.68_0.34_18)] text-white",
+    light: "bg-[oklch(0.80_0.28_18)]/10 text-[oklch(0.80_0.28_18)]",
+  },
+  finance_transfer: {
+    DEFAULT: "bg-[oklch(0.70_0.30_208)] text-white",
+    light: "bg-[oklch(0.82_0.24_208)]/10 text-[oklch(0.82_0.24_208)]",
+  },
+}
+
+/** Цвета для шаблонов (вкладки в templates/page.tsx) */
+export const templateTypeColors = {
+  food: {
+    text: "text-[oklch(0.76_0.28_68)]",
+    light: "bg-[oklch(0.88_0.22_68)]",
+    DEFAULT: "bg-[oklch(0.76_0.28_68)]",
+  },
+  workout: {
+    text: "text-[oklch(0.70_0.30_218)]",
+    light: "bg-[oklch(0.82_0.24_218)]",
+    DEFAULT: "bg-[oklch(0.70_0.30_218)]",
+  },
+  water: {
+    text: "text-[oklch(0.78_0.26_208)]",
+    light: "bg-[oklch(0.90_0.20_208)]",
+    DEFAULT: "bg-[oklch(0.78_0.26_208)]",
+  },
+  sleep: {
+    text: "text-[oklch(0.66_0.28_278)]",
+    light: "bg-[oklch(0.78_0.22_278)]",
+    DEFAULT: "bg-[oklch(0.66_0.28_278)]",
+  },
+  mood: {
+    text: "text-[oklch(0.74_0.31_312)]",
+    light: "bg-[oklch(0.86_0.25_312)]",
+    DEFAULT: "bg-[oklch(0.74_0.31_312)]",
+  },
+}
+
+/** Цвета для энергии и стресса (mood) */
+export const moodLevelColors = {
+  energy: {
+    light: "bg-[oklch(0.88_0.22_135)]",
+    DEFAULT: "bg-[oklch(0.74_0.27_135)]",
+    text: "text-[oklch(0.88_0.22_135)]",
+  },
+  stress: {
+    light: "bg-[oklch(0.80_0.28_18)]",
+    DEFAULT: "bg-[oklch(0.68_0.34_18)]",
+    text: "text-[oklch(0.80_0.28_18)]",
+  },
+}
+
+/** Цвет для FAB кнопки — самый заметный элемент */
+export const fabColor = {
+  light: "bg-[oklch(0.82_0.28_40)]",
+  DEFAULT: "bg-[oklch(0.70_0.34_40)]",
+  text: "text-white",
+  shadow: "shadow-[oklch(0.70_0.34_40)/0.45] hover:shadow-[oklch(0.70_0.34_40)/0.60]",
+}
+
+/** Палитра для выбора цвета привычек (8 насыщенных вариантов) */
 export const habitPalette = [
   {
-    bg: "bg-[oklch(0.60_0.22_30)]",
-    light: "bg-[oklch(0.70_0.18_30)]",
-    text: "text-[oklch(0.65_0.22_30)]",
-    name: "Красный",
+    bg: "bg-[oklch(0.72_0.30_30)]",
+    light: "bg-[oklch(0.82_0.24_30)]",
+    text: "text-[oklch(0.78_0.28_30)]",
+    name: "Терракот",
   },
   {
-    bg: "bg-[oklch(0.65_0.18_70)]",
-    light: "bg-[oklch(0.75_0.14_70)]",
-    text: "text-[oklch(0.70_0.18_70)]",
-    name: "Оранжевый",
+    bg: "bg-[oklch(0.76_0.28_65)]",
+    light: "bg-[oklch(0.86_0.22_65)]",
+    text: "text-[oklch(0.82_0.26_65)]",
+    name: "Персик",
   },
   {
-    bg: "bg-[oklch(0.73_0.18_85)]",
-    light: "bg-[oklch(0.82_0.14_85)]",
-    text: "text-[oklch(0.78_0.18_85)]",
+    bg: "bg-[oklch(0.82_0.26_90)]",
+    light: "bg-[oklch(0.90_0.20_90)]",
+    text: "text-[oklch(0.86_0.24_90)]",
     name: "Жёлтый",
   },
   {
-    // oklch(0.80 0.15 135) - нежный зелёный
-    bg: "bg-[oklch(0.75_0.15_135)]",
-    light: "bg-[oklch(0.85_0.10_135)]",
-    text: "text-[oklch(0.80_0.15_135)]",
+    bg: "bg-[oklch(0.78_0.28_135)]",
+    light: "bg-[oklch(0.88_0.22_135)]",
+    text: "text-[oklch(0.84_0.26_135)]",
     name: "Зелёный",
   },
   {
-    // oklch(0.75 0.15 190) - бирюзовый
-    bg: "bg-[oklch(0.70_0.15_190)]",
-    light: "bg-[oklch(0.80_0.12_190)]",
-    text: "text-[oklch(0.75_0.15_190)]",
-    name: "Бирюзовый",
+    bg: "bg-[oklch(0.74_0.30_195)]",
+    light: "bg-[oklch(0.84_0.24_195)]",
+    text: "text-[oklch(0.80_0.28_195)]",
+    name: "Бирюза",
   },
   {
-    // oklch(0.65 0.18 250) - электрик
-    bg: "bg-[oklch(0.60_0.18_250)]",
-    light: "bg-[oklch(0.70_0.15_250)]",
-    text: "text-[oklch(0.65_0.18_250)]",
+    bg: "bg-[oklch(0.70_0.32_230)]",
+    light: "bg-[oklch(0.80_0.26_230)]",
+    text: "text-[oklch(0.76_0.30_230)]",
     name: "Синий",
   },
   {
-    // oklch(0.70 0.15 300) - лавандовый
-    bg: "bg-[oklch(0.65_0.15_300)]",
-    light: "bg-[oklch(0.75_0.12_300)]",
-    text: "text-[oklch(0.70_0.15_300)]",
-    name: "Лавандовый",
+    bg: "bg-[oklch(0.72_0.30_285)]",
+    light: "bg-[oklch(0.82_0.24_285)]",
+    text: "text-[oklch(0.78_0.28_285)]",
+    name: "Фиолетовый",
   },
   {
-    // oklch(0.68 0.16 330) - сиреневый
-    bg: "bg-[oklch(0.63_0.16_330)]",
-    light: "bg-[oklch(0.73_0.13_330)]",
-    text: "text-[oklch(0.68_0.16_330)]",
-    name: "Сиреневый",
+    bg: "bg-[oklch(0.76_0.28_330)]",
+    light: "bg-[oklch(0.86_0.22_330)]",
+    text: "text-[oklch(0.82_0.26_330)]",
+    name: "Розовый",
   },
 ] as const
 
-/** Alias для habitPalette - цвета для выбора в форме привычек */
+/** Alias для habitPalette */
 export const habitColors = habitPalette
 
-/** Интерфейс для хелпера создания классов модуля */
-export interface ModuleColorHelperOptions {
-  module: ModuleType
-  variant?: "light" | "DEFAULT" | "text" | "border" | "shadow"
-  custom?: string
-}
-
-/**
- * Хелпер для получения классов цвета модуля
- *
- * @example
- * // Простой способ
- * <div className={getModuleColor('food', 'light')}>
- *
- * @example
- * // С дополнительными классами
- * <div className={cn(getModuleColor('food', 'light'), "p-4")}>
- */
-export function getModuleColor(
-  module: ModuleType,
-  variant: ModuleColorHelperOptions["variant"] = "light"
-): string {
-  const scheme = moduleColors[module]
-  return scheme[variant === "DEFAULT" ? "DEFAULT" : variant] || ""
-}
-
-/**
- * Компонентный хелпер для применения цветов модуля
- */
-export function useModuleColors(module: ModuleType) {
-  return moduleColors[module]
-}
-
-/**
- * Утилита для создания унифицированного стиля карточки модуля
- */
-export function cnModuleCard(module: ModuleType, extraClasses?: string) {
-  const colors = moduleColors[module]
-  return cn(
-    colors.light,
-    "border border-transparent hover:border-[--border]",
-    "transition-all duration-200 hover:scale-[1.02] hover:shadow-lg",
-    extraClasses
-  )
-}
-
-/**
- * Утилита для создания унифицированного стиля кнопки действия модуля
- */
-export function cnModuleButton(module: ModuleType, extraClasses?: string) {
-  const colors = moduleColors[module]
-  return cn(
-    colors.DEFAULT,
-    "text-white",
-    "transition-all duration-200 hover:scale-105 hover:brightness-110",
-    "active:scale-95",
-    extraClasses
-  )
-}
-
-/**
- * Утилита для создания стиля иконки модуля
- */
-export function cnModuleIcon(module: ModuleType, extraClasses?: string) {
-  const colors = moduleColors[module]
-  return cn(colors.DEFAULT, "text-white", extraClasses)
-}
-
-/**
- * Карта соответствия типов логов к модулям
- */
+/** Карта соответствия типов логов к модулям */
 export const logTypeToModule: Record<string, ModuleType> = {
   food: "food",
   workout: "workout",
@@ -581,9 +557,44 @@ export const logTypeToModule: Record<string, ModuleType> = {
   mood: "mood",
 }
 
-/**
- * Получить цвет модуля по типу лога
- */
+/** Хелперы */
+
+export function getModuleColor(
+  module: ModuleType,
+  variant: "light" | "DEFAULT" | "text" | "border" | "shadow" = "light"
+): string {
+  const scheme = moduleColors[module]
+  return scheme[variant] || ""
+}
+
+export function useModuleColors(module: ModuleType) {
+  return moduleColors[module]
+}
+
+export function cnModuleCard(module: ModuleType, extraClasses?: string) {
+  const colors = moduleColors[module]
+  return cn(
+    colors.light,
+    "border border-transparent hover:border-[--border] transition-all duration-200 hover:scale-[1.02] hover:shadow-xl",
+    extraClasses
+  )
+}
+
+export function cnModuleButton(module: ModuleType, extraClasses?: string) {
+  const colors = moduleColors[module]
+  return cn(
+    colors.DEFAULT,
+    "text-white transition-all duration-200 hover:scale-105 hover:brightness-110 active:scale-95",
+    extraClasses
+  )
+}
+
+export function cnModuleIcon(module: ModuleType, extraClasses?: string) {
+  const colors = moduleColors[module]
+  return cn(colors.DEFAULT, "text-white", extraClasses)
+}
+
+/** Получить цвет модуля по типу лога */
 export function getModuleByLogType(logType: string): ModuleType {
   return logTypeToModule[logType] || "logs"
 }

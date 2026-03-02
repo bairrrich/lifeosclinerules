@@ -36,6 +36,7 @@ import {
 import { toast } from "@/components/ui/toast"
 import { useTranslations, useLocale } from "next-intl"
 import type { Reminder, ReminderType, ReminderPriority, ReminderLog } from "@/types"
+import { priorityColors } from "@/lib/theme-colors"
 
 type SmartFilter = "all" | "today" | "active" | "completed" | "inactive" | "overdue"
 
@@ -456,7 +457,11 @@ function RemindersContent() {
             variant={smartFilter === "overdue" ? "default" : "outline"}
             size="sm"
             onClick={() => setSmartFilter("overdue")}
-            className={smartFilter === "overdue" ? "bg-red-500 hover:bg-red-600" : ""}
+            className={
+              smartFilter === "overdue"
+                ? `${priorityColors.critical.DEFAULT} hover:bg-[oklch(0.58_0.34_18)]`
+                : ""
+            }
           >
             <AlertTriangle className="h-4 w-4 mr-1" />
             {t("filters.overdue")} ({stats.overdue})

@@ -6,6 +6,7 @@ import { Flame, Trophy, Target, TrendingUp } from "@/lib/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Streak, Habit, HabitLog } from "@/types"
+import { moduleColors } from "@/lib/theme-colors"
 
 export function StreakWidget() {
   const t = useTranslations("home.streakWidget")
@@ -70,8 +71,8 @@ export function StreakWidget() {
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-orange-500/10">
-              <Flame className="h-5 w-5 text-orange-500" />
+            <div className={`p-2 rounded-lg ${moduleColors.habits.light}`}>
+              <Flame className={`h-5 w-5 ${moduleColors.habits.text}`} />
             </div>
             <div>
               <div className="text-2xl font-bold">{totalCurrentStreak}</div>

@@ -23,6 +23,7 @@ import {
 } from "@/components/shared/form-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { SleepLog } from "@/types"
+import { moduleColors, priorityColors } from "@/lib/theme-colors"
 
 const qualityLabels: Record<number, string> = {
   1: "veryPoor",
@@ -203,7 +204,7 @@ function SleepContent() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10`}
+                    className={`flex h-14 w-14 items-center justify-center rounded-2xl ${moduleColors.sleep.light}`}
                   >
                     <Moon className={`h-7 w-7 ${qualityColors[lastNight.quality]}`} />
                   </div>
@@ -264,10 +265,10 @@ function SleepContent() {
                         <div
                           className={`w-full rounded-t transition-[height] ${
                             log.quality >= 4
-                              ? "bg-green-500"
+                              ? priorityColors.high.DEFAULT
                               : log.quality >= 3
-                                ? "bg-yellow-500"
-                                : "bg-red-500"
+                                ? priorityColors.medium.DEFAULT
+                                : priorityColors.low.DEFAULT
                           }`}
                           style={{ height: `${height}%` }}
                         />
@@ -303,7 +304,7 @@ function SleepContent() {
                 <Card key={log.id} className="group">
                   <CardContent className="p-3 flex items-center gap-3">
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10`}
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl ${moduleColors.sleep.light}`}
                     >
                       <Moon className={`h-5 w-5 ${qualityColors[log.quality]}`} />
                     </div>

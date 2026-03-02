@@ -16,7 +16,7 @@ export function SideNav() {
     <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 flex-col border-r border-border/40 bg-background/80 backdrop-blur-sm z-30">
       {/* Logo / Title */}
       <div className="flex h-16 items-center justify-between px-6 border-b border-border/40">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-[--color-water] to-[--color-energy] bg-clip-text text-transparent">
+        <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
           Life OS
         </h1>
         <Button

@@ -32,6 +32,7 @@ import { ru, enUS } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { db, initializeDatabase } from "@/lib/db"
 import type { RecurringTransaction, Account } from "@/types"
+import { financeColors } from "@/lib/theme-colors"
 
 export function RecurringTransactions() {
   const t = useTranslations("finance.recurring")
@@ -411,7 +412,9 @@ export function RecurringTransactions() {
                   <div
                     className={cn(
                       "flex h-10 w-10 items-center justify-center rounded-xl",
-                      item.type === "expense" ? "bg-red-500/10" : "bg-green-500/10"
+                      item.type === "expense"
+                        ? financeColors.expense.light
+                        : financeColors.income.light
                     )}
                   >
                     {item.type === "expense" ? (

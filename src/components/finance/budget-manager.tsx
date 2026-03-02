@@ -12,6 +12,7 @@ import { CrudManager } from "@/components/shared"
 import { Progress } from "@/components/ui/progress"
 import { db, initializeDatabase, getAllEntities, getLocalizedEntityName } from "@/lib/db"
 import type { Category, Log, Budget } from "@/types"
+import { priorityColors } from "@/lib/theme-colors"
 
 // Ключ для localStorage бюджетов
 const BUDGETS_KEY = "life-os-budgets"
@@ -232,7 +233,10 @@ export function BudgetManager() {
             </span>
           </div>
         </div>
-        <Progress value={percentage} className={`h-2 ${isOverBudget ? "bg-red-100" : ""}`} />
+        <Progress
+          value={percentage}
+          className={`h-2 ${isOverBudget ? priorityColors.low.light : ""}`}
+        />
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>
             {percentage.toFixed(0)}% {t("budgets.used")}

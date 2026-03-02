@@ -13,6 +13,7 @@ import { db, getAllEntities } from "@/lib/db"
 import { NutritionFields, SourceTypeSelector } from "@/components/shared/forms"
 import type { Content, Item, RecipeContentExtended } from "@/types"
 import { ContentType, ItemType } from "@/types"
+import { foodSourceColors } from "@/lib/theme-colors"
 
 // ============================================
 // Схема валидации
@@ -50,19 +51,19 @@ export function getFoodSourceTypes(t: any) {
       value: "custom",
       label: t("food.sourceTypes.custom"),
       icon: Edit3,
-      color: "bg-blue-500/10 text-blue-500",
+      color: foodSourceColors.custom.light + " " + foodSourceColors.custom.text,
     },
     {
       value: "recipe",
       label: t("food.sourceTypes.recipe"),
       icon: ChefHat,
-      color: "bg-orange-500/10 text-orange-500",
+      color: foodSourceColors.recipe.light + " " + foodSourceColors.recipe.text,
     },
     {
       value: "product",
       label: t("food.sourceTypes.product"),
       icon: Package,
-      color: "bg-green-500/10 text-green-500",
+      color: foodSourceColors.product.light + " " + foodSourceColors.product.text,
     },
   ]
 }

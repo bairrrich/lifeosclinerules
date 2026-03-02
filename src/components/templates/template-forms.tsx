@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Combobox } from "@/components/ui/combobox"
 import type { Template } from "@/types"
+import { moduleColors, waterDrinkColors, moodLevelColors } from "@/lib/theme-colors"
 
 // ============================================
 // Типы данных для шаблонов
@@ -404,7 +405,7 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
               onClick={() => onChange({ ...data, amount_ml: amount })}
               className={`px-4 py-2 rounded-xl border transition-colors ${
                 data.amount_ml === amount
-                  ? "bg-blue-500 text-white border-blue-500"
+                  ? waterDrinkColors.water.DEFAULT + " text-white border-[oklch(0.78_0.26_208)]"
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -433,7 +434,7 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
               onClick={() => onChange({ ...data, type: opt.value as WaterTemplateData["type"] })}
               className={`px-4 py-2 rounded-xl border transition-colors ${
                 (data.type || "water") === opt.value
-                  ? "bg-blue-500 text-white border-blue-500"
+                  ? waterDrinkColors.water.DEFAULT + " text-white border-[oklch(0.78_0.26_208)]"
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -571,7 +572,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
               onClick={() => onChange({ ...data, energy: e })}
               className={`flex-1 px-3 py-2 rounded-xl border transition-colors ${
                 (data.energy || 3) === e
-                  ? "bg-green-500 text-white border-green-500"
+                  ? moodLevelColors.energy.DEFAULT + " text-white border-[oklch(0.74_0.27_135)]"
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -591,7 +592,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
               onClick={() => onChange({ ...data, stress: s })}
               className={`flex-1 px-3 py-2 rounded-xl border transition-colors ${
                 (data.stress || 3) === s
-                  ? "bg-red-500 text-white border-red-500"
+                  ? moodLevelColors.stress.DEFAULT + " text-white border-[oklch(0.68_0.34_18)]"
                   : "bg-background hover:bg-accent"
               }`}
             >
