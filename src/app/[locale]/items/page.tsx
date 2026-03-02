@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase } from "@/lib/db"
 import { ItemType } from "@/types"
 import type { Item } from "@/types"
+import { itemColors } from "@/lib/theme-colors"
 
 export default function ItemsPage() {
   const t = useTranslations("items")
@@ -71,15 +72,15 @@ export default function ItemsPage() {
   const getTypeColor = (type: ItemType) => {
     switch (type) {
       case "vitamin":
-        return "bg-purple-500/10 text-purple-500"
+        return itemColors.vitamin.DEFAULT
       case "medicine":
-        return "bg-red-500/10 text-red-500"
+        return itemColors.medicine.DEFAULT
       case "herb":
-        return "bg-green-500/10 text-green-500"
+        return itemColors.herb.DEFAULT
       case "cosmetic":
-        return "bg-pink-500/10 text-pink-500"
+        return itemColors.cosmetic.DEFAULT
       case "product":
-        return "bg-yellow-500/10 text-yellow-500"
+        return itemColors.product.DEFAULT
     }
   }
 

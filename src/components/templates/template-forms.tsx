@@ -68,53 +68,53 @@ export type TemplateData =
 
 export function getIntensityOptions(t: any) {
   return [
-    { value: "low", label: t("templates.intensity.low") },
-    { value: "medium", label: t("templates.intensity.medium") },
-    { value: "high", label: t("templates.intensity.high") },
+    { value: "low", label: t("intensity.low") },
+    { value: "medium", label: t("intensity.medium") },
+    { value: "high", label: t("intensity.high") },
   ]
 }
 
 export function getQualityOptions(t: any) {
   return [
-    { value: 1, label: t("templates.quality.1") },
-    { value: 2, label: t("templates.quality.2") },
-    { value: 3, label: t("templates.quality.3") },
-    { value: 4, label: t("templates.quality.4") },
-    { value: 5, label: t("templates.quality.5") },
+    { value: 1, label: t("quality.1") },
+    { value: 2, label: t("quality.2") },
+    { value: 3, label: t("quality.3") },
+    { value: 4, label: t("quality.4") },
+    { value: 5, label: t("quality.5") },
   ]
 }
 
 export function getMoodOptions(t: any) {
   return [
-    { value: "great", label: t("templates.mood.great"), emoji: "😄" },
-    { value: "good", label: t("templates.mood.good"), emoji: "🙂" },
-    { value: "okay", label: t("templates.mood.okay"), emoji: "😐" },
-    { value: "bad", label: t("templates.mood.bad"), emoji: "😕" },
-    { value: "terrible", label: t("templates.mood.terrible"), emoji: "😢" },
+    { value: "great", label: t("mood.great"), emoji: "😄" },
+    { value: "good", label: t("mood.good"), emoji: "🙂" },
+    { value: "okay", label: t("mood.okay"), emoji: "😐" },
+    { value: "bad", label: t("mood.bad"), emoji: "😕" },
+    { value: "terrible", label: t("mood.terrible"), emoji: "😢" },
   ]
 }
 
 export function getDrinkTypeOptions(t: any) {
   return [
-    { value: "water", label: t("templates.drinkType.water") },
-    { value: "tea", label: t("templates.drinkType.tea") },
-    { value: "coffee", label: t("templates.drinkType.coffee") },
-    { value: "other", label: t("templates.drinkType.other") },
+    { value: "water", label: t("drinkType.water") },
+    { value: "tea", label: t("drinkType.tea") },
+    { value: "coffee", label: t("drinkType.coffee") },
+    { value: "other", label: t("drinkType.other") },
   ]
 }
 
 export function getActivityOptions(t: any) {
   return [
-    { value: "work", label: t("templates.activity.work") },
-    { value: "exercise", label: t("templates.activity.exercise") },
-    { value: "social", label: t("templates.activity.social") },
-    { value: "hobby", label: t("templates.activity.hobby") },
-    { value: "rest", label: t("templates.activity.rest") },
-    { value: "shopping", label: t("templates.activity.shopping") },
-    { value: "reading", label: t("templates.activity.reading") },
-    { value: "gaming", label: t("templates.activity.gaming") },
-    { value: "cooking", label: t("templates.activity.cooking") },
-    { value: "walk", label: t("templates.activity.walk") },
+    { value: "work", label: t("activity.work") },
+    { value: "exercise", label: t("activity.exercise") },
+    { value: "social", label: t("activity.social") },
+    { value: "hobby", label: t("activity.hobby") },
+    { value: "rest", label: t("activity.rest") },
+    { value: "shopping", label: t("activity.shopping") },
+    { value: "reading", label: t("activity.reading") },
+    { value: "gaming", label: t("activity.gaming") },
+    { value: "cooking", label: t("activity.cooking") },
+    { value: "walk", label: t("activity.walk") },
   ]
 }
 

@@ -14,6 +14,7 @@ import { db, initializeDatabase } from "@/lib/db"
 import { LogType } from "@/types"
 import type { Log } from "@/types"
 import { useLocale } from "next-intl"
+import { logTypeColors } from "@/lib/theme-colors"
 
 export default function LogsPage() {
   const t = useTranslations("logs")
@@ -58,11 +59,12 @@ export default function LogsPage() {
   }
 
   const typeColors: Record<string, string> = {
-    food: "bg-orange-500/10 text-orange-600",
-    workout: "bg-blue-500/10 text-blue-600",
-    finance: "bg-green-500/10 text-green-600",
-    finance_income: "bg-emerald-500/10 text-emerald-600",
-    finance_expense: "bg-red-500/10 text-red-600",
+    food: logTypeColors.food.DEFAULT,
+    workout: logTypeColors.workout.DEFAULT,
+    finance: logTypeColors.finance.DEFAULT,
+    finance_income: logTypeColors.finance_income.DEFAULT,
+    finance_expense: logTypeColors.finance_expense.DEFAULT,
+    finance_transfer: logTypeColors.finance_transfer.DEFAULT,
   }
 
   const getTypeIcon = (type: LogType): LucideIcon => {
@@ -185,6 +187,8 @@ export default function LogsPage() {
                 colorKey = "finance_income"
               } else if (log.type === "finance" && log.metadata?.finance_type === "expense") {
                 colorKey = "finance_expense"
+              } else if (log.type === "finance" && log.metadata?.finance_type === "transfer") {
+                colorKey = "finance_transfer"
               }
               return (
                 <Link

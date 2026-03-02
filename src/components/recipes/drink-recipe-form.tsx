@@ -5,6 +5,7 @@ import { Combobox } from "@/components/ui/combobox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { recipeColors } from "@/lib/theme-colors"
 import type { DrinkRecipeMetadata, ServingTemperature } from "@/types"
 
 // ============================================
@@ -116,7 +117,7 @@ export function DrinkRecipeForm({ metadata, onChange }: DrinkRecipeFormProps) {
                 onClick={() => updateField("serving_temperature", st.value)}
                 className={`px-2 py-1.5 text-xs rounded-lg border transition-colors ${
                   metadata.serving_temperature === st.value
-                    ? "bg-blue-500 text-white border-blue-500"
+                    ? recipeColors.drink.DEFAULT
                     : "bg-background hover:bg-accent"
                 }`}
               >

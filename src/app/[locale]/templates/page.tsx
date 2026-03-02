@@ -411,7 +411,7 @@ export default function TemplatesPage() {
       case "mood": {
         const d = data as unknown as MoodTemplateData
         const moodInfo = getMoodOptions(t).find((m) => m.value === d.mood)
-        return `${moodInfo?.emoji} ${t(`moods.${d.mood}`)}`
+        return `${moodInfo?.emoji || "😐"} ${d.mood ? t(`mood.${d.mood}`) : t("noData")}`
       }
       default:
         return t("noData")

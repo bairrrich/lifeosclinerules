@@ -4,6 +4,7 @@ import { useRouter } from "@/lib/navigation"
 import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent } from "@/components/ui/card"
+import { moduleColors, itemColors, recipeColors } from "@/lib/theme-colors"
 import {
   Utensils,
   Dumbbell,
@@ -29,19 +30,19 @@ const logOptions = [
     type: "food" as LogType,
     label: "food",
     icon: Utensils,
-    color: "bg-orange-500/10 text-orange-500",
+    color: moduleColors.food.light,
   },
   {
     type: "workout" as LogType,
     label: "workout",
     icon: Dumbbell,
-    color: "bg-blue-500/10 text-blue-500",
+    color: moduleColors.workout.light,
   },
   {
     type: "finance" as LogType,
     label: "finance",
     icon: Wallet,
-    color: "bg-green-500/10 text-green-500",
+    color: moduleColors.finance.light,
   },
 ]
 
@@ -51,26 +52,26 @@ const itemOptions = [
     type: "vitamin" as ItemType,
     label: "vitamins",
     icon: Pill,
-    color: "bg-purple-500/10 text-purple-500",
+    color: itemColors.vitamin.light,
   },
   {
     type: "medicine" as ItemType,
     label: "medicine",
     icon: Bandage,
-    color: "bg-red-500/10 text-red-500",
+    color: itemColors.medicine.light,
   },
-  { type: "herb" as ItemType, label: "herbs", icon: Leaf, color: "bg-green-500/10 text-green-500" },
+  { type: "herb" as ItemType, label: "herbs", icon: Leaf, color: itemColors.herb.light },
   {
     type: "cosmetic" as ItemType,
     label: "cosmetics",
     icon: Sparkles,
-    color: "bg-pink-500/10 text-pink-500",
+    color: itemColors.cosmetic.light,
   },
   {
     type: "product" as ItemType,
     label: "products",
     icon: Package,
-    color: "bg-yellow-500/10 text-yellow-500",
+    color: itemColors.product.light,
   },
 ]
 
@@ -80,7 +81,7 @@ const bookOptions = [
     type: "book",
     label: "book",
     icon: BookOpen,
-    color: "bg-blue-500/10 text-blue-500",
+    color: moduleColors.books.light,
     route: "/books/new",
   },
 ]
@@ -91,21 +92,21 @@ const recipeOptions = [
     type: "food",
     label: "dish",
     icon: ChefHat,
-    color: "bg-orange-500/10 text-orange-500",
+    color: recipeColors.food.light,
     route: "/recipes/new?type=food",
   },
   {
     type: "drink",
     label: "drink",
     icon: Coffee,
-    color: "bg-blue-500/10 text-blue-500",
+    color: recipeColors.drink.light,
     route: "/recipes/new?type=drink",
   },
   {
     type: "cocktail",
     label: "cocktail",
     icon: Martini,
-    color: "bg-purple-500/10 text-purple-500",
+    color: recipeColors.cocktail.light,
     route: "/recipes/new?type=cocktail",
   },
 ]

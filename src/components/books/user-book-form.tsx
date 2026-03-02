@@ -15,6 +15,7 @@ import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "@/lib/icons"
 import { cn } from "@/lib/utils"
+import { bookStatusColors } from "@/lib/theme-colors"
 import type { UserBook, ReadingStatus, BookFormat } from "@/types"
 
 // Локализованные placeholder для дат
@@ -35,11 +36,11 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
 
   // Статусы чтения с переводами
   const readingStatuses: { value: ReadingStatus; label: string; color: string }[] = [
-    { value: "planned", label: t("status.planned"), color: "bg-gray-500/10 text-gray-500" },
-    { value: "reading", label: t("status.reading"), color: "bg-blue-500/10 text-blue-500" },
-    { value: "completed", label: t("status.completed"), color: "bg-green-500/10 text-green-500" },
-    { value: "paused", label: t("status.paused"), color: "bg-yellow-500/10 text-yellow-500" },
-    { value: "dropped", label: t("status.dropped"), color: "bg-red-500/10 text-red-500" },
+    { value: "planned", label: t("status.planned"), color: bookStatusColors.planned.light },
+    { value: "reading", label: t("status.reading"), color: bookStatusColors.reading.light },
+    { value: "completed", label: t("status.completed"), color: bookStatusColors.completed.light },
+    { value: "paused", label: t("status.paused"), color: bookStatusColors.paused.light },
+    { value: "dropped", label: t("status.dropped"), color: bookStatusColors.dropped.light },
   ]
 
   // Форматы владения с переводами

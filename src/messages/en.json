@@ -2569,6 +2569,56 @@
       "subtitle": "Quick templates for frequent entries"
     },
     "title": "Templates",
+    "add": "Add Template",
+    "sections": {
+      "all": "All Templates",
+      "favorite": "Favorites",
+      "usedCount": "{count} uses"
+    },
+    "units": {
+      "kcal": "kcal",
+      "g": "g",
+      "min": "min",
+      "ml": "ml"
+    },
+    "intensity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "quality": {
+      "1": "Very Bad",
+      "2": "Bad",
+      "3": "Normal",
+      "4": "Good",
+      "5": "Excellent"
+    },
+    "mood": {
+      "great": "Great",
+      "good": "Good",
+      "okay": "Okay",
+      "bad": "Bad",
+      "terrible": "Terrible"
+    },
+    "drinkType": {
+      "water": "Water",
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "other": "Other"
+    },
+    "activity": {
+      "work": "Work",
+      "exercise": "Exercise",
+      "social": "Social",
+      "hobby": "Hobby",
+      "rest": "Rest",
+      "shopping": "Shopping",
+      "reading": "Reading",
+      "gaming": "Gaming",
+      "cooking": "Cooking",
+      "walk": "Walk"
+    },
+    "noData": "No data",
     "addTemplate": "Add Template",
     "editTemplate": "Edit Template",
     "noTemplates": "No templates yet",
@@ -2602,11 +2652,6 @@
       "nameLabel": "Template Name",
       "namePlaceholder": "e.g., Breakfast - Oatmeal",
       "typeLabel": "Type"
-    },
-    "sections": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
     },
     "intensity": {
       "low": "Low",
@@ -2688,10 +2733,11 @@
       "notesPlaceholder": "Dreams, awakenings..."
     },
     "mood": {
-      "mood": "Mood",
-      "energy": "Energy",
-      "stress": "Stress",
-      "activities": "Activities"
+      "great": "Great",
+      "good": "Good",
+      "okay": "Okay",
+      "bad": "Bad",
+      "terrible": "Terrible"
     }
   },
   "items": {

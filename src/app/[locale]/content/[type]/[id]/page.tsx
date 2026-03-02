@@ -41,6 +41,7 @@ import type {
   RecipeIngredientItem,
   RecipeStep,
 } from "@/types"
+import { contentTypeColors, recipeColors } from "@/lib/theme-colors"
 
 export default function ContentDetailPage() {
   const router = useRouter()
@@ -64,8 +65,8 @@ export default function ContentDetailPage() {
   }
 
   const typeColors: Record<ContentType, string> = {
-    book: "bg-blue-500/10 text-blue-500",
-    recipe: "bg-amber-500/10 text-amber-500",
+    book: contentTypeColors.book.light,
+    recipe: contentTypeColors.recipe.light,
   }
 
   const recipeTypeLabels: Record<string, string> = {
@@ -75,9 +76,9 @@ export default function ContentDetailPage() {
   }
 
   const recipeTypeColors: Record<string, string> = {
-    food: "bg-orange-500/10 text-orange-500",
-    drink: "bg-blue-500/10 text-blue-500",
-    cocktail: "bg-purple-500/10 text-purple-500",
+    food: recipeColors.food.light,
+    drink: recipeColors.drink.light,
+    cocktail: recipeColors.cocktail.light,
   }
 
   const bookStatusLabels: Record<string, string> = {

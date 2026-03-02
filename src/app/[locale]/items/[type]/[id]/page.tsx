@@ -36,6 +36,7 @@ import { Calendar as CalendarIcon } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 import { db, getEntityById, deleteEntity, createEntity } from "@/lib/db"
 import type { Item, ItemType, ReminderType, ReminderPriority } from "@/types"
+import { itemColors } from "@/lib/theme-colors"
 
 const typeToReminderType: Record<string, ReminderType> = {
   vitamin: "medicine",
@@ -54,11 +55,11 @@ const typeLabels: Record<ItemType, string> = {
 }
 
 const typeColors: Record<ItemType, string> = {
-  vitamin: "bg-purple-500/10 text-purple-500",
-  medicine: "bg-red-500/10 text-red-500",
-  herb: "bg-green-500/10 text-green-500",
-  cosmetic: "bg-pink-500/10 text-pink-500",
-  product: "bg-yellow-500/10 text-yellow-500",
+  vitamin: itemColors.vitamin.DEFAULT,
+  medicine: itemColors.medicine.DEFAULT,
+  herb: itemColors.herb.DEFAULT,
+  cosmetic: itemColors.cosmetic.DEFAULT,
+  product: itemColors.product.DEFAULT,
 }
 
 export default function ItemDetailPage() {

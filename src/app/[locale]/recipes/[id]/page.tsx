@@ -39,11 +39,12 @@ import {
 } from "@/components/ui/dialog"
 import { db, initializeDatabase, deleteEntity } from "@/lib/db"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
+import { recipeColors } from "@/lib/theme-colors"
 
 const recipeTypeColors: Record<string, string> = {
-  food: "bg-orange-500/10 text-orange-500",
-  drink: "bg-blue-500/10 text-blue-500",
-  cocktail: "bg-purple-500/10 text-purple-500",
+  food: recipeColors.food.light,
+  drink: recipeColors.drink.light,
+  cocktail: recipeColors.cocktail.light,
 }
 
 export default function RecipeDetailPage() {
@@ -394,6 +395,78 @@ export default function RecipeDetailPage() {
                         ☕ {recipe.drink_metadata.caffeine_mg} {tCommon("unit.mg")}
                       </Badge>
                     )}
+                </div>
+              </div>
+            )}
+
+            {/* Cocktail Metadata */}
+            {recipeType === "cocktail" && recipe.cocktail_metadata && (
+              <div className="mt-4 pt-4 border-t">
+                <div className="flex flex-wrap gap-2">
+                  {recipe.cocktail_metadata.is_alcoholic !== undefined && (
+                    <Badge
+                      variant="outline"
+                      className={
+                        recipe.cocktail_metadata.is_alcoholic
+                          ? "bg-purple-500/10 text-purple-500"
+                          : "bg-green-500/10 text-green-500"
+                      }
+                    >
+                      {recipe.cocktail_metadata.is_alcoholic
+                        ? t("view.cocktailDetails.alcoholic")
+                        : t("view.cocktailDetails.nonAlcoholic")}
+                    </Badge>
+                  )}
+                  {recipe.cocktail_metadata.alcohol_percent && (
+                    <Badge variant="outline" className="text-xs">
+                      {recipe.cocktail_metadata.alcohol_percent}% ABV
+                    </Badge>
+                  )}
+                  {recipe.cocktail_metadata.base_spirit && (
+                    <Badge
+                      variant="outline"
+                      className="bg-amber-50 text-amber-700 border-amber-200 text-xs"
+                    >
+                      {recipe.cocktail_metadata.base_spirit}
+                    </Badge>
+                  )}
+                  {recipe.cocktail_metadata.cocktail_method && (
+                    <Badge
+                      variant="outline"
+                      className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                    >
+                      {t(
+                        `view.methods.${recipe.cocktail_metadata.cocktail_method.toLowerCase()}`
+                      ) || recipe.cocktail_metadata.cocktail_method}
+                    </Badge>
+                  )}
+                  {recipe.cocktail_metadata.glass_type && (
+                    <Badge
+                      variant="outline"
+                      className="bg-cyan-50 text-cyan-700 border-cyan-200 text-xs"
+                    >
+                      {t(`view.glassTypes.${recipe.cocktail_metadata.glass_type.toLowerCase()}`) ||
+                        recipe.cocktail_metadata.glass_type}
+                    </Badge>
+                  )}
+                  {recipe.cocktail_metadata.ice_type && (
+                    <Badge
+                      variant="outline"
+                      className="bg-sky-50 text-sky-700 border-sky-200 text-xs"
+                    >
+                      ❄️{" "}
+                      {t(`view.iceTypes.${recipe.cocktail_metadata.ice_type.toLowerCase()}`) ||
+                        recipe.cocktail_metadata.ice_type}
+                    </Badge>
+                  )}
+                  {recipe.cocktail_metadata.color && (
+                    <Badge
+                      variant="outline"
+                      className="bg-pink-50 text-pink-700 border-pink-200 text-xs"
+                    >
+                      {recipe.cocktail_metadata.color}
+                    </Badge>
+                  )}
                 </div>
               </div>
             )}

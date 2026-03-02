@@ -18,6 +18,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import { useTranslations } from "next-intl"
 import type { Goal, GoalType, GoalPeriod } from "@/types"
+import { progressColors } from "@/lib/theme-colors"
 
 function getGoalTypeConfig(
   t: any
@@ -213,10 +214,10 @@ function GoalsContent() {
   }
 
   function getProgressColor(progress: number): string {
-    if (progress >= 100) return "bg-green-500"
-    if (progress >= 75) return "bg-yellow-500"
-    if (progress >= 50) return "bg-orange-500"
-    return "bg-blue-500"
+    if (progress >= 100) return progressColors.complete.DEFAULT
+    if (progress >= 75) return progressColors.almost.DEFAULT
+    if (progress >= 50) return progressColors.halfway.DEFAULT
+    return progressColors.low.DEFAULT
   }
 
   const availableUnits = goalConfig[formData.type]?.units || []

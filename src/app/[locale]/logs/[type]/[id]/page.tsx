@@ -43,6 +43,7 @@ import type {
   CardioSubcategory,
   YogaSubcategory,
 } from "@/types"
+import { logTypeColors, workoutColors } from "@/lib/theme-colors"
 
 const typeLabels: Record<LogType, string> = {
   food: "Nutrition",
@@ -51,16 +52,16 @@ const typeLabels: Record<LogType, string> = {
 }
 
 const typeColors: Record<LogType, string> = {
-  food: "bg-orange-500/10 text-orange-500",
-  workout: "bg-blue-500/10 text-blue-500",
-  finance: "bg-green-500/10 text-green-500",
+  food: logTypeColors.food.DEFAULT,
+  workout: logTypeColors.workout.DEFAULT,
+  finance: logTypeColors.finance.DEFAULT,
 }
 
 // Цвета для категорий тренировок
 const workoutCategoryColors: Record<string, string> = {
-  Силовая: "bg-red-500/10 text-red-500",
-  Кардио: "bg-blue-500/10 text-blue-500",
-  Йога: "bg-emerald-500/10 text-emerald-500",
+  Силовая: workoutColors.strength.light,
+  Кардио: workoutColors.cardio.light,
+  Йога: workoutColors.yoga.light,
 }
 
 // Метки интенсивности

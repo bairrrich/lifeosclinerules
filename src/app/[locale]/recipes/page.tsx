@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase } from "@/lib/db"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
 import { RecipeType } from "@/types"
+import { recipeColors } from "@/lib/theme-colors"
 
 // Типы фильтров - label будет получен через t()
 const recipeTypeFilters: {
@@ -110,11 +111,11 @@ export default function RecipesPage() {
   const getTypeColor = (type: RecipeType) => {
     switch (type) {
       case RecipeType.FOOD:
-        return "bg-orange-500/10 text-orange-500"
+        return recipeColors.food.light
       case RecipeType.DRINK:
-        return "bg-blue-500/10 text-blue-500"
+        return recipeColors.drink.light
       case RecipeType.COCKTAIL:
-        return "bg-purple-500/10 text-purple-500"
+        return recipeColors.cocktail.light
       default:
         return "bg-gray-500/10 text-gray-500"
     }

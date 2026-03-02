@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Combobox } from "@/components/ui/combobox"
+import { recipeColors } from "@/lib/theme-colors"
 import type { CocktailRecipeMetadata, CocktailMethod, GlassType, IceType } from "@/types"
 
 // ============================================
@@ -194,7 +195,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
               onClick={() => updateField("is_alcoholic", true)}
               className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
                 metadata.is_alcoholic
-                  ? "bg-purple-500 text-white border-purple-500"
+                  ? recipeColors.cocktail.DEFAULT
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -205,7 +206,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
               onClick={() => updateField("is_alcoholic", false)}
               className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
                 !metadata.is_alcoholic
-                  ? "bg-green-500 text-white border-green-500"
+                  ? recipeColors.drink.DEFAULT
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -271,7 +272,7 @@ export function CocktailRecipeForm({ metadata, onChange }: CocktailRecipeFormPro
                 onClick={() => updateField("cocktail_method", cm.value)}
                 className={`px-2 py-2 text-xs rounded-lg border transition-colors ${
                   metadata.cocktail_method === cm.value
-                    ? "bg-purple-500 text-white border-purple-500"
+                    ? recipeColors.cocktail.DEFAULT
                     : "bg-background hover:bg-accent"
                 }`}
                 title={cm.description}

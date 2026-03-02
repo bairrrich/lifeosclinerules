@@ -582,7 +582,7 @@ export default function HomePage() {
                           className={`flex h-9 w-9 items-center justify-center rounded-xl ${colors.light}`}
                           aria-hidden="true"
                         >
-                          <TypeIcon className={`h-4 w-4 ${colors.text}`} />
+                          <TypeIcon className="h-4 w-4 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-medium text-sm truncate">{log.title}</h3>

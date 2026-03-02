@@ -16,6 +16,7 @@ import { Combobox } from "@/components/ui/combobox"
 import { Plus, X, Bell, Calendar as CalendarIcon } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 import { db } from "@/lib/db"
+import { priorityColors } from "@/lib/theme-colors"
 import type { ReminderType, ReminderPriority, ReminderRepeatType, Item } from "@/types"
 import type { DateRange } from "react-day-picker"
 
@@ -38,10 +39,10 @@ export function getPriorityConfig(
   t: any
 ): { value: ReminderPriority; label: string; color: string }[] {
   return [
-    { value: "low", label: t("priorities.low"), color: "bg-gray-500" },
-    { value: "medium", label: t("priorities.medium"), color: "bg-blue-500" },
-    { value: "high", label: t("priorities.high"), color: "bg-orange-500" },
-    { value: "critical", label: t("priorities.critical"), color: "bg-red-500" },
+    { value: "low", label: t("priorities.low"), color: priorityColors.low.DEFAULT },
+    { value: "medium", label: t("priorities.medium"), color: priorityColors.medium.DEFAULT },
+    { value: "high", label: t("priorities.high"), color: priorityColors.high.DEFAULT },
+    { value: "critical", label: t("priorities.critical"), color: priorityColors.critical.DEFAULT },
   ]
 }
 

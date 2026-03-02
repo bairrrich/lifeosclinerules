@@ -20,21 +20,21 @@ export {
 // Общие константы
 export const categoryColors: Record<string, string> = {
   // Nutrition
-  Breakfast: "data-[state=active]:bg-orange-500 data-[state=active]:text-white",
-  Lunch: "data-[state=active]:bg-green-500 data-[state=active]:text-white",
-  Dinner: "data-[state=active]:bg-purple-500 data-[state=active]:text-white",
-  Snack: "data-[state=active]:bg-cyan-500 data-[state=active]:text-white",
+  Breakfast: "data-[state=active]:bg-[oklch(0.90_0.055_70)] data-[state=active]:text-white",
+  Lunch: "data-[state=active]:bg-[oklch(0.87_0.06_150)] data-[state=active]:text-white",
+  Dinner: "data-[state=active]:bg-[oklch(0.68_0.16_330)] data-[state=active]:text-white",
+  Snack: "data-[state=active]:bg-[oklch(0.85_0.065_200)] data-[state=active]:text-white",
   // Workouts
-  Strength: "data-[state=active]:bg-red-500 data-[state=active]:text-white",
-  Cardio: "data-[state=active]:bg-blue-500 data-[state=active]:text-white",
-  Yoga: "data-[state=active]:bg-emerald-500 data-[state=active]:text-white",
-  Stretching: "data-[state=active]:bg-pink-500 data-[state=active]:text-white",
+  Strength: "data-[state=active]:bg-[oklch(0.82_0.075_25)] data-[state=active]:text-white",
+  Cardio: "data-[state=active]:bg-[oklch(0.80_0.065_200)] data-[state=active]:text-white",
+  Yoga: "data-[state=active]:bg-[oklch(0.83_0.045_125)] data-[state=active]:text-white",
+  Stretching: "data-[state=active]:bg-[oklch(0.89_0.065_320)] data-[state=active]:text-white",
 }
 
 export const financeTypeColors: Record<string, string> = {
-  income: "data-[state=active]:bg-green-500 data-[state=active]:text-white",
-  expense: "data-[state=active]:bg-red-500 data-[state=active]:text-white",
-  transfer: "data-[state=active]:bg-yellow-500 data-[state=active]:text-white",
+  income: "data-[state=active]:bg-[oklch(0.87_0.06_150)] data-[state=active]:text-white",
+  expense: "data-[state=active]:bg-[oklch(0.82_0.075_25)] data-[state=active]:text-white",
+  transfer: "data-[state=active]:bg-[oklch(0.85_0.065_200)] data-[state=active]:text-white",
 }
 
 export const typeLabels: Record<string, string> = {

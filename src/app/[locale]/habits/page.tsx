@@ -28,6 +28,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
+import { habitColors } from "@/lib/theme-colors"
 import { cn } from "@/lib/utils"
 import {
   db,
@@ -39,7 +40,6 @@ import {
 } from "@/lib/db"
 import { useTranslations, useLocale } from "next-intl"
 import type { Habit, HabitLog, Streak, HabitSubtask } from "@/types"
-import { habitColors } from "@/lib/theme-colors"
 
 function getHabitTypes(t: any) {
   return [

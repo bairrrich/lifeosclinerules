@@ -5,6 +5,7 @@ import { Combobox } from "@/components/ui/combobox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { recipeColors } from "@/lib/theme-colors"
 import type { FoodRecipeMetadata, CourseType, CookingMethod, ServingTemperature } from "@/types"
 
 // ============================================
@@ -217,7 +218,7 @@ export function FoodRecipeForm({ metadata, onChange }: FoodRecipeFormProps) {
                 onClick={() => updateField("spicy_level", level.value as 0 | 1 | 2 | 3)}
                 className={`px-2 py-1.5 text-xs rounded-lg border transition-colors ${
                   metadata.spicy_level === level.value
-                    ? "bg-red-500 text-white border-red-500"
+                    ? recipeColors.food.DEFAULT
                     : "bg-background hover:bg-accent"
                 }`}
               >

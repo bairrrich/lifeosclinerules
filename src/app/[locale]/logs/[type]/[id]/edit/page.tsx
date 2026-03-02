@@ -58,9 +58,9 @@ const validationMessages = {
 // Form schemas factory function
 function createSchemas(t: (key: string) => string) {
   const messages = {
-    date: t("validation.date") || validationMessages.date,
-    time: t("validation.time") || validationMessages.time,
-    title: t("validation.title") || validationMessages.title,
+    date: t("date") || validationMessages.date,
+    time: t("time") || validationMessages.time,
+    title: t("title") || validationMessages.title,
   }
 
   return {
