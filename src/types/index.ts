@@ -585,6 +585,12 @@ export interface RecipeIngredientItem extends BaseEntity {
   note?: string // "свежий", "мелко нарезать"
   order?: number
   substitute?: string // альтернатива
+  // Пищевая ценность на 100г/мл
+  calories_per_100?: number
+  protein_per_100?: number
+  fat_per_100?: number
+  carbs_per_100?: number
+  fiber_per_100?: number
 }
 
 // Шаг приготовления

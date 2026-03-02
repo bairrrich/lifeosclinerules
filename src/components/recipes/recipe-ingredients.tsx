@@ -25,6 +25,7 @@ export interface IngredientItem extends Omit<
   protein_per_100?: number
   fat_per_100?: number
   carbs_per_100?: number
+  fiber_per_100?: number
 }
 
 interface RecipeIngredientsProps {
@@ -42,6 +43,7 @@ interface IngredientFormData {
   protein_per_100?: number
   fat_per_100?: number
   carbs_per_100?: number
+  fiber_per_100?: number
 }
 
 export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsProps) {
@@ -135,7 +137,7 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
             <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-180" />
             {t("ingredients.nutritionPer100")}
           </summary>
-          <div className="grid grid-cols-4 gap-2 mt-2">
+          <div className="grid grid-cols-5 gap-2 mt-2">
             <div>
               <Input
                 type="number"
@@ -175,6 +177,16 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
                 placeholder={t("ingredients.carbs")}
                 value={ingredient.carbs_per_100 || ""}
                 onChange={(e) => onUpdate("carbs_per_100", parseFloat(e.target.value) || undefined)}
+                className="h-8 text-xs"
+                step="0.1"
+              />
+            </div>
+            <div>
+              <Input
+                type="number"
+                placeholder={t("nutrition.fiber")}
+                value={ingredient.fiber_per_100 || ""}
+                onChange={(e) => onUpdate("fiber_per_100", parseFloat(e.target.value) || undefined)}
                 className="h-8 text-xs"
                 step="0.1"
               />

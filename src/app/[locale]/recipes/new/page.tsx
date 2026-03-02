@@ -73,6 +73,7 @@ export default function NewRecipePage() {
     let totalProtein = 0
     let totalFat = 0
     let totalCarbs = 0
+    let totalFiber = 0
 
     for (const ing of ingredients) {
       if (ing.calories_per_100 && ing.amount > 0) {
@@ -102,6 +103,7 @@ export default function NewRecipePage() {
         totalProtein += (ing.protein_per_100 || 0) * multiplier
         totalFat += (ing.fat_per_100 || 0) * multiplier
         totalCarbs += (ing.carbs_per_100 || 0) * multiplier
+        totalFiber += (ing.fiber_per_100 || 0) * multiplier
       }
     }
 
@@ -110,6 +112,7 @@ export default function NewRecipePage() {
       protein: Math.round(totalProtein * 10) / 10,
       fat: Math.round(totalFat * 10) / 10,
       carbs: Math.round(totalCarbs * 10) / 10,
+      fiber: Math.round(totalFiber * 10) / 10,
     }
   }
   const [steps, setSteps] = useState<
@@ -360,6 +363,7 @@ export default function NewRecipePage() {
                     setValue("protein", nutrition.protein || undefined)
                     setValue("fat", nutrition.fat || undefined)
                     setValue("carbs", nutrition.carbs || undefined)
+                    setValue("fiber", nutrition.fiber || undefined)
                   }}
                   disabled={ingredients.length === 0}
                 >
@@ -369,7 +373,7 @@ export default function NewRecipePage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-5 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 <div className="space-y-2">
                   <Label htmlFor="calories" className="text-sm font-medium">
                     {t("nutrition.calories")}
@@ -417,6 +421,8 @@ export default function NewRecipePage() {
                     className="h-9"
                   />
                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mt-4">
                 <div className="space-y-2">
                   <Label htmlFor="sugar" className="text-sm font-medium">
                     {t("nutrition.sugar")}
@@ -426,6 +432,18 @@ export default function NewRecipePage() {
                     type="number"
                     step="0.1"
                     {...register("sugar", { valueAsNumber: true })}
+                    className="h-9"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fiber" className="text-sm font-medium">
+                    {t("nutrition.fiber")}
+                  </Label>
+                  <Input
+                    id="fiber"
+                    type="number"
+                    step="0.1"
+                    {...register("fiber", { valueAsNumber: true })}
                     className="h-9"
                   />
                 </div>

@@ -92,7 +92,8 @@ export default function EditRecipePage() {
     let totalCalories = 0,
       totalProtein = 0,
       totalFat = 0,
-      totalCarbs = 0
+      totalCarbs = 0,
+      totalFiber = 0
     for (const ing of ingredients) {
       if (ing.calories_per_100 && ing.amount > 0) {
         let multiplier = 1
@@ -102,12 +103,13 @@ export default function EditRecipePage() {
         else if (unit === "ст.л.") multiplier = (ing.amount * 15) / 100
         else if (unit === "ч.л.") multiplier = (ing.amount * 5) / 100
         else if (unit === "стакан") multiplier = (ing.amount * 200) / 100
-        else if (unit === "шт") multiplier = ing.amount
+        else if (unit === "шт") multiplier = (ing.amount * 100) / 100
         else multiplier = ing.amount / 100
         totalCalories += (ing.calories_per_100 || 0) * multiplier
         totalProtein += (ing.protein_per_100 || 0) * multiplier
         totalFat += (ing.fat_per_100 || 0) * multiplier
         totalCarbs += (ing.carbs_per_100 || 0) * multiplier
+        totalFiber += (ing.fiber_per_100 || 0) * multiplier
       }
     }
     return {
@@ -115,6 +117,7 @@ export default function EditRecipePage() {
       protein: Math.round(totalProtein * 10) / 10,
       fat: Math.round(totalFat * 10) / 10,
       carbs: Math.round(totalCarbs * 10) / 10,
+      fiber: Math.round(totalFiber * 10) / 10,
     }
   }
 
@@ -175,6 +178,11 @@ export default function EditRecipePage() {
               optional: ing.optional,
               note: ing.note,
               order: ing.order,
+              calories_per_100: (ing as any).calories_per_100,
+              protein_per_100: (ing as any).protein_per_100,
+              fat_per_100: (ing as any).fat_per_100,
+              carbs_per_100: (ing as any).carbs_per_100,
+              fiber_per_100: (ing as any).fiber_per_100,
             }))
           )
 
@@ -245,6 +253,11 @@ export default function EditRecipePage() {
           optional: ing.optional,
           note: ing.note,
           order: ing.order || 0,
+          calories_per_100: ing.calories_per_100,
+          protein_per_100: ing.protein_per_100,
+          fat_per_100: ing.fat_per_100,
+          carbs_per_100: ing.carbs_per_100,
+          fiber_per_100: ing.fiber_per_100,
           created_at: now,
           updated_at: now,
         })
@@ -424,6 +437,7 @@ export default function EditRecipePage() {
                     setValue("protein", nutrition.protein || undefined)
                     setValue("fat", nutrition.fat || undefined)
                     setValue("carbs", nutrition.carbs || undefined)
+                    setValue("fiber", nutrition.fiber || undefined)
                   }}
                   disabled={ingredients.length === 0}
                 >
@@ -433,7 +447,7 @@ export default function EditRecipePage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-5 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 <div className="space-y-2">
                   <label className="text-sm font-medium capitalize">
                     {t("nutrition.calories")}
@@ -471,6 +485,8 @@ export default function EditRecipePage() {
                     {...register("carbs", { valueAsNumber: true })}
                   />
                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mt-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium capitalize">{t("nutrition.sugar")}</label>
                   <input
@@ -478,6 +494,15 @@ export default function EditRecipePage() {
                     step="0.1"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("sugar", { valueAsNumber: true })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium capitalize">{t("nutrition.fiber")}</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    {...register("fiber", { valueAsNumber: true })}
                   />
                 </div>
               </div>

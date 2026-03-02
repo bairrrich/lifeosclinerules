@@ -180,6 +180,11 @@ export default function EditContentPage() {
                 optional: ing.optional,
                 note: ing.note,
                 order: ing.order,
+                calories_per_100: (ing as any).calories_per_100,
+                protein_per_100: (ing as any).protein_per_100,
+                fat_per_100: (ing as any).fat_per_100,
+                carbs_per_100: (ing as any).carbs_per_100,
+                fiber_per_100: (ing as any).fiber_per_100,
               }))
             )
 
@@ -269,6 +274,11 @@ export default function EditContentPage() {
             optional: ing.optional,
             note: ing.note,
             order: ing.order || 0,
+            calories_per_100: ing.calories_per_100,
+            protein_per_100: ing.protein_per_100,
+            fat_per_100: ing.fat_per_100,
+            carbs_per_100: ing.carbs_per_100,
+            fiber_per_100: ing.fiber_per_100,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
