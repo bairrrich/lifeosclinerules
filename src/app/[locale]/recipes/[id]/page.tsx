@@ -601,15 +601,24 @@ export default function RecipeDetailPage() {
                   )}
 
                   {/* Острота */}
-                  {recipe.food_metadata.spicy_level && (
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">{t("fields.spicyLevel")}: </span>
-                      <span className="font-medium">
-                        {t(`spicyLevels.${recipe.food_metadata.spicy_level}`) ||
-                          recipe.food_metadata.spicy_level}
-                      </span>
-                    </div>
-                  )}
+                  {recipe.food_metadata.spicy_level !== undefined &&
+                    recipe.food_metadata.spicy_level > 0 && (
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">{t("fields.spicyLevel")}: </span>
+                        <div className="flex gap-1 mt-1">
+                          {[1, 2, 3, 4, 5].map((level) => (
+                            <div
+                              key={level}
+                              className={`w-5 h-2 rounded-full ${
+                                level <= (recipe.food_metadata?.spicy_level || 0)
+                                  ? "bg-red-500"
+                                  : "bg-gray-200"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                   {/* Диетические опции */}
                   {recipe.food_metadata.dietary && recipe.food_metadata.dietary.length > 0 && (
@@ -628,6 +637,83 @@ export default function RecipeDetailPage() {
                       </div>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Специфичные метаданные для напитков */}
+            {recipe.recipe_type === "drink" && recipe.drink_metadata && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t("view.drinkDetails")}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {/* Тип напитка */}
+                  {recipe.drink_metadata.drink_type && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">{t("fields.drinkType")}: </span>
+                      <span className="font-medium">
+                        {t(`view.drinkTypes.${recipe.drink_metadata.drink_type.toLowerCase()}`) ||
+                          recipe.drink_metadata.drink_type}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* База */}
+                  {recipe.drink_metadata.base && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">{t("fields.base")}: </span>
+                      <span className="font-medium">
+                        {t(`view.bases.${recipe.drink_metadata.base.toLowerCase()}`) ||
+                          recipe.drink_metadata.base}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Температура подачи */}
+                  {recipe.drink_metadata.serving_temperature && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">
+                        {t("fields.servingTemperature")}:{" "}
+                      </span>
+                      <span className="font-medium">
+                        {t(
+                          `servingTemperatures.${recipe.drink_metadata.serving_temperature.toLowerCase()}`
+                        ) || recipe.drink_metadata.serving_temperature}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Газация */}
+                  {recipe.drink_metadata.is_carbonated !== undefined && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">{t("view.carbonatedLabel")}: </span>
+                      <span className="font-medium">
+                        {recipe.drink_metadata.is_carbonated ? tCommon("yes") : tCommon("no")}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Объём */}
+                  {recipe.drink_metadata.volume_ml && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">{t("fields.volume")}: </span>
+                      <span className="font-medium">
+                        {recipe.drink_metadata.volume_ml} {tCommon("unit.ml")}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Кофеин */}
+                  {recipe.drink_metadata.caffeine_mg !== undefined &&
+                    recipe.drink_metadata.caffeine_mg > 0 && (
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">{t("fields.caffeine")}: </span>
+                        <span className="font-medium">
+                          {recipe.drink_metadata.caffeine_mg} {tCommon("unit.mg")}
+                        </span>
+                      </div>
+                    )}
                 </CardContent>
               </Card>
             )}
@@ -686,7 +772,9 @@ export default function RecipeDetailPage() {
                     )}
                     {recipe.cocktail_metadata.glass_type && (
                       <Badge variant="outline" className="bg-cyan-50 text-cyan-700 border-cyan-200">
-                        {recipe.cocktail_metadata.glass_type}
+                        {t(
+                          `view.glassTypes.${recipe.cocktail_metadata.glass_type.toLowerCase()}`
+                        ) || recipe.cocktail_metadata.glass_type}
                       </Badge>
                     )}
                     {recipe.cocktail_metadata.ice_type && (
@@ -720,7 +808,7 @@ export default function RecipeDetailPage() {
                               variant="outline"
                               className="text-xs bg-pink-50 text-pink-700 border-pink-200"
                             >
-                              🍒 {g}
+                              🍒 {t(`view.garnishes.${g.toLowerCase()}`) || g}
                             </Badge>
                           ))}
                         </div>
@@ -738,7 +826,7 @@ export default function RecipeDetailPage() {
                             variant="outline"
                             className="text-xs bg-slate-50 text-slate-700 border-slate-200"
                           >
-                            🔧 {tool}
+                            🔧 {t(`view.tools.${tool.toLowerCase()}`) || tool}
                           </Badge>
                         ))}
                       </div>

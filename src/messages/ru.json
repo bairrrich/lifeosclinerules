@@ -369,7 +369,12 @@
     "offline": {
       "title": "Работает офлайн",
       "description": "Все данные хранятся локально на вашем устройстве. Приложение работает без интернета, а данные синхронизируются при появлении сети."
-    }
+    },
+    "skip": "Пропустить",
+    "back": "Назад",
+    "next": "Далее",
+    "finish": "Начать",
+    "finishOnboarding": "Завершить"
   },
   "home": {
     "title": "Life OS",
@@ -866,6 +871,8 @@
       "isCarbonated": "Газированный",
       "volumeMl": "Объём (мл)",
       "caffeineMg": "Кофеин (мг)",
+      "volume": "Объём",
+      "caffeine": "Кофеин",
       "isAlcoholic": "Алкогольный",
       "alcoholPercent": "Процент алкоголя",
       "baseSpirit": "Базовый спирт",
@@ -880,7 +887,8 @@
       "tags": "Теги",
       "tagsPlaceholder": "теги через запятую",
       "minutes": "мин",
-      "dishParameters": "Параметры блюда"
+      "dishParameters": "Параметры блюда",
+      "fiber": "Клетчатка"
     },
     "edit": {
       "title": "Редактировать рецепт",
@@ -901,7 +909,28 @@
       "protein": "Белки",
       "fat": "Жиры",
       "carbs": "Углеводы",
-      "sugar": "Сахар"
+      "sugar": "Сахар",
+      "fiber": "Клетчатка",
+      "servings": "Порции",
+      "servingUnit": "Единица",
+      "servingUnitPlaceholder": "порции",
+      "prepTime": "Время подготовки (мин)",
+      "cookTime": "Время приготовления (мин)",
+      "difficulty": "Сложность",
+      "difficulties": {
+        "easy": "Лёгкий",
+        "medium": "Средний",
+        "hard": "Сложный",
+        "pro": "Профи"
+      },
+      "additional": "Дополнительно",
+      "tags": "Теги",
+      "tagsPlaceholder": "теги через запятую",
+      "actions": {
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "saving": "Сохранение..."
+      }
     },
     "courseTypes": {
       "breakfast": "Завтрак",
@@ -1252,8 +1281,49 @@
         "sphere": "Сфера",
         "none": "Без льда"
       },
+      "glassTypes": {
+        "highball": "Хайбол",
+        "margarita": "Маргарита",
+        "martini": "Мартини",
+        "old-fashioned": "Олд фэшн",
+        "collins": "Коллинз",
+        "coupe": "Купе"
+      },
+      "garnishes": {
+        "mint": "Мята",
+        "lime": "Лайм",
+        "lemon": "Лимон",
+        "orange": "Апельсин",
+        "cherry": "Вишня",
+        "olive": "Оливка",
+        "salt": "Соль",
+        "sugar": "Сахар"
+      },
+      "tools": {
+        "muddler": "Мадлер",
+        "bar-spoon": "Барная ложка",
+        "shaker": "Шейкер",
+        "strainer": "Стрейнер",
+        "jigger": "Джиггер"
+      },
+      "bases": {
+        "tea": "Чай",
+        "coffee": "Кофе",
+        "milk": "Молоко",
+        "water": "Вода",
+        "juice": "Сок"
+      },
+      "baseSpirits": {
+        "rum": "Ром",
+        "tequila": "Текила",
+        "vodka": "Водка",
+        "gin": "Джин",
+        "whiskey": "Виски",
+        "brandy": "Бренди"
+      },
       "carbonatedLabel": "Газированный",
       "nonCarbonatedLabel": "Не газированный",
+      "drinkDetails": "Детали напитка",
       "drinkTypes": {
         "tea": "Чай",
         "coffee": "Кофе",
@@ -1513,7 +1583,7 @@
       },
       "subcategory": "Подкатегория",
       "duration": "Длительность (мин)",
-      "intensity": "Интенсивность",
+      "intensity": "��нтенсивность",
       "intensityLevels": {
         "low": "Низкая",
         "medium": "Средняя",

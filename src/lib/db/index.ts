@@ -249,8 +249,8 @@ class LifeOSDatabase extends Dexie {
       // Items - add compound index for type + category
       items: "id, type, [type+category], category, name, created_at, updated_at",
 
-      // Content - add compound index for type + created_at
-      content: "id, type, [type+created_at], created_at, title, updated_at",
+      // Content - add compound index for type + created_at, and fiber field for recipes
+      content: "id, type, [type+created_at], created_at, title, updated_at, fiber",
 
       // Habit logs - critical for streak calculations
       habitLogs: "id, habit_id, [habit_id+date], date, completed",

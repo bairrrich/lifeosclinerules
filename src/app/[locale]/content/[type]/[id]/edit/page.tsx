@@ -594,6 +594,18 @@ export default function EditContentPage() {
                       />
                     </div>
                   </div>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="fiber">{t("fields.fiber")}</Label>
+                      <Input
+                        id="fiber"
+                        type="number"
+                        step="0.1"
+                        placeholder="0"
+                        {...register("fiber", { valueAsNumber: true })}
+                      />
+                    </div>
+                  </div>
                   <p className="text-xs text-muted-foreground mt-4">
                     {t("edit.nutrition.optional")}
                   </p>

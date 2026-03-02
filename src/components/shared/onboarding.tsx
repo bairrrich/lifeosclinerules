@@ -22,45 +22,32 @@ import { db } from "@/lib/db"
 
 const ONBOARDING_KEY = "life-os-onboarding-completed"
 
-const steps = [
+interface OnboardingStep {
+  id: string
+  title?: string
+  description?: string
+  features?: Array<{
+    icon: any
+    label: string
+    color: string
+  }>
+  icon?: any
+  color?: string
+  bgColor?: string
+}
+
+const steps: OnboardingStep[] = [
   {
     id: "welcome",
-    title: "Добро пожаловать в Life OS",
-    description:
-      "Единое приложение для комплексного учёта жизненных показателей. Ведите записи о питании, тренировках, финансах и многом другом.",
-    icon: Target,
-    color: "text-primary",
-    bgColor: "bg-primary/10",
   },
   {
     id: "trackers",
-    title: "Трекеры",
-    description:
-      "Отслеживайте воду, сон, настроение, измерения тела и привычки. Устанавливайте цели и следите за прогрессом.",
-    features: [
-      { icon: Utensils, label: "Питание", color: "text-orange-500" },
-      { icon: Dumbbell, label: "Тренировки", color: "text-blue-500" },
-      { icon: Wallet, label: "Финансы", color: "text-green-500" },
-      { icon: Droplet, label: "Вода", color: "text-cyan-500" },
-    ],
   },
   {
     id: "content",
-    title: "Контент",
-    description: "Ведите библиотеку книг и коллекцию рецептов с автоматическим расчётом калорий.",
-    features: [
-      { icon: BookOpen, label: "Книги", color: "text-amber-500" },
-      { icon: ChefHat, label: "Рецепты", color: "text-rose-500" },
-    ],
   },
   {
     id: "offline",
-    title: "Работает офлайн",
-    description:
-      "Все данные хранятся локально на вашем устройстве. Приложение работает без интернета, а данные синхронизируются при появлении сети.",
-    icon: Check,
-    color: "text-green-500",
-    bgColor: "bg-green-500/10",
   },
 ]
 
@@ -116,8 +103,48 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
   if (!isVisible) return null
 
-  const step = steps[currentStep]
-  const StepIcon = step.icon
+  // Динамически получаем данные шага из переводов
+  const stepId = steps[currentStep].id
+
+  // Определяем иконку и цвета для шага
+  const getStepIcon = () => {
+    switch (stepId) {
+      case "welcome":
+        return { icon: Target, color: "text-primary", bgColor: "bg-primary/10" }
+      case "trackers":
+        return { icon: null, color: "", bgColor: "" }
+      case "content":
+        return { icon: null, color: "", bgColor: "" }
+      case "offline":
+        return { icon: Check, color: "text-green-500", bgColor: "bg-green-500/10" }
+      default:
+        return { icon: null, color: "", bgColor: "" }
+    }
+  }
+
+  const stepIconConfig = getStepIcon()
+  const StepIcon = stepIconConfig.icon
+
+  // Получаем features для шага trackers
+  const getFeatures = () => {
+    if (stepId === "trackers") {
+      return [
+        { icon: Utensils, label: t("trackers.nutrition"), color: "text-orange-500" },
+        { icon: Dumbbell, label: t("trackers.workouts"), color: "text-blue-500" },
+        { icon: Wallet, label: t("trackers.finance"), color: "text-green-500" },
+        { icon: Droplet, label: t("trackers.water"), color: "text-cyan-500" },
+      ]
+    }
+    if (stepId === "content") {
+      return [
+        { icon: BookOpen, label: t("content.books"), color: "text-amber-500" },
+        { icon: ChefHat, label: t("content.recipes"), color: "text-rose-500" },
+      ]
+    }
+    return []
+  }
+
+  const features = getFeatures()
 
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -142,7 +169,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                   index === currentStep ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30"
                 }`}
                 onClick={() => setCurrentStep(index)}
-                aria-label={`Шаг ${index + 1}`}
+                aria-label={`Step ${index + 1}`}
               />
             ))}
           </div>
@@ -150,22 +177,22 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           {/* Icon */}
           {StepIcon && (
             <div className="flex justify-center mb-4">
-              <div className={`p-4 rounded-full ${step.bgColor || "bg-primary/10"}`}>
-                <StepIcon className={`h-8 w-8 ${step.color || "text-primary"}`} />
+              <div className={`p-4 rounded-full ${stepIconConfig.bgColor || "bg-primary/10"}`}>
+                <StepIcon className={`h-8 w-8 ${stepIconConfig.color || "text-primary"}`} />
               </div>
             </div>
           )}
 
           {/* Content */}
-          <h2 className="text-xl font-semibold text-center mb-2">{t(`${step.id}.title`)}</h2>
+          <h2 className="text-xl font-semibold text-center mb-2">{t(`${stepId}.title`)}</h2>
           <p className="text-sm text-muted-foreground text-center mb-6">
-            {t(`${step.id}.description`)}
+            {t(`${stepId}.description`)}
           </p>
 
           {/* Features grid */}
-          {step.features && (
+          {features.length > 0 && (
             <div className="grid grid-cols-2 gap-3 mb-6">
-              {step.features.map((feature, index) => (
+              {features.map((feature, index) => (
                 <div key={index} className="flex items-center gap-3 p-3 rounded-xl bg-muted">
                   <feature.icon className={`h-5 w-5 ${feature.color}`} />
                   <span className="text-sm font-medium">{feature.label}</span>

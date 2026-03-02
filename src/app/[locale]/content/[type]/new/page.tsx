@@ -311,9 +311,12 @@ export default function NewRecipePage() {
               <CardTitle className="text-base">{t("new.nutrition")}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-4">
+              {/* Первая строка: КБЖУ */}
+              <div className="grid grid-cols-4 gap-2 mb-4">
                 <div className="space-y-2">
-                  <Label htmlFor="calories">{t("new.calories")}</Label>
+                  <Label htmlFor="calories" className="text-xs">
+                    {t("new.calories")}
+                  </Label>
                   <Input
                     id="calories"
                     type="number"
@@ -322,7 +325,9 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="protein">{t("new.protein")}</Label>
+                  <Label htmlFor="protein" className="text-xs">
+                    {t("new.protein")}
+                  </Label>
                   <Input
                     id="protein"
                     type="number"
@@ -332,7 +337,9 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="fat">{t("new.fat")}</Label>
+                  <Label htmlFor="fat" className="text-xs">
+                    {t("new.fat")}
+                  </Label>
                   <Input
                     id="fat"
                     type="number"
@@ -341,10 +348,10 @@ export default function NewRecipePage() {
                     {...register("fat", { valueAsNumber: true })}
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="carbs">{t("new.carbs")}</Label>
+                  <Label htmlFor="carbs" className="text-xs">
+                    {t("new.carbs")}
+                  </Label>
                   <Input
                     id="carbs"
                     type="number"
@@ -353,14 +360,31 @@ export default function NewRecipePage() {
                     {...register("carbs", { valueAsNumber: true })}
                   />
                 </div>
+              </div>
+              {/* Вторая строка: Сахар и Клетчатка */}
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="sugar">{t("new.sugar")}</Label>
+                  <Label htmlFor="sugar" className="text-xs">
+                    {t("new.sugar")}
+                  </Label>
                   <Input
                     id="sugar"
                     type="number"
                     step="0.1"
                     placeholder="0"
                     {...register("sugar", { valueAsNumber: true })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fiber" className="text-xs">
+                    {t("new.fiber")}
+                  </Label>
+                  <Input
+                    id="fiber"
+                    type="number"
+                    step="0.1"
+                    placeholder="0"
+                    {...register("fiber", { valueAsNumber: true })}
                   />
                 </div>
               </div>

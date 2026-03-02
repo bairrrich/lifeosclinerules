@@ -369,7 +369,12 @@
     "offline": {
       "title": "Works Offline",
       "description": "All data is stored locally on your device. The application works without internet, and data syncs when the network is available."
-    }
+    },
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Get Started",
+    "finishOnboarding": "Finish"
   },
   "home": {
     "title": "Life OS",
@@ -866,6 +871,8 @@
       "isCarbonated": "Carbonated",
       "volumeMl": "Volume (ml)",
       "caffeineMg": "Caffeine (mg)",
+      "volume": "Volume",
+      "caffeine": "Caffeine",
       "isAlcoholic": "Alcoholic",
       "alcoholPercent": "Alcohol %",
       "baseSpirit": "Base Spirit",
@@ -880,7 +887,8 @@
       "tags": "Tags",
       "tagsPlaceholder": "tags separated by comma",
       "minutes": "min",
-      "dishParameters": "Dish Parameters"
+      "dishParameters": "Dish Parameters",
+      "fiber": "Fiber"
     },
     "edit": {
       "title": "Edit Recipe",
@@ -901,7 +909,28 @@
       "protein": "Protein",
       "fat": "Fat",
       "carbs": "Carbs",
-      "sugar": "Sugar"
+      "sugar": "Sugar",
+      "fiber": "Fiber",
+      "servings": "Servings",
+      "servingUnit": "Serving Unit",
+      "servingUnitPlaceholder": "servings",
+      "prepTime": "Prep Time (min)",
+      "cookTime": "Cook Time (min)",
+      "difficulty": "Difficulty",
+      "difficulties": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard",
+        "pro": "Pro"
+      },
+      "additional": "Additional",
+      "tags": "Tags",
+      "tagsPlaceholder": "tags separated by comma",
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      }
     },
     "courseTypes": {
       "breakfast": "Breakfast",
@@ -1252,8 +1281,49 @@
         "sphere": "Sphere",
         "none": "No ice"
       },
+      "glassTypes": {
+        "highball": "Highball",
+        "margarita": "Margarita",
+        "martini": "Martini",
+        "old-fashioned": "Old Fashioned",
+        "collins": "Collins",
+        "coupe": "Coupe"
+      },
+      "garnishes": {
+        "mint": "Mint",
+        "lime": "Lime",
+        "lemon": "Lemon",
+        "orange": "Orange",
+        "cherry": "Cherry",
+        "olive": "Olive",
+        "salt": "Salt",
+        "sugar": "Sugar"
+      },
+      "tools": {
+        "muddler": "Muddler",
+        "bar-spoon": "Bar Spoon",
+        "shaker": "Shaker",
+        "strainer": "Strainer",
+        "jigger": "Jigger"
+      },
+      "bases": {
+        "tea": "Tea",
+        "coffee": "Coffee",
+        "milk": "Milk",
+        "water": "Water",
+        "juice": "Juice"
+      },
+      "baseSpirits": {
+        "rum": "Rum",
+        "tequila": "Tequila",
+        "vodka": "Vodka",
+        "gin": "Gin",
+        "whiskey": "Whiskey",
+        "brandy": "Brandy"
+      },
       "carbonatedLabel": "Carbonated",
       "nonCarbonatedLabel": "Non-carbonated",
+      "drinkDetails": "Drink Details",
       "drinkTypes": {
         "tea": "Tea",
         "coffee": "Coffee",
