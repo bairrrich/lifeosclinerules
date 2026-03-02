@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { ArrowLeft, Save } from "@/lib/icons"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -38,19 +38,10 @@ import type {
 } from "@/types"
 import { RecipeType } from "@/types"
 
-// Validation messages
-const validationMessages = {
-  title: "Введите название",
-}
-
 // Book schema factory function
 function createBookSchema(t: (key: string) => string) {
-  const messages = {
-    title: t("validation.title") || validationMessages.title,
-  }
-
   return z.object({
-    title: z.string().min(1, messages.title),
+    title: z.string().min(1, t("validation.titleRequired")),
     description: z.string().optional(),
     body: z.string().optional(),
     rating: z.number().optional(),
@@ -64,12 +55,8 @@ function createBookSchema(t: (key: string) => string) {
 
 // Recipe schema factory function
 function createRecipeSchema(t: (key: string) => string) {
-  const messages = {
-    title: t("validation.title") || validationMessages.title,
-  }
-
   return z.object({
-    title: z.string().min(1, messages.title),
+    title: z.string().min(1, t("validation.titleRequired")),
     description: z.string().optional(),
     body: z.string().optional(),
     rating: z.number().optional(),
@@ -91,17 +78,19 @@ function createRecipeSchema(t: (key: string) => string) {
 type BookFormData = z.infer<ReturnType<typeof createBookSchema>>
 type RecipeFormData = z.infer<ReturnType<typeof createRecipeSchema>>
 
-const typeLabels: Record<ContentType, string> = {
-  book: "Книга",
-  recipe: "Рецепт",
-}
-
 export default function EditContentPage() {
   const router = useRouter()
   const params = useParams()
   const type = params.type as ContentType
   const id = params.id as string
   const t = useTranslations("recipes")
+  const tCommon = useTranslations("common")
+  const locale = useLocale()
+
+  const typeLabels: Record<ContentType, string> = {
+    book: t("types.book"),
+    recipe: t("types.recipe"),
+  }
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -310,10 +299,12 @@ export default function EditContentPage() {
 
   if (isLoading) {
     return (
-      <AppLayout title="Загрузка...">
+      <AppLayout title={tCommon("loading")}>
         <div className="container mx-auto px-4 py-6">
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              {tCommon("loading")}
+            </CardContent>
           </Card>
         </div>
       </AppLayout>
@@ -321,7 +312,7 @@ export default function EditContentPage() {
   }
 
   return (
-    <AppLayout title={`Редактировать: ${typeLabels[type]}`}>
+    <AppLayout title={`${t("edit.title")} ${typeLabels[type]}`}>
       <div className="container mx-auto px-4 py-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Book Form */}
@@ -329,22 +320,22 @@ export default function EditContentPage() {
             <>
               <Card>
                 <CardHeader>
-                  <CardTitle>Основное</CardTitle>
+                  <CardTitle>{t("edit.basic")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Название *</Label>
+                    <Label htmlFor="title">{t("fields.title")} *</Label>
                     <Input id="title" {...register("title")} />
                     {errors.title && (
                       <p className="text-sm text-destructive">{errors.title.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="description">Описание</Label>
+                    <Label htmlFor="description">{t("fields.description")}</Label>
                     <Textarea id="description" {...register("description")} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="rating">Оценка</Label>
+                    <Label htmlFor="rating">{t("userBook.rating")}</Label>
                     <Input
                       id="rating"
                       type="number"
@@ -358,16 +349,16 @@ export default function EditContentPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>О книге</CardTitle>
+                  <CardTitle>{t("edit.bookDetails")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="author">Автор</Label>
+                    <Label htmlFor="author">{t("fields.authors")}</Label>
                     <Input id="author" {...register("author")} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="year">Год издания</Label>
+                      <Label htmlFor="year">{t("fields.publishedYear")}</Label>
                       <Input
                         id="year"
                         type="number"
@@ -375,7 +366,7 @@ export default function EditContentPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="pages">Страниц</Label>
+                      <Label htmlFor="pages">{t("fields.pageCount")}</Label>
                       <Input
                         id="pages"
                         type="number"
@@ -384,11 +375,11 @@ export default function EditContentPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Статус</Label>
+                    <Label>{t("userBook.status")}</Label>
                     <NativeSelect {...register("status")}>
-                      <option value="planned">Запланировано</option>
-                      <option value="reading">Читаю</option>
-                      <option value="done">Прочитано</option>
+                      <option value="planned">{t("status.planned")}</option>
+                      <option value="reading">{t("status.reading")}</option>
+                      <option value="done">{t("status.completed")}</option>
                     </NativeSelect>
                   </div>
                 </CardContent>
@@ -396,15 +387,19 @@ export default function EditContentPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Заметки</CardTitle>
+                  <CardTitle>{t("view.notes")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Textarea className="min-h-[200px]" {...register("body")} />
+                    <Textarea className="min-h-[200px]}" {...register("body")} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="tags">Теги</Label>
-                    <Input id="tags" placeholder="теги через запятую" {...register("tags")} />
+                    <Label htmlFor="tags">{t("view.tags")}</Label>
+                    <Input
+                      id="tags"
+                      placeholder={t("view.tagsPlaceholder")}
+                      {...register("tags")}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -417,7 +412,7 @@ export default function EditContentPage() {
               {/* Recipe Type Selector */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Тип рецепта</CardTitle>
+                  <CardTitle>{t("edit.recipeType")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Tabs
@@ -454,29 +449,29 @@ export default function EditContentPage() {
               {/* Basic Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Основное</CardTitle>
+                  <CardTitle>{t("edit.basic")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Название *</Label>
-                    <Input id="title" placeholder="Название рецепта" {...register("title")} />
+                    <Label htmlFor="title">{t("fields.title")} *</Label>
+                    <Input id="title" placeholder={t("fields.title")} {...register("title")} />
                     {errors.title && (
                       <p className="text-sm text-destructive">{errors.title.message}</p>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description">Описание</Label>
+                    <Label htmlFor="description">{t("fields.description")}</Label>
                     <Textarea
                       id="description"
-                      placeholder="Краткое описание..."
+                      placeholder={t("fields.description")}
                       {...register("description")}
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="servings">Порции</Label>
+                      <Label htmlFor="servings">{t("fields.servings")}</Label>
                       <Input
                         id="servings"
                         type="number"
@@ -484,14 +479,18 @@ export default function EditContentPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="serving_unit">Единица</Label>
-                      <Input id="serving_unit" placeholder="порции" {...register("serving_unit")} />
+                      <Label htmlFor="serving_unit">{t("fields.servingUnit")}</Label>
+                      <Input
+                        id="serving_unit"
+                        placeholder={t("fields.servingUnit")}
+                        {...register("serving_unit")}
+                      />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="prep_time_min">Подготовка (мин)</Label>
+                      <Label htmlFor="prep_time_min">{t("fields.prepTime")}</Label>
                       <Input
                         id="prep_time_min"
                         type="number"
@@ -499,7 +498,7 @@ export default function EditContentPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="cook_time_min">Приготовление (мин)</Label>
+                      <Label htmlFor="cook_time_min">{t("fields.cookTime")}</Label>
                       <Input
                         id="cook_time_min"
                         type="number"
@@ -509,7 +508,7 @@ export default function EditContentPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Сложность</Label>
+                    <Label>{t("fields.difficulty")}</Label>
                     <Tabs
                       value={(watch("difficulty") as string) || ""}
                       onValueChange={(value) =>
@@ -520,10 +519,10 @@ export default function EditContentPage() {
                       }
                     >
                       <TabsList className="grid grid-cols-4 w-full">
-                        <TabsTrigger value="easy">Легко</TabsTrigger>
-                        <TabsTrigger value="medium">Средне</TabsTrigger>
-                        <TabsTrigger value="hard">Сложно</TabsTrigger>
-                        <TabsTrigger value="pro">Про</TabsTrigger>
+                        <TabsTrigger value="easy">{t("difficulty.easy")}</TabsTrigger>
+                        <TabsTrigger value="medium">{t("difficulty.medium")}</TabsTrigger>
+                        <TabsTrigger value="hard">{t("difficulty.hard")}</TabsTrigger>
+                        <TabsTrigger value="pro">{t("difficulty.pro")}</TabsTrigger>
                       </TabsList>
                     </Tabs>
                   </div>
@@ -539,57 +538,65 @@ export default function EditContentPage() {
               {/* Nutrition */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Пищевая ценность</CardTitle>
+                  <CardTitle className="text-base">{t("edit.nutrition")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="calories">Ккал</Label>
+                      <Label htmlFor="calories">{t("fields.calories")}</Label>
                       <Input
                         id="calories"
                         type="number"
+                        placeholder="0"
                         {...register("calories", { valueAsNumber: true })}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="protein">Белки (г)</Label>
+                      <Label htmlFor="protein">{t("fields.protein")}</Label>
                       <Input
                         id="protein"
                         type="number"
                         step="0.1"
+                        placeholder="0"
                         {...register("protein", { valueAsNumber: true })}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="fat">Жиры (г)</Label>
+                      <Label htmlFor="fat">{t("fields.fat")}</Label>
                       <Input
                         id="fat"
                         type="number"
                         step="0.1"
+                        placeholder="0"
                         {...register("fat", { valueAsNumber: true })}
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="carbs">Углеводы (г)</Label>
+                      <Label htmlFor="carbs">{t("fields.carbs")}</Label>
                       <Input
                         id="carbs"
                         type="number"
                         step="0.1"
+                        placeholder="0"
                         {...register("carbs", { valueAsNumber: true })}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="sugar">Сахар (г)</Label>
+                      <Label htmlFor="sugar">{t("fields.sugar")}</Label>
                       <Input
                         id="sugar"
                         type="number"
                         step="0.1"
+                        placeholder="0"
                         {...register("sugar", { valueAsNumber: true })}
                       />
                     </div>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-4">
+                    {t("edit.nutrition.optional")}
+                  </p>
                 </CardContent>
               </Card>
 
@@ -609,12 +616,16 @@ export default function EditContentPage() {
               {/* Tags */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Дополнительно</CardTitle>
+                  <CardTitle>{t("view.additional")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="tags">Теги</Label>
-                    <Input id="tags" placeholder="теги через запятую" {...register("tags")} />
+                    <Label htmlFor="tags">{t("view.tags")}</Label>
+                    <Input
+                      id="tags"
+                      placeholder={t("view.tagsPlaceholder")}
+                      {...register("tags")}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -629,11 +640,11 @@ export default function EditContentPage() {
               className="flex-1"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Отмена
+              {tCommon("cancel")}
             </Button>
             <Button type="submit" disabled={isSaving} className="flex-1">
               <Save className="h-4 w-4 mr-2" />
-              {isSaving ? "Сохранение..." : "Сохранить"}
+              {isSaving ? tCommon("loading") : tCommon("save")}
             </Button>
           </div>
         </form>

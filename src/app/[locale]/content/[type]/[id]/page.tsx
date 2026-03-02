@@ -32,7 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { db, getEntityById, deleteEntity } from "@/lib/db"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import type {
   Content,
   ContentType,
@@ -42,53 +42,56 @@ import type {
   RecipeStep,
 } from "@/types"
 
-const typeLabels: Record<ContentType, string> = {
-  book: "Книга",
-  recipe: "Рецепт",
-}
-
-const typeColors: Record<ContentType, string> = {
-  book: "bg-blue-500/10 text-blue-500",
-  recipe: "bg-amber-500/10 text-amber-500",
-}
-
-const recipeTypeLabels: Record<string, string> = {
-  food: "Еда",
-  drink: "Напиток",
-  cocktail: "Коктейль",
-}
-
-const recipeTypeColors: Record<string, string> = {
-  food: "bg-orange-500/10 text-orange-500",
-  drink: "bg-blue-500/10 text-blue-500",
-  cocktail: "bg-purple-500/10 text-purple-500",
-}
-
-const bookStatusLabels: Record<string, string> = {
-  planned: "Запланировано",
-  reading: "Читаю",
-  done: "Прочитано",
-}
-
-const difficultyLabels: Record<string, string> = {
-  easy: "Легко",
-  medium: "Средне",
-  hard: "Сложно",
-  pro: "Профи",
-}
-
 export default function ContentDetailPage() {
   const router = useRouter()
   const params = useParams()
   const type = params.type as ContentType
   const id = params.id as string
   const locale = useLocale()
+  const t = useTranslations("content")
+  const tCommon = useTranslations("common")
 
   const [content, setContent] = useState<Content | null>(null)
   const [ingredients, setIngredients] = useState<RecipeIngredientItem[]>([])
   const [steps, setSteps] = useState<RecipeStep[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
+  // Type labels from translations
+  const typeLabels: Record<ContentType, string> = {
+    book: t("types.book"),
+    recipe: t("types.recipe"),
+  }
+
+  const typeColors: Record<ContentType, string> = {
+    book: "bg-blue-500/10 text-blue-500",
+    recipe: "bg-amber-500/10 text-amber-500",
+  }
+
+  const recipeTypeLabels: Record<string, string> = {
+    food: t("types.food"),
+    drink: t("types.drink"),
+    cocktail: t("types.cocktail"),
+  }
+
+  const recipeTypeColors: Record<string, string> = {
+    food: "bg-orange-500/10 text-orange-500",
+    drink: "bg-blue-500/10 text-blue-500",
+    cocktail: "bg-purple-500/10 text-purple-500",
+  }
+
+  const bookStatusLabels: Record<string, string> = {
+    planned: t("status.planned"),
+    reading: t("status.reading"),
+    done: t("status.completed"),
+  }
+
+  const difficultyLabels: Record<string, string> = {
+    easy: t("difficulty.easy"),
+    medium: t("difficulty.medium"),
+    hard: t("difficulty.hard"),
+    pro: t("difficulty.pro"),
+  }
 
   useEffect(() => {
     async function loadData() {
@@ -142,10 +145,12 @@ export default function ContentDetailPage() {
 
   if (isLoading) {
     return (
-      <AppLayout title="Загрузка...">
+      <AppLayout title={tCommon("loading")}>
         <div className="container mx-auto px-4 py-6">
           <Card>
-            <CardContent className="p-4 text-center text-muted-foreground">Загрузка...</CardContent>
+            <CardContent className="p-4 text-center text-muted-foreground">
+              {tCommon("loading")}
+            </CardContent>
           </Card>
         </div>
       </AppLayout>
@@ -154,11 +159,11 @@ export default function ContentDetailPage() {
 
   if (!content) {
     return (
-      <AppLayout title="Не найдено">
+      <AppLayout title={tCommon("notFound")}>
         <div className="container mx-auto px-4 py-6">
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
-              Контент не найден
+              {tCommon("notFound")}
             </CardContent>
           </Card>
         </div>
@@ -178,7 +183,7 @@ export default function ContentDetailPage() {
       <div className="container mx-auto px-4 py-6 space-y-4">
         <Button variant="ghost" size="sm" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Назад
+          {tCommon("back")}
         </Button>
 
         {/* Summary Card */}
@@ -263,9 +268,9 @@ export default function ContentDetailPage() {
         <Tabs defaultValue={type === "recipe" ? "instructions" : "content"}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value={type === "recipe" ? "instructions" : "content"}>
-              {type === "book" ? "Заметки" : "Приготовление"}
+              {type === "book" ? t("view.notes") : t("view.instructions")}
             </TabsTrigger>
-            <TabsTrigger value="details">Детали</TabsTrigger>
+            <TabsTrigger value="details">{t("view.details")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value={type === "recipe" ? "instructions" : "content"} className="mt-4">
@@ -284,7 +289,9 @@ export default function ContentDetailPage() {
                           {step.timer_min && (
                             <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                               <Timer className="h-3 w-3" />
-                              <span>{step.timer_min} мин</span>
+                              <span>
+                                {step.timer_min} {tCommon("unit.min")}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -296,7 +303,7 @@ export default function ContentDetailPage() {
             ) : type === "recipe" ? (
               <Card>
                 <CardContent className="p-4 text-center text-muted-foreground">
-                  Нет инструкций
+                  {t("view.noInstructions")}
                 </CardContent>
               </Card>
             ) : (
@@ -305,7 +312,7 @@ export default function ContentDetailPage() {
                   {content.body ? (
                     <p className="whitespace-pre-wrap">{content.body}</p>
                   ) : (
-                    <p className="text-muted-foreground">Нет содержимого</p>
+                    <p className="text-muted-foreground">{t("view.noContent")}</p>
                   )}
                 </CardContent>
               </Card>
@@ -317,7 +324,7 @@ export default function ContentDetailPage() {
                   {content.body ? (
                     <p className="whitespace-pre-wrap">{content.body}</p>
                   ) : (
-                    <p className="text-muted-foreground">Нет содержимого</p>
+                    <p className="text-muted-foreground">{t("view.noContent")}</p>
                   )}
                 </CardContent>
               </Card>
@@ -329,7 +336,7 @@ export default function ContentDetailPage() {
             {type === "recipe" && ingredients.length > 0 && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Ингредиенты</CardTitle>
+                  <CardTitle className="text-base">{t("view.ingredients")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
@@ -338,7 +345,9 @@ export default function ContentDetailPage() {
                         <span>
                           {ing.ingredient_name}
                           {ing.optional && (
-                            <span className="text-muted-foreground ml-1">(опц.)</span>
+                            <span className="text-muted-foreground ml-1">
+                              ({t("view.optional")})
+                            </span>
                           )}
                         </span>
                         <span className="text-muted-foreground">
@@ -356,7 +365,7 @@ export default function ContentDetailPage() {
             {recipe && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Пищевая ценность</CardTitle>
+                  <CardTitle className="text-base">{t("view.nutrition")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4 text-center">
@@ -365,25 +374,25 @@ export default function ContentDetailPage() {
                         <Flame className="h-4 w-4 text-orange-500" />
                         {recipe.calories || "-"}
                       </div>
-                      <div className="text-xs text-muted-foreground">ккал</div>
+                      <div className="text-xs text-muted-foreground">{t("view.calories")}</div>
                     </div>
                     <div>
                       <div className="text-lg font-semibold">{recipe.protein || "-"}</div>
-                      <div className="text-xs text-muted-foreground">белки</div>
+                      <div className="text-xs text-muted-foreground">{t("view.protein")}</div>
                     </div>
                     <div>
                       <div className="text-lg font-semibold">{recipe.fat || "-"}</div>
-                      <div className="text-xs text-muted-foreground">жиры</div>
+                      <div className="text-xs text-muted-foreground">{t("view.fat")}</div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 text-center mt-2">
                     <div>
                       <div className="text-lg font-semibold">{recipe.carbs || "-"}</div>
-                      <div className="text-xs text-muted-foreground">углеводы</div>
+                      <div className="text-xs text-muted-foreground">{t("view.carbs")}</div>
                     </div>
                     <div>
                       <div className="text-lg font-semibold">{recipe.sugar || "-"}</div>
-                      <div className="text-xs text-muted-foreground">сахар</div>
+                      <div className="text-xs text-muted-foreground">{t("view.sugar")}</div>
                     </div>
                   </div>
                 </CardContent>
@@ -394,7 +403,7 @@ export default function ContentDetailPage() {
             {recipe && recipe.recipe_type === "food" && recipe.food_metadata && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Дополнительно</CardTitle>
+                  <CardTitle className="text-base">{t("view.additional")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {recipe.food_metadata.course_type && (
@@ -431,7 +440,7 @@ export default function ContentDetailPage() {
             {recipe && recipe.recipe_type === "cocktail" && recipe.cocktail_metadata && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Детали коктейля</CardTitle>
+                  <CardTitle className="text-base">{t("view.cocktailDetails")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {recipe.cocktail_metadata.base_spirit && (
@@ -477,7 +486,7 @@ export default function ContentDetailPage() {
             {recipe && recipe.recipe_type === "drink" && recipe.drink_metadata && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Детали напитка</CardTitle>
+                  <CardTitle className="text-base">{t("view.drinkDetails")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {recipe.drink_metadata.drink_type && (
@@ -511,16 +520,16 @@ export default function ContentDetailPage() {
             <Card>
               <CardContent className="p-4 space-y-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Создано</p>
+                  <p className="text-sm text-muted-foreground">{tCommon("createdAt")}</p>
                   <p>{formatDate(content.created_at)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Обновлено</p>
+                  <p className="text-sm text-muted-foreground">{tCommon("updatedAt")}</p>
                   <p>{formatDate(content.updated_at)}</p>
                 </div>
                 {content.tags && content.tags.length > 0 && (
                   <div>
-                    <p className="text-sm text-muted-foreground mb-2">Теги</p>
+                    <p className="text-sm text-muted-foreground mb-2">{t("view.tags")}</p>
                     <div className="flex flex-wrap gap-2">
                       {content.tags.map((tag, i) => (
                         <Badge key={i} variant="secondary">
@@ -544,12 +553,12 @@ export default function ContentDetailPage() {
             onClick={() => setShowDeleteDialog(true)}
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Удалить
+            {tCommon("delete")}
           </Button>
           <Link href={`/content/${type}/${id}/edit`} className="flex-1">
             <Button className="w-full">
               <Pencil className="h-4 w-4 mr-2" />
-              Изменить
+              {tCommon("edit")}
             </Button>
           </Link>
         </div>
@@ -557,17 +566,17 @@ export default function ContentDetailPage() {
         <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Удалить {type === "book" ? "книгу" : "рецепт"}?</DialogTitle>
+              <DialogTitle>{tCommon("deleteDialog.title", { title: content.title })}</DialogTitle>
               <DialogDescription>
-                Это действие нельзя отменить. &laquo;{content.title}&raquo; будет удалено навсегда.
+                {tCommon("deleteDialog.description", { title: content.title })}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-                Отмена
+                {tCommon("cancel")}
               </Button>
               <Button variant="destructive" onClick={handleDelete}>
-                Удалить
+                {tCommon("delete")}
               </Button>
             </DialogFooter>
           </DialogContent>

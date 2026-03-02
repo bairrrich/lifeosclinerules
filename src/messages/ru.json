@@ -97,6 +97,8 @@
       "selected": "выбрано",
       "remove": "Удалить"
     },
+    "select": "Выбрать",
+    "notes": "Заметки",
     "addDialog": {
       "addLog": "Добавить запись",
       "addCatalog": "Добавить в каталог",
@@ -152,13 +154,20 @@
     "unit": {
       "kg": "кг",
       "g": "г",
+      "mg": "мг",
       "cm": "см",
       "m": "м",
       "percent": "%",
       "ml": "мл",
       "l": "л",
       "kcal": "ккал",
-      "bpm": "уд/мин"
+      "bpm": "уд/мин",
+      "min": "мин",
+      "h": "ч",
+      "sec": "сек",
+      "RUB": "₽",
+      "USD": "$",
+      "EUR": "€"
     }
   },
   "navigation": {
@@ -870,17 +879,29 @@
       "nutrition": "Пищевая ценность",
       "tags": "Теги",
       "tagsPlaceholder": "теги через запятую",
-      "minutes": "мин"
+      "minutes": "мин",
+      "dishParameters": "Параметры блюда"
     },
     "edit": {
       "title": "Редактировать рецепт",
       "loading": "Загрузка...",
       "cancel": "Отмена",
       "save": "Сохранить",
-      "saving": "Сохранение..."
+      "saving": "Сохранение...",
+      "nutrition": {
+        "title": "Пищевая ценность",
+        "optional": "Все поля необязательны для заполнения"
+      }
     },
     "new": {
-      "title": "Новый рецепт"
+      "title": "Новый рецепт",
+      "nutrition": "Пищевая ценность",
+      "nutritionOptional": "Все поля необязательны для заполнения",
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "sugar": "Сахар"
     },
     "courseTypes": {
       "breakfast": "Завтрак",
@@ -911,6 +932,11 @@
       "iced": "Ледяной"
     },
     "spicyLevels": {
+      "1": "Нет",
+      "2": "Слабо",
+      "3": "Средне",
+      "4": "Остро",
+      "5": "Очень остро",
       "none": "Нет",
       "mild": "Слабо",
       "medium": "Средне",
@@ -937,10 +963,14 @@
       "vegan": "Веган",
       "vegetarian": "Вегетарианское",
       "glutenFree": "Без глютена",
+      "gluten-free": "Без глютена",
       "keto": "Кето",
       "lowCarb": "Низкоуглеводное",
+      "low-carb": "Низкоуглеводное",
       "dairyFree": "Без молока",
+      "dairy-free": "Без молока",
       "nutFree": "Без орехов",
+      "nut-free": "Без орехов",
       "diabetic": "Диабетическое"
     },
     "difficulties": {
@@ -1047,7 +1077,8 @@
       "protein": "Белки",
       "fat": "Жиры",
       "carbs": "Углеводы",
-      "sugar": "Сахар"
+      "sugar": "Сахар",
+      "fiber": "Клетчатка"
     },
     "cocktailDetails": {
       "title": "Детали коктейля",
@@ -1186,6 +1217,53 @@
     },
     "placeholders": {
       "color": "например, Красный, Золотистый, Янтарный"
+    },
+    "view": {
+      "nutrition": "Пищевая ценность",
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "sugar": "Сахар",
+      "fiber": "Клетчатка",
+      "ingredients": "Ингредиенты",
+      "optional": "(опц.)",
+      "instructions": "Инструкции",
+      "noInstructions": "Нет инструкций",
+      "details": "Детали",
+      "additional": "Дополнительно",
+      "recipe": "Рецепт",
+      "cocktailDetails": {
+        "title": "Детали коктейля",
+        "alcoholic": "Алкогольный",
+        "nonAlcoholic": "Безалкогольный"
+      },
+      "methods": {
+        "shaken": "Встряхивание",
+        "stirred": "Размешивание",
+        "blended": "Блендинг",
+        "built": "Сборка",
+        "muddled": "Мадлер",
+        "layered": "Слоистый"
+      },
+      "iceTypes": {
+        "cubed": "Кубики",
+        "crushed": "Колотый",
+        "sphere": "Сфера",
+        "none": "Без льда"
+      },
+      "carbonatedLabel": "Газированный",
+      "nonCarbonatedLabel": "Не газированный",
+      "drinkTypes": {
+        "tea": "Чай",
+        "coffee": "Кофе",
+        "smoothie": "Смузи",
+        "juice": "Сок",
+        "lemonade": "Лимонад",
+        "milkshake": "Молочный коктейль",
+        "compote": "Компот",
+        "cocoa": "Какао"
+      }
     }
   },
   "fab": {
@@ -1548,7 +1626,7 @@
         "Blanket": "Плед",
         "Chair": "Стул",
         "Wall": "Стена",
-        "FoamRoller": "МФР ролл",
+        "FoamRoller": "МФ�� ролл",
         "Ball": "Фитбол"
       },
       "placeholders": {
@@ -2503,6 +2581,47 @@
       "water": "Вода",
       "sleep": "Сон",
       "mood": "Настроение"
+    },
+    "food": {
+      "title": "Название блюда",
+      "titlePlaceholder": "Например: Овсянка с ягодами",
+      "nutrition": "Пищевая ценность (на 100г)",
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "servingSize": "Размер порции (г)"
+    },
+    "workout": {
+      "title": "Название тренировки",
+      "titlePlaceholder": "Например: Утренняя пробежка",
+      "duration": "Длительность (мин)",
+      "intensity": "Интенсивность",
+      "caloriesBurned": "Сожжено ккал",
+      "equipment": "Инвентарь",
+      "equipmentPlaceholder": "Штанга, гантели...",
+      "strengthAdditional": "Дополнительно (для силовых)",
+      "exercisesCount": "Упражнений",
+      "setsCount": "Подходов",
+      "repsCount": "Повторений",
+      "totalWeight": "Общий вес (кг)"
+    },
+    "water": {
+      "amount": "Количество (мл)",
+      "customAmount": "Свое значение",
+      "type": "Тип напитка"
+    },
+    "sleep": {
+      "startTime": "Время отхода ко сну",
+      "endTime": "Время пробуждения",
+      "quality": "Качество сна",
+      "notesPlaceholder": "Сны, пробуждения..."
+    },
+    "mood": {
+      "mood": "Настроение",
+      "energy": "Энергия",
+      "stress": "Стресс",
+      "activities": "Активности"
     }
   },
   "items": {
@@ -2859,7 +2978,87 @@
     "editContent": "Редактировать контент",
     "types": {
       "book": "Книга",
-      "recipe": "Рецепт"
+      "recipe": "Рецепт",
+      "food": "Еда",
+      "drink": "Напиток",
+      "cocktail": "Коктейль"
+    },
+    "status": {
+      "planned": "Запланировано",
+      "reading": "Читаю",
+      "completed": "Прочитано"
+    },
+    "difficulty": {
+      "easy": "Легко",
+      "medium": "Средне",
+      "hard": "Сложно",
+      "pro": "Профи"
+    },
+    "fields": {
+      "title": "Название",
+      "subtitle": "Подзаголовок",
+      "description": "Описание",
+      "annotation": "Аннотация",
+      "authors": "Автор(ы)",
+      "publishedYear": "Год издания",
+      "originalYear": "Год оригинала",
+      "publisher": "Издательство",
+      "format": "Формат",
+      "language": "Язык",
+      "pageCount": "Количество страниц",
+      "pages": "Страницы",
+      "isbn10": "ISBN-10",
+      "isbn13": "ISBN-13",
+      "goodreadsId": "Goodreads ID",
+      "googleBooksId": "Google Books ID",
+      "genres": "Жанры",
+      "tags": "Теги",
+      "coverUrl": "URL обложки",
+      "servings": "Порции",
+      "servingUnit": "Единица",
+      "prepTime": "Время подготовки",
+      "cookTime": "Время приготовления",
+      "totalTime": "Общее время",
+      "difficulty": "Сложность",
+      "cuisine": "Кухня",
+      "courseType": "Тип блюда",
+      "cookingMethod": "Метод приготовления",
+      "servingTemperature": "Температура подачи",
+      "spicyLevel": "Острота",
+      "dietary": "Диетические опции",
+      "drinkType": "Тип напитка",
+      "base": "База",
+      "isCarbonated": "Газированный",
+      "volumeMl": "Объем (мл)",
+      "caffeineMg": "Кофеин (мг)",
+      "alcoholPercent": "Крепость (%)",
+      "glassType": "Тип бокала",
+      "garnish": "Гарнир",
+      "iceType": "Тип льда",
+      "cocktailMethod": "Метод приготовления",
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "sugar": "Сахар",
+      "fiber": "Клетчатка"
+    },
+    "userBook": {
+      "status": "Статус",
+      "rating": "Оценка",
+      "progress": "Прогресс",
+      "pages": "Страницы",
+      "percent": "Проценты",
+      "startedAt": "Начато",
+      "finishedAt": "Завершено",
+      "notes": "Личные заметки",
+      "isOwned": "В собственности",
+      "ownedFormat": "Формат владения",
+      "location": "Расположение",
+      "rereadCount": "Кол-во перечитываний"
+    },
+    "validation": {
+      "titleRequired": "Введите название"
     },
     "new": {
       "recipe": "Новый рецепт",
@@ -2921,17 +3120,50 @@
       "courseType": "Тип блюда",
       "cuisine": "Кухня",
       "method": "Метод",
-      "cocktailDetails": "Детали коктейля",
+      "cocktailDetails": {
+        "title": "Детали коктейля",
+        "alcoholic": "Алкогольный",
+        "nonAlcoholic": "Безалкогольный"
+      },
+      "carbonated": "Газированный",
+      "nonCarbonated": "Не газированный",
       "base": "База",
       "glass": "Бокал",
       "strength": "Крепость",
       "drinkDetails": "Детали напитка",
+      "carbonatedLabel": "Газированны��",
+      "nonCarbonatedLabel": "Не газированный",
+      "drinkTypes": {
+        "tea": "Чай",
+        "coffee": "Кофе",
+        "smoothie": "Смузи",
+        "juice": "Сок",
+        "lemonade": "Лимон��д",
+        "milkshake": "Молочный коктейль",
+        "compote": "Компот",
+        "cocoa": "Какао"
+      },
+      "methods": {
+        "shaken": "Встряхивание",
+        "stirred": "Размешивание",
+        "blended": "Блендинг",
+        "built": "Сборка",
+        "muddled": "Мадлер",
+        "layered": "Слоистый"
+      },
+      "iceTypes": {
+        "cubed": "Кубики",
+        "crushed": "Колотый",
+        "sphere": "Сфера",
+        "none": "Без льда"
+      },
       "type": "Тип",
       "caffeine": "Кофеин",
       "volume": "Объём",
       "createdAt": "Создано",
       "updatedAt": "Обновлено",
-      "tags": "Теги"
+      "tags": "Теги",
+      "recipe": "Рецепт"
     },
     "edit": {
       "title": "Редактировать: {type}",
@@ -2963,7 +3195,7 @@
     "invalidEmail": "Неверный email",
     "invalidDate": "Неверная дата",
     "invalidNumber": "Неверное число",
-    "tooShort": "Слишком коротко",
+    "tooShort": "С��ишком коротко",
     "tooLong": "Слишком длинно",
     "minValue": "Значение слишком мало",
     "maxValue": "Значение слишком велико",
@@ -2998,7 +3230,7 @@
     "noHabits": "Пока нет привычек",
     "noGoals": "Пока нет целей",
     "noReminders": "Пока нет напоминаний",
-    "noTemplates": "Пока нет шаблонов",
+    "noTemplates": "Пока нет шабло��ов",
     "noItems": "Пока нет элементов"
   },
   "globalSearch": {

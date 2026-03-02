@@ -45,9 +45,9 @@ import type {
 } from "@/types"
 
 const typeLabels: Record<LogType, string> = {
-  food: "Питание",
-  workout: "Тренировка",
-  finance: "Финансы",
+  food: "Nutrition",
+  workout: "Workout",
+  finance: "Finance",
 }
 
 const typeColors: Record<LogType, string> = {

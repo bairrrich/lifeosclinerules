@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useTranslations, useLocale } from "next-intl"
+import { useTranslations, useLocale, useMessages } from "next-intl"
 import { useRouter, useParams } from "@/lib/navigation"
 import Link from "next/link"
 import {
@@ -17,6 +17,12 @@ import {
   Coffee,
   Martini,
   Timer,
+  Utensils,
+  Globe,
+  Soup,
+  Leaf,
+  Droplets,
+  GlassWater,
 } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -34,23 +40,10 @@ import {
 import { db, initializeDatabase, deleteEntity } from "@/lib/db"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
 
-const recipeTypeLabels: Record<string, string> = {
-  food: "Еда",
-  drink: "Напиток",
-  cocktail: "Коктейль",
-}
-
 const recipeTypeColors: Record<string, string> = {
   food: "bg-orange-500/10 text-orange-500",
   drink: "bg-blue-500/10 text-blue-500",
   cocktail: "bg-purple-500/10 text-purple-500",
-}
-
-const difficultyLabels: Record<string, string> = {
-  easy: "Легко",
-  medium: "Средне",
-  hard: "Сложно",
-  pro: "Профи",
 }
 
 export default function RecipeDetailPage() {
@@ -58,7 +51,49 @@ export default function RecipeDetailPage() {
   const params = useParams()
   const id = params.id as string
   const t = useTranslations("recipes")
+  const tCommon = useTranslations("common")
   const locale = useLocale()
+  const messages = useMessages() as any
+
+  // Получаем entities для текущей локали через useMessages
+  // entities загружаются из i18n/request.ts как часть messages
+  const entities = messages?.entities || { units: {}, unitsAbbreviations: {} }
+
+  // Функция для получения локализованного сокращения единицы измерения
+  const getUnitAbbreviation = (unit: string) => {
+    if (!unit) return ""
+
+    // Маппинг русских единиц на английские ключи (для старых данных)
+    const ruToEnMap: Record<string, string> = {
+      г: "g",
+      кг: "kg",
+      мг: "mg",
+      мл: "ml",
+      л: "l",
+      "ч.л.": "tsp",
+      "ст.л.": "tbsp",
+      стакан: "cup",
+      шт: "pcs",
+      "щеп.": "pinch",
+      "зубч.": "clove",
+      "порц.": "servings",
+      мин: "min",
+      ч: "h",
+      сек: "sec",
+      "по вкусу": "to taste",
+      дн: "days",
+    }
+
+    // Если это русская единица, конвертируем в английский ключ
+    const normalizedUnit = ruToEnMap[unit] || unit.toLowerCase().trim()
+
+    // Пробуем найти точное совпадение в unitsAbbreviations
+    const exactMatch = entities.unitsAbbreviations?.[normalizedUnit]
+    if (exactMatch) return exactMatch
+
+    // Возвращаем исходное значение
+    return unit
+  }
 
   const [recipe, setRecipe] = useState<RecipeContentExtended | null>(null)
   const [ingredients, setIngredients] = useState<RecipeIngredientItem[]>([])
@@ -181,91 +216,198 @@ export default function RecipeDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            {/* Время и порции */}
-            <div className="grid grid-cols-3 gap-4 mt-2">
+            {/* Время и порции - компактные бейджи */}
+            <div className="flex flex-wrap gap-2 mt-2">
               {recipe.prep_time_min && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    {t("fields.prepTime")}: {recipe.prep_time_min} {t("fields.minutes")}
-                  </span>
-                </div>
+                <Badge variant="outline" className="text-xs">
+                  <Clock className="h-3 w-3 mr-1" />
+                  {t("fields.prepTime")}: {recipe.prep_time_min} {t("fields.minutes")}
+                </Badge>
               )}
               {recipe.cook_time_min && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    {t("fields.cookTime")}: {recipe.cook_time_min} {t("fields.minutes")}
-                  </span>
-                </div>
+                <Badge variant="outline" className="text-xs">
+                  <Clock className="h-3 w-3 mr-1" />
+                  {t("fields.cookTime")}: {recipe.cook_time_min} {t("fields.minutes")}
+                </Badge>
               )}
               {recipe.total_time_min && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    {t("fields.totalTime")}: {recipe.total_time_min} {t("fields.minutes")}
-                  </span>
-                </div>
+                <Badge variant="outline" className="text-xs">
+                  Σ {recipe.total_time_min} {t("fields.minutes")}
+                </Badge>
               )}
               {recipe.servings && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    {recipe.servings} {recipe.serving_unit || t("fields.servings")}
-                  </span>
-                </div>
+                <Badge variant="outline" className="text-xs">
+                  <Users className="h-3 w-3 mr-1" />
+                  {recipe.servings} {recipe.serving_unit || t("fields.servings")}
+                </Badge>
               )}
               {recipe.difficulty && (
-                <Badge variant="secondary">{t(`difficulties.${recipe.difficulty}`)}</Badge>
+                <Badge variant="secondary" className="text-xs">
+                  {t(`difficulties.${recipe.difficulty}`)}
+                </Badge>
               )}
             </div>
+
+            {/* Food Metadata - Кухня, Тип блюда, Метод приготовления */}
+            {recipeType === "food" && recipe.food_metadata && (
+              <div className="mt-4 pt-4 border-t">
+                <div className="flex flex-wrap gap-2">
+                  {recipe.food_metadata.cuisine && (
+                    <Badge
+                      variant="outline"
+                      className="bg-orange-50 text-orange-700 border-orange-200 text-xs"
+                    >
+                      <Globe className="h-3 w-3 mr-1" />
+                      {t(`cuisines.${recipe.food_metadata.cuisine.toLowerCase()}`) ||
+                        recipe.food_metadata.cuisine}
+                    </Badge>
+                  )}
+                  {recipe.food_metadata.course_type && (
+                    <Badge
+                      variant="outline"
+                      className="bg-green-50 text-green-700 border-green-200 text-xs"
+                    >
+                      <Utensils className="h-3 w-3 mr-1" />
+                      {t(`courseTypes.${recipe.food_metadata.course_type.toLowerCase()}`) ||
+                        recipe.food_metadata.course_type}
+                    </Badge>
+                  )}
+                  {recipe.food_metadata.cooking_method?.map((method) => (
+                    <Badge
+                      key={method}
+                      variant="outline"
+                      className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                    >
+                      {t(`cookingMethods.${method.toLowerCase()}`) || method}
+                    </Badge>
+                  ))}
+                  {recipe.food_metadata.serving_temperature && (
+                    <Badge
+                      variant="outline"
+                      className="bg-red-50 text-red-700 border-red-200 text-xs"
+                    >
+                      {t(
+                        `servingTemperatures.${recipe.food_metadata.serving_temperature.toLowerCase()}`
+                      ) || recipe.food_metadata.serving_temperature}
+                    </Badge>
+                  )}
+                </div>
+                {/* Острота */}
+                {recipe.food_metadata.spicy_level !== undefined &&
+                  recipe.food_metadata.spicy_level > 0 && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">
+                        {t("fields.spicyLevel")}:
+                      </span>
+                      <div className="flex gap-1">
+                        {[1, 2, 3].map((level) => (
+                          <div
+                            key={level}
+                            className={`w-6 h-2 rounded-full ${
+                              level <= (recipe.food_metadata?.spicy_level || 0)
+                                ? "bg-red-500"
+                                : "bg-gray-200"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {t(`spicyLevels.${recipe.food_metadata.spicy_level}`)}
+                      </span>
+                    </div>
+                  )}
+                {/* Диетические опции */}
+                {recipe.food_metadata.dietary && recipe.food_metadata.dietary.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {recipe.food_metadata.dietary.map((diet) => (
+                      <Badge
+                        key={diet}
+                        variant="outline"
+                        className="bg-green-50 text-green-700 border-green-200 text-xs"
+                      >
+                        {t(`dietaryOptions.${diet.toLowerCase()}`) || diet}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Drink Metadata */}
+            {recipeType === "drink" && recipe.drink_metadata && (
+              <div className="mt-4 pt-4 border-t">
+                <div className="flex flex-wrap gap-2">
+                  {recipe.drink_metadata.drink_type && (
+                    <Badge
+                      variant="outline"
+                      className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                    >
+                      <Coffee className="h-3 w-3 mr-1" />
+                      {t(`drinkTypes.${recipe.drink_metadata.drink_type.toLowerCase()}`) ||
+                        recipe.drink_metadata.drink_type}
+                    </Badge>
+                  )}
+                  {recipe.drink_metadata.base && (
+                    <Badge
+                      variant="outline"
+                      className="bg-cyan-50 text-cyan-700 border-cyan-200 text-xs"
+                    >
+                      <GlassWater className="h-3 w-3 mr-1" />
+                      {recipe.drink_metadata.base}
+                    </Badge>
+                  )}
+                  {recipe.drink_metadata.serving_temperature && (
+                    <Badge
+                      variant="outline"
+                      className="bg-red-50 text-red-700 border-red-200 text-xs"
+                    >
+                      {t(
+                        `servingTemperatures.${recipe.drink_metadata.serving_temperature.toLowerCase()}`
+                      ) || recipe.drink_metadata.serving_temperature}
+                    </Badge>
+                  )}
+                  {recipe.drink_metadata.is_carbonated !== undefined && (
+                    <Badge
+                      variant="outline"
+                      className={`text-xs ${
+                        recipe.drink_metadata.is_carbonated
+                          ? "bg-purple-50 text-purple-700 border-purple-200"
+                          : "bg-gray-50 text-gray-700 border-gray-200"
+                      }`}
+                    >
+                      {recipe.drink_metadata.is_carbonated
+                        ? t("view.carbonatedLabel")
+                        : t("view.nonCarbonatedLabel")}
+                    </Badge>
+                  )}
+                  {recipe.drink_metadata.volume_ml && (
+                    <Badge variant="outline" className="text-xs">
+                      {recipe.drink_metadata.volume_ml} {tCommon("unit.ml")}
+                    </Badge>
+                  )}
+                  {recipe.drink_metadata.caffeine_mg !== undefined &&
+                    recipe.drink_metadata.caffeine_mg > 0 && (
+                      <Badge
+                        variant="outline"
+                        className="bg-amber-50 text-amber-700 border-amber-200 text-xs"
+                      >
+                        ☕ {recipe.drink_metadata.caffeine_mg} {tCommon("unit.mg")}
+                      </Badge>
+                    )}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Tabs */}
-        <Tabs defaultValue="instructions">
+        <Tabs defaultValue="recipe">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="instructions">{t("forms.steps.addStep")}</TabsTrigger>
-            <TabsTrigger value="details">{t("details")}</TabsTrigger>
+            <TabsTrigger value="recipe">{t("view.recipe")}</TabsTrigger>
+            <TabsTrigger value="details">{t("view.details")}</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="instructions" className="mt-4">
-            {/* Шаги приготовления */}
-            {steps.length > 0 ? (
-              <div className="space-y-3">
-                {steps.map((step, index) => (
-                  <Card key={step.id}>
-                    <CardContent className="p-4">
-                      <div className="flex gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold text-sm">
-                          {step.order}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm">{step.text}</p>
-                          {step.timer_min && (
-                            <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                              <Timer className="h-3 w-3" />
-                              <span>
-                                {step.timer_min} {t("fields.minutes")}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="p-4 text-center text-muted-foreground">
-                  {t("steps.noInstructions")}
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          <TabsContent value="details" className="mt-4 space-y-4">
+          <TabsContent value="recipe" className="mt-4 space-y-4">
             {/* Ингредиенты */}
             {ingredients.length > 0 && (
               <Card>
@@ -285,7 +427,7 @@ export default function RecipeDetailPage() {
                           )}
                         </span>
                         <span className="text-muted-foreground">
-                          {ing.amount} {ing.unit}
+                          {ing.amount} {getUnitAbbreviation(ing.unit)}
                           {ing.note && <span className="text-xs ml-1">({ing.note})</span>}
                         </span>
                       </li>
@@ -295,73 +437,311 @@ export default function RecipeDetailPage() {
               </Card>
             )}
 
+            {/* Шаги приготовления */}
+            {steps.length > 0 ? (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t("view.instructions")}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {steps.map((step, index) => (
+                    <Card key={step.id}>
+                      <CardContent className="p-4">
+                        <div className="flex gap-3">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold text-sm">
+                            {step.order}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm">{step.text}</p>
+                            {step.timer_min && (
+                              <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                                <Timer className="h-3 w-3" />
+                                <span>
+                                  {step.timer_min} {t("fields.minutes")}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardContent className="p-4 text-center text-muted-foreground">
+                  {t("steps.noInstructions")}
+                </CardContent>
+              </Card>
+            )}
+
             {/* КБЖУ */}
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">{t("fields.nutrition")}</CardTitle>
+                <CardTitle className="text-base">{t("view.nutrition")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-lg font-semibold flex items-center justify-center gap-1">
-                      <Flame className="h-4 w-4 text-orange-500" />
-                      {recipe.calories || "-"}
+                {/* Первая строка: КБЖУ */}
+                <div className="grid grid-cols-4 gap-2 mb-3">
+                  {/* Калории */}
+                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-orange-50">
+                    <div className="flex items-center gap-1 mb-1">
+                      <Flame className="h-3 w-3 text-orange-700" />
+                      <span className="text-xs text-orange-700">{t("view.calories")}</span>
                     </div>
-                    <div className="text-xs text-muted-foreground">{t("nutrition.calories")}</div>
+                    <span className="font-semibold text-sm">{recipe.calories || "-"}</span>
                   </div>
-                  <div>
-                    <div className="text-lg font-semibold">{recipe.protein || "-"}</div>
-                    <div className="text-xs text-muted-foreground">{t("nutrition.protein")}</div>
+                  {/* Белки */}
+                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-blue-50">
+                    <span className="text-xs text-blue-700 mb-1">{t("view.protein")}</span>
+                    <span className="font-semibold text-sm">
+                      {recipe.protein !== undefined ? `${recipe.protein}${tCommon("unit.g")}` : "-"}
+                    </span>
                   </div>
-                  <div>
-                    <div className="text-lg font-semibold">{recipe.fat || "-"}</div>
-                    <div className="text-xs text-muted-foreground">{t("nutrition.fat")}</div>
+                  {/* Жиры */}
+                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-yellow-50">
+                    <span className="text-xs text-yellow-700 mb-1">{t("view.fat")}</span>
+                    <span className="font-semibold text-sm">
+                      {recipe.fat !== undefined ? `${recipe.fat}${tCommon("unit.g")}` : "-"}
+                    </span>
+                  </div>
+                  {/* Углеводы */}
+                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-green-50">
+                    <span className="text-xs text-green-700 mb-1">{t("view.carbs")}</span>
+                    <span className="font-semibold text-sm">
+                      {recipe.carbs !== undefined ? `${recipe.carbs}${tCommon("unit.g")}` : "-"}
+                    </span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4 text-center mt-2">
-                  <div>
-                    <div className="text-lg font-semibold">{recipe.carbs || "-"}</div>
-                    <div className="text-xs text-muted-foreground">{t("nutrition.carbs")}</div>
+                {/* Вторая строка: Сахар и Клетчатка */}
+                <div className="grid grid-cols-2 gap-2">
+                  {/* Сахар */}
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-pink-50">
+                    <span className="text-sm text-pink-700">{t("view.sugar")}</span>
+                    <span className="font-semibold text-sm">
+                      {recipe.sugar !== undefined ? `${recipe.sugar}${tCommon("unit.g")}` : "-"}
+                    </span>
                   </div>
-                  <div>
-                    <div className="text-lg font-semibold">{recipe.sugar || "-"}</div>
-                    <div className="text-xs text-muted-foreground">{t("nutrition.sugar")}</div>
+                  {/* Клетчатка */}
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50">
+                    <span className="text-sm text-emerald-700">{t("view.fiber")}</span>
+                    <span className="font-semibold text-sm">
+                      {recipe.fiber !== undefined ? `${recipe.fiber}${tCommon("unit.g")}` : "-"}
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
 
-            {/* Специфичные метаданные */}
+          <TabsContent value="details" className="mt-4 space-y-4">
+            {/* Специфичные метаданные для блюд */}
+            {recipe.recipe_type === "food" && recipe.food_metadata && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t("fields.dishParameters")}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {/* Тип блюда */}
+                  {recipe.food_metadata.course_type && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">{t("fields.courseType")}: </span>
+                      <span className="font-medium">
+                        {t(`courseTypes.${recipe.food_metadata.course_type.toLowerCase()}`) ||
+                          recipe.food_metadata.course_type}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Кухня */}
+                  {recipe.food_metadata.cuisine && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">{t("fields.cuisine")}: </span>
+                      <span className="font-medium">
+                        {t(`cuisines.${recipe.food_metadata.cuisine.toLowerCase()}`) ||
+                          recipe.food_metadata.cuisine}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Метод приготовления */}
+                  {recipe.food_metadata.cooking_method &&
+                    recipe.food_metadata.cooking_method.length > 0 && (
+                      <div>
+                        <span className="text-sm text-muted-foreground">
+                          {t("fields.cookingMethod")}:{" "}
+                        </span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {recipe.food_metadata.cooking_method.map((method, i) => (
+                            <Badge
+                              key={i}
+                              variant="outline"
+                              className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                            >
+                              {t(`cookingMethods.${method.toLowerCase()}`) || method}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Температура подачи */}
+                  {recipe.food_metadata.serving_temperature && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">
+                        {t("fields.servingTemperature")}:{" "}
+                      </span>
+                      <span className="font-medium">
+                        {t(
+                          `servingTemperatures.${recipe.food_metadata.serving_temperature.toLowerCase()}`
+                        ) || recipe.food_metadata.serving_temperature}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Острота */}
+                  {recipe.food_metadata.spicy_level && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">{t("fields.spicyLevel")}: </span>
+                      <span className="font-medium">
+                        {t(`spicyLevels.${recipe.food_metadata.spicy_level}`) ||
+                          recipe.food_metadata.spicy_level}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Диетические опции */}
+                  {recipe.food_metadata.dietary && recipe.food_metadata.dietary.length > 0 && (
+                    <div>
+                      <span className="text-sm text-muted-foreground">{t("fields.dietary")}: </span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {recipe.food_metadata.dietary.map((diet, i) => (
+                          <Badge
+                            key={i}
+                            variant="outline"
+                            className="text-xs bg-green-50 text-green-700 border-green-200"
+                          >
+                            {t(`dietaryOptions.${diet.toLowerCase()}`) || diet}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Специфичные метаданные для коктейлей */}
             {recipe.recipe_type === "cocktail" && recipe.cocktail_metadata && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{t("cocktailDetails")}</CardTitle>
+                  <CardTitle className="text-base">{t("view.cocktailDetails.title")}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  {recipe.cocktail_metadata.base_spirit && (
+                <CardContent className="space-y-3">
+                  {/* Алкогольный/безалкогольный и крепость */}
+                  <div className="flex flex-wrap gap-2">
+                    <Badge
+                      className={
+                        recipe.cocktail_metadata.is_alcoholic
+                          ? "bg-purple-500/10 text-purple-500"
+                          : "bg-green-500/10 text-green-500"
+                      }
+                    >
+                      {recipe.cocktail_metadata.is_alcoholic
+                        ? t("view.cocktailDetails.alcoholic")
+                        : t("view.cocktailDetails.nonAlcoholic")}
+                    </Badge>
+                    {recipe.cocktail_metadata.alcohol_percent && (
+                      <Badge variant="outline">
+                        {recipe.cocktail_metadata.alcohol_percent}% ABV
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* IBA категория */}
+                  {recipe.cocktail_metadata.iba_category && (
                     <div className="text-sm">
-                      <span className="text-muted-foreground">{t("cocktailDetails.base")}: </span>
-                      {recipe.cocktail_metadata.base_spirit}
+                      <span className="text-muted-foreground">{t("fields.ibaCategory")}: </span>
+                      <span className="font-medium">{recipe.cocktail_metadata.iba_category}</span>
                     </div>
                   )}
-                  {recipe.cocktail_metadata.cocktail_method && (
+
+                  {/* Основные параметры */}
+                  <div className="flex flex-wrap gap-2">
+                    {recipe.cocktail_metadata.base_spirit && (
+                      <Badge
+                        variant="outline"
+                        className="bg-amber-50 text-amber-700 border-amber-200"
+                      >
+                        {recipe.cocktail_metadata.base_spirit}
+                      </Badge>
+                    )}
+                    {recipe.cocktail_metadata.cocktail_method && (
+                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                        {t(
+                          `view.methods.${recipe.cocktail_metadata.cocktail_method.toLowerCase()}`
+                        ) || recipe.cocktail_metadata.cocktail_method}
+                      </Badge>
+                    )}
+                    {recipe.cocktail_metadata.glass_type && (
+                      <Badge variant="outline" className="bg-cyan-50 text-cyan-700 border-cyan-200">
+                        {recipe.cocktail_metadata.glass_type}
+                      </Badge>
+                    )}
+                    {recipe.cocktail_metadata.ice_type && (
+                      <Badge variant="outline" className="bg-sky-50 text-sky-700 border-sky-200">
+                        ❄️{" "}
+                        {t(`view.iceTypes.${recipe.cocktail_metadata.ice_type.toLowerCase()}`) ||
+                          recipe.cocktail_metadata.ice_type}
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Цвет */}
+                  {recipe.cocktail_metadata.color && (
                     <div className="text-sm">
-                      <span className="text-muted-foreground">{t("cocktailDetails.method")}: </span>
-                      {recipe.cocktail_metadata.cocktail_method}
+                      <span className="text-muted-foreground">{t("fields.color")}: </span>
+                      <span className="font-medium">{recipe.cocktail_metadata.color}</span>
                     </div>
                   )}
-                  {recipe.cocktail_metadata.glass_type && (
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">{t("cocktailDetails.glass")}: </span>
-                      {recipe.cocktail_metadata.glass_type}
-                    </div>
-                  )}
-                  {recipe.cocktail_metadata.alcohol_percent && (
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {t("cocktailDetails.strength")}:{" "}
-                      </span>
-                      {recipe.cocktail_metadata.alcohol_percent}%
+
+                  {/* Гарнир */}
+                  {recipe.cocktail_metadata.garnish &&
+                    recipe.cocktail_metadata.garnish.length > 0 && (
+                      <div>
+                        <span className="text-sm text-muted-foreground">
+                          {t("fields.garnish")}:{" "}
+                        </span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {recipe.cocktail_metadata.garnish.map((g, i) => (
+                            <Badge
+                              key={i}
+                              variant="outline"
+                              className="text-xs bg-pink-50 text-pink-700 border-pink-200"
+                            >
+                              🍒 {g}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Инструменты */}
+                  {recipe.cocktail_metadata.tools && recipe.cocktail_metadata.tools.length > 0 && (
+                    <div>
+                      <span className="text-sm text-muted-foreground">{t("fields.tools")}: </span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {recipe.cocktail_metadata.tools.map((tool, i) => (
+                          <Badge
+                            key={i}
+                            variant="outline"
+                            className="text-xs bg-slate-50 text-slate-700 border-slate-200"
+                          >
+                            🔧 {tool}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </CardContent>

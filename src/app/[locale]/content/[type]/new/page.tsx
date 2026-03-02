@@ -317,6 +317,7 @@ export default function NewRecipePage() {
                   <Input
                     id="calories"
                     type="number"
+                    placeholder="0"
                     {...register("calories", { valueAsNumber: true })}
                   />
                 </div>
@@ -326,6 +327,7 @@ export default function NewRecipePage() {
                     id="protein"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("protein", { valueAsNumber: true })}
                   />
                 </div>
@@ -335,6 +337,7 @@ export default function NewRecipePage() {
                     id="fat"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("fat", { valueAsNumber: true })}
                   />
                 </div>
@@ -346,6 +349,7 @@ export default function NewRecipePage() {
                     id="carbs"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("carbs", { valueAsNumber: true })}
                   />
                 </div>
@@ -355,10 +359,12 @@ export default function NewRecipePage() {
                     id="sugar"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("sugar", { valueAsNumber: true })}
                   />
                 </div>
               </div>
+              <p className="text-xs text-muted-foreground mt-4">{t("new.nutritionOptional")}</p>
             </CardContent>
           </Card>
 

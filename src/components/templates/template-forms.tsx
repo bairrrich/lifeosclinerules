@@ -138,22 +138,24 @@ interface FoodTemplateFormProps {
 }
 
 export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
+  const t = useTranslations("templates")
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Название блюда</Label>
+        <Label>{t("food.title")}</Label>
         <Input
-          placeholder="Например: Овсянка с ягодами"
+          placeholder={t("food.titlePlaceholder")}
           value={data.title || ""}
           onChange={(e) => onChange({ ...data, title: e.target.value })}
         />
       </div>
 
       <div className="space-y-2">
-        <Label>Размер порции (г)</Label>
+        <Label>{t("food.servingSize")}</Label>
         <Input
           type="number"
-          placeholder="граммы"
+          placeholder={t("common.grams")}
           value={data.portion_size ?? ""}
           onChange={(e) =>
             onChange({ ...data, portion_size: e.target.value ? Number(e.target.value) : undefined })
@@ -163,12 +165,12 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Пищевая ценность (на 100г)</CardTitle>
+          <CardTitle className="text-base">{t("food.nutrition")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
-              <Label className="text-xs">Ккал</Label>
+              <Label className="text-xs">{t("food.calories")}</Label>
               <Input
                 type="number"
                 placeholder="0"
@@ -182,7 +184,7 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Белки</Label>
+              <Label className="text-xs">{t("food.protein")}</Label>
               <Input
                 type="number"
                 step="0.1"
@@ -197,7 +199,7 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Жиры</Label>
+              <Label className="text-xs">{t("food.fat")}</Label>
               <Input
                 type="number"
                 step="0.1"
@@ -209,7 +211,7 @@ export function FoodTemplateForm({ data, onChange }: FoodTemplateFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Углеводы</Label>
+              <Label className="text-xs">{t("food.carbs")}</Label>
               <Input
                 type="number"
                 step="0.1"
@@ -237,14 +239,15 @@ interface WorkoutTemplateFormProps {
 }
 
 export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps) {
-  const t = useTranslations()
+  const t = useTranslations("templates")
+  const tCommon = useTranslations("common")
 
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Название тренировки</Label>
+        <Label>{t("workout.title")}</Label>
         <Input
-          placeholder="Например: Утренняя пробежка"
+          placeholder={t("workout.titlePlaceholder")}
           value={data.title || ""}
           onChange={(e) => onChange({ ...data, title: e.target.value })}
         />
@@ -252,10 +255,10 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Длительность (мин)</Label>
+          <Label>{t("workout.duration")}</Label>
           <Input
             type="number"
-            placeholder="мин"
+            placeholder={tCommon("unit.min")}
             value={data.duration ?? ""}
             onChange={(e) =>
               onChange({ ...data, duration: e.target.value ? Number(e.target.value) : undefined })
@@ -263,7 +266,7 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
           />
         </div>
         <div className="space-y-2">
-          <Label>Интенсивность</Label>
+          <Label>{t("workout.intensity")}</Label>
           <Combobox
             options={getIntensityOptions(t).map((opt) => ({ id: opt.value, label: opt.label }))}
             value={data.intensity || ""}
@@ -273,7 +276,7 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
                 intensity: (value as "low" | "medium" | "high") || undefined,
               })
             }
-            placeholder="Выберите"
+            placeholder={tCommon("select")}
             allowCustom={false}
             searchable={false}
           />
@@ -282,10 +285,10 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Сожжено калорий</Label>
+          <Label>{t("workout.caloriesBurned")}</Label>
           <Input
             type="number"
-            placeholder="ккал"
+            placeholder={tCommon("unit.kcal")}
             value={data.calories_burned ?? ""}
             onChange={(e) =>
               onChange({
@@ -296,9 +299,9 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
           />
         </div>
         <div className="space-y-2">
-          <Label>Инвентарь</Label>
+          <Label>{t("workout.equipment")}</Label>
           <Input
-            placeholder="Штанга, гантели..."
+            placeholder={t("workout.equipmentPlaceholder")}
             value={data.equipment || ""}
             onChange={(e) => onChange({ ...data, equipment: e.target.value })}
           />
@@ -307,15 +310,15 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Дополнительно (для силовых)</CardTitle>
+          <CardTitle className="text-base">{t("workout.strengthAdditional")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-xs">Упражнений</Label>
+              <Label className="text-xs">{t("workout.exercisesCount")}</Label>
               <Input
                 type="number"
-                placeholder="шт"
+                placeholder={tCommon("unit.pcs")}
                 value={data.exercises_count ?? ""}
                 onChange={(e) =>
                   onChange({
@@ -326,10 +329,10 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Подходов</Label>
+              <Label className="text-xs">{t("workout.setsCount")}</Label>
               <Input
                 type="number"
-                placeholder="шт"
+                placeholder={tCommon("unit.pcs")}
                 value={data.sets_count ?? ""}
                 onChange={(e) =>
                   onChange({
@@ -340,10 +343,10 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Повторений</Label>
+              <Label className="text-xs">{t("workout.repsCount")}</Label>
               <Input
                 type="number"
-                placeholder="шт"
+                placeholder={tCommon("unit.pcs")}
                 value={data.reps_count ?? ""}
                 onChange={(e) =>
                   onChange({
@@ -354,11 +357,11 @@ export function WorkoutTemplateForm({ data, onChange }: WorkoutTemplateFormProps
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Общий вес (кг)</Label>
+              <Label className="text-xs">{t("workout.totalWeight")}</Label>
               <Input
                 type="number"
                 step="0.1"
-                placeholder="кг"
+                placeholder={tCommon("unit.kg")}
                 value={data.total_weight ?? ""}
                 onChange={(e) =>
                   onChange({
@@ -385,13 +388,14 @@ interface WaterTemplateFormProps {
 }
 
 export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
-  const t = useTranslations()
+  const t = useTranslations("templates")
+  const tCommon = useTranslations("common")
   const waterAmounts = [150, 200, 250, 300, 500]
 
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Количество (мл)</Label>
+        <Label>{t("water.amount")}</Label>
         <div className="flex gap-2 flex-wrap">
           {waterAmounts.map((amount) => (
             <button
@@ -404,13 +408,13 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
                   : "bg-background hover:bg-accent"
               }`}
             >
-              {amount} мл
+              {amount} {tCommon("unit.ml")}
             </button>
           ))}
         </div>
         <Input
           type="number"
-          placeholder="Свое значение"
+          placeholder={t("water.customAmount")}
           value={!waterAmounts.includes(data.amount_ml) ? data.amount_ml : ""}
           onChange={(e) =>
             onChange({ ...data, amount_ml: e.target.value ? Number(e.target.value) : 250 })
@@ -420,7 +424,7 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Тип напитка</Label>
+        <Label>{t("water.type")}</Label>
         <div className="flex gap-2 flex-wrap">
           {getDrinkTypeOptions(t).map((opt) => (
             <button
@@ -452,13 +456,14 @@ interface SleepTemplateFormProps {
 }
 
 export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
-  const t = useTranslations()
+  const t = useTranslations("templates")
+  const tCommon = useTranslations("common")
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Время отхода ко сну</Label>
+          <Label>{t("sleep.startTime")}</Label>
           <Input
             type="time"
             value={data.start_time || "23:00"}
@@ -466,7 +471,7 @@ export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label>Время пробуждения</Label>
+          <Label>{t("sleep.endTime")}</Label>
           <Input
             type="time"
             value={data.end_time || "07:00"}
@@ -476,7 +481,7 @@ export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Качество сна по умолчанию</Label>
+        <Label>{t("sleep.quality")}</Label>
         <div className="flex gap-2">
           {getQualityOptions(t).map((opt) => (
             <button
@@ -499,9 +504,9 @@ export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Заметки</Label>
+        <Label>{tCommon("notes")}</Label>
         <Input
-          placeholder="Сны, пробуждения..."
+          placeholder={t("sleep.notesPlaceholder")}
           value={data.notes || ""}
           onChange={(e) => onChange({ ...data, notes: e.target.value })}
         />
@@ -520,7 +525,8 @@ interface MoodTemplateFormProps {
 }
 
 export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
-  const t = useTranslations()
+  const t = useTranslations("templates")
+  const tCommon = useTranslations("common")
 
   const toggleActivity = (activity: string) => {
     const activities = data.activities || []
@@ -535,7 +541,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Настроение</Label>
+        <Label>{t("mood.mood")}</Label>
         <div className="flex justify-between">
           {getMoodOptions(t).map((opt) => (
             <button
@@ -556,7 +562,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Энергия</Label>
+        <Label>{t("mood.energy")}</Label>
         <div className="flex gap-2">
           {([1, 2, 3, 4, 5] as const).map((e) => (
             <button
@@ -576,7 +582,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Стресс (1 - низкий, 5 - высокий)</Label>
+        <Label>{t("mood.stress")}</Label>
         <div className="flex gap-2">
           {([1, 2, 3, 4, 5] as const).map((s) => (
             <button
@@ -596,7 +602,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Активности</Label>
+        <Label>{t("mood.activities")}</Label>
         <div className="flex flex-wrap gap-2">
           {getActivityOptions(t).map((opt) => (
             <button

@@ -103,6 +103,8 @@
       "selected": "selected",
       "remove": "Remove"
     },
+    "select": "Select",
+    "notes": "Notes",
     "addDialog": {
       "addLog": "Add log",
       "addCatalog": "Add to catalog",
@@ -152,13 +154,20 @@
     "unit": {
       "kg": "kg",
       "g": "g",
+      "mg": "mg",
       "cm": "cm",
       "m": "m",
       "percent": "%",
       "ml": "ml",
       "l": "l",
       "kcal": "kcal",
-      "bpm": "bpm"
+      "bpm": "bpm",
+      "min": "min",
+      "h": "h",
+      "sec": "sec",
+      "RUB": "₽",
+      "USD": "$",
+      "EUR": "€"
     }
   },
   "navigation": {
@@ -870,17 +879,29 @@
       "nutrition": "Nutrition Facts",
       "tags": "Tags",
       "tagsPlaceholder": "tags separated by comma",
-      "minutes": "min"
+      "minutes": "min",
+      "dishParameters": "Dish Parameters"
     },
     "edit": {
       "title": "Edit Recipe",
       "loading": "Loading...",
       "cancel": "Cancel",
       "save": "Save",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "nutrition": {
+        "title": "Nutrition Facts",
+        "optional": "All nutrition fields are optional"
+      }
     },
     "new": {
-      "title": "New Recipe"
+      "title": "New Recipe",
+      "nutrition": "Nutrition Facts",
+      "nutritionOptional": "All nutrition fields are optional",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "sugar": "Sugar"
     },
     "courseTypes": {
       "breakfast": "Breakfast",
@@ -911,6 +932,11 @@
       "iced": "Iced"
     },
     "spicyLevels": {
+      "1": "None",
+      "2": "Mild",
+      "3": "Medium",
+      "4": "Hot",
+      "5": "Very Hot",
       "none": "None",
       "mild": "Mild",
       "medium": "Medium",
@@ -937,10 +963,14 @@
       "vegan": "Vegan",
       "vegetarian": "Vegetarian",
       "glutenFree": "Gluten-Free",
+      "gluten-free": "Gluten-Free",
       "keto": "Keto",
       "lowCarb": "Low-Carb",
+      "low-carb": "Low-Carb",
       "dairyFree": "Dairy-Free",
+      "dairy-free": "Dairy-Free",
       "nutFree": "Nut-Free",
+      "nut-free": "Nut-Free",
       "diabetic": "Diabetic"
     },
     "difficulties": {
@@ -1047,7 +1077,8 @@
       "protein": "Protein",
       "fat": "Fat",
       "carbs": "Carbs",
-      "sugar": "Sugar"
+      "sugar": "Sugar",
+      "fiber": "Fiber"
     },
     "cocktailDetails": {
       "title": "Cocktail Details",
@@ -1186,6 +1217,53 @@
     },
     "placeholders": {
       "color": "e.g., Red, Golden, Amber"
+    },
+    "view": {
+      "nutrition": "Nutrition Facts",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "sugar": "Sugar",
+      "fiber": "Fiber",
+      "ingredients": "Ingredients",
+      "optional": "(opt.)",
+      "instructions": "Instructions",
+      "noInstructions": "No instructions",
+      "details": "Details",
+      "additional": "Additional",
+      "recipe": "Recipe",
+      "cocktailDetails": {
+        "title": "Cocktail Details",
+        "alcoholic": "Alcoholic",
+        "nonAlcoholic": "Non-alcoholic"
+      },
+      "methods": {
+        "shaken": "Shaken",
+        "stirred": "Stirred",
+        "blended": "Blended",
+        "built": "Built",
+        "muddled": "Muddled",
+        "layered": "Layered"
+      },
+      "iceTypes": {
+        "cubed": "Cubed",
+        "crushed": "Crushed",
+        "sphere": "Sphere",
+        "none": "No ice"
+      },
+      "carbonatedLabel": "Carbonated",
+      "nonCarbonatedLabel": "Non-carbonated",
+      "drinkTypes": {
+        "tea": "Tea",
+        "coffee": "Coffee",
+        "smoothie": "Smoothie",
+        "juice": "Juice",
+        "lemonade": "Lemonade",
+        "milkshake": "Milkshake",
+        "compote": "Compote",
+        "cocoa": "Cocoa"
+      }
     }
   },
   "fab": {
@@ -2503,6 +2581,47 @@
       "water": "Water",
       "sleep": "Sleep",
       "mood": "Mood"
+    },
+    "food": {
+      "title": "Dish Name",
+      "titlePlaceholder": "e.g., Oatmeal with Berries",
+      "nutrition": "Nutrition Facts (per 100g)",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "servingSize": "Serving Size (g)"
+    },
+    "workout": {
+      "title": "Workout Name",
+      "titlePlaceholder": "e.g., Morning Run",
+      "duration": "Duration (min)",
+      "intensity": "Intensity",
+      "caloriesBurned": "Calories Burned",
+      "equipment": "Equipment",
+      "equipmentPlaceholder": "Barbell, dumbbells...",
+      "strengthAdditional": "Additional (for strength)",
+      "exercisesCount": "Exercises",
+      "setsCount": "Sets",
+      "repsCount": "Reps",
+      "totalWeight": "Total Weight (kg)"
+    },
+    "water": {
+      "amount": "Amount (ml)",
+      "customAmount": "Custom value",
+      "type": "Drink Type"
+    },
+    "sleep": {
+      "startTime": "Bedtime",
+      "endTime": "Wake Up Time",
+      "quality": "Sleep Quality",
+      "notesPlaceholder": "Dreams, awakenings..."
+    },
+    "mood": {
+      "mood": "Mood",
+      "energy": "Energy",
+      "stress": "Stress",
+      "activities": "Activities"
     }
   },
   "items": {
@@ -2859,7 +2978,87 @@
     "editContent": "Edit Content",
     "types": {
       "book": "Book",
-      "recipe": "Recipe"
+      "recipe": "Recipe",
+      "food": "Food",
+      "drink": "Drink",
+      "cocktail": "Cocktail"
+    },
+    "status": {
+      "planned": "Planned",
+      "reading": "Reading",
+      "completed": "Completed"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "pro": "Pro"
+    },
+    "fields": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "description": "Description",
+      "annotation": "Annotation",
+      "authors": "Author(s)",
+      "publishedYear": "Publication Year",
+      "originalYear": "Original Year",
+      "publisher": "Publisher",
+      "format": "Format",
+      "language": "Language",
+      "pageCount": "Number of Pages",
+      "pages": "Pages",
+      "isbn10": "ISBN-10",
+      "isbn13": "ISBN-13",
+      "goodreadsId": "Goodreads ID",
+      "googleBooksId": "Google Books ID",
+      "genres": "Genres",
+      "tags": "Tags",
+      "coverUrl": "Cover URL",
+      "servings": "Servings",
+      "servingUnit": "Serving Unit",
+      "prepTime": "Prep Time",
+      "cookTime": "Cook Time",
+      "totalTime": "Total Time",
+      "difficulty": "Difficulty",
+      "cuisine": "Cuisine",
+      "courseType": "Course Type",
+      "cookingMethod": "Cooking Method",
+      "servingTemperature": "Serving Temperature",
+      "spicyLevel": "Spicy Level",
+      "dietary": "Dietary Options",
+      "drinkType": "Drink Type",
+      "base": "Base",
+      "isCarbonated": "Carbonated",
+      "volumeMl": "Volume (ml)",
+      "caffeineMg": "Caffeine (mg)",
+      "alcoholPercent": "Alcohol (%)",
+      "glassType": "Glass Type",
+      "garnish": "Garnish",
+      "iceType": "Ice Type",
+      "cocktailMethod": "Cocktail Method",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "sugar": "Sugar",
+      "fiber": "Fiber"
+    },
+    "userBook": {
+      "status": "Status",
+      "rating": "Rating",
+      "progress": "Progress",
+      "pages": "Pages",
+      "percent": "Percent",
+      "startedAt": "Started At",
+      "finishedAt": "Finished At",
+      "notes": "Personal Notes",
+      "isOwned": "Owned",
+      "ownedFormat": "Owned Format",
+      "location": "Location",
+      "rereadCount": "Reread Count"
+    },
+    "validation": {
+      "titleRequired": "Enter title"
     },
     "new": {
       "recipe": "New Recipe",
@@ -2921,7 +3120,8 @@
       "courseType": "Course Type",
       "cuisine": "Cuisine",
       "method": "Method",
-      "cocktailDetails": "Cocktail Details",
+      "carbonated": "Carbonated",
+      "nonCarbonated": "Non-carbonated",
       "base": "Base",
       "glass": "Glass",
       "strength": "Strength",
@@ -2931,7 +3131,8 @@
       "volume": "Volume",
       "createdAt": "Created",
       "updatedAt": "Updated",
-      "tags": "Tags"
+      "tags": "Tags",
+      "recipe": "Recipe"
     },
     "edit": {
       "title": "Edit: {type}",

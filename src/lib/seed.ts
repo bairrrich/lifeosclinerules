@@ -960,6 +960,122 @@ async function seedContent() {
       created_at: now(),
       updated_at: now(),
     },
+    // Drink recipes
+    {
+      id: generateId(),
+      type: ContentType.RECIPE,
+      recipe_type: "drink",
+      title: "Зелёный чай с жасмином",
+      description: "Ароматный зелёный чай с цветами жасмина",
+      rating: 4.7,
+      tags: ["здоровое", "расслабление", "вкусно"],
+      cover: "",
+      prep_time_min: 2,
+      cook_time_min: 5,
+      total_time_min: 7,
+      servings: 1,
+      difficulty: "easy" as Difficulty,
+      drink_metadata: {
+        drink_type: "tea",
+        base: "Зелёный чай",
+        serving_temperature: "hot",
+        is_carbonated: false,
+        volume_ml: 250,
+        caffeine_mg: 30,
+      },
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: generateId(),
+      type: ContentType.RECIPE,
+      recipe_type: "drink",
+      title: "Клубничный смузи",
+      description: "Освежающий смузи из клубники с молоком",
+      rating: 4.8,
+      tags: ["здоровое", "быстро", "любимое"],
+      cover: "",
+      prep_time_min: 5,
+      cook_time_min: 0,
+      total_time_min: 5,
+      servings: 1,
+      difficulty: "easy" as Difficulty,
+      calories: 150,
+      protein: 5,
+      fat: 2,
+      carbs: 28,
+      sugar: 18,
+      fiber: 3,
+      drink_metadata: {
+        drink_type: "smoothie",
+        base: "Молоко",
+        serving_temperature: "cold",
+        is_carbonated: false,
+        volume_ml: 350,
+        caffeine_mg: 0,
+      },
+      created_at: now(),
+      updated_at: now(),
+    },
+    // Cocktail recipes
+    {
+      id: generateId(),
+      type: ContentType.RECIPE,
+      recipe_type: "cocktail",
+      title: "Мохито",
+      description: "Классический кубинский коктейль с ромом и мятой",
+      rating: 4.9,
+      tags: ["коктейль", "освежающий", "классика"],
+      cover: "",
+      prep_time_min: 5,
+      cook_time_min: 0,
+      total_time_min: 5,
+      servings: 1,
+      difficulty: "medium" as Difficulty,
+      cocktail_metadata: {
+        is_alcoholic: true,
+        alcohol_percent: 12,
+        base_spirit: "Белый ром",
+        cocktail_method: "muddled",
+        glass_type: "Highball",
+        ice_type: "crushed",
+        garnish: ["Мята", "Лайм"],
+        color: "Прозрачный с зелёным",
+        iba_category: "IBA Contemporary Classics",
+        tools: ["Muddler", "Bar spoon"],
+      },
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: generateId(),
+      type: ContentType.RECIPE,
+      recipe_type: "cocktail",
+      title: "Маргарита",
+      description: "Классическая мексиканская маргарита с текилой",
+      rating: 4.8,
+      tags: ["коктейль", "классика", "мексика"],
+      cover: "",
+      prep_time_min: 3,
+      cook_time_min: 0,
+      total_time_min: 3,
+      servings: 1,
+      difficulty: "easy" as Difficulty,
+      cocktail_metadata: {
+        is_alcoholic: true,
+        alcohol_percent: 15,
+        base_spirit: "Текила",
+        cocktail_method: "shaken",
+        glass_type: "Margarita",
+        ice_type: "cubed",
+        garnish: ["Лайм", "Соль"],
+        color: "Зелёный",
+        iba_category: "IBA Contemporary Classics",
+        tools: ["Shaker", "Strainer"],
+      },
+      created_at: now(),
+      updated_at: now(),
+    },
   ]
 
   await db.content.bulkAdd(recipes)
@@ -1163,6 +1279,280 @@ async function seedContent() {
       recipe_id: porridge.id,
       order: 4,
       text: "Добавить ягоды и подавать",
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // For "Зелёный чай с жасмином"
+  const tea = recipes[2]
+  if (tea) {
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: tea.id,
+      order: 1,
+      text: "Вскипятить воду до 80°C",
+      timer_min: 3,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: tea.id,
+      order: 2,
+      text: "Залить чайные листья горячей водой",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: tea.id,
+      order: 3,
+      text: "Настаивать 3-5 минут",
+      timer_min: 5,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // For "Клубничный смузи"
+  const smoothie = recipes[3]
+  if (smoothie) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: smoothie.id,
+      ingredient_id: berriesIngredient?.id,
+      ingredient_name: "Клубника",
+      amount: 150,
+      unit: "g",
+      order: 1,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: smoothie.id,
+      ingredient_id: milkIngredient?.id,
+      ingredient_name: "Молоко",
+      amount: 200,
+      unit: "ml",
+      order: 2,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: smoothie.id,
+      order: 1,
+      text: "Поместить клубнику в блендер",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: smoothie.id,
+      order: 2,
+      text: "Добавить молоко",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: smoothie.id,
+      order: 3,
+      text: "Взбивать до однородной консистенции",
+      timer_min: 2,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // For "Мохито"
+  const mojito = recipes[4]
+  if (mojito) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      ingredient_name: "Белый ром",
+      amount: 50,
+      unit: "ml",
+      order: 1,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      ingredient_name: "Свежая мята",
+      amount: 10,
+      unit: "g",
+      order: 2,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      ingredient_name: "Лайм",
+      amount: 1,
+      unit: "pcs",
+      order: 3,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      ingredient_name: "Сахар",
+      amount: 2,
+      unit: "tsp",
+      order: 4,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      ingredient_name: "Содовая",
+      amount: 100,
+      unit: "ml",
+      order: 5,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      ingredient_name: "Дроблёный лёд",
+      amount: 1,
+      unit: "cup",
+      order: 6,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      order: 1,
+      text: "Положить мяту и лайм в бокал",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      order: 2,
+      text: "Добавить сахар и подавить мадлером",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      order: 3,
+      text: "Добавить ром и наполнить бокал дроблёным льдом",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      order: 4,
+      text: "Долить содовую и аккуратно перемешать",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: mojito.id,
+      order: 5,
+      text: "Украсить веточкой мяты и долькой лайма",
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // For "Маргарита"
+  const margarita = recipes[5]
+  if (margarita) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      ingredient_name: "Текила",
+      amount: 50,
+      unit: "ml",
+      order: 1,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      ingredient_name: "Апельсиновый ликёр",
+      amount: 30,
+      unit: "ml",
+      order: 2,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      ingredient_name: "Сок лайма",
+      amount: 30,
+      unit: "ml",
+      order: 3,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      ingredient_name: "Соль",
+      amount: 1,
+      unit: "pinch",
+      order: 4,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      order: 1,
+      text: "Смочить край бокала лаймом и обмакнуть в соль",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      order: 2,
+      text: "Смешать текилу, ликёр и сок лайма в шейкере со льдом",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      order: 3,
+      text: "Энергично встряхивать 15 секунд",
+      timer_min: 1,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      order: 4,
+      text: "Процедить в бокал со льдом",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: margarita.id,
+      order: 5,
+      text: "Украсить долькой лайма",
       created_at: now(),
       updated_at: now(),
     })

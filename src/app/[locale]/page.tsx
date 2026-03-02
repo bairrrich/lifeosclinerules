@@ -247,6 +247,7 @@ export default function HomePage() {
   const t = useTranslations("home")
   const tNav = useTranslations("navigation")
   const tLog = useTranslations("logs")
+  const tCommon = useTranslations("common")
   const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
   const [stats, setStats] = useState({
@@ -454,7 +455,9 @@ export default function HomePage() {
                     <span className="text-xs text-muted-foreground">{t("expense")}</span>
                   </div>
                   <div className="text-xl font-bold">
-                    {stats.todayExpenses ? `${stats.todayExpenses.toLocaleString()}₽` : "-"}
+                    {stats.todayExpenses
+                      ? `${stats.todayExpenses.toLocaleString()} ${tCommon("unit.RUB")}`
+                      : "-"}
                   </div>
                 </CardContent>
               </Card>
@@ -595,7 +598,9 @@ export default function HomePage() {
                         </div>
                         {log.value !== undefined && (
                           <div className="text-sm font-medium">
-                            {log.type === "finance" ? `${log.value.toLocaleString()} ₽` : log.value}
+                            {log.type === "finance"
+                              ? `${log.value.toLocaleString()} ${tCommon("unit.RUB")}`
+                              : log.value}
                           </div>
                         )}
                       </CardContent>
