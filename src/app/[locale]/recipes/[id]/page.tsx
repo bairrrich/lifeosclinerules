@@ -187,7 +187,7 @@ export default function RecipeDetailPage() {
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {recipe.total_time_min} {t("fields.minutes")}
+                    {recipe.total_time_min} {t("forms.steps.minutes")}
                   </span>
                 </div>
               )}
@@ -209,7 +209,7 @@ export default function RecipeDetailPage() {
         {/* Tabs */}
         <Tabs defaultValue="instructions">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="instructions">{t("forms.steps")}</TabsTrigger>
+            <TabsTrigger value="instructions">{t("forms.steps.addStep")}</TabsTrigger>
             <TabsTrigger value="details">{t("details")}</TabsTrigger>
           </TabsList>
 
@@ -282,7 +282,7 @@ export default function RecipeDetailPage() {
             {/* КБЖУ */}
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">{t("nutrition")}</CardTitle>
+                <CardTitle className="text-base">{t("fields.nutrition")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 gap-4 text-center">

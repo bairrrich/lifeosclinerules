@@ -59,6 +59,7 @@ export interface UserBook extends BaseEntity {
   started_at?: ISODate
   finished_at?: ISODate
   personal_notes?: string
+  tags?: string[]
   is_owned?: boolean
   owned_format?: BookFormat
   location?: string

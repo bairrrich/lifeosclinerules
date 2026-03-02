@@ -1,13 +1,39 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
-import { Trash2 } from "@/lib/icons"
+import { Trash2, Database } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
+import { seedDatabase } from "@/lib/seed"
 
 export function DangerZone() {
   const t = useTranslations("settings")
+  const [isSeeding, setIsSeeding] = useState(false)
+  const [hasData, setHasData] = useState(false)
+
+  // Check if data already exists
+  useEffect(() => {
+    db.logs.count().then((count) => {
+      setHasData(count > 0)
+    })
+  }, [])
+
+  const handleSeedData = async () => {
+    if (confirm(t("dangerZone.confirmSeed"))) {
+      setIsSeeding(true)
+      try {
+        await seedDatabase()
+        window.location.reload()
+      } catch (error) {
+        console.error("Error seeding data:", error)
+        alert("Error seeding data. Check console for details.")
+      } finally {
+        setIsSeeding(false)
+      }
+    }
+  }
 
   const handleClearData = async () => {
     if (confirm(t("dangerZone.confirmClear"))) {
@@ -69,6 +95,14 @@ export function DangerZone() {
         <CardDescription>{t("dangerZone.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
+        <Button variant="outline" onClick={handleSeedData} disabled={isSeeding} className="w-full">
+          <Database className="h-4 w-4 mr-2" />
+          {isSeeding
+            ? t("dangerZone.seeding")
+            : hasData
+              ? t("dangerZone.reseedData")
+              : t("dangerZone.seedData")}
+        </Button>
         <Button variant="destructive" onClick={handleClearData} className="w-full">
           <Trash2 className="h-4 w-4 mr-2" />
           {t("dangerZone.clearAllData")}

@@ -9,7 +9,16 @@ import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
 import { FormActions } from "@/components/shared/form-actions"
 import { BookForm, UserBookForm, BookQuotes } from "@/components/books"
-import type { Book, UserBook, Author, Genre, BookAuthor, BookQuote, BookGenre } from "@/types"
+import type {
+  Book,
+  UserBook,
+  Author,
+  Genre,
+  BookAuthor,
+  BookQuote,
+  BookGenre,
+  BookAuthorWithDetails,
+} from "@/types"
 
 export default function EditBookPage() {
   const router = useRouter()
@@ -69,6 +78,27 @@ export default function EditBookPage() {
         const bookAuthors = await db.bookAuthors.where("book_id").equals(bookId).toArray()
         const authorIds = bookAuthors.sort((a, b) => a.order - b.order).map((ba) => ba.author_id)
 
+        // Загружаем полные данные авторов
+        const authorDetails = await Promise.all(authorIds.map((id) => db.authors.get(id)))
+        const authorsWithDetails: BookAuthorWithDetails[] = authorDetails
+          .filter((a): a is Author => !!a)
+          .map((author, index) => ({
+            id: author.id, // Используем ID автора, а не composite ID
+            book_id: bookId,
+            author_id: author.id,
+            role: "author" as const,
+            order: index,
+            name: author.name,
+            name_original: author.name_original,
+            birth_year: author.birth_year,
+            death_year: author.death_year,
+            bio: author.bio,
+            photo_url: author.photo_url,
+            goodreads_author_id: author.goodreads_author_id,
+            created_at: author.created_at,
+            updated_at: author.updated_at,
+          }))
+
         // Загружаем цитаты
         let quotesList: BookQuote[] = []
         if (userBook) {
@@ -80,8 +110,12 @@ export default function EditBookPage() {
         const bookGenres = await db.bookGenres.where("book_id").equals(bookId).toArray()
         const genreIds = bookGenres.map((bg) => bg.genre_id)
 
+        // Загружаем полные данные жанров
+        const genreDetails = await Promise.all(genreIds.map((id) => db.genres.get(id)))
+        const genresWithDetails = genreDetails.filter((g): g is Genre => !!g)
+
         // Устанавливаем данные
-        setBookData(book)
+        setBookData({ ...book, authors: authorsWithDetails, genres: genresWithDetails })
         setUserBookData(userBook || { status: "planned" })
         setQuotes(quotesList)
         setSelectedAuthorIds(authorIds)
@@ -175,7 +209,6 @@ export default function EditBookPage() {
         page_count: bookData.page_count,
         format: bookData.format,
         cover_image_url: bookData.cover_image_url,
-        tags: bookData.tags,
         updated_at: now,
       })
 
@@ -217,6 +250,7 @@ export default function EditBookPage() {
           started_at: userBookData.started_at,
           finished_at: userBookData.finished_at,
           personal_notes: userBookData.personal_notes,
+          tags: userBookData.tags,
           is_owned: userBookData.is_owned,
           owned_format: userBookData.owned_format,
           location: userBookData.location,
@@ -249,6 +283,7 @@ export default function EditBookPage() {
           started_at: userBookData.started_at,
           finished_at: userBookData.finished_at,
           personal_notes: userBookData.personal_notes,
+          tags: userBookData.tags,
           is_owned: userBookData.is_owned,
           owned_format: userBookData.owned_format,
           location: userBookData.location,
@@ -336,6 +371,8 @@ export default function EditBookPage() {
             genres={genres}
             publishers={publishers}
             onChange={setBookData}
+            onAuthorsChange={handleAuthorsChange}
+            onGenresChange={handleGenresChange}
           />
 
           {/* Пользовательские данные */}

@@ -42,7 +42,7 @@ const validationMessages = {
 // Recipe schema factory function
 function createRecipeSchema(t: (key: string) => string) {
   const messages = {
-    title: t("validation.title") || validationMessages.title,
+    title: validationMessages.title,
   }
 
   return z.object({
@@ -126,7 +126,7 @@ export default function EditRecipePage() {
     reset,
     formState: { errors },
   } = useForm<RecipeFormData>({
-    resolver: zodResolver(createRecipeSchema((key) => t(`validation.${key}`))),
+    resolver: zodResolver(createRecipeSchema(() => "")),
   })
 
   useEffect(() => {

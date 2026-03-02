@@ -150,7 +150,6 @@ export default function NewBookPage() {
         page_count: bookData.page_count,
         format: bookData.format || "paperback",
         cover_image_url: bookData.cover_image_url,
-        tags: bookData.tags,
         created_at: now,
         updated_at: now,
       }
@@ -183,6 +182,7 @@ export default function NewBookPage() {
         started_at: userBookData.started_at,
         finished_at: userBookData.finished_at,
         personal_notes: userBookData.personal_notes,
+        tags: userBookData.tags,
         is_owned: userBookData.is_owned,
         owned_format: userBookData.owned_format,
         location: userBookData.location,
@@ -231,6 +231,8 @@ export default function NewBookPage() {
             genres={genres}
             publishers={publishers}
             onChange={setBookData}
+            onAuthorsChange={handleAuthorsChange}
+            onGenresChange={handleGenresChange}
           />
 
           {/* Пользовательские данные */}

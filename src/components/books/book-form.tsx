@@ -5,9 +5,10 @@ import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Upload } from "@/lib/icons"
 import { Textarea } from "@/components/ui/textarea"
 import { Combobox } from "@/components/ui/combobox"
-import { TagManager } from "@/components/shared/forms"
 import type { Book, BookFormat, Author, Genre } from "@/types"
 
 // Форматы книг (значения)
@@ -23,11 +24,20 @@ interface BookFormProps {
   genres: Genre[]
   publishers: string[]
   onChange: (data: Partial<Book>) => void
+  onAuthorsChange?: (selectedIds: string[], newAuthors?: string[]) => void
+  onGenresChange?: (selectedIds: string[], newGenres?: string[]) => void
 }
 
-export function BookForm({ data, authors, genres, publishers, onChange }: BookFormProps) {
+export function BookForm({
+  data,
+  authors,
+  genres,
+  publishers,
+  onChange,
+  onAuthorsChange,
+  onGenresChange,
+}: BookFormProps) {
   const t = useTranslations("books")
-  const [tags, setTags] = useState<string[]>(data?.tags || [])
 
   // Преобразуем авторов в опции для combobox
   const authorOptions = authors.map((author) => ({
@@ -48,11 +58,6 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
     onChange({ ...data, [field]: value })
   }
 
-  const handleTagsChange = (newTags: string[]) => {
-    setTags(newTags)
-    onChange({ ...data, tags: newTags })
-  }
-
   // Получаем выбранные ID из существующих данных
   const selectedAuthorIds = data?.authors?.map((a) => a.id) || []
   const selectedGenreIds = data?.genres?.map((g) => g.id) || []
@@ -70,6 +75,10 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
         order: 0,
       })) as any // Приводим к нужному типу
     onChange({ ...data, authors: selectedAuthors })
+    // Также вызываем внешний обработчик, если передан
+    if (onAuthorsChange) {
+      onAuthorsChange(ids)
+    }
   }
 
   const handleGenresChange = (value: string | string[]) => {
@@ -77,6 +86,10 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
     // Находим полные объекты жанров по ID
     const selectedGenres = genres.filter((g) => ids.includes(g.id))
     onChange({ ...data, genres: selectedGenres })
+    // Также вызываем внешний обработчик, если передан
+    if (onGenresChange) {
+      onGenresChange(ids)
+    }
   }
 
   return (
@@ -116,6 +129,60 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
               onChange={(e) => updateField("description", e.target.value)}
               className="min-h-[100px]"
             />
+          </div>
+        </CardContent>
+
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-4">
+            {data?.cover_image_url && (
+              <div className="w-16 h-24 relative flex-shrink-0 rounded overflow-hidden border">
+                <img
+                  src={data.cover_image_url}
+                  alt="Cover preview"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    ;(e.target as HTMLImageElement).style.display = "none"
+                  }}
+                />
+              </div>
+            )}
+            <div className="flex-1 space-y-2">
+              <Label htmlFor="cover_image_url">{t("fields.coverUrl")}</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="cover_image_url"
+                  placeholder="https://example.com/cover.jpg"
+                  value={data?.cover_image_url || ""}
+                  onChange={(e) => updateField("cover_image_url", e.target.value)}
+                  className="flex-1"
+                />
+                <input
+                  type="file"
+                  id="cover_file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) {
+                      const reader = new FileReader()
+                      reader.onloadend = () => {
+                        updateField("cover_image_url", reader.result as string)
+                      }
+                      reader.readAsDataURL(file)
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => document.getElementById("cover_file")?.click()}
+                  title="Upload image"
+                >
+                  <Upload className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -180,6 +247,16 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
               searchable={true}
             />
           </div>
+
+          <Combobox
+            label={t("fields.genres")}
+            options={genreOptions}
+            value={selectedGenreIds}
+            onChange={handleGenresChange}
+            mode="multiple"
+            searchable={true}
+            allowCustom={true}
+          />
         </CardContent>
       </Card>
 
@@ -189,7 +266,7 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
           <CardTitle>{t("forms.characteristics")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="format">{t("fields.format")}</Label>
               <Combobox
@@ -210,19 +287,18 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
                 searchable={false}
               />
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="page_count">{t("fields.pageCount")}</Label>
-            <Input
-              id="page_count"
-              type="number"
-              placeholder="320"
-              value={data?.page_count || ""}
-              onChange={(e) =>
-                updateField("page_count", e.target.value ? parseInt(e.target.value) : undefined)
-              }
-            />
+            <div className="space-y-2">
+              <Label htmlFor="page_count">{t("fields.pageCount")}</Label>
+              <Input
+                id="page_count"
+                type="number"
+                placeholder="320"
+                value={data?.page_count || ""}
+                onChange={(e) =>
+                  updateField("page_count", e.target.value ? parseInt(e.target.value) : undefined)
+                }
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -273,59 +349,6 @@ export function BookForm({ data, authors, genres, publishers, onChange }: BookFo
                 onChange={(e) => updateField("google_books_id", e.target.value)}
               />
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Жанры и теги */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("forms.genresAndTags")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Combobox
-            label={t("fields.authors")}
-            options={authorOptions}
-            value={selectedAuthorIds}
-            onChange={handleAuthorsChange}
-            mode="multiple"
-            searchable={true}
-            allowCustom={true}
-          />
-
-          <Combobox
-            label={t("fields.genres")}
-            options={genreOptions}
-            value={selectedGenreIds}
-            onChange={handleGenresChange}
-            mode="multiple"
-            searchable={true}
-            allowCustom={true}
-          />
-
-          <TagManager
-            tags={tags}
-            onChange={handleTagsChange}
-            label={t("fields.tags")}
-            placeholder={t("fields.addTag")}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Обложка */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("forms.cover")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="cover_image_url">{t("fields.coverUrl")}</Label>
-            <Input
-              id="cover_image_url"
-              placeholder="https://example.com/cover.jpg"
-              value={data?.cover_image_url || ""}
-              onChange={(e) => updateField("cover_image_url", e.target.value)}
-            />
           </div>
         </CardContent>
       </Card>

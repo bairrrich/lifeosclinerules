@@ -1,12 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Combobox } from "@/components/ui/combobox"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FormSection } from "@/components/shared/forms"
+import { FormSection, TagManager } from "@/components/shared/forms"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
@@ -51,6 +52,13 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
 
   const updateField = <K extends keyof UserBook>(field: K, value: UserBook[K]) => {
     onChange({ ...data, [field]: value })
+  }
+
+  const [tags, setTags] = useState<string[]>(data?.tags || [])
+
+  const handleTagsChange = (newTags: string[]) => {
+    setTags(newTags)
+    onChange({ ...data, tags: newTags })
   }
 
   // Получаем текущую локаль для date-fns
@@ -199,58 +207,65 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
         </div>
       </FormSection>
 
-      {/* Оценка и заметки */}
+      {/* Оценка, владение и заметки */}
       <FormSection title={t("userBook.rating")}>
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="rating">{t("userBook.rating")}</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="rating"
-                type="number"
-                min={1}
-                max={5}
-                step={0.5}
-                placeholder="5"
-                value={data?.rating || ""}
-                onChange={(e) =>
-                  updateField("rating", e.target.value ? parseFloat(e.target.value) : undefined)
+          {/* Оценка, перечитывания, владение в одной строке */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="rating">{t("userBook.rating")}</Label>
+              <Combobox
+                options={[
+                  { id: "1", label: "1" },
+                  { id: "2", label: "2" },
+                  { id: "3", label: "3" },
+                  { id: "4", label: "4" },
+                  { id: "5", label: "5" },
+                ]}
+                value={data?.rating?.toString() || ""}
+                onChange={(value) =>
+                  updateField("rating", value ? parseInt(value as string) : undefined)
                 }
-                className="w-20"
+                placeholder="5"
+                allowCustom={false}
+                searchable={false}
               />
-              <span className="text-sm text-muted-foreground">{t("userBook.rating")} 5</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="reread_count">{t("userBook.rereadCount")}</Label>
+              <Input
+                id="reread_count"
+                type="number"
+                min={0}
+                placeholder="0"
+                value={data?.reread_count || ""}
+                onChange={(e) =>
+                  updateField("reread_count", e.target.value ? parseInt(e.target.value) : undefined)
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>{t("userBook.isOwned")}</Label>
+              <div className="flex items-center h-10 gap-2">
+                <input
+                  type="checkbox"
+                  id="is_owned"
+                  checked={data?.is_owned || false}
+                  onChange={(e) => updateField("is_owned", e.target.checked)}
+                  className="h-4 w-4"
+                />
+                <Label htmlFor="is_owned" className="font-normal text-sm">
+                  {t("userBook.isOwned")}
+                </Label>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="personal_notes">{t("userBook.notes")}</Label>
-            <Textarea
-              id="personal_notes"
-              placeholder={t("userBook.notes")}
-              value={data?.personal_notes || ""}
-              onChange={(e) => updateField("personal_notes", e.target.value)}
-              className="min-h-[100px]"
-            />
-          </div>
-        </div>
-      </FormSection>
-
-      {/* Владение */}
-      <FormSection title={t("userBook.isOwned")}>
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="is_owned"
-              checked={data?.is_owned || false}
-              onChange={(e) => updateField("is_owned", e.target.checked)}
-              className="h-4 w-4"
-            />
-            <Label htmlFor="is_owned">{t("userBook.isOwned")}</Label>
-          </div>
-
+          {/* Формат и местоположение, если в собственности */}
           {data?.is_owned && (
-            <>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="owned_format">{t("userBook.ownedFormat")}</Label>
                 <Combobox
@@ -271,22 +286,26 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
                   onChange={(e) => updateField("location", e.target.value)}
                 />
               </div>
-            </>
+            </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="reread_count">{t("userBook.rereadCount")}</Label>
-            <Input
-              id="reread_count"
-              type="number"
-              min={0}
-              placeholder="0"
-              value={data?.reread_count || ""}
-              onChange={(e) =>
-                updateField("reread_count", e.target.value ? parseInt(e.target.value) : undefined)
-              }
+            <Label htmlFor="personal_notes">{t("userBook.notes")}</Label>
+            <Textarea
+              id="personal_notes"
+              placeholder={t("userBook.notes")}
+              value={data?.personal_notes || ""}
+              onChange={(e) => updateField("personal_notes", e.target.value)}
+              className="min-h-[100px]"
             />
           </div>
+
+          <TagManager
+            tags={tags}
+            onChange={handleTagsChange}
+            label={t("fields.tags")}
+            placeholder={t("fields.addTag")}
+          />
         </div>
       </FormSection>
     </>

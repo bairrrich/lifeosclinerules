@@ -540,6 +540,8 @@
       "description": "Irreversible actions",
       "seedData": "Seed Test Data",
       "reseedData": "Reseed Test Data",
+      "seeding": "Seeding...",
+      "confirmSeed": "Are you sure you want to seed test data? Existing data will be preserved.",
       "cleanupDuplicates": "Cleanup Duplicate Categories",
       "clearAllData": "Clear All Data",
       "confirmClear": "Are you sure? All data will be deleted without recovery!",
@@ -644,7 +646,8 @@
       "characteristics": "Characteristics",
       "isbnAndExternalIds": "ISBN & External IDs",
       "genresAndTags": "Genres & Tags",
-      "cover": "Cover"
+      "cover": "Cover",
+      "tags": "Tags"
     },
     "fields": {
       "title": "Title",
