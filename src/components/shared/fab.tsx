@@ -26,8 +26,9 @@ import {
 } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { QuickMoodDialog } from "./quick-mood-dialog"
-import { moduleColors, fabColor, type ModuleType } from "@/lib/theme-colors"
+import { moduleColors, itemColors, fabColor, type ModuleType } from "@/lib/theme-colors"
 import { cn } from "@/lib/utils"
+import type { ItemType } from "@/types"
 
 interface FabAction {
   icon: React.ReactNode
@@ -190,14 +191,26 @@ export function FAB() {
           <div className="absolute bottom-16 right-0 bg-card border rounded-2xl shadow-xl p-2 sm:p-3 z-50 w-[280px] sm:w-72 max-h-[60vh] sm:max-h-[70vh] overflow-y-auto overscroll-contain">
             <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
               {actions.map((action) => {
-                const colors = moduleColors[action.module]
+                // Determine color scheme: use itemColors for item-type actions, otherwise moduleColors
+                const isItemAction = action.href?.startsWith("/items/")
+                let bgColorClass: string
+
+                if (isItemAction) {
+                  // Extract item type from href (e.g., "/items/vitamin/new" -> "vitamin")
+                  const hrefParts = action.href.split("/")
+                  const itemType = hrefParts[2] as ItemType
+                  bgColorClass = itemColors[itemType]?.DEFAULT || moduleColors[action.module].light
+                } else {
+                  bgColorClass = moduleColors[action.module].light
+                }
+
                 return (
                   <button
                     key={action.label}
                     onClick={() => handleAction(action)}
                     className="flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-xl hover:bg-accent transition-colors min-h-[64px] sm:min-h-[72px]"
                   >
-                    <div className={cn(colors.DEFAULT, "text-white p-2 rounded-full")}>
+                    <div className={cn(bgColorClass, "text-white p-2 rounded-full")}>
                       {action.icon}
                     </div>
                     <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">

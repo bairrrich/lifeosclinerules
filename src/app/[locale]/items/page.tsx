@@ -179,15 +179,15 @@ export default function ItemsPage() {
               return (
                 <Link key={item.id} href={`/items/${item.type}/${item.id}`}>
                   <Card className="hover:bg-accent transition-colors">
-                    <CardContent className="p-4 flex items-center gap-3">
+                    <CardContent className="p-3 flex items-center gap-3">
                       <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl ${getTypeColor(item.type)}`}
+                        className={`flex h-9 w-9 items-center justify-center rounded-xl ${getTypeColor(item.type)}`}
                       >
-                        <TypeIcon className="h-5 w-5" />
+                        <TypeIcon className="h-4 w-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium truncate">{item.name}</h3>
-                        <p className="text-sm text-muted-foreground truncate">
+                        <h3 className="font-medium text-sm truncate">{item.name}</h3>
+                        <p className="text-xs text-muted-foreground truncate">
                           {item.category || item.description || "Без описания"}
                         </p>
                       </div>
