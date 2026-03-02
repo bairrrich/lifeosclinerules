@@ -13,6 +13,7 @@ import {
   MoodType,
   BodyMeasurementType,
   ReadingStatus,
+  Difficulty,
 } from "@/types"
 import type {
   Category,
@@ -24,6 +25,8 @@ import type {
   Item,
   Content,
   RecipeIngredient,
+  RecipeIngredientItem,
+  RecipeStep,
   Goal,
   Habit,
   HabitLog,
@@ -920,6 +923,17 @@ async function seedContent() {
       rating: 4.2,
       tags: ["здоровое", "быстро", "вкусно"],
       cover: "",
+      prep_time_min: 15,
+      cook_time_min: 20,
+      total_time_min: 35,
+      servings: 2,
+      difficulty: "easy" as Difficulty,
+      calories: 250,
+      protein: 25,
+      fat: 12,
+      carbs: 15,
+      sugar: 4,
+      fiber: 3,
       created_at: now(),
       updated_at: now(),
     },
@@ -932,6 +946,17 @@ async function seedContent() {
       rating: 4.5,
       tags: ["здоровое", "быстро", "любимое"],
       cover: "",
+      prep_time_min: 5,
+      cook_time_min: 10,
+      total_time_min: 15,
+      servings: 1,
+      difficulty: "easy" as Difficulty,
+      calories: 180,
+      protein: 6,
+      fat: 4,
+      carbs: 30,
+      sugar: 8,
+      fiber: 4,
       created_at: now(),
       updated_at: now(),
     },
@@ -939,6 +964,219 @@ async function seedContent() {
 
   await db.content.bulkAdd(recipes)
   console.log(`Added ${recipes.length} recipes`)
+
+  // Create recipe ingredient items (link ingredients to recipes)
+  const allIngredients = await db.recipeIngredients.toArray()
+  const recipeIngredientItems: RecipeIngredientItem[] = []
+  const recipeSteps: RecipeStep[] = []
+
+  // For "Салат с курицей и овощами"
+  const salad = recipes[0]
+  const chickenIngredient = allIngredients.find((i) => i.name === "Куриная грудка")
+  const lettuceIngredient = allIngredients.find((i) => i.name === "Листья салата")
+  const tomatoIngredient = allIngredients.find((i) => i.name === "Помидоры")
+  const cucumberIngredient = allIngredients.find((i) => i.name === "Огурцы")
+  const oilIngredient = allIngredients.find((i) => i.name === "Оливковое масло")
+
+  if (salad && chickenIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      ingredient_id: chickenIngredient.id,
+      ingredient_name: chickenIngredient.name,
+      amount: 200,
+      unit: "г",
+      order: 1,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+  if (salad && lettuceIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      ingredient_id: lettuceIngredient.id,
+      ingredient_name: lettuceIngredient.name,
+      amount: 100,
+      unit: "г",
+      order: 2,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+  if (salad && tomatoIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      ingredient_id: tomatoIngredient.id,
+      ingredient_name: tomatoIngredient.name,
+      amount: 2,
+      unit: "шт",
+      order: 3,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+  if (salad && cucumberIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      ingredient_id: cucumberIngredient.id,
+      ingredient_name: cucumberIngredient.name,
+      amount: 1,
+      unit: "шт",
+      order: 4,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+  if (salad && oilIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      ingredient_id: oilIngredient.id,
+      ingredient_name: oilIngredient.name,
+      amount: 2,
+      unit: "ст.л.",
+      order: 5,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // Add steps for salad
+  if (salad) {
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      order: 1,
+      text: "Отварить куриную грудку до готовности (около 20 минут)",
+      timer_min: 20,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      order: 2,
+      text: "Нарезать овощи и листья салата",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      order: 3,
+      text: "Нарезать курицу и добавить к овощам",
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: salad.id,
+      order: 4,
+      text: "Заправить оливковым маслом и перемешать",
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // For "Овсянка с ягодами"
+  const porridge = recipes[1]
+  const oatsIngredient = allIngredients.find((i) => i.name === "Овсяные хлопья")
+  const milkIngredient = allIngredients.find((i) => i.name === "Молоко")
+  const berriesIngredient = allIngredients.find((i) => i.name === "Ягоды")
+
+  if (porridge && oatsIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: porridge.id,
+      ingredient_id: oatsIngredient.id,
+      ingredient_name: oatsIngredient.name,
+      amount: 100,
+      unit: "г",
+      order: 1,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+  if (porridge && milkIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: porridge.id,
+      ingredient_id: milkIngredient.id,
+      ingredient_name: milkIngredient.name,
+      amount: 250,
+      unit: "мл",
+      order: 2,
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+  if (porridge && berriesIngredient) {
+    recipeIngredientItems.push({
+      id: generateId(),
+      recipe_id: porridge.id,
+      ingredient_id: berriesIngredient.id,
+      ingredient_name: berriesIngredient.name,
+      amount: 50,
+      unit: "г",
+      optional: true,
+      order: 3,
+      note: "по вкусу",
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // Add steps for porridge
+  if (porridge) {
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: porridge.id,
+      order: 1,
+      text: "Вскипятить молоко в кастрюле",
+      timer_min: 3,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: porridge.id,
+      order: 2,
+      text: "Добавить овсяные хлопья и варить на медленном огне 5 минут",
+      timer_min: 5,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: porridge.id,
+      order: 3,
+      text: "Снять с огня и дать постоять 2 минуты",
+      timer_min: 2,
+      created_at: now(),
+      updated_at: now(),
+    })
+    recipeSteps.push({
+      id: generateId(),
+      recipe_id: porridge.id,
+      order: 4,
+      text: "Добавить ягоды и подавать",
+      created_at: now(),
+      updated_at: now(),
+    })
+  }
+
+  // Save ingredient items and steps
+  if (recipeIngredientItems.length > 0) {
+    await db.recipeIngredientItems.bulkAdd(recipeIngredientItems)
+    console.log(`Added ${recipeIngredientItems.length} recipe ingredient items`)
+  }
+  if (recipeSteps.length > 0) {
+    await db.recipeSteps.bulkAdd(recipeSteps)
+    console.log(`Added ${recipeSteps.length} recipe steps`)
+  }
 
   return { books, userBooks, recipes }
 }
@@ -1395,11 +1633,13 @@ export async function seedDatabase() {
     // Book reference data (authors, genres) must be created before books
     await seedBookDetails()
 
-    // Now create books with author and genre relationships
+    // Recipe reference data (ingredients) must be created before recipes
+    await seedRecipeDetails()
+
+    // Now create books and recipes with their relationships
     await seedContent()
 
     // Related data
-    await seedRecipeDetails()
     await seedGoalsAndHabits()
     await seedTrackers()
     await seedReminders()

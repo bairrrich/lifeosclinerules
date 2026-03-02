@@ -869,7 +869,8 @@
       "tools": "Tools",
       "nutrition": "Nutrition Facts",
       "tags": "Tags",
-      "tagsPlaceholder": "tags separated by comma"
+      "tagsPlaceholder": "tags separated by comma",
+      "minutes": "min"
     },
     "edit": {
       "title": "Edit Recipe",
@@ -1042,11 +1043,11 @@
     "notFound": "Recipe not found",
     "nutrition": {
       "title": "Nutrition Facts",
-      "calories": "calories",
-      "protein": "protein",
-      "fat": "fat",
-      "carbs": "carbs",
-      "sugar": "sugar"
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbs",
+      "sugar": "Sugar"
     },
     "cocktailDetails": {
       "title": "Cocktail Details",

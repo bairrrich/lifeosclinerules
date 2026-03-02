@@ -183,11 +183,27 @@ export default function RecipeDetailPage() {
           <CardContent>
             {/* Время и порции */}
             <div className="grid grid-cols-3 gap-4 mt-2">
+              {recipe.prep_time_min && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    {t("fields.prepTime")}: {recipe.prep_time_min} {t("fields.minutes")}
+                  </span>
+                </div>
+              )}
+              {recipe.cook_time_min && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    {t("fields.cookTime")}: {recipe.cook_time_min} {t("fields.minutes")}
+                  </span>
+                </div>
+              )}
               {recipe.total_time_min && (
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {recipe.total_time_min} {t("forms.steps.minutes")}
+                    {t("fields.totalTime")}: {recipe.total_time_min} {t("fields.minutes")}
                   </span>
                 </div>
               )}

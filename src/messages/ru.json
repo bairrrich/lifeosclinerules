@@ -869,7 +869,8 @@
       "tools": "Инструменты",
       "nutrition": "Пищевая ценность",
       "tags": "Теги",
-      "tagsPlaceholder": "теги через запятую"
+      "tagsPlaceholder": "теги через запятую",
+      "minutes": "мин"
     },
     "edit": {
       "title": "Редактировать рецепт",
@@ -1042,11 +1043,11 @@
     "notFound": "Рецепт не найден",
     "nutrition": {
       "title": "Пищевая ценность",
-      "calories": "ккал",
-      "protein": "белки",
-      "fat": "жиры",
-      "carbs": "углеводы",
-      "sugar": "сахар"
+      "calories": "Ккал",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "sugar": "Сахар"
     },
     "cocktailDetails": {
       "title": "Детали коктейля",

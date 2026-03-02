@@ -9,7 +9,7 @@ import { Calculator } from "@/lib/icons"
 import { useTranslations } from "next-intl"
 import { AppLayout } from "@/components/layout/app-layout"
 import { FormActions } from "@/components/shared/form-actions"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase, getTimestamp } from "@/lib/db"
@@ -411,9 +411,9 @@ export default function EditRecipePage() {
 
           {/* Nutrition */}
           <Card>
-            <CardContent className="p-4 space-y-4">
+            <CardHeader>
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium">{t("fields.nutrition")}</div>
+                <CardTitle>{t("fields.nutrition")}</CardTitle>
                 <Button
                   type="button"
                   variant="outline"
@@ -431,9 +431,13 @@ export default function EditRecipePage() {
                   {t("ingredients.calculate")}
                 </Button>
               </div>
+            </CardHeader>
+            <CardContent>
               <div className="grid grid-cols-5 gap-3">
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">{t("nutrition.calories")}</label>
+                  <label className="text-sm font-medium capitalize">
+                    {t("nutrition.calories")}
+                  </label>
                   <input
                     type="number"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -441,7 +445,7 @@ export default function EditRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">{t("nutrition.protein")}</label>
+                  <label className="text-sm font-medium capitalize">{t("nutrition.protein")}</label>
                   <input
                     type="number"
                     step="0.1"
@@ -450,7 +454,7 @@ export default function EditRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">{t("nutrition.fat")}</label>
+                  <label className="text-sm font-medium capitalize">{t("nutrition.fat")}</label>
                   <input
                     type="number"
                     step="0.1"
@@ -459,7 +463,7 @@ export default function EditRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">{t("nutrition.carbs")}</label>
+                  <label className="text-sm font-medium capitalize">{t("nutrition.carbs")}</label>
                   <input
                     type="number"
                     step="0.1"
@@ -468,7 +472,7 @@ export default function EditRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">{t("nutrition.sugar")}</label>
+                  <label className="text-sm font-medium capitalize">{t("nutrition.sugar")}</label>
                   <input
                     type="number"
                     step="0.1"

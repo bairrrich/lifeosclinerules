@@ -349,7 +349,7 @@ export default function NewRecipePage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">{t("fields.nutrition")}</CardTitle>
+                <CardTitle>{t("fields.nutrition")}</CardTitle>
                 <Button
                   type="button"
                   variant="outline"
@@ -371,7 +371,7 @@ export default function NewRecipePage() {
             <CardContent>
               <div className="grid grid-cols-5 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="calories" className="text-xs">
+                  <Label htmlFor="calories" className="text-sm font-medium">
                     {t("nutrition.calories")}
                   </Label>
                   <Input
@@ -382,7 +382,7 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="protein" className="text-xs">
+                  <Label htmlFor="protein" className="text-sm font-medium">
                     {t("nutrition.protein")}
                   </Label>
                   <Input
@@ -394,7 +394,7 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="fat" className="text-xs">
+                  <Label htmlFor="fat" className="text-sm font-medium">
                     {t("nutrition.fat")}
                   </Label>
                   <Input
@@ -406,7 +406,7 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="carbs" className="text-xs">
+                  <Label htmlFor="carbs" className="text-sm font-medium">
                     {t("nutrition.carbs")}
                   </Label>
                   <Input
@@ -418,7 +418,7 @@ export default function NewRecipePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sugar" className="text-xs">
+                  <Label htmlFor="sugar" className="text-sm font-medium">
                     {t("nutrition.sugar")}
                   </Label>
                   <Input
