@@ -203,7 +203,7 @@ export default function LogDetailPage() {
         metadata: log.metadata,
         notes: log.notes,
         tags: log.tags,
-      })
+      } as Partial<Log>)
 
       router.push("/logs")
     } catch (error) {

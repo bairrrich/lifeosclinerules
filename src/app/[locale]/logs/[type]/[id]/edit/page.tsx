@@ -411,7 +411,7 @@ export default function EditLogPage() {
       await updateEntity(db.logs, id, {
         ...baseData,
         metadata,
-      })
+      } as Partial<Log>)
 
       router.push(`/logs/${type}/${id}`)
     } catch (error) {

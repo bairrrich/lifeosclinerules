@@ -32,6 +32,7 @@ import {
   getSubcategoryLabel,
 } from "@/components/logs"
 import type {
+  Log,
   LogType,
   Category,
   FoodMetadata,
@@ -343,7 +344,7 @@ export default function NewLogPage() {
       const logId = await createEntity(db.logs, {
         ...baseData,
         metadata,
-      })
+      } as Partial<Log>)
 
       // Создаём напоминание если нужно
       if (createReminder && (type === "food" || type === "workout")) {

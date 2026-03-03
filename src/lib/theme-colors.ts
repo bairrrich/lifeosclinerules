@@ -1000,6 +1000,52 @@ export const logTypeToModule: Record<string, ModuleType> = {
 
 /** Хелперы */
 
+/**
+ * Фабричная функция для генерации цветовой схемы модуля
+ * Уменьшает дублирование кода при создании новых цветовых схем
+ *
+ * @param hue - Оттенок цвета (0-360)
+ * @param chroma - Насыщенность (0.18-0.34)
+ * @param lightness - Светлота (0.66-0.90)
+ * @returns Готовая цветовая схема
+ *
+ * @example
+ * const customColor = createColorScheme(180, 0.25, 0.75) // Бирюзовый
+ */
+export function createColorScheme(
+  hue: number,
+  chroma: number,
+  lightness: number
+): ModuleColorScheme {
+  const light = Math.min(lightness + 0.12, 0.95)
+  const textLightness = Math.min(lightness + 0.12, 0.95)
+  const borderChroma = chroma * 0.8
+
+  return {
+    light: `bg-[oklch(${light.toFixed(2)}_${(chroma * 0.9).toFixed(2)}_${hue})]`,
+    DEFAULT: `bg-[oklch(${lightness.toFixed(2)}_${chroma.toFixed(2)}_${hue})]`,
+    text: `text-[oklch(${textLightness.toFixed(2)}_${(chroma * 1.1).toFixed(2)}_${hue})]`,
+    border: `border-[oklch(${lightness.toFixed(2)}_${borderChroma.toFixed(2)}_${hue})/0.45]`,
+    shadow: `shadow-[oklch(${lightness.toFixed(2)}_${chroma.toFixed(2)}_${hue})/0.32]`,
+  }
+}
+
+/**
+ * Создать цветовую схему для модуля
+ * @param moduleType - Тип модуля
+ * @param hue - Оттенок (0-360)
+ * @param chroma - Насыщенность (0.18-0.34)
+ * @param lightness - Светлота (0.66-0.90)
+ */
+export function createModuleColorScheme(
+  moduleType: ModuleType,
+  hue: number,
+  chroma: number,
+  lightness: number
+): ModuleColorScheme {
+  return createColorScheme(hue, chroma, lightness)
+}
+
 export function getModuleColor(
   module: ModuleType,
   variant: "light" | "DEFAULT" | "text" | "border" | "shadow" = "light"

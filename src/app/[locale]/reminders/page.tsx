@@ -37,7 +37,13 @@ import {
 } from "@/components/reminders"
 import { toast } from "@/components/ui/toast"
 import { useTranslations, useLocale } from "next-intl"
-import type { Reminder, ReminderType, ReminderPriority, ReminderLog } from "@/types"
+import type {
+  Reminder,
+  ReminderType,
+  ReminderPriority,
+  ReminderLog,
+  ReminderRelatedType,
+} from "@/types"
 import { priorityColors } from "@/lib/theme-colors"
 
 type SmartFilter = "all" | "today" | "active" | "completed" | "inactive" | "overdue"
@@ -117,7 +123,7 @@ function RemindersContent() {
       vibration: formData.vibration,
       persistent: formData.persistent,
       related_id: formData.related_id,
-      related_type: formData.related_type,
+      related_type: formData.related_type as ReminderRelatedType | undefined,
       custom_unit: formData.custom_unit,
       monthly_day: formData.monthly_day,
       times: formData.times,
@@ -151,7 +157,7 @@ function RemindersContent() {
       vibration: formData.vibration,
       persistent: formData.persistent,
       related_id: formData.related_id,
-      related_type: formData.related_type,
+      related_type: formData.related_type as ReminderRelatedType | undefined,
       custom_unit: formData.custom_unit,
       monthly_day: formData.monthly_day,
       times: formData.times,

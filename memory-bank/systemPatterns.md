@@ -48,11 +48,13 @@ src/
 
 - Все данные хранятся локально
 - Sync queue для отложенной синхронизации
-- Last-write-wins для конфликтов
+- Улучшенная обработка конфликтов (local priority + 5s порог)
 
 ```
-User Action → Local DB → Sync Queue → Network (when available)
+User Action → Local DB → Sync Queue → Batch Processing → Network (when available)
 ```
+
+**Обновление (2026-03-03)**: Добавлен batch processing (50 элементов/батч) для оптимизации памяти
 
 ### 2. Унификация данных
 
@@ -89,7 +91,7 @@ interface BaseContent extends BaseEntity, Taggable { ... }
 
 **Проблема**: Большие списки и тяжёлые компоненты замедляют работу
 
-**Решение**: Три уровня оптимизации
+**Решение**: Четыре уровня оптимизации
 
 ```typescript
 // 1. Виртуализация списков
@@ -103,9 +105,101 @@ const { data } = useCachedData("logs", () => db.logs.toArray())
 // 3. Lazy loading
 import { LazyLoad } from "@/components/shared/lazy-load"
 <LazyLoad><HeavyChart /></LazyLoad>
+
+// 4. Debounce для поиска
+import { useDebounce } from "@/hooks/use-debounce"
+const debouncedQuery = useDebounce(query, 300)
 ```
 
-### 5. Единообразие цветов (Theme Colors System)
+**Обновление (2026-03-03)**:
+
+- ✅ Добавлен `useDebounce` хук
+- ✅ Batch processing в SyncService (50 элементов/батч, макс 500)
+
+### 6. Централизованные константы
+
+**Проблема**: Магические числа разбросаны по всему коду, что затрудняет поддержку
+
+**Решение**: Файл `constants.ts` с централизованными константами
+
+```typescript
+// src/lib/constants.ts
+export const NOTIFICATION_CHECK_INTERVAL = 30000 // 30 секунд
+export const SYNC_BATCH_SIZE = 50
+export const SYNC_MAX_MEMORY_ITEMS = 500
+export const SYNC_CONFLICT_THRESHOLD = 5000 // 5 секунд
+export const MAX_RETRY_ATTEMPTS = 3
+export const RETRY_DELAY_MS = 1000
+export const DEBOUNCE_DELAY_MS = 300
+export const DEFAULT_PAGE_SIZE = 20
+export const CACHE_TTL_MS = 300000 // 5 минут
+export const ANIMATION_DURATION_MS = 200
+```
+
+**Обновление (2026-03-03)**: Создан файл `src/lib/constants.ts` с 30+ константами
+
+### 7. Retry паттерн
+
+**Проблема**: При временных ошибках нет автоматического повторного запроса
+
+**Решение**: Хук `useEntityList` с retry механизмом
+
+```typescript
+// src/hooks/use-entity-list.ts
+const fetchData = useCallback(
+  async (isRetry = false) => {
+    try {
+      // ... загрузка данных
+    } catch (err) {
+      if (isRetry && retryCount < MAX_RETRY_ATTEMPTS) {
+        setTimeout(
+          () => {
+            setRetryCount((prev) => prev + 1)
+            fetchData(true)
+          },
+          RETRY_DELAY_MS * (retryCount + 1)
+        ) // Экспоненциальная задержка
+      }
+    }
+  },
+  [entity, filter, retryCount]
+)
+```
+
+### 8. Безопасность (XSS защита)
+
+**Проблема**: Пользовательский контент из базы данных может содержать вредоносный код
+
+**Решение**: Функция санитизации `sanitizeText`
+
+```typescript
+// src/components/shared/global-search.tsx
+function sanitizeText(text: string | undefined | null): string {
+  if (!text) return ""
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+}
+```
+
+### 9. Graceful degradation
+
+**Проблема**: При отсутствии конфигурации приложение падает с ошибкой
+
+**Решение**: Проверка переменных окружения с mock объектом
+
+```typescript
+// src/lib/supabase/client.ts
+if (!url || !key) {
+  console.warn("Supabase not configured")
+  return mockClient // Возвращает объект с описательными ошибками
+}
+```
+
+### 10. Единообразие цветов (Theme Colors System)
 
 **Проблема**: Hardcoded цвета в компонентах нарушают консистентность UI
 

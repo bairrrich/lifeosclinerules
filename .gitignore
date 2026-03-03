@@ -47,4 +47,6 @@ storybook-static
 # AI agent files
 .agents/
 .skills/
+.plans/
 .clinerules
+mcp.json

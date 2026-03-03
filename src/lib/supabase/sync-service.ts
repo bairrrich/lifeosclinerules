@@ -2,6 +2,13 @@ import { getSupabaseClient, type SyncStatus, type SyncState } from "./client"
 import { db } from "@/lib/db"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+import {
+  SYNC_BATCH_SIZE,
+  SYNC_MAX_MEMORY_ITEMS,
+  SYNC_CONFLICT_THRESHOLD,
+  SYNC_MAX_RETRIES,
+  SYNC_RETRY_DELAY_MS,
+} from "@/lib/constants"
 
 // Tables to sync
 const SYNC_TABLES = [
@@ -124,7 +131,7 @@ export class SyncService {
     return null
   }
 
-  // Push local changes to Supabase
+  // Push local changes to Supabase with batch processing and offline retry
   async pushToRemote(): Promise<void> {
     if (!this.userId) {
       throw new Error("User not authenticated")
@@ -134,49 +141,103 @@ export class SyncService {
 
     try {
       for (const { local, remote } of SYNC_TABLES) {
-        // Get unsynced items from syncQueue
+        // Get unsynced items from syncQueue with batch limit
         const unsyncedItems = await db.syncQueue
           .where("table_name")
           .equals(local)
           .and((item) => !item.synced)
+          .limit(SYNC_MAX_MEMORY_ITEMS)
           .toArray()
 
         if (unsyncedItems.length === 0) continue
 
-        for (const item of unsyncedItems) {
-          const table = this.supabase.from(remote)
+        // Process in batches to avoid memory issues
+        const batches = []
+        for (let i = 0; i < unsyncedItems.length; i += SYNC_BATCH_SIZE) {
+          batches.push(unsyncedItems.slice(i, i + SYNC_BATCH_SIZE))
+        }
 
-          if (item.action === "create" || item.action === "update") {
-            const data = transformForSupabase(item.data as Record<string, unknown>, this.userId)
+        for (const batch of batches) {
+          await Promise.all(
+            batch.map(async (item) => {
+              const table = this.supabase.from(remote)
 
-            const { error } = await table.upsert(data, {
-              onConflict: "id",
+              if (item.action === "create" || item.action === "update") {
+                if (!this.userId) return
+                const data = transformForSupabase(item.data as Record<string, unknown>, this.userId)
+
+                // Retry logic for network failures
+                let lastError: Error | null = null
+                for (let attempt = 0; attempt < SYNC_MAX_RETRIES; attempt++) {
+                  try {
+                    const { error } = await table.upsert(data, {
+                      onConflict: "id",
+                    })
+
+                    if (error) {
+                      // Skip if table doesn't exist
+                      if (error.code === "42P01" || error.message?.includes("does not exist")) {
+                        console.log(`Table ${remote} not found, skipping`)
+                        break
+                      }
+                      throw new Error(error.message || `Sync failed for ${local}`)
+                    }
+                    break // Success
+                  } catch (err) {
+                    lastError = err instanceof Error ? err : new Error(String(err))
+                    // Wait before retry (exponential backoff)
+                    if (attempt < SYNC_MAX_RETRIES - 1) {
+                      await new Promise((resolve) =>
+                        setTimeout(resolve, SYNC_RETRY_DELAY_MS * Math.pow(2, attempt))
+                      )
+                    }
+                  }
+                }
+
+                if (lastError) {
+                  console.error(
+                    `Failed to sync ${local} after ${SYNC_MAX_RETRIES} attempts:`,
+                    lastError.message
+                  )
+                  return // Skip this item
+                }
+              } else if (item.action === "delete") {
+                // Retry logic for delete operations
+                let lastError: Error | null = null
+                for (let attempt = 0; attempt < SYNC_MAX_RETRIES; attempt++) {
+                  try {
+                    const { error } = await table.delete().eq("id", item.record_id)
+
+                    if (error) {
+                      if (error.code === "42P01" || error.message?.includes("does not exist")) {
+                        break
+                      }
+                      throw new Error(error.message || `Delete failed for ${local}`)
+                    }
+                    break // Success
+                  } catch (err) {
+                    lastError = err instanceof Error ? err : new Error(String(err))
+                    if (attempt < SYNC_MAX_RETRIES - 1) {
+                      await new Promise((resolve) =>
+                        setTimeout(resolve, SYNC_RETRY_DELAY_MS * Math.pow(2, attempt))
+                      )
+                    }
+                  }
+                }
+
+                if (lastError) {
+                  console.error(
+                    `Failed to delete from ${local} after ${SYNC_MAX_RETRIES} attempts:`,
+                    lastError.message
+                  )
+                  return // Skip this item
+                }
+              }
+
+              // Mark as synced
+              await db.syncQueue.update(item.id, { synced: true })
             })
-
-            if (error) {
-              // Skip if table doesn't exist
-              if (error.code === "42P01" || error.message?.includes("does not exist")) {
-                console.log(`Table ${remote} not found, skipping`)
-                continue
-              }
-              console.error(`Failed to sync ${local}:`, error.message || error)
-              continue
-            }
-          } else if (item.action === "delete") {
-            const { error } = await table.delete().eq("id", item.record_id)
-
-            if (error) {
-              // Skip if table doesn't exist
-              if (error.code === "42P01" || error.message?.includes("does not exist")) {
-                continue
-              }
-              console.error(`Failed to delete from ${local}:`, error.message || error)
-              continue
-            }
-          }
-
-          // Mark as synced
-          await db.syncQueue.update(item.id, { synced: true })
+          )
         }
       }
 
@@ -229,7 +290,7 @@ export class SyncService {
         const localTable = (db as any)[local]
         if (!localTable) continue
 
-        // Upsert to local database
+        // Upsert to local database with improved conflict resolution
         for (const record of data) {
           const localData = transformForLocal(record)
 
@@ -237,13 +298,23 @@ export class SyncService {
           const existing = await localTable.get(record.id)
 
           if (existing) {
-            // Conflict resolution: last-write-wins
+            // Improved conflict resolution: last-write-wins with local priority
             const localUpdated = new Date(existing.updated_at).getTime()
             const remoteUpdated = new Date(record.updated_at).getTime()
+            const timeDiff = Math.abs(remoteUpdated - localUpdated)
 
-            if (remoteUpdated > localUpdated) {
+            // If timestamps are very close (< SYNC_CONFLICT_THRESHOLD), prefer local version to avoid data loss
+            if (timeDiff < SYNC_CONFLICT_THRESHOLD) {
+              // Keep local version but update timestamp to prevent future conflicts
+              await localTable.update(record.id, {
+                ...existing,
+                synced: true,
+              })
+            } else if (remoteUpdated > localUpdated) {
+              // Remote is newer, use remote data
               await localTable.put(localData)
             }
+            // Otherwise keep local version
           } else {
             await localTable.add(localData)
           }

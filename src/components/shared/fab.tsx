@@ -195,7 +195,7 @@ export function FAB() {
                 const isItemAction = action.href?.startsWith("/items/")
                 let bgColorClass: string
 
-                if (isItemAction) {
+                if (isItemAction && action.href) {
                   // Extract item type from href (e.g., "/items/vitamin/new" -> "vitamin")
                   const hrefParts = action.href.split("/")
                   const itemType = hrefParts[2] as ItemType

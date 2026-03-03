@@ -11,6 +11,18 @@ import { searchTypeConfig, quickActions } from "@/lib/navigation-config"
 import { BookOpen, ChefHat, Flame, Search } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 import { moduleColors } from "@/lib/theme-colors"
+import { useDebounce } from "@/hooks/use-debounce"
+
+// Sanitize user content to prevent XSS
+function sanitizeText(text: string | undefined | null): string {
+  if (!text) return ""
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+}
 
 interface SearchResult {
   id: string
@@ -33,6 +45,9 @@ export function GlobalSearch() {
   const [results, setResults] = useState<SearchResult[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
+
+  // Debounced query
+  const debouncedQuery = useDebounce(query, 300)
 
   // Открытие по Cmd/Ctrl + K или по клику
   useEffect(() => {
@@ -94,12 +109,9 @@ export function GlobalSearch() {
       return
     }
 
-    const searchTimer = setTimeout(() => {
-      performSearch(query)
-    }, 300)
-
-    return () => clearTimeout(searchTimer)
-  }, [query, open])
+    // Поиск по debounced значению
+    performSearch(debouncedQuery)
+  }, [debouncedQuery, open])
 
   const performSearch = useCallback(async (searchQuery: string) => {
     setIsLoading(true)
@@ -125,7 +137,7 @@ export function GlobalSearch() {
         const config = searchTypeConfig[log.type] || searchTypeConfig.food
         searchResults.push({
           id: log.id,
-          title: log.title || tCommon("noData"),
+          title: sanitizeText(log.title) || tCommon("noData"),
           type: log.type,
           href: `/logs/${log.type}/${log.id}`,
           icon: config.icon,
@@ -143,7 +155,7 @@ export function GlobalSearch() {
       books.forEach((book: Book) => {
         searchResults.push({
           id: book.id,
-          title: book.title,
+          title: sanitizeText(book.title),
           type: "book",
           href: `/books/${book.id}`,
           icon: BookOpen,
@@ -163,7 +175,7 @@ export function GlobalSearch() {
       recipes.forEach((recipe: Content) => {
         searchResults.push({
           id: recipe.id,
-          title: recipe.title,
+          title: sanitizeText(recipe.title),
           type: "recipe",
           href: `/recipes/${recipe.id}`,
           icon: ChefHat,
@@ -183,7 +195,7 @@ export function GlobalSearch() {
       habits.forEach((habit: { name: string; id: string }) => {
         searchResults.push({
           id: habit.id,
-          title: habit.name,
+          title: sanitizeText(habit.name),
           type: "habit",
           href: `/habits`,
           icon: Flame,

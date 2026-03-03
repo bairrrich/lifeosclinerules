@@ -3,9 +3,7 @@
 import { useEffect, useRef, useCallback } from "react"
 import { db } from "@/lib/db"
 import type { Reminder } from "@/types"
-
-const CHECK_INTERVAL = 30000 // Проверка каждые 30 секунд
-const NOTIFICATION_TAG_PREFIX = "reminder-"
+import { NOTIFICATION_CHECK_INTERVAL, NOTIFICATION_TAG_PREFIX } from "@/lib/constants"
 
 export function useNotifications() {
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -82,55 +80,58 @@ export function useNotifications() {
   )
 
   // Проверка, должно ли сработать напоминание сейчас
-  const shouldTrigger = useCallback((reminder: Reminder, now: Date): { shouldShow: boolean; timeLabel: string } | null => {
-    // Проверяем активность
-    if (!reminder.is_active) return null
+  const shouldTrigger = useCallback(
+    (reminder: Reminder, now: Date): { shouldShow: boolean; timeLabel: string } | null => {
+      // Проверяем активность
+      if (!reminder.is_active) return null
 
-    // Проверяем дни недели
-    const currentDay = now.getDay()
-    if (!reminder.days.includes(currentDay)) return null
+      // Проверяем дни недели
+      const currentDay = now.getDay()
+      if (!reminder.days.includes(currentDay)) return null
 
-    // Проверяем даты курса
-    const today = now.toISOString().split("T")[0]
-    if (reminder.start_date && today < reminder.start_date) return null
-    if (reminder.end_date && today > reminder.end_date) return null
+      // Проверяем даты курса
+      const today = now.toISOString().split("T")[0]
+      if (reminder.start_date && today < reminder.start_date) return null
+      if (reminder.end_date && today > reminder.end_date) return null
 
-    // Текущее время в минутах от полуночи
-    const currentHours = now.getHours()
-    const currentMinutes = now.getMinutes()
-    const currentTimeInMinutes = currentHours * 60 + currentMinutes
+      // Текущее время в минутах от полуночи
+      const currentHours = now.getHours()
+      const currentMinutes = now.getMinutes()
+      const currentTimeInMinutes = currentHours * 60 + currentMinutes
 
-    // Функция для проверки времени
-    const checkTime = (timeStr: string, label: string): boolean => {
-      const [hours, minutes] = timeStr.split(":").map(Number)
-      const reminderTimeInMinutes = hours * 60 + minutes - (reminder.advance_minutes || 0)
+      // Функция для проверки времени
+      const checkTime = (timeStr: string, label: string): boolean => {
+        const [hours, minutes] = timeStr.split(":").map(Number)
+        const reminderTimeInMinutes = hours * 60 + minutes - (reminder.advance_minutes || 0)
 
-      // Проверяем совпадение с точностью до минуты
-      return currentTimeInMinutes === reminderTimeInMinutes
-    }
+        // Проверяем совпадение с точностью до минуты
+        return currentTimeInMinutes === reminderTimeInMinutes
+      }
 
-    // Проверяем основное время
-    if (checkTime(reminder.time, reminder.time)) {
-      return { shouldShow: true, timeLabel: reminder.time }
-    }
+      // Проверяем основное время
+      if (checkTime(reminder.time, reminder.time)) {
+        return { shouldShow: true, timeLabel: reminder.time }
+      }
 
-    // Проверяем дополнительные времена
-    const additionalTimes = (reminder as any).times as string[] | undefined
-    if (additionalTimes) {
-      for (const time of additionalTimes) {
-        if (checkTime(time, time)) {
-          return { shouldShow: true, timeLabel: time }
+      // Проверяем дополнительные времена
+      const additionalTimes = reminder.times
+      if (additionalTimes) {
+        for (const time of additionalTimes) {
+          if (checkTime(time, time)) {
+            return { shouldShow: true, timeLabel: time }
+          }
         }
       }
-    }
 
-    return null
-  }, [])
+      return null
+    },
+    []
+  )
 
   // Основная функция проверки напоминаний
   const checkReminders = useCallback(async () => {
     const now = new Date()
-    
+
     // Проверяем каждую минуту только один раз
     const currentMinute = `${now.getHours()}:${now.getMinutes()}`
     if (lastCheckedMinuteRef.current === currentMinute) {
@@ -139,10 +140,7 @@ export function useNotifications() {
     lastCheckedMinuteRef.current = currentMinute
 
     // Загружаем активные напоминания
-    const reminders = await db.reminders
-      .where("is_active")
-      .equals(1)
-      .toArray() as Reminder[]
+    const reminders = (await db.reminders.where("is_active").equals(1).toArray()) as Reminder[]
 
     for (const reminder of reminders) {
       const trigger = shouldTrigger(reminder, now)
@@ -178,7 +176,7 @@ export function useNotifications() {
     checkReminders()
 
     // Периодическая проверка
-    checkIntervalRef.current = setInterval(checkReminders, CHECK_INTERVAL)
+    checkIntervalRef.current = setInterval(checkReminders, NOTIFICATION_CHECK_INTERVAL)
   }, [checkReminders])
 
   // Остановка проверки
@@ -205,6 +203,9 @@ export function useNotifications() {
     checkReminders,
     startChecking,
     stopChecking,
-    hasPermission: typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted",
+    hasPermission:
+      typeof window !== "undefined" &&
+      "Notification" in window &&
+      Notification.permission === "granted",
   }
 }

@@ -328,8 +328,7 @@ export function createBaseEntity(): { id: string; created_at: string; updated_at
 
 export async function createEntity<T extends { id: string; updated_at: string }>(
   table: EntityTable<T, "id">,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
+  data: Partial<T>
 ): Promise<string> {
   const entity = {
     ...data,
@@ -343,10 +342,8 @@ export async function createEntity<T extends { id: string; updated_at: string }>
 export async function updateEntity<T extends { id: string; updated_at: string }>(
   table: EntityTable<T, "id">,
   id: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
+  data: Partial<T>
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (table as any).update(id, {
     ...data,
     updated_at: getTimestamp(),
@@ -357,7 +354,6 @@ export async function deleteEntity<T extends { id: string }>(
   table: EntityTable<T, "id">,
   id: string
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (table as any).delete(id)
 }
 
@@ -365,7 +361,6 @@ export async function getEntityById<T extends { id: string }>(
   table: EntityTable<T, "id">,
   id: string
 ): Promise<T | undefined> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return await (table as any).get(id)
 }
 

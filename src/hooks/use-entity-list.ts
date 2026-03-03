@@ -1,7 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { db } from "@/lib/db"
+import { toast } from "@/components/ui/toast"
+import { MAX_RETRY_ATTEMPTS, RETRY_DELAY_MS } from "@/lib/constants"
 
 interface Entity<T> {
   toArray(): Promise<T[]>
@@ -14,6 +16,7 @@ interface UseEntityListResult<T> {
   isLoading: boolean
   error: Error | null
   refetch: () => Promise<void>
+  retry: () => Promise<void>
 }
 
 /**
@@ -27,25 +30,54 @@ export function useEntityList<T extends { id?: string | number }>(
   const [data, setData] = useState<T[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
 
-  const fetchData = async () => {
-    try {
-      setIsLoading(true)
-      const items = await entity.toArray()
-      setData(filter ? items.filter(filter) : items)
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error(String(err)))
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const fetchData = useCallback(
+    async (isRetry = false) => {
+      try {
+        setIsLoading(true)
+        const items = await entity.toArray()
+        setData(filter ? items.filter(filter) : items)
+        setError(null)
+        setRetryCount(0)
+      } catch (err) {
+        const errorObj = err instanceof Error ? err : new Error(String(err))
+        setError(errorObj)
+
+        if (isRetry && retryCount < MAX_RETRY_ATTEMPTS) {
+          // Retry with delay
+          setTimeout(
+            () => {
+              setRetryCount((prev) => prev + 1)
+              fetchData(true)
+            },
+            RETRY_DELAY_MS * (retryCount + 1)
+          )
+        } else if (!isRetry) {
+          // Show toast on first error
+          toast.error(`Ошибка загрузки: ${errorObj.message}`)
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [entity, filter, retryCount]
+  )
+
+  const retry = useCallback(async () => {
+    setRetryCount(0)
+    await fetchData(true)
+  }, [fetchData])
+
+  const refetch = useCallback(async () => {
+    await fetchData(false)
+  }, [fetchData])
 
   useEffect(() => {
-    fetchData()
-  }, [entity])
+    fetchData(false)
+  }, [fetchData])
 
-  return { data, isLoading, error, refetch: fetchData }
+  return { data, isLoading, error, refetch, retry }
 }
 
 /**

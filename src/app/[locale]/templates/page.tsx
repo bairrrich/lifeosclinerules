@@ -30,7 +30,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, createEntity, deleteEntity } from "@/lib/db"
-import type { Template, WaterLog, SleepLog, MoodLog, JSONValue } from "@/types"
+import type { Template, WaterLog, SleepLog, MoodLog, JSONValue, Log } from "@/types"
 import { LogType } from "@/types"
 import {
   FoodTemplateForm,
@@ -151,7 +151,7 @@ export default function TemplatesPage() {
     await createEntity(db.templates, {
       name: newTemplateName.trim(),
       type: newTemplateType,
-      data: newTemplateData,
+      data: newTemplateData as JSONValue,
       is_favorite: false,
       use_count: 0,
     })
@@ -225,6 +225,7 @@ export default function TemplatesPage() {
     const now = new Date()
     const today = now.toISOString().split("T")[0]
     const time = now.toTimeString().slice(0, 5)
+    const dateTime = `${today}T${time}`
 
     try {
       switch (template.type) {
@@ -232,8 +233,7 @@ export default function TemplatesPage() {
           const data = template.data as unknown as FoodTemplateData
           await createEntity(db.logs, {
             type: LogType.FOOD,
-            date: today,
-            time: time,
+            date: dateTime,
             title: data.title || template.name,
             calories: data.calories,
             metadata: {
@@ -242,7 +242,7 @@ export default function TemplatesPage() {
               fat: data.fat,
               carbs: data.carbs,
             },
-          })
+          } as Partial<Log>)
           break
         }
 
@@ -250,8 +250,7 @@ export default function TemplatesPage() {
           const data = template.data as unknown as WorkoutTemplateData
           await createEntity(db.logs, {
             type: LogType.WORKOUT,
-            date: today,
-            time: time,
+            date: dateTime,
             title: data.title || template.name,
             metadata: {
               duration: data.duration,
@@ -265,7 +264,7 @@ export default function TemplatesPage() {
               reps_count: data.reps_count,
               total_weight: data.total_weight,
             },
-          })
+          } as Partial<Log>)
           break
         }
 

@@ -40,7 +40,7 @@ export function SyncManager() {
     const supabase = getSupabaseClient()
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((_: string, session: any) => {
       setIsLoggedIn(!!session?.user)
     })
 
