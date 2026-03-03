@@ -1,0 +1,7 @@
+{
+  "placeholder": "Select time",
+  "label": "Time",
+  "hour": "Hour",
+  "minute": "Minute",
+  "quickSelect": "Quick select"
+}

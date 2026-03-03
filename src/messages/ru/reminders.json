@@ -1,0 +1,177 @@
+{
+  "title": "Напоминания",
+  "addReminder": "Добавить напоминание",
+  "editReminder": "Редактировать напоминание",
+  "noReminders": "Пока нет напоминаний",
+  "add": "Добавить",
+  "loading": "Загрузка...",
+  "common": {
+    "add": "Добавить",
+    "loading": "Загрузка..."
+  },
+  "fields": {
+    "title": "Название",
+    "message": "Сообщение",
+    "type": "Тип",
+    "time": "Время",
+    "days": "Дни",
+    "startDate": "Дата начала",
+    "endDate": "Дата окончания",
+    "advanceMinutes": "Предупреждение (мин)",
+    "repeatType": "Тип повтора",
+    "priority": "Приоритет",
+    "isActive": "Активно",
+    "sound": "Звук",
+    "vibration": "Вибрация",
+    "persistent": "Постоянный"
+  },
+  "types": {
+    "habit": "Привычка",
+    "medicine": "Лекарство",
+    "water": "Вода",
+    "workout": "Тренировка",
+    "food": "Еда",
+    "item": "Вещь",
+    "custom": "Произвольное"
+  },
+  "priorities": {
+    "low": "Низкий",
+    "medium": "Средний",
+    "high": "Высокий",
+    "critical": "Критический"
+  },
+  "repeatTypes": {
+    "none": "Нет",
+    "daily": "Ежедневно",
+    "weekly": "Еженедельно",
+    "monthly": "Ежемесячно",
+    "custom": "Произвольный",
+    "afterCompletion": "После выполнения"
+  },
+  "daysOfWeek": {
+    "su": "Вс",
+    "mo": "Пн",
+    "tu": "Вт",
+    "we": "Ср",
+    "th": "Чт",
+    "fr": "Пт",
+    "sa": "Сб"
+  },
+  "stats": {
+    "active": "Активные",
+    "today": "Сегодня",
+    "completed": "Выполнено",
+    "overdue": "Просрочено",
+    "total": "Всего"
+  },
+  "filters": {
+    "all": "Все",
+    "today": "Сегодня",
+    "active": "Активные",
+    "completed": "Выполнено",
+    "overdue": "Просрочено",
+    "inactive": "Неактивные"
+  },
+  "empty": {
+    "noReminders": "Нет напоминаний. Добавьте первое!",
+    "noCategory": "Нет напоминаний в этой категории",
+    "loading": "Загрузка..."
+  },
+  "dialogs": {
+    "newTitle": "Новое напоминание",
+    "editTitle": "Редактировать напоминание",
+    "deleteTitle": "Удалить напоминание?",
+    "deleteConfirm": "Вы уверены, что хотите удалить напоминание \"{title}\"? Это действие нельзя отменить.",
+    "statsTitle": "Статистика: {title}"
+  },
+  "statsLabels": {
+    "streak": "Серия",
+    "best": "Лучшая",
+    "total": "Всего"
+  },
+  "history": "История",
+  "historyEmpty": "История пуста",
+  "completed": "Выполнено",
+  "snooze": "Через 5 мин",
+  "close": "Закрыть",
+  "testNotification": {
+    "button": "🔔 Тест уведомления",
+    "title": "Тестовое напоминание",
+    "message": "Это тестовое уведомление для проверки работы"
+  },
+  "advance": {
+    "onTime": "Вовремя",
+    "5minBefore": "За 5 мин",
+    "10minBefore": "За 10 мин",
+    "15minBefore": "За 15 мин",
+    "30minBefore": "За 30 мин",
+    "1hourBefore": "За 1 час",
+    "1dayBefore": "За 1 день"
+  },
+  "form": {
+    "type": "Тип",
+    "title": "Название",
+    "titlePlaceholder": "Название напоминания",
+    "message": "Сообщение",
+    "messagePlaceholder": "Дополнительная информация",
+    "time": "Время напоминания",
+    "date": "Дата",
+    "selectDate": "Выберите дату",
+    "advance": "Предупреждение",
+    "repeatType": "Повторяемость",
+    "repeatTypes": {
+      "none": "Без повтора",
+      "daily": "Ежедневно",
+      "weekly": "Еженедельно",
+      "monthly": "Ежемесячно",
+      "custom": "Произвольный интервал"
+    },
+    "daysOfWeek": "Дни недели",
+    "everyDay": "Каждый день",
+    "weekdays": "Будни",
+    "weekends": "Выходные",
+    "monthDay": "День месяца",
+    "monthDayLabel": "Каждое",
+    "monthDaySuffix": "число",
+    "monthDayHint": "Если в месяце меньше дней, напоминание сработает в последний день месяца",
+    "customInterval": "Каждые",
+    "onDays": "В какие дни",
+    "priority": "Приоритет",
+    "priorities": {
+      "low": "Низкий",
+      "medium": "Средний",
+      "high": "Высокий",
+      "critical": "Критический"
+    },
+    "courseStart": "Начало курса",
+    "courseEnd": "Окончание курса",
+    "courseDates": "Даты курса",
+    "selectDateRange": "Выберите диапазон дат",
+    "notificationSettings": "Настройки уведомления",
+    "sound": "Звук",
+    "vibration": "Вибрация",
+    "persistent": "Постоянный режим (повторять пока не подтвердите)",
+    "addTime": "Добавить время",
+    "alsoRemindAt": "Также напомнить в:",
+    "dailyHint": "💡 Напоминание будет повторяться каждый день",
+    "itemSelect": "Элемент каталога",
+    "medicineSelect": "Лекарство/Витамин",
+    "selectPlaceholder": "Выберите...",
+    "hours": "часов",
+    "days": "дней",
+    "weeks": "недель",
+    "months": "месяцев",
+    "timeOfDay": {
+      "morning": "Утро",
+      "lunch": "Обед",
+      "evening": "Вечер",
+      "bedtime": "Перед сном"
+    }
+  },
+  "reminderCard": {
+    "limitReached": "Достигнут лимит выполнений",
+    "completedAction": "Выполнено",
+    "overdue": "Просрочено",
+    "completed": "Выполнено"
+  }
+}

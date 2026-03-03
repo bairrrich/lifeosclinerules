@@ -1,0 +1,9 @@
+{
+  "data": "Loading data...",
+  "saving": "Saving...",
+  "deleting": "Deleting...",
+  "creating": "Creating...",
+  "importing": "Importing...",
+  "exporting": "Exporting...",
+  "syncing": "Syncing..."
+}

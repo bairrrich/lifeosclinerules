@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { Utensils, Dumbbell, Wallet, Search } from "@/lib/icons"
@@ -81,13 +81,32 @@ export default function LogsPage() {
     }
   }
 
-  // Статистика
-  const stats = {
-    total: logs.length,
-    food: logs.filter((l) => l.type === LogType.FOOD).length,
-    workout: logs.filter((l) => l.type === LogType.WORKOUT).length,
-    finance: logs.filter((l) => l.type === LogType.FINANCE).length,
-  }
+  // Статистика с useMemo для оптимизации
+  const stats = useMemo(
+    () => ({
+      total: logs.length,
+      food: logs.filter((l) => l.type === LogType.FOOD).length,
+      workout: logs.filter((l) => l.type === LogType.WORKOUT).length,
+      finance: logs.filter((l) => l.type === LogType.FINANCE).length,
+    }),
+    [logs]
+  )
+
+  // Группировка по периодам (месяцам)
+  const groupedLogs = useMemo(() => {
+    return filteredLogs.reduce(
+      (acc, log) => {
+        const month = log.date.substring(0, 7) // "2024-03"
+        if (!acc[month]) acc[month] = []
+        acc[month].push(log)
+        return acc
+      },
+      {} as Record<string, Log[]>
+    )
+  }, [filteredLogs])
+
+  // Сортировка периодов (новые сначала)
+  const sortedPeriods = Object.keys(groupedLogs).sort((a, b) => b.localeCompare(a))
 
   return (
     <AppLayout title={t("title")}>
@@ -169,66 +188,92 @@ export default function LogsPage() {
         {/* Budget Manager - показываем только на вкладке Финансы */}
         {activeType === LogType.FINANCE && <BudgetManager />}
 
-        {/* Logs List */}
+        {/* Logs List with Period Grouping */}
         {isLoading ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
               {tCommon("loading")}
             </CardContent>
           </Card>
-        ) : filteredLogs.length === 0 ? (
+        ) : sortedPeriods.length === 0 ? (
           <Card>
             <CardContent className="p-4 text-center text-muted-foreground">
               {logs.length === 0 ? t("empty.noLogs") : tCommon("noResults")}
             </CardContent>
           </Card>
         ) : (
-          <div className="flex flex-col gap-2">
-            {filteredLogs.map((log) => {
-              const TypeIcon = getTypeIcon(log.type)
-              // Определяем цвет для финансов по типу транзакции
-              let colorKey: string = log.type
-              if (log.type === "finance" && log.metadata?.finance_type === "income") {
-                colorKey = "finance_income"
-              } else if (log.type === "finance" && log.metadata?.finance_type === "expense") {
-                colorKey = "finance_expense"
-              } else if (log.type === "finance" && log.metadata?.finance_type === "transfer") {
-                colorKey = "finance_transfer"
-              }
+          <div className="flex flex-col gap-6">
+            {sortedPeriods.map((period) => {
+              const periodLogs = groupedLogs[period]
+              const periodDate = new Date(period + "-01")
+              const periodLabel = periodDate.toLocaleDateString(locale, {
+                year: "numeric",
+                month: "long",
+              })
+
               return (
-                <Link
-                  key={log.id}
-                  href={`/logs/${log.type}/${log.id}`}
-                  aria-label={`Запись: ${log.title}`}
-                >
-                  <Card className="hover:bg-accent transition-colors">
-                    <CardContent className="p-3 flex items-center gap-3">
-                      <div
-                        className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || "bg-muted"}`}
-                        aria-hidden="true"
-                      >
-                        <TypeIcon className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-sm truncate">{log.title}</h3>
-                        <p className="text-xs text-muted-foreground">
-                          {typeLabels[log.type] || log.type} •{" "}
-                          {new Date(log.date).toLocaleDateString(locale, {
-                            day: "numeric",
-                            month: "short",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-                      {log.value !== undefined && (
-                        <div className="text-sm font-medium">
-                          {log.type === "finance" ? `${log.value.toLocaleString()} ₽` : log.value}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Link>
+                <div key={period} className="space-y-2">
+                  <h3 className="text-lg font-semibold sticky top-0 bg-background/80 backdrop-blur-sm py-2 z-10">
+                    {periodLabel}
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                    {periodLogs.map((log) => {
+                      const TypeIcon = getTypeIcon(log.type)
+                      // Определяем цвет для финансов по типу транзакции
+                      let colorKey: string = log.type
+                      if (log.type === "finance" && log.metadata?.finance_type === "income") {
+                        colorKey = "finance_income"
+                      } else if (
+                        log.type === "finance" &&
+                        log.metadata?.finance_type === "expense"
+                      ) {
+                        colorKey = "finance_expense"
+                      } else if (
+                        log.type === "finance" &&
+                        log.metadata?.finance_type === "transfer"
+                      ) {
+                        colorKey = "finance_transfer"
+                      }
+                      return (
+                        <Link
+                          key={log.id}
+                          href={`/logs/${log.type}/${log.id}`}
+                          aria-label={`Запись: ${log.title}`}
+                        >
+                          <Card className="hover:bg-accent transition-colors">
+                            <CardContent className="p-3 flex items-center gap-3">
+                              <div
+                                className={`flex h-9 w-9 items-center justify-center rounded-xl ${typeColors[colorKey] || "bg-muted"}`}
+                                aria-hidden="true"
+                              >
+                                <TypeIcon className="h-4 w-4" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-medium text-sm truncate">{log.title}</h3>
+                                <p className="text-xs text-muted-foreground">
+                                  {typeLabels[log.type] || log.type} •{" "}
+                                  {new Date(log.date).toLocaleDateString(locale, {
+                                    day: "numeric",
+                                    month: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </p>
+                              </div>
+                              {log.value !== undefined && (
+                                <div className="text-sm font-medium">
+                                  {log.type === "finance"
+                                    ? `${log.value.toLocaleString()} ₽`
+                                    : log.value}
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
               )
             })}
           </div>

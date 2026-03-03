@@ -88,9 +88,15 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
           <div className="col-span-2">
             <Input
               type="number"
+              min="0"
               placeholder={t("ingredients.amount")}
               value={ingredient.amount || ""}
-              onChange={(e) => onUpdate("amount", parseFloat(e.target.value) || 0)}
+              onChange={(e) => onUpdate("amount", Math.max(0, parseFloat(e.target.value) || 0))}
+              onKeyPress={(e) => {
+                if (!/[0-9.]/.test(e.key)) {
+                  e.preventDefault()
+                }
+              }}
               className="h-9"
               step="0.1"
             />
@@ -141,22 +147,34 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
             <div>
               <Input
                 type="number"
+                min="0"
                 placeholder={t("ingredients.calories")}
                 value={ingredient.calories_per_100 || ""}
                 onChange={(e) =>
-                  onUpdate("calories_per_100", parseFloat(e.target.value) || undefined)
+                  onUpdate("calories_per_100", Math.max(0, parseFloat(e.target.value) || 0))
                 }
+                onKeyPress={(e) => {
+                  if (!/[0-9.]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
                 className="h-8 text-xs"
               />
             </div>
             <div>
               <Input
                 type="number"
+                min="0"
                 placeholder={t("ingredients.protein")}
                 value={ingredient.protein_per_100 || ""}
                 onChange={(e) =>
-                  onUpdate("protein_per_100", parseFloat(e.target.value) || undefined)
+                  onUpdate("protein_per_100", Math.max(0, parseFloat(e.target.value) || 0))
                 }
+                onKeyPress={(e) => {
+                  if (!/[0-9.]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
                 className="h-8 text-xs"
                 step="0.1"
               />
@@ -164,9 +182,17 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
             <div>
               <Input
                 type="number"
+                min="0"
                 placeholder={t("ingredients.fat")}
                 value={ingredient.fat_per_100 || ""}
-                onChange={(e) => onUpdate("fat_per_100", parseFloat(e.target.value) || undefined)}
+                onChange={(e) =>
+                  onUpdate("fat_per_100", Math.max(0, parseFloat(e.target.value) || 0))
+                }
+                onKeyPress={(e) => {
+                  if (!/[0-9.]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
                 className="h-8 text-xs"
                 step="0.1"
               />
@@ -174,9 +200,17 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
             <div>
               <Input
                 type="number"
+                min="0"
                 placeholder={t("ingredients.carbs")}
                 value={ingredient.carbs_per_100 || ""}
-                onChange={(e) => onUpdate("carbs_per_100", parseFloat(e.target.value) || undefined)}
+                onChange={(e) =>
+                  onUpdate("carbs_per_100", Math.max(0, parseFloat(e.target.value) || 0))
+                }
+                onKeyPress={(e) => {
+                  if (!/[0-9.]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
                 className="h-8 text-xs"
                 step="0.1"
               />
@@ -184,9 +218,17 @@ export function RecipeIngredients({ ingredients, onChange }: RecipeIngredientsPr
             <div>
               <Input
                 type="number"
+                min="0"
                 placeholder={t("nutrition.fiber")}
                 value={ingredient.fiber_per_100 || ""}
-                onChange={(e) => onUpdate("fiber_per_100", parseFloat(e.target.value) || undefined)}
+                onChange={(e) =>
+                  onUpdate("fiber_per_100", Math.max(0, parseFloat(e.target.value) || 0))
+                }
+                onKeyPress={(e) => {
+                  if (!/[0-9.]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
                 className="h-8 text-xs"
                 step="0.1"
               />

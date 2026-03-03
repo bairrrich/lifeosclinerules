@@ -1,0 +1,77 @@
+{
+  "title": "Привычки",
+  "addHabit": "Добавить привычку",
+  "editHabit": "Редактировать привычку",
+  "noHabits": "Пока нет привычек",
+  "fields": {
+    "name": "Название привычки",
+    "type": "Тип",
+    "frequency": "Частота",
+    "reminderTime": "Время напоминания",
+    "isActive": "Активна",
+    "startDate": "Дата начала",
+    "endDate": "Дата окончания",
+    "subtasks": "Подзадачи",
+    "color": "Цвет"
+  },
+  "types": {
+    "positive": "Делать",
+    "positiveDesc": "Привычка что-то делать",
+    "negative": "Не делать",
+    "negativeDesc": "Привычка избегать чего-то"
+  },
+  "typeDescriptions": {
+    "positive": "Привычка что-то делать",
+    "negative": "Привычка избегать чего-то"
+  },
+  "frequencies": {
+    "daily": "Ежедневно",
+    "weekly": "Еженедельно",
+    "custom": "Произвольная"
+  },
+  "today": "Сегодня",
+  "completed": "Выполнено",
+  "skipped": "Пропущено",
+  "streak": "Серия",
+  "currentStreak": "Текущая серия",
+  "longestStreak": "Лучшая серия",
+  "days": "дней",
+  "day": "день",
+  "actions": {
+    "markComplete": "Отметить выполненным",
+    "markIncomplete": "Отметить невыполненным",
+    "viewSubtasks": "Посмотреть подзадачи",
+    "skipHabit": "Пропустить привычку",
+    "addSubtask": "Добавить подзадачу",
+    "removeSubtask": "Удалить подзадачу"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "add": "Добавить"
+  },
+  "placeholders": {
+    "positive": "Например: Утренняя зарядка",
+    "negative": "Например: Не есть сладкое",
+    "addStep": "Добавить шаг..."
+  },
+  "skipDialog": {
+    "title": "Пропустить сегодня?",
+    "reason": "Причина пропуска"
+  },
+  "skipReasons": {
+    "forgot": "Забыл",
+    "noTime": "Не было времени",
+    "illness": "Болезнь",
+    "vacation": "Отпуск",
+    "weather": "Погода",
+    "other": "Другое"
+  },
+  "skip": "Пропустить",
+  "deleteConfirm": {
+    "title": "Удалить привычку?",
+    "message": "Вы уверены, что хотите удалить привычку \"{name}\"? Это действие нельзя отменить."
+  },
+  "violation": "Нарушение",
+  "daysLeft": "дн. осталось",
+  "subtasksCount": "подзадач: {count}"
+}

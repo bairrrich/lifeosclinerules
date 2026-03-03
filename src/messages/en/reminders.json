@@ -1,0 +1,177 @@
+{
+  "title": "Reminders",
+  "addReminder": "Add Reminder",
+  "editReminder": "Edit Reminder",
+  "noReminders": "No reminders yet",
+  "add": "Add",
+  "loading": "Loading...",
+  "common": {
+    "add": "Add",
+    "loading": "Loading..."
+  },
+  "fields": {
+    "title": "Title",
+    "message": "Message",
+    "type": "Type",
+    "time": "Time",
+    "days": "Days",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "advanceMinutes": "Advance Notice (min)",
+    "repeatType": "Repeat Type",
+    "priority": "Priority",
+    "isActive": "Active",
+    "sound": "Sound",
+    "vibration": "Vibration",
+    "persistent": "Persistent"
+  },
+  "types": {
+    "habit": "Habit",
+    "medicine": "Medicine",
+    "water": "Water",
+    "workout": "Workout",
+    "food": "Food",
+    "item": "Item",
+    "custom": "Custom"
+  },
+  "priorities": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical"
+  },
+  "repeatTypes": {
+    "none": "None",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "custom": "Custom",
+    "afterCompletion": "After Completion"
+  },
+  "daysOfWeek": {
+    "su": "Sun",
+    "mo": "Mon",
+    "tu": "Tue",
+    "we": "Wed",
+    "th": "Thu",
+    "fr": "Fri",
+    "sa": "Sat"
+  },
+  "stats": {
+    "active": "Active",
+    "today": "Today",
+    "completed": "Completed",
+    "overdue": "Overdue",
+    "total": "Total"
+  },
+  "filters": {
+    "all": "All",
+    "today": "Today",
+    "active": "Active",
+    "completed": "Completed",
+    "overdue": "Overdue",
+    "inactive": "Inactive"
+  },
+  "empty": {
+    "noReminders": "No reminders. Add the first one!",
+    "noCategory": "No reminders in this category",
+    "loading": "Loading..."
+  },
+  "dialogs": {
+    "newTitle": "New Reminder",
+    "editTitle": "Edit Reminder",
+    "deleteTitle": "Delete Reminder?",
+    "deleteConfirm": "Are you sure you want to delete reminder \"{title}\"? This action cannot be undone.",
+    "statsTitle": "Stats: {title}"
+  },
+  "statsLabels": {
+    "streak": "Streak",
+    "best": "Best",
+    "total": "Total"
+  },
+  "history": "History",
+  "historyEmpty": "History is empty",
+  "completed": "Completed",
+  "snooze": "In 5 min",
+  "close": "Close",
+  "testNotification": {
+    "button": "🔔 Test Notification",
+    "title": "Test Reminder",
+    "message": "This is a test notification for testing purposes"
+  },
+  "advance": {
+    "onTime": "On Time",
+    "5minBefore": "5 min before",
+    "10minBefore": "10 min before",
+    "15minBefore": "15 min before",
+    "30minBefore": "30 min before",
+    "1hourBefore": "1 hour before",
+    "1dayBefore": "1 day before"
+  },
+  "form": {
+    "type": "Type",
+    "title": "Title",
+    "titlePlaceholder": "Reminder title",
+    "message": "Message",
+    "messagePlaceholder": "Additional information",
+    "time": "Reminder time",
+    "date": "Date",
+    "selectDate": "Select date",
+    "advance": "Advance",
+    "repeatType": "Repeat type",
+    "repeatTypes": {
+      "none": "No repeat",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "custom": "Custom interval"
+    },
+    "daysOfWeek": "Days of week",
+    "everyDay": "Every day",
+    "weekdays": "Weekdays",
+    "weekends": "Weekends",
+    "monthDay": "Day of month",
+    "monthDayLabel": "Every",
+    "monthDaySuffix": "day",
+    "monthDayHint": "If the month has fewer days, the reminder will trigger on the last day of the month",
+    "customInterval": "Every",
+    "onDays": "On which days",
+    "priority": "Priority",
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "courseStart": "Course start",
+    "courseEnd": "Course end",
+    "courseDates": "Course Dates",
+    "selectDateRange": "Select date range",
+    "notificationSettings": "Notification settings",
+    "sound": "Sound",
+    "vibration": "Vibration",
+    "persistent": "Persistent mode (repeat until confirmed)",
+    "addTime": "Add time",
+    "alsoRemindAt": "Also remind at:",
+    "dailyHint": "💡 Reminder will repeat every day",
+    "itemSelect": "Catalog item",
+    "medicineSelect": "Medicine/Vitamin",
+    "selectPlaceholder": "Select...",
+    "hours": "hours",
+    "days": "days",
+    "weeks": "weeks",
+    "months": "months",
+    "timeOfDay": {
+      "morning": "Morning",
+      "lunch": "Lunch",
+      "evening": "Evening",
+      "bedtime": "Before bed"
+    }
+  },
+  "reminderCard": {
+    "limitReached": "Completion limit reached",
+    "completedAction": "Completed",
+    "overdue": "Overdue",
+    "completed": "Completed"
+  }
+}

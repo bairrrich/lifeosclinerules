@@ -1,0 +1,58 @@
+{
+  "title": "Sleep",
+  "addSleep": "Add Sleep",
+  "editSleep": "Edit Sleep",
+  "fields": {
+    "date": "Date",
+    "startTime": "Bedtime",
+    "endTime": "Wake Time",
+    "duration": "Duration",
+    "quality": "Quality",
+    "deepSleep": "Deep Sleep (min)",
+    "remSleep": "REM Sleep (min)",
+    "awake": "Awake Time (min)",
+    "notes": "Notes",
+    "factors": "Factors"
+  },
+  "quality": {
+    "veryPoor": "Very Poor",
+    "poor": "Poor",
+    "okay": "Okay",
+    "good": "Good",
+    "excellent": "Excellent"
+  },
+  "factors": {
+    "caffeine": "Caffeine",
+    "exercise": "Exercise",
+    "stress": "Stress",
+    "alcohol": "Alcohol"
+  },
+  "stats": {
+    "weekAverage": "Week Average",
+    "recordsCount": "Records"
+  },
+  "weekChart": "Last 7 Days",
+  "history": "History",
+  "dialogs": {
+    "addTitle": "Log Sleep",
+    "editTitle": "Edit Entry",
+    "deleteTitle": "Delete Entry?",
+    "deleteConfirm": "Are you sure you want to delete sleep entry? This action cannot be undone.",
+    "dateLabel": "Date",
+    "bedtimeLabel": "Bedtime",
+    "wakeTimeLabel": "Wake Time",
+    "qualityLabel": "Sleep Quality",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Had dreams, woke up during night...",
+    "duration": "Duration",
+    "save": "Save"
+  },
+  "empty": {
+    "loading": "Loading...",
+    "noRecords": "No records",
+    "noSleep": "No sleep records"
+  },
+  "edit": "Edit entry",
+  "hour": "Hour",
+  "minute": "Minute"
+}

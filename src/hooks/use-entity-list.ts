@@ -1,9 +1,7 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { db } from "@/lib/db"
-import { toast } from "@/components/ui/toast"
-import { MAX_RETRY_ATTEMPTS, RETRY_DELAY_MS } from "@/lib/constants"
 
 interface Entity<T> {
   toArray(): Promise<T[]>
@@ -19,9 +17,12 @@ interface UseEntityListResult<T> {
   retry: () => Promise<void>
 }
 
+// Retry configuration constants
+const MAX_RETRY_ATTEMPTS = 3
+const RETRY_DELAY_MS = 1000
+
 /**
- * Хук для получения списка сущностей из IndexedDB
- * Автоматически управляет загрузкой и ошибками
+ * Хук для получения списка сущностей из IndexedDB с retry механизмом
  */
 export function useEntityList<T extends { id?: string | number }>(
   entity: Entity<T>,
@@ -55,7 +56,7 @@ export function useEntityList<T extends { id?: string | number }>(
           )
         } else if (!isRetry) {
           // Show toast on first error
-          toast.error(`Ошибка загрузки: ${errorObj.message}`)
+          console.error("Entity list error:", errorObj.message)
         }
       } finally {
         setIsLoading(false)
@@ -114,6 +115,48 @@ export function useEntity<T extends { id?: string | number }>(
   }, [entity, id])
 
   return { data, isLoading, error }
+}
+
+/**
+ * Хук для получения сущностей с batch загрузкой связанных данных
+ */
+export function useEntityListWithRelated<T extends { id?: string | number; category_id?: string }>(
+  entity: Entity<T>,
+  relatedEntity: any, // Dexie.Table with where().anyOf() support
+  relatedKey: string = "category_id"
+): UseEntityListResult<T> & { relatedMap: Map<string, any> } {
+  const [data, setData] = useState<T[]>([])
+  const [relatedMap, setRelatedMap] = useState<Map<string, any>>(new Map())
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setIsLoading(true)
+        const items = await entity.toArray()
+        setData(items)
+
+        // Batch load related entities
+        const relatedIds = [
+          ...new Set(items.map((item) => (item as any)[relatedKey]).filter(Boolean)),
+        ]
+        if (relatedIds.length > 0) {
+          const relatedItems: any[] = await relatedEntity.where("id").anyOf(relatedIds).toArray()
+          const map = new Map(relatedItems.map((item: any) => [item.id, item]))
+          setRelatedMap(map)
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error(String(err)))
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [entity, relatedEntity, relatedKey])
+
+  return { data, isLoading, error, refetch: async () => {}, retry: async () => {}, relatedMap }
 }
 
 /**

@@ -1,0 +1,47 @@
+{
+  "title": "Analytics",
+  "loading": "Loading...",
+  "date": "Date",
+  "common": {
+    "count": "Count"
+  },
+  "period": {
+    "7days": "7 days",
+    "14days": "14 days",
+    "30days": "30 days"
+  },
+  "summary": {
+    "calories": "Calories",
+    "workouts": "Workouts",
+    "workoutDuration": "Duration",
+    "income": "Income",
+    "expense": "Expense",
+    "balance": "Balance",
+    "avgPerDay": "avg/day",
+    "avgPerWorkout": "avg/workout",
+    "vsPreviousPeriod": "vs previous period"
+  },
+  "food": {
+    "title": "Nutrition",
+    "caloriesByDay": "Calories by Day",
+    "macrosByDay": "Macros by Day",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "byCategory": "By Category"
+  },
+  "workout": {
+    "title": "Workouts",
+    "durationByDay": "Workout Duration (min)",
+    "countByDay": "Number of Workouts",
+    "minutes": "Minutes",
+    "workouts": "Workouts"
+  },
+  "finance": {
+    "title": "Finance",
+    "incomeExpenseByDay": "Income/Expense by Day",
+    "categoryDistribution": "Category Distribution",
+    "income": "Income",
+    "expense": "Expense"
+  }
+}

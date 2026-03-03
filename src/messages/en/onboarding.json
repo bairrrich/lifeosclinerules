@@ -1,0 +1,29 @@
+{
+  "welcome": {
+    "title": "Welcome to Life OS",
+    "description": "A unified application for comprehensive tracking of life indicators. Keep records of nutrition, workouts, finances and much more."
+  },
+  "trackers": {
+    "title": "Trackers",
+    "description": "Track water, sleep, mood, body measurements and habits. Set goals and monitor progress.",
+    "nutrition": "Nutrition",
+    "workouts": "Workouts",
+    "finance": "Finance",
+    "water": "Water"
+  },
+  "content": {
+    "title": "Content",
+    "description": "Maintain a library of books and a collection of recipes with automatic calorie calculation.",
+    "books": "Books",
+    "recipes": "Recipes"
+  },
+  "offline": {
+    "title": "Works Offline",
+    "description": "All data is stored locally on your device. The application works without internet, and data syncs when the network is available."
+  },
+  "skip": "Skip",
+  "back": "Back",
+  "next": "Next",
+  "finish": "Get Started",
+  "finishOnboarding": "Finish"
+}

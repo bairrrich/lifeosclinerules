@@ -1,0 +1,23 @@
+{
+  "generic": "Something went wrong",
+  "notFound": "Not found",
+  "unauthorized": "Unauthorized",
+  "forbidden": "Forbidden",
+  "serverError": "Server error",
+  "networkError": "Network error",
+  "validationError": "Validation error",
+  "required": "This field is required",
+  "invalidEmail": "Invalid email",
+  "invalidDate": "Invalid date",
+  "invalidNumber": "Invalid number",
+  "tooShort": "Too short",
+  "tooLong": "Too long",
+  "minValue": "Value too low",
+  "maxValue": "Value too high",
+  "duplicate": "Already exists",
+  "loadFailed": "Failed to load data",
+  "saveFailed": "Failed to save data",
+  "deleteFailed": "Failed to delete",
+  "importFailed": "Import failed. Check file format.",
+  "exportFailed": "Export failed"
+}

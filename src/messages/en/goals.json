@@ -1,0 +1,56 @@
+{
+  "title": "Goals",
+  "addGoal": "Add Goal",
+  "editGoal": "Edit Goal",
+  "noGoals": "No goals yet",
+  "fields": {
+    "type": "Goal Type",
+    "name": "Name",
+    "targetValue": "Target Value",
+    "currentValue": "Current Value",
+    "period": "Period",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "isActive": "Active",
+    "unit": "Unit"
+  },
+  "types": {
+    "calories": "Calories",
+    "workout": "Workout",
+    "water": "Water",
+    "sleep": "Sleep",
+    "steps": "Steps",
+    "weight": "Weight",
+    "finance": "Finance"
+  },
+  "units": {
+    "kcal": "kcal",
+    "min": "min",
+    "hour": "hr",
+    "count": "count",
+    "ml": "ml",
+    "l": "L",
+    "kg": "kg",
+    "g": "g",
+    "currency": "$"
+  },
+  "periods": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
+  },
+  "progress": "Progress",
+  "completed": "Completed",
+  "completedToday": "Completed today",
+  "common": {
+    "loading": "Loading...",
+    "add": "Add"
+  },
+  "deleteConfirm": {
+    "title": "Delete goal?",
+    "message": "Are you sure you want to delete goal \"{name}\"? This action cannot be undone."
+  },
+  "placeholders": {
+    "caloriesPerDay": "e.g., Calories per day"
+  }
+}

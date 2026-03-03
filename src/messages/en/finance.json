@@ -1,0 +1,49 @@
+{
+  "recurring": {
+    "title": "Recurring Transactions",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Delete recurring transaction?",
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "Rent, Salary...",
+      "amount": "Amount",
+      "frequency": "Frequency",
+      "dayOfMonth": "Day of Month",
+      "account": "Account",
+      "startDate": "Start Date",
+      "save": "Save",
+      "create": "Create"
+    },
+    "frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "biweekly": "Bi-weekly",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "yearly": "Yearly"
+    },
+    "expense": "Expense",
+    "income": "Income",
+    "empty": "No recurring transactions",
+    "loading": "Loading...",
+    "nextDue": "Next"
+  },
+  "budgets": {
+    "title": "Budgets",
+    "description": "Set spending limits by category",
+    "add": "Add Budget",
+    "edit": "Edit Budget",
+    "new": "New Budget",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "limit": "Monthly Limit",
+    "empty": "No budgets set",
+    "addFirst": "Add Budget",
+    "used": "used",
+    "remaining": "Remaining",
+    "overBudget": "Over by",
+    "currency": "₽"
+  }
+}

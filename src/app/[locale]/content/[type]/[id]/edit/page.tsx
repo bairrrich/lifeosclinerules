@@ -83,7 +83,7 @@ export default function EditContentPage() {
   const params = useParams()
   const type = params.type as ContentType
   const id = params.id as string
-  const t = useTranslations("recipes")
+  const t = useTranslations("content")
   const tCommon = useTranslations("common")
   const locale = useLocale()
 
@@ -617,7 +617,7 @@ export default function EditContentPage() {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-4">
-                    {t("edit.nutrition.optional")}
+                    {t("edit.nutritionOptional")}
                   </p>
                 </CardContent>
               </Card>

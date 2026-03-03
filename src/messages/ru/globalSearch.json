@@ -1,0 +1,19 @@
+{
+  "placeholder": "Поиск... (Cmd+K)",
+  "noResults": "Ничего не найдено",
+  "navigate": "↑↓ для навигации",
+  "select": "Enter для выбора",
+  "close": "Esc для закрытия",
+  "quickActions": {
+    "addFood": "Добавить питание",
+    "addWorkout": "Добавить тренировку",
+    "addExpense": "Добавить расход",
+    "addBook": "Добавить книгу",
+    "addRecipe": "Добавить рецепт",
+    "logWater": "Записать воду",
+    "logSleep": "Записать сон",
+    "logMood": "Записать настроение",
+    "analytics": "Аналитика",
+    "settings": "Настройки"
+  }
+}

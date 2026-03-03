@@ -356,10 +356,19 @@ function GoalsContent() {
                   <Input
                     id="target"
                     type="number"
+                    min="0"
                     value={formData.target_value || ""}
                     onChange={(e) =>
-                      setFormData({ ...formData, target_value: Number(e.target.value) })
+                      setFormData({
+                        ...formData,
+                        target_value: Math.max(0, Number(e.target.value)),
+                      })
                     }
+                    onKeyPress={(e) => {
+                      if (!/[0-9.]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -456,10 +465,19 @@ function GoalsContent() {
                   <Input
                     id="edit-target"
                     type="number"
+                    min="0"
                     value={formData.target_value || ""}
                     onChange={(e) =>
-                      setFormData({ ...formData, target_value: Number(e.target.value) })
+                      setFormData({
+                        ...formData,
+                        target_value: Math.max(0, Number(e.target.value)),
+                      })
                     }
+                    onKeyPress={(e) => {
+                      if (!/[0-9.]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
                 <div className="space-y-2">

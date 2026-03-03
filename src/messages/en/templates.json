@@ -1,0 +1,140 @@
+{
+  "header": {
+    "title": "Templates",
+    "subtitle": "Quick templates for frequent entries"
+  },
+  "title": "Templates",
+  "add": "Add Template",
+  "sections": {
+    "all": "All Templates",
+    "favorite": "Favorites",
+    "usedCount": "{count} uses"
+  },
+  "units": {
+    "kcal": "kcal",
+    "g": "g",
+    "min": "min",
+    "ml": "ml"
+  },
+  "intensity": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "quality": {
+    "1": "Very Bad",
+    "2": "Bad",
+    "3": "Normal",
+    "4": "Good",
+    "5": "Excellent"
+  },
+  "mood": {
+    "great": "Great",
+    "good": "Good",
+    "okay": "Okay",
+    "bad": "Bad",
+    "terrible": "Terrible"
+  },
+  "drinkType": {
+    "water": "Water",
+    "tea": "Tea",
+    "coffee": "Coffee",
+    "other": "Other"
+  },
+  "activity": {
+    "work": "Work",
+    "exercise": "Exercise",
+    "social": "Social",
+    "hobby": "Hobby",
+    "rest": "Rest",
+    "shopping": "Shopping",
+    "reading": "Reading",
+    "gaming": "Gaming",
+    "cooking": "Cooking",
+    "walk": "Walk"
+  },
+  "noData": "No data",
+  "addTemplate": "Add Template",
+  "editTemplate": "Edit Template",
+  "noTemplates": "No templates yet",
+  "applyTemplate": "Apply Template",
+  "deleteTemplate": "Delete Template",
+  "apply": {
+    "title": "Apply Template",
+    "success": "Template applied successfully!",
+    "stay": "Stay",
+    "goToRecord": "Go to Entry"
+  },
+  "empty": {
+    "loading": "Loading...",
+    "noTemplates": "No templates",
+    "createHint": "Create templates for quick adding of frequent entries"
+  },
+  "actions": {
+    "create": "Create Template",
+    "createFirst": "Create First Template",
+    "apply": "Apply",
+    "edit": "Edit Template",
+    "delete": "Delete",
+    "removeFromFavorite": "Remove from Favorites",
+    "addToFavorite": "Add to Favorites"
+  },
+  "dialogs": {
+    "createTitle": "Create Template",
+    "editTitle": "Edit Template",
+    "deleteTitle": "Delete Template?",
+    "deleteConfirm": "Are you sure you want to delete template \"{name}\"? This action cannot be undone.",
+    "nameLabel": "Template Name",
+    "namePlaceholder": "e.g., Breakfast - Oatmeal",
+    "typeLabel": "Type"
+  },
+  "types": {
+    "food": "Food",
+    "workout": "Workout",
+    "water": "Water",
+    "sleep": "Sleep",
+    "mood": "Mood"
+  },
+  "food": {
+    "title": "Dish Name",
+    "titlePlaceholder": "e.g., Oatmeal with Berries",
+    "nutrition": "Nutrition Facts (per 100g)",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "servingSize": "Serving Size (g)"
+  },
+  "workout": {
+    "title": "Workout Name",
+    "titlePlaceholder": "e.g., Morning Run",
+    "duration": "Duration (min)",
+    "intensity": "Intensity",
+    "caloriesBurned": "Calories Burned",
+    "equipment": "Equipment",
+    "equipmentPlaceholder": "Barbell, dumbbells...",
+    "strengthAdditional": "Additional (for strength)",
+    "exercisesCount": "Exercises",
+    "setsCount": "Sets",
+    "repsCount": "Reps",
+    "totalWeight": "Total Weight (kg)"
+  },
+  "water": {
+    "amount": "Amount (ml)",
+    "customAmount": "Custom value",
+    "type": "Drink Type"
+  },
+  "sleep": {
+    "startTime": "Bedtime",
+    "endTime": "Wake Up Time",
+    "quality": "Sleep Quality",
+    "notesPlaceholder": "Dreams, awakenings..."
+  },
+  "mood": {
+    "great": "Great",
+    "good": "Good",
+    "okay": "Okay",
+    "bad": "Bad",
+    "terrible": "Terrible"
+  }
+}

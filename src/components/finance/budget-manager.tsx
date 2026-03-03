@@ -14,9 +14,6 @@ import { db, initializeDatabase, getAllEntities, getLocalizedEntityName } from "
 import type { Category, Log, Budget } from "@/types"
 import { priorityColors, statusColors } from "@/lib/theme-colors"
 
-// Ключ для localStorage бюджетов
-const BUDGETS_KEY = "life-os-budgets"
-
 export function BudgetManager() {
   const [isLoading, setIsLoading] = useState(true)
   const [budgets, setBudgets] = useState<Budget[]>([])
@@ -54,13 +51,19 @@ export function BudgetManager() {
       // Загружаем локализованные названия категорий
       const localizedNames: Record<string, string> = {}
       for (const category of financeCategories) {
-        localizedNames[category.id] = await getLocalizedEntityName(
-          "category",
-          category.id,
-          locale,
-          category.name,
-          "finance"
-        )
+        try {
+          const localizedName = await getLocalizedEntityName(
+            "category",
+            category.id,
+            locale,
+            category.name,
+            "finance"
+          )
+          localizedNames[category.id] = localizedName
+        } catch (error) {
+          console.error(`Failed to localize category ${category.id}:`, error)
+          localizedNames[category.id] = category.name
+        }
       }
       setLocalizedCategoryNames(localizedNames)
 
@@ -73,10 +76,15 @@ export function BudgetManager() {
       )
       setExpenses(monthExpenses)
 
-      // Загружаем бюджеты из localStorage
-      const savedBudgets = localStorage.getItem(BUDGETS_KEY)
-      if (savedBudgets) {
-        setBudgets(JSON.parse(savedBudgets))
+      // Загружаем бюджеты из IndexedDB (с проверкой существования таблицы)
+      try {
+        const savedBudgets = await db.budgets.toArray()
+        if (savedBudgets) {
+          setBudgets(savedBudgets)
+        }
+      } catch (error) {
+        console.warn("Budgets table not available yet:", error)
+        setBudgets([])
       }
     } catch (error) {
       console.error("Failed to load budget data:", error)
@@ -85,9 +93,23 @@ export function BudgetManager() {
     }
   }
 
-  function saveBudgets(newBudgets: Budget[]) {
+  async function saveBudgets(newBudgets: Budget[]) {
     setBudgets(newBudgets)
-    localStorage.setItem(BUDGETS_KEY, JSON.stringify(newBudgets))
+    // Сохраняем в IndexedDB вместо localStorage (с проверкой таблицы)
+    try {
+      await db.transaction("rw", db.budgets, async () => {
+        await db.budgets.clear()
+        await db.budgets.bulkAdd(newBudgets)
+      })
+    } catch (error) {
+      console.error("Failed to save budgets:", error)
+      // Fallback to localStorage if budgets table not available
+      try {
+        localStorage.setItem("life-os-budgets", JSON.stringify(newBudgets))
+      } catch (e) {
+        console.error("LocalStorage fallback failed:", e)
+      }
+    }
   }
 
   const handleCreate = async (item: Budget) => {

@@ -3,10 +3,583 @@
 ## Текущий статус
 
 **Стадия**: Production-ready с полным аудитом
-**Версия**: 0.8.1 (Audit Complete)
+**Версия**: 0.8.16 (Finance Data Architecture Fix)
 **Последнее обновление**: 2026-03-03
 
 ## Что работает
+
+### ✅ Новые функции (v0.8.16) — Исправление архитектуры данных финансовых операций
+
+**Проблема**: `category_id` из БД и `metadata.category` из `financeCategoriesStructure` не совпадали, так как при генерации тестовых данных `category_id` устанавливался случайно.
+
+**Причина**: В `seed.ts` `category_id` выбирался случайно из всех финансовых категорий, а не соответствовал `metadata.category`.
+
+**Решение**:
+
+1. В `seed.ts` находить категорию в БД по имени (ключу) и использовать её ID
+2. Удалить `metadata.category` — основная категория теперь только из `category_id`
+3. Оставить `metadata.subcategory`, `metadata.item`, `metadata.supplier` — это ключи из `financeCategoriesStructure`
+
+#### 🔧 Изменения
+
+**Архитектура данных для финансов**:
+
+| Поле                    | Источник                   | Пример                              |
+| ----------------------- | -------------------------- | ----------------------------------- |
+| `category_id`           | БД (categories)            | "product" → ID категории "Продукты" |
+| `metadata.finance_type` | FinanceType                | "expense"                           |
+| `metadata.subcategory`  | financeCategoriesStructure | "dairy"                             |
+| `metadata.item`         | financeCategoriesStructure | "magnit"                            |
+| `metadata.supplier`     | financeCategoriesStructure | "magnit"                            |
+
+**Файл**: `src/lib/seed.ts`
+
+**Было**:
+
+```typescript
+// category_id выбирался случайно!
+category_id: financeCategories.length > 0 ? randomElement(financeCategories).id : undefined,
+metadata: {
+  finance_type: FinanceType.EXPENSE,
+  category: categoryKey, // "product"
+  subcategory: subcategoryKey, // "dairy"
+  supplier: supplierKey, // "magnit"
+}
+```
+
+**Стало**:
+
+```typescript
+// Находим категорию в БД по имени (ключу)
+const dbCategory = financeCategories.find((c) => c.name === categoryKey)
+
+category_id: dbCategory?.id, // Соответствует categoryKey!
+metadata: {
+  finance_type: FinanceType.EXPENSE,
+  subcategory: subcategoryKey, // "dairy"
+  item: supplierKey, // "magnit"
+  supplier: supplierKey, // "magnit"
+}
+```
+
+#### 📝 Изменённые файлы
+
+- `src/lib/seed.ts` — `category_id` соответствует `metadata.category`
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — удалено отображение `metadata.category`, используется только `category_id`
+
+### ✅ Новые функции (v0.8.15) — Удаление дублирующейся категории в финансовых операциях
+
+**Проблема**: В карточке финансовой операции отображалась дополнительная категория из БД (например, "Entertainment"), которая не соответствовала metadata.category.
+
+**Причина**: Для финансовых операций `category_id` из БД и `metadata.category` из `financeCategoriesStructure` — это разные поля, которые могут не совпадать.
+
+**Решение**: Скрыть отображение `category` из БД для финансовых операций, так как правильная категория отображается в metadataItems.
+
+#### 🔧 Изменения
+
+**Файл**: `src/app/[locale]/logs/[type]/[id]/page.tsx`
+
+**Было**:
+
+```typescript
+{category && (
+  <div>
+    <p className="text-sm text-muted-foreground">{t("fields.category")}</p>
+    <p className="font-medium">{localizedCategoryName || category.name}</p>
+  </div>
+)}
+```
+
+**Стало**:
+
+```typescript
+{category && type !== "finance" && (
+  <div>
+    <p className="text-sm text-muted-foreground">{t("fields.category")}</p>
+    <p className="font-medium">{localizedCategoryName || category.name}</p>
+  </div>
+)}
+```
+
+#### 📝 Изменённые файлы
+
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — скрыто отображение category для финансов
+
+### ✅ Новые функции (v0.8.14) — Исправление отображения карточки финансовой операции
+
+**Проблема**: В карточке финансовой операции отображались ключи (product-dairy-milk) вместо локализованных названий, и добавлялась дополнительная категория.
+
+**Решение**: Использовать `getStaticEntityTranslation` вместо `getLocalizedEntityName` для metadata полей.
+
+#### 🔧 Изменения
+
+**Файл**: `src/app/[locale]/logs/[type]/[id]/page.tsx`
+
+**Проблема**: `getLocalizedEntityName` предназначен для категорий из БД (с ID), а metadata.category/subcategory/item/supplier — это ключи из `financeCategoriesStructure`.
+
+**Было**:
+
+```typescript
+// Ошибочно: m.category это "product", а не ID из БД
+value: await getLocalizedEntityName("category", m.category, locale, m.category, "finance")
+```
+
+**Стало**:
+
+```typescript
+// Правильно: используем статические переводы для ключей
+value: getStaticEntityTranslation("categories", m.category, locale, "finance")
+value: getStaticEntityTranslation("financeSubcategories", m.subcategory, locale)
+value: getStaticEntityTranslation("financeSubcategories", m.item, locale)
+value: getStaticEntityTranslation("financeSuppliers", m.supplier, locale)
+```
+
+#### 📝 Изменённые файлы
+
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — исправлена локализация metadata полей
+
+### ✅ Новые функции (v0.8.13) — Исправление бюджетирования
+
+**Проблема**: Бюджетирование перестало правильно работать после изменений локализации.
+
+**Решение**: Добавлена обработка ошибок в `getLocalizedEntityName` для категорий бюджетов.
+
+#### 🔧 Изменения
+
+**Файл**: `src/components/finance/budget-manager.tsx`
+
+**Добавлена обработка ошибок**:
+
+```typescript
+for (const category of financeCategories) {
+  try {
+    const localizedName = await getLocalizedEntityName(
+      "category",
+      category.id,
+      locale,
+      category.name,
+      "finance"
+    )
+    localizedNames[category.id] = localizedName
+  } catch (error) {
+    console.error(`Failed to localize category ${category.id}:`, error)
+    localizedNames[category.id] = category.name // Fallback
+  }
+}
+```
+
+#### 📝 Изменённые файлы
+
+- `src/components/finance/budget-manager.tsx` — обработка ошибок локализации
+
+### ✅ Новые функции (v0.8.12) — Добавлены переводы для товаров/услуг
+
+**Проблема**: В поле "Товар/услуга" отображались ключи (milk, cheese, beef) вместо локализованных названий.
+
+**Решение**: Добавлены переводы для 80+ товаров/услуг в `financeSubcategories`.
+
+#### 🔧 Изменения
+
+**Файлы**: `src/messages/ru/entities.json`, `src/messages/en/entities.json`
+
+**Добавлены переводы для товаров/услуг по категориям**:
+
+| Категория        | Товары/услуги                                                  |
+| ---------------- | -------------------------------------------------------------- |
+| **Молочные**     | milk, cheese, cottageCheese, sourCream, kefir, yogurt, butter  |
+| **Мясо**         | beef, pork, lamb, chicken, turkey, duck                        |
+| **Рыба**         | trout, herring, salmon, cod, carp, pikeperch, mackerel         |
+| **Овощи**        | potato, carrot, onion, beet, cucumber, tomato, cabbage, pepper |
+| **Фрукты**       | apples, bananas, oranges, tangerines, pears, grape, kiwi       |
+| **Ягоды**        | strawberry, raspberry, blueberry, currant, cherry, cranberry   |
+| **Крупы**        | rice, buckwheat, oatmeal, semolina, millet, barley             |
+| **Хлеб**         | whiteBread, blackBread, baton, buns, lavash                    |
+| **Напитки**      | tea, coffee, juices, water, soda, kvass                        |
+| **Бакалея**      | pasta, sugar, salt, flour, vegetableOil, vinegar               |
+| **Кондитерские** | chocolate, candy, cookies, cakes, honey, jam                   |
+| **Замороженные** | dumplings, vareniki, vegetableMix, frozenBerries, iceCream     |
+| **Транспорт**    | metro, bus, tram, rosneft                                      |
+
+#### 📝 Изменённые файлы
+
+- `src/messages/ru/entities.json` — +80 переводов товаров/услуг
+- `src/messages/en/entities.json` — +80 translations for items/services
+
+### ✅ Новые функции (v0.8.11) — Исправление локализации поставщиков
+
+**Проблема**: В поле "Поставщик" отображался массив ключей вместо локализованных названий.
+
+**Решение**: Исправлена функция `getStaticEntityTranslation` для типа `financeSuppliers`.
+
+#### 🔧 Изменения
+
+**Файл**: `src/lib/db/index.ts`
+
+**Было**:
+
+```typescript
+if (entityType === "financeSuppliers" && subKey) {
+  const subData = entityData[subKey] as string[] | undefined
+  if (subData) {
+    return subData.join(", ")
+  }
+}
+```
+
+**Стало**:
+
+```typescript
+if (entityType === "financeSuppliers") {
+  // Try to find translation in financeSubcategories
+  const financeSubcategoriesData = translations["financeSubcategories"]
+  if (financeSubcategoriesData && financeSubcategoriesData[entityKey]) {
+    return financeSubcategoriesData[entityKey] as string
+  }
+  return entityKey
+}
+```
+
+#### 📝 Изменённые файлы
+
+- `src/lib/db/index.ts` — исправлена локализация поставщиков
+- `src/components/logs/finance-form.tsx` — упрощён вызов `getStaticEntityTranslation`
+
+### ✅ Новые функции (v0.8.10) — Добавлены переводы для поставщиков
+
+**Проблема**: В формах финансовых операций поставщики отображались ключами (magnit, pyaterochka) вместо локализованных названий.
+
+**Решение**: Добавлены переводы для всех поставщиков в `financeSubcategories`.
+
+#### 🔧 Изменения
+
+**Файлы**: `src/messages/ru/entities.json`, `src/messages/en/entities.json`
+
+**Добавлены переводы для 30+ поставщиков**:
+
+- **Продукты**: magnit, pyaterochka, azbukaVkusa, perekrestok, yandexEda, samokat
+- **Транспорт**: yandexTaxi, uber, sitimobil, lukoil, gazprom
+- **Развлечения**: netflix, yandexPlus, youtubePremium, cinemaHall
+- **Здоровье**: aptekaRu, rigla, zivika, gordrav
+- **Связь**: mts, beeline, megafon, tele2, rostelecom
+
+#### 📝 Изменённые файлы
+
+- `src/messages/ru/entities.json` — +30 переводов поставщиков
+- `src/messages/en/entities.json` — +30 translations for suppliers
+
+### ✅ Новые функции (v0.8.9) — Локализация форм финансовых операций
+
+**Проблема**: В формах создания/редактирования финансовых операций категории, подкатегории, товары и поставщики отображались на языке ключей вместо локализованного названия.
+
+**Решение**: Использовать `getStaticEntityTranslation` для локализации всех опций в форме.
+
+#### 🔧 Изменения
+
+**Файл**: `src/components/logs/finance-form.tsx`
+
+1. **Добавлены импорты**:
+   - `financeCategoriesStructure` из `@/lib/finance-categories`
+   - `getStaticEntityTranslation` из `@/lib/db`
+   - `useLocale` из `next-intl`
+
+2. **Заменено `tFinCat()` на `getStaticEntityTranslation()`**:
+   - Категории: `getStaticEntityTranslation("categories", key, locale, "finance")`
+   - Подкатегории: `getStaticEntityTranslation("financeSubcategories", key, locale)`
+   - Товары: `getStaticEntityTranslation("financeSubcategories", key, locale)`
+   - Поставщики: `getStaticEntityTranslation("financeSuppliers", key, locale, supplierKey)`
+
+3. **Удалён `tFinCat = useTranslations("financeCategories")`**
+
+#### 📝 Изменённые файлы
+
+- `src/components/logs/finance-form.tsx` — локализация опций формы
+
+### ✅ Новые функции (v0.8.8) — Исправление локализации финансовых операций
+
+**Проблема**: При создании финансовых операций отображались ключи вместо локализованных названий (например, "product-dairy-milk" вместо "Продукты → Молочные продукты → Молоко").
+
+**Решение**: Полная переработка системы локализации для финансовых категорий, подкатегорий и поставщиков.
+
+#### 🔧 Изменения
+
+**1. Категории создаются с ключами** (seed.ts):
+
+- **Было**: `name: "Продукты"` (русское название)
+- **Стало**: `name: "product"` (ключ из entities.json)
+
+**2. Добавлены переводы для всех финансовых категорий** (entities.json):
+
+```json
+{
+  "categories": {
+    "finance": {
+      "product": "Продукты",
+      "transport": "Транспорт",
+      "entertainment": "Развлечения",
+      "health": "Здоровье",
+      "education": "Образование",
+      "housing": "Жильё",
+      "communication": "Связь",
+      "clothing": "Одежда"
+    }
+  }
+}
+```
+
+**3. Добавлены переводы для подкатегорий** (financeSubcategories):
+
+```json
+{
+  "financeSubcategories": {
+    "dairy": "Молочные продукты",
+    "meat": "Мясо",
+    "fish": "Рыба",
+    "vegetables": "Овощи",
+    "taxi": "Такси",
+    "public": "Общественный транспорт",
+    "cinema": "Кино",
+    "pharmacy": "Аптека"
+    // ... и другие
+  }
+}
+```
+
+**4. Добавлены переводы для поставщиков** (financeSuppliers):
+
+```json
+{
+  "financeSuppliers": {
+    "product": ["magnit", "pyaterochka", "azbukaVkusa"],
+    "transport": ["yandexTaxi", "uber", "lukoil"],
+    "health": ["aptekaRu", "rigla", "zivika"]
+  }
+}
+```
+
+**5. Обновлена функция локализации** (db/index.ts):
+
+- Добавлен тип `financeSubcategory`
+- Добавлена поддержка `financeSubcategories` в `getStaticEntityTranslation`
+- Исправлен вызов в `page.tsx`: `"finance"` вместо `m.finance_type`
+
+#### 📝 Изменённые файлы
+
+- `src/lib/seed.ts` — категории создаются с ключами
+- `src/messages/ru/entities.json` — добавлены переводы
+- `src/messages/en/entities.json` — добавлены переводы
+- `src/lib/db/index.ts` — поддержка financeSubcategories
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — исправлен вызов локализации
+
+### ✅ Новые функции (v0.8.7) — Генерация финансовых данных из структуры категорий
+
+**Проблема**: Тестовые данные для финансов генерировались с хардкоженными ключами, не соответствующими реальной структуре категорий.
+
+**Решение**: Генерация тестовых данных напрямую из `financeCategoriesStructure`.
+
+#### 🔧 Изменения
+
+**Файл**: `src/lib/seed.ts`
+
+1. **Добавлен импорт** `financeCategoriesStructure` из `./finance-categories`
+
+2. **Генерация для всех типов операций**:
+   - **Income (Доходы)**: по одной записи для каждой категории (salary, freelance, investments, other)
+   - **Expense (Расходы)**: по одной записи для каждой категории (product, transport, entertainment, health, clothing, housing, communication, education, other)
+   - **Transfer (Переводы)**: по одной записи для каждой категории (transfer, topUp)
+
+3. **Для каждой категории**:
+   - Выбирается случайная подкатегория из доступных
+   - Выбирается случайный supplier из подкатегории
+   - Все данные берутся из `financeCategoriesStructure`
+
+4. **Метаданные включают**:
+   - `finance_type` — тип операции
+   - `category` — категория (ключ из структуры)
+   - `subcategory` — подкатегория (ключ из структуры)
+   - `supplier` — поставщик (ключ из структуры)
+
+#### 📝 Изменённые файлы
+
+- `src/lib/seed.ts` — генерация финансовых данных из структуры категорий
+
+### ✅ Новые функции (v0.8.6) — Исправление генерации тестовых данных
+
+**Проблема**: Тестовые данные создавались с некорректными значениями:
+
+- Финансовые категории использовали русские названия ("Доход", "Расход") вместо ключей
+- Подкатегории тренировок не соответствовали типам
+- Единицы измерения хардкодились вместо использования из базы
+
+**Решение**: Исправлен `seed.ts` для использования корректных ключей и данных из БД.
+
+#### 🔧 Изменения
+
+**Файл**: `src/lib/seed.ts`
+
+1. **Финансовые категории**:
+   - **Было**: `category: isIncome ? "Доход" : "Расход"`
+   - **Стало**: `category: randomElement(["salary", "freelance", "product", "transport", ...])`
+   - Используются ключи из `financeCategoriesStructure`
+
+2. **Подкатегории тренировок**:
+   - Добавлена типизация для `StrengthSubcategory`, `CardioSubcategory`, `YogaSubcategory`
+   - Для каждого типа тренировки выбираются соответствующие подкатегории:
+     - Strength: `chest`, `back`, `legs`, `shoulders`, `arms`
+     - Cardio: `running`, `cycling`, `swimming`, `walking`
+     - Yoga: `hatha`, `vinyasa`, `yin`, `restorative`
+
+3. **Единицы измерения**:
+   - Загружаются из базы данных (`db.units.toArray()`)
+   - Используются через `find()` по аббревиатуре
+   - Fallback на первую единицу если не найдена
+
+#### 📝 Изменённые файлы
+
+- `src/lib/seed.ts` — исправление генерации тестовых данных
+
+### ✅ Новые функции (v0.8.5) — Исправление локализации категорий
+
+**Проблема**: На странице детального просмотра лога (`/logs/[type]/[id]`) отображались ключи категорий вместо локализованных названий (например, `product-dairy-milk` вместо `Groceries-Dairy-Milk`).
+
+**Решение**: Использование функции `getLocalizedEntityName` для получения переведённого названия категории.
+
+#### 🔧 Изменения
+
+**Файл**: `src/app/[locale]/logs/[type]/[id]/page.tsx`
+
+1. **Локализация основной категории**:
+   - Добавлено состояние `localizedCategoryName`
+   - При загрузке вызывается `getLocalizedEntityName` для категории
+   - При отображении используется `localizedCategoryName || category.name`
+
+2. **Локализация финансовых полей** (category, subcategory, item, supplier):
+   - Функция `getMetadataItems` сделана async
+   - Для каждого поля вызывается `getLocalizedEntityName`
+   - Результаты сохраняются в состояние `metadataItems`
+   - При отображении используется `metadataItems` вместо вызова функции
+
+3. **Добавлен импорт**:
+   - `FinanceMetadata` из `@/types`
+   - `getLocalizedEntityName` из `@/lib/db`
+
+#### 📝 Изменённые файлы
+
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — локализация категорий и финансовых полей
+
+### ✅ Новые функции (v0.8.4) — Защита всех числовых полей
+
+**Проблема**: Не все числовые поля в приложении имели защиту от `-` и `+`.
+
+**Решение**: Добавлена защита ещё в 20+ полях в различных формах.
+
+#### 📝 Изменённые файлы
+
+1. **nutrition-fields.tsx** — универсальный компонент КБЖУ (4 поля):
+   - `calories` — целое число
+   - `protein`, `fat`, `carbs` — дробные числа
+
+2. **food-form.tsx** — размер порции (1 поле)
+
+3. **goals/page.tsx** — целевые значения (2 поля):
+   - `target_value` — создание цели
+   - `target_value` — редактирование цели
+
+4. **recipe-ingredients.tsx** — ингредиенты и КБЖУ (6 полей):
+   - `amount` — количество ингредиента
+   - `calories_per_100`, `protein_per_100`, `fat_per_100`, `carbs_per_100`, `fiber_per_100`
+
+#### 📊 Итого защищённых полей
+
+| Категория      | Файл                                | Поля         |
+| -------------- | ----------------------------------- | ------------ |
+| **Финансы**    | finance-form.tsx                    | 1            |
+| **Тренировки** | workout-form.tsx                    | 11           |
+| **Еда**        | food-form.tsx, nutrition-fields.tsx | 5            |
+| **Рецепты**    | recipe-ingredients.tsx              | 6            |
+| **Цели**       | goals/page.tsx                      | 2            |
+| **ВСЕГО**      |                                     | **25 полей** |
+
+### ✅ Новые функции (v0.8.3) — Блокировка ввода `-` и `+`
+
+**Проблема**: Пользователь мог ввести символы `-` (минус) и `+` (плюс) в числовые поля.
+
+**Решение**: OnKeyPress фильтр для всех числовых полей.
+
+#### 🔒 Паттерны валидации
+
+**Для финансов** (сумма с копейками):
+
+- Разрешены: `0-9`, `.`, `,`
+- Запрещены: `-`, `+`, `e`, `E`, буквы
+
+**Для целых чисел** (длительность, пульс, количество):
+
+- Разрешены: только `0-9`
+- Запрещены: `-`, `+`, `.`, `,`, буквы
+
+**Для дробных чисел** (дистанция, вес, скорость):
+
+- Разрешены: `0-9`, `.`
+- Запрещены: `-`, `+`, `,`, буквы
+
+```typescript
+// Пример для финансов
+onKeyPress={(e) => {
+  if (!/[0-9.,]/.test(e.key)) {
+    e.preventDefault()
+  }
+}}
+
+// Пример для целых чисел
+onKeyPress={(e) => {
+  if (!/[0-9]/.test(e.key)) {
+    e.preventDefault()
+  }
+}}
+
+// Пример для дробных чисел
+onKeyPress={(e) => {
+  if (!/[0-9.]/.test(e.key)) {
+    e.preventDefault()
+  }
+}}
+```
+
+#### 📝 Изменённые файлы
+
+- `src/components/logs/finance-form.tsx` — блокировка `-` и `+` для суммы
+- `src/components/logs/workout-form.tsx` — блокировка `-` и `+` для 11 полей
+
+### ✅ Новые функции (v0.8.2) — Исправление отрицательных значений
+
+**Проблема**: Отрицательные значения в формах приводили к некорректному обновлению баланса.
+
+**Решение**: Трёхуровневая защита от отрицательных значений.
+
+#### 🔒 Уровни защиты
+
+1. **Валидация на уровне формы** — `min="0"` + Zod валидация
+2. **Защита на уровне данных** — `Math.abs()` для всех финансовых операций
+3. **Защита в onChange** — `Math.max(0, value)` для state
+
+#### 📝 Изменённые файлы
+
+- `src/components/logs/finance-form.tsx` — валидация суммы
+- `src/app/[locale]/logs/[type]/new/page.tsx` — Math.abs() для финансов
+- `src/components/logs/workout-form.tsx` — валидация 11 числовых полей
+
+#### 📊 Поля с защитой (12 полей)
+
+**Финансы (1):**
+
+- `value` — сумма транзакции
+
+**Тренировки (11):**
+
+- `duration`, `caloriesBurned`, `distance`
+- `heartRateAvg`, `heartRateMax`
+- `exercisesCount`, `setsCount`, `repsCount`, `totalWeight`
+- `averageSpeed`, `rounds`
 
 ### ✅ Новые функции (v0.8.1) — Завершение исправлений аудита
 
@@ -388,6 +961,80 @@
 
 - `src/hooks/use-debounce.ts` — debounce хук для значений и функций
 - `src/lib/constants.ts` — 30+ централизованных констант
+
+### 📝 Изменённые файлы (v0.8.16 — Finance Data Architecture Fix)
+
+- `src/lib/seed.ts` — `category_id` соответствует `metadata.category`
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — удалено отображение `metadata.category`, используется только `category_id`
+
+### 📝 Изменённые файлы (v0.8.15 — Duplicate Category Fix)
+
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — скрыто отображение category для финансов
+
+### 📝 Изменённые файлы (v0.8.14 — Finance Card Display Fix)
+
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — исправлена локализация metadata полей
+
+### 📝 Изменённые файлы (v0.8.13 — Budgeting Fix)
+
+- `src/components/finance/budget-manager.tsx` — обработка ошибок локализации
+
+### 📝 Изменённые файлы (v0.8.12 — Items/Services Translation)
+
+- `src/messages/ru/entities.json` — +80 переводов товаров/услуг
+- `src/messages/en/entities.json` — +80 translations for items/services
+
+### 📝 Изменённые файлы (v0.8.11 — Suppliers Localization Fix)
+
+- `src/lib/db/index.ts` — исправлена локализация поставщиков
+- `src/components/logs/finance-form.tsx` — упрощён вызов `getStaticEntityTranslation`
+
+### 📝 Изменённые файлы (v0.8.10 — Suppliers Translation)
+
+- `src/messages/ru/entities.json` — +30 переводов поставщиков
+- `src/messages/en/entities.json` — +30 translations for suppliers
+
+### 📝 Изменённые файлы (v0.8.9 — Finance Form Localization)
+
+- `src/components/logs/finance-form.tsx` — локализация опций формы
+
+### 📝 Изменённые файлы (v0.8.8 — Localization Fix)
+
+- `src/lib/seed.ts` — категории создаются с ключами
+- `src/messages/ru/entities.json` — добавлены переводы категорий, подкатегорий, поставщиков
+- `src/messages/en/entities.json` — добавлены переводы категорий, подкатегорий, поставщиков
+- `src/lib/db/index.ts` — поддержка financeSubcategories
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — исправлен вызов локализации
+
+### 📝 Изменённые файлы (v0.8.7 — Finance Seed from Structure)
+
+- `src/lib/seed.ts` — генерация финансовых данных из структуры категорий
+
+### 📝 Изменённые файлы (v0.8.6 — Seed Data Fix)
+
+- `src/lib/seed.ts` — исправление генерации тестовых данных
+
+### 📝 Изменённые файлы (v0.8.5 — Category Localization Fix)
+
+- `src/app/[locale]/logs/[type]/[id]/page.tsx` — локализация категорий
+
+### 📝 Изменённые файлы (v0.8.4 — All Numeric Fields Protected)
+
+- `src/components/shared/forms/nutrition-fields.tsx` — 4 поля КБЖУ
+- `src/components/logs/food-form.tsx` — размер порции
+- `src/app/[locale]/goals/page.tsx` — 2 поля целевых значений
+- `src/components/recipes/recipe-ingredients.tsx` — 6 полей ингредиентов
+
+### 📝 Изменённые файлы (v0.8.3 — Input Filter Fix)
+
+- `src/components/logs/finance-form.tsx` — блокировка `-` и `+`
+- `src/components/logs/workout-form.tsx` — блокировка `-` и `+` для 11 полей
+
+### 📝 Изменённые файлы (v0.8.2 — Negative Values Fix)
+
+- `src/components/logs/finance-form.tsx` — валидация суммы
+- `src/app/[locale]/logs/[type]/new/page.tsx` — Math.abs() для финансов
+- `src/components/logs/workout-form.tsx` — валидация 11 числовых полей
 
 ### 📝 Изменённые файлы (v0.8.1 — Audit Complete)
 

@@ -1,0 +1,171 @@
+{
+  "title": "Catalog",
+  "addItem": "Add Item",
+  "editItem": "Edit Item",
+  "noItems": "No items yet",
+  "name": "Name",
+  "list": {
+    "title": "Catalog",
+    "stats": {
+      "total": "Total"
+    },
+    "filters": {
+      "all": "All"
+    },
+    "searchPlaceholder": "Search catalog...",
+    "types": {
+      "vitamin": "Vitamins",
+      "medicine": "Medicine",
+      "herb": "Herbs",
+      "cosmetic": "Cosmetics",
+      "product": "Products"
+    },
+    "empty": {
+      "noItems": "Catalog is empty. Add the first item!"
+    }
+  },
+  "fields": {
+    "name": "Name",
+    "type": "Type",
+    "category": "Category",
+    "description": "Description",
+    "usage": "Usage",
+    "benefits": "Benefits",
+    "contraindications": "Contraindications",
+    "dosage": "Dosage",
+    "form": "Form",
+    "manufacturer": "Manufacturer",
+    "composition": "Composition",
+    "storage": "Storage",
+    "expiration": "Expiration",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "servingSize": "Serving Size (g)",
+    "notes": "Notes",
+    "tags": "Tags"
+  },
+  "validation": {
+    "name": "Enter name"
+  },
+  "types": {
+    "vitamin": "Vitamin",
+    "medicine": "Medicine",
+    "herb": "Herb",
+    "cosmetic": "Cosmetic",
+    "product": "Product"
+  },
+  "formOptions": {
+    "vitamin": "Tablets|Capsules|Dragées|Powder|Liquid|Spray|Patch",
+    "medicine": "Tablets|Capsules|Ampoules|Vial|Tube|Ointment|Gel|Suppositories|Powder|Syrup|Drops",
+    "herb": "Dry mix|Filter bags|Tincture|Extract|Oil|Capsules",
+    "cosmetic": "Cream|Gel|Serum|Mask|Lotion|Toner|Oil|Scrub|Balm|Spray",
+    "product": "Piece|By weight|Liquid|Frozen|Canned|Bottle|Package"
+  },
+  "manufacturerOptions": {
+    "vitamin": "Solgar|Now Foods|Nature's Bounty|Doppelherz|Complivit|Alphabet|Vitrum|Multi-tabs|Evalar|Other",
+    "medicine": "Pharmstandard|Teva|Sanofi|Bayer|Novartis|Nycomed|Berlin-Chemie|Gedeon Richter|Other",
+    "herb": "Evalar|Baikal Herbs|Caucasus Herbs|Biolit|Phytolon|Nature's Way|Other",
+    "cosmetic": "Nivea|L'Oreal|Garnier|La Roche-Posay|CeraVe|Vichy|Bioderma|The Ordinary|Other",
+    "product": "Magnit|Pyaterochka|Azbuka Vkusa|Perekrestok|Krasnaya Tsena|Chistaya Liniya|Domik v derevne|Prostokvashino|Savushkin|Other"
+  },
+  "defaultCategories": {
+    "vitamin": "Vitamin A|Vitamin B|Vitamin C|Vitamin D|Vitamin E|Vitamin K|Multivitamins|Minerals",
+    "medicine": "Pain relievers|Antipyretics|Antivirals|Antibiotics|Allergy|Digestive|Heart|Nervous system",
+    "herb": "Sedatives|Immunity|Digestion|Sleep|Respiratory|Heart|Liver|Kidneys",
+    "cosmetic": "Face care|Body care|Hair care|Hand care|Foot care|Sun protection|Decorative cosmetics",
+    "product": ""
+  },
+  "catalog": {
+    "loading": "Loading...",
+    "notFound": "Item not found"
+  },
+  "detail": {
+    "loading": "Loading...",
+    "notFound": "Item not found",
+    "back": "Back",
+    "usage": "Usage",
+    "health": "Health",
+    "info": "Info",
+    "usageMethod": "Usage Method",
+    "dosage": "Dosage",
+    "form": "Form",
+    "benefits": "Benefits",
+    "contraindications": "Contraindications",
+    "manufacturer": "Manufacturer",
+    "expiration": "Expiration",
+    "composition": "Composition",
+    "storage": "Storage Conditions",
+    "notes": "Notes",
+    "tags": "Tags",
+    "notSpecified": "Not specified",
+    "createReminder": "Create Reminder",
+    "delete": "Delete",
+    "edit": "Edit",
+    "deleteDialogTitle": "Delete Item?",
+    "deleteDialogDescription": "This action cannot be undone. \"{name}\" will be deleted permanently.",
+    "reminderDialogTitle": "Create Reminder",
+    "reminderDialogDescription": "Reminder for: {name}",
+    "reminderTime": "Time",
+    "reminderDays": "Days of Week",
+    "reminderStartDate": "Course Start",
+    "reminderEndDate": "Course End",
+    "reminderDosageLabel": "Dosage:",
+    "reminderCreate": "Create",
+    "reminderCancel": "Cancel"
+  },
+  "new": {
+    "title": "New: {type}",
+    "basic": "Basic",
+    "usage": "Usage",
+    "health": "Health",
+    "nutrition": "Nutrition Facts (per 100g)",
+    "additional": "Additional",
+    "namePlaceholder": "Enter name",
+    "categoryPlaceholder": "Select category",
+    "descriptionPlaceholder": "Brief description...",
+    "usagePlaceholder": "How to use...",
+    "dosagePlaceholder": "Recommended dosage",
+    "formPlaceholder": "Select form",
+    "benefitsPlaceholder": "Beneficial properties...",
+    "contraindicationsPlaceholder": "Contraindications and limitations...",
+    "manufacturerPlaceholder": "Select manufacturer",
+    "compositionPlaceholder": "Product composition...",
+    "storagePlaceholder": "Temperature, humidity...",
+    "notesPlaceholder": "Your notes...",
+    "tagsPlaceholder": "tags separated by comma",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "servingSize": "Serving Size (g)"
+  },
+  "edit": {
+    "title": "Edit: {type}",
+    "loading": "Loading...",
+    "basic": "Basic",
+    "usage": "Usage",
+    "health": "Health",
+    "nutrition": "Nutrition Facts (per 100g)",
+    "additional": "Additional",
+    "namePlaceholder": "Enter name",
+    "categoryPlaceholder": "Select category",
+    "descriptionPlaceholder": "Brief description...",
+    "usagePlaceholder": "How to use...",
+    "dosagePlaceholder": "Recommended dosage",
+    "formPlaceholder": "Select form",
+    "benefitsPlaceholder": "Beneficial properties...",
+    "contraindicationsPlaceholder": "Contraindications and limitations...",
+    "manufacturerPlaceholder": "Select manufacturer",
+    "compositionPlaceholder": "Product composition...",
+    "storagePlaceholder": "Temperature, humidity...",
+    "notesPlaceholder": "Your notes...",
+    "tagsPlaceholder": "tags separated by comma",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "servingSize": "Serving Size (g)"
+  }
+}

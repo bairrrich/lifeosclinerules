@@ -1,0 +1,28 @@
+{
+  "title": "Life OS",
+  "todayProgress": "Today's Progress",
+  "todayStats": "Today's Stats",
+  "calories": "Calories",
+  "minutes": "Min",
+  "ml": "ml",
+  "expense": "Expense",
+  "quickActionsTitle": "Quick Actions",
+  "trackers": "Trackers",
+  "databaseStats": "Database Stats",
+  "records": "Records",
+  "catalog": "Catalog",
+  "books": "Books",
+  "recipes": "Recipes",
+  "recentActivity": "Recent Activity",
+  "noLogs": "No records. Start tracking!",
+  "streakWidget": {
+    "title": "Streaks",
+    "currentStreak": "Current streak",
+    "days": "days",
+    "noStreaks": "No active streaks",
+    "bestStreak": "Best streak",
+    "completedToday": "Today",
+    "habits": "habits",
+    "totalCompletions": "completed"
+  }
+}

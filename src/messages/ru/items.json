@@ -1,0 +1,171 @@
+{
+  "title": "Каталог",
+  "addItem": "Добавить элемент",
+  "editItem": "Редактировать элемент",
+  "noItems": "Пока нет элементов",
+  "name": "Название",
+  "list": {
+    "title": "Каталог",
+    "stats": {
+      "total": "Всего"
+    },
+    "filters": {
+      "all": "Все"
+    },
+    "searchPlaceholder": "Поиск по каталогу...",
+    "types": {
+      "vitamin": "Витамины",
+      "medicine": "Лекарства",
+      "herb": "Травы",
+      "cosmetic": "Косметика",
+      "product": "Продукты"
+    },
+    "empty": {
+      "noItems": "Каталог пуст. Добавьте первый элемент!"
+    }
+  },
+  "fields": {
+    "name": "Название",
+    "type": "Тип",
+    "category": "Категория",
+    "description": "Описание",
+    "usage": "Применение",
+    "benefits": "Преимущества",
+    "contraindications": "Противопоказания",
+    "dosage": "Дозировка",
+    "form": "Форма",
+    "manufacturer": "Производитель",
+    "composition": "Состав",
+    "storage": "Хранение",
+    "expiration": "Срок годности",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "servingSize": "Размер порции (г)",
+    "notes": "Заметки",
+    "tags": "Теги"
+  },
+  "validation": {
+    "name": "Введите название"
+  },
+  "types": {
+    "vitamin": "Витамин",
+    "medicine": "Лекарство",
+    "herb": "Трава",
+    "cosmetic": "Косметика",
+    "product": "Продукт"
+  },
+  "formOptions": {
+    "vitamin": "Таблетки|Капсулы|Драже|Порошок|Жидкость|Спрей|Пластырь",
+    "medicine": "Таблетки|Капсулы|Ампулы|Флакон|Туба|Мазь|Гель|Свечи|Порошок|Сироп|Капли",
+    "herb": "Сухая смесь|Фильтр-пакеты|Настойка|Экстракт|Масло|Капсулы",
+    "cosmetic": "Крем|Гель|Сыворотка|Маска|Лосьон|Тоник|Масло|Скраб|Бальзам|Спрей",
+    "product": "Штучный|На развес|Жидкий|Замороженный|Консервированный|Бутылка|Упаковка"
+  },
+  "manufacturerOptions": {
+    "vitamin": "Solgar|Now Foods|Nature's Bounty|Доппельгерц|Компливит|Алфавит|Витрум|Мульти-табс|Эвалар|Другое",
+    "medicine": "Фармстандарт|Teva|Sanofi|Bayer|Novartis|Nycomed|Берлин-Хеми|Гедеон Рихтер|Другое",
+    "herb": "Эвалар|Байкальские травы|Травы Кавказа|Виталайн|Фитолон|Nature's Way|Другое",
+    "cosmetic": "Nivea|L'Oreal|Garnier|La Roche-Posay|CeraVe|Vichy|Bioderma|The Ordinary|Другое",
+    "product": "Магнит|Пятёрочка|Азбука Вкуса|Перекрёсток|Красная Цена|Чистая линия|Домик в деревне|Простоквашино|Савушкин|Другое"
+  },
+  "defaultCategories": {
+    "vitamin": "Витамин A|Витамин B|Витамин C|Витамин D|Витамин E|Витамин K|Мультивитамины|Минералы",
+    "medicine": "Обезболивающие|Жаропонижающие|Противовирусные|Антибиотики|Аллергия|ЖКТ|Сердечные|Нервная система",
+    "herb": "Успокоительные|Иммунитет|Пищеварение|Сон|Дыхание|Сердце|Печень|Почки",
+    "cosmetic": "Уход за лицом|Уход за телом|Уход за волосами|Уход за руками|Уход за ногами|Защита от солнца|Декоративная косметика",
+    "product": ""
+  },
+  "catalog": {
+    "loading": "Загрузка...",
+    "notFound": "Элемент не найден"
+  },
+  "detail": {
+    "loading": "Загрузка...",
+    "notFound": "Элемент не найден",
+    "back": "Назад",
+    "usage": "Применение",
+    "health": "Здоровье",
+    "info": "Инфо",
+    "usageMethod": "Способ применения",
+    "dosage": "Дозировка",
+    "form": "Форма выпуска",
+    "benefits": "Преимущества",
+    "contraindications": "Противопоказания",
+    "manufacturer": "Производитель",
+    "expiration": "Срок годности",
+    "composition": "Состав",
+    "storage": "Условия хранения",
+    "notes": "Заметки",
+    "tags": "Теги",
+    "notSpecified": "Не указано",
+    "createReminder": "Создать напоминание",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "deleteDialogTitle": "Удалить элемент?",
+    "deleteDialogDescription": "Это действие нельзя отменить. «{name}» будет удалён навсегда.",
+    "reminderDialogTitle": "Создать напоминание",
+    "reminderDialogDescription": "Напоминание для: {name}",
+    "reminderTime": "Время",
+    "reminderDays": "Дни недели",
+    "reminderStartDate": "Начало курса",
+    "reminderEndDate": "Окончание курса",
+    "reminderDosageLabel": "Дозировка:",
+    "reminderCreate": "Создать",
+    "reminderCancel": "Отмена"
+  },
+  "new": {
+    "title": "Новый: {type}",
+    "basic": "Основное",
+    "usage": "Применение",
+    "health": "Здоровье",
+    "nutrition": "Пищевая ценность (на 100г)",
+    "additional": "Дополнительно",
+    "namePlaceholder": "Введите название",
+    "categoryPlaceholder": "Выберите категорию",
+    "descriptionPlaceholder": "Краткое описание...",
+    "usagePlaceholder": "Как использовать...",
+    "dosagePlaceholder": "Рекомендуемая дозировка",
+    "formPlaceholder": "Выберите форму",
+    "benefitsPlaceholder": "Полезные свойства...",
+    "contraindicationsPlaceholder": "Противопоказания и ограничения...",
+    "manufacturerPlaceholder": "Выберите производителя",
+    "compositionPlaceholder": "Состав продукта...",
+    "storagePlaceholder": "Температура, влажность...",
+    "notesPlaceholder": "Ваши заметки...",
+    "tagsPlaceholder": "теги через запятую",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "servingSize": "Размер порции (г)"
+  },
+  "edit": {
+    "title": "Редактировать: {type}",
+    "loading": "Загрузка...",
+    "basic": "Основное",
+    "usage": "Применение",
+    "health": "Здоровье",
+    "nutrition": "Пищевая ценность (на 100г)",
+    "additional": "Дополнительно",
+    "namePlaceholder": "Введите название",
+    "categoryPlaceholder": "Выберите категорию",
+    "descriptionPlaceholder": "Краткое описание...",
+    "usagePlaceholder": "Как использовать...",
+    "dosagePlaceholder": "Рекомендуемая дозировка",
+    "formPlaceholder": "Выберите форму",
+    "benefitsPlaceholder": "Полезные свойства...",
+    "contraindicationsPlaceholder": "Противопоказания и ограничения...",
+    "manufacturerPlaceholder": "Выберите производителя",
+    "compositionPlaceholder": "Состав продукта...",
+    "storagePlaceholder": "Температура, влажность...",
+    "notesPlaceholder": "Ваши заметки...",
+    "tagsPlaceholder": "теги через запятую",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "servingSize": "Размер порции (г)"
+  }
+}

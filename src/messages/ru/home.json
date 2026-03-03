@@ -1,0 +1,28 @@
+{
+  "title": "Life OS",
+  "todayProgress": "Прогресс на сегодня",
+  "todayStats": "Статистика за сегодня",
+  "calories": "Ккал",
+  "minutes": "Мин",
+  "ml": "мл",
+  "expense": "Расход",
+  "quickActionsTitle": "Быстрые действия",
+  "trackers": "Трекеры",
+  "databaseStats": "Статистика базы",
+  "records": "Записей",
+  "catalog": "Каталог",
+  "books": "Книг",
+  "recipes": "Рецептов",
+  "recentActivity": "Последняя активность",
+  "noLogs": "Нет записей. Начните вести учёт!",
+  "streakWidget": {
+    "title": "Серии",
+    "currentStreak": "Текущая серия",
+    "days": "дней",
+    "noStreaks": "Нет активных серий",
+    "bestStreak": "Лучшая серия",
+    "completedToday": "Сегодня",
+    "habits": "привычек",
+    "totalCompletions": "выполнено"
+  }
+}

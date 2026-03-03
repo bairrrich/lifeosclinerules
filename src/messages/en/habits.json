@@ -1,0 +1,77 @@
+{
+  "title": "Habits",
+  "addHabit": "Add Habit",
+  "editHabit": "Edit Habit",
+  "noHabits": "No habits yet",
+  "fields": {
+    "name": "Habit Name",
+    "type": "Type",
+    "frequency": "Frequency",
+    "reminderTime": "Reminder Time",
+    "isActive": "Active",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "subtasks": "Subtasks",
+    "color": "Color"
+  },
+  "types": {
+    "positive": "Positive (do)",
+    "positiveDesc": "A habit to do something",
+    "negative": "Negative (don't do)",
+    "negativeDesc": "A habit to avoid something"
+  },
+  "typeDescriptions": {
+    "positive": "A habit to do something",
+    "negative": "A habit to avoid something"
+  },
+  "frequencies": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "custom": "Custom"
+  },
+  "today": "Today",
+  "completed": "Completed",
+  "skipped": "Skipped",
+  "streak": "Streak",
+  "currentStreak": "Current Streak",
+  "longestStreak": "Longest Streak",
+  "days": "days",
+  "day": "day",
+  "actions": {
+    "markComplete": "Mark Complete",
+    "markIncomplete": "Mark Incomplete",
+    "viewSubtasks": "View Subtasks",
+    "skipHabit": "Skip Habit",
+    "addSubtask": "Add Subtask",
+    "removeSubtask": "Remove Subtask"
+  },
+  "common": {
+    "loading": "Loading...",
+    "add": "Add"
+  },
+  "placeholders": {
+    "positive": "e.g., Morning exercise",
+    "negative": "e.g., No sweets",
+    "addStep": "Add step..."
+  },
+  "skipDialog": {
+    "title": "Skip today?",
+    "reason": "Reason for skipping"
+  },
+  "skipReasons": {
+    "forgot": "Forgot",
+    "noTime": "No time",
+    "illness": "Illness",
+    "vacation": "Vacation",
+    "weather": "Weather",
+    "other": "Other"
+  },
+  "skip": "Skip",
+  "deleteConfirm": {
+    "title": "Delete habit?",
+    "message": "Are you sure you want to delete habit \"{name}\"? This action cannot be undone."
+  },
+  "violation": "Violation",
+  "daysLeft": "days left",
+  "subtasksCount": "{count} subtasks"
+}

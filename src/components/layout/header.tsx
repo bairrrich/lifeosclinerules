@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Menu, Settings, Search } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 
 interface HeaderProps {
   title?: string
@@ -11,16 +12,19 @@ interface HeaderProps {
 }
 
 export function Header({ title = "Life OS", showMenu = false, onMenuClick }: HeaderProps) {
+  const t = useTranslations("common")
+  const tNav = useTranslations("navigation")
+
   return (
     <div className="fixed top-0 left-0 right-0 z-40 flex justify-center md:hidden bg-gradient-to-b from-background/95 to-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-gradient-to-b supports-[backdrop-filter]:from-background/95 supports-[backdrop-filter]:to-background/80 safe-top px-2 overflow-x-hidden">
-      <header className="w-full max-w-[960px] border border-border/40 rounded-b-2xl overflow-x-hidden bg-background/50 backdrop-blur-sm">
+      <header className="w-full max-w-[960px] rounded-b-2xl overflow-x-hidden bg-background/50 backdrop-blur-sm">
         <div className="flex h-14 items-center px-4 overflow-x-hidden">
           {/* Left section */}
           <div className="flex items-center gap-2 w-24">
             {showMenu && (
               <Button variant="ghost" size="icon" onClick={onMenuClick} className="md:hidden">
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Открыть меню</span>
+                <span className="sr-only">{t("openMenu") || "Открыть меню"}</span>
               </Button>
             )}
           </div>
@@ -41,7 +45,7 @@ export function Header({ title = "Life OS", showMenu = false, onMenuClick }: Hea
               onClick={() => document.dispatchEvent(new Event("open-global-search"))}
             >
               <Search className="h-5 w-5" />
-              <span className="sr-only">Поиск</span>
+              <span className="sr-only">{t("search") || "Поиск"}</span>
             </Button>
             <Link href="/settings">
               <Button
@@ -50,7 +54,7 @@ export function Header({ title = "Life OS", showMenu = false, onMenuClick }: Hea
                 className="hover:bg-primary/10 hover:text-primary transition-colors"
               >
                 <Settings className="h-5 w-5" />
-                <span className="sr-only">Настройки</span>
+                <span className="sr-only">{tNav("settings") || "Настройки"}</span>
               </Button>
             </Link>
           </div>

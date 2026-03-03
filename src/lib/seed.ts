@@ -15,6 +15,7 @@ import {
   ReadingStatus,
   Difficulty,
 } from "@/types"
+import { financeCategoriesStructure } from "./finance-categories"
 import type {
   Category,
   Tag,
@@ -38,10 +39,13 @@ import type {
   Template,
   BookAuthor,
   BookGenre,
+  StrengthSubcategory,
+  CardioSubcategory,
+  YogaSubcategory,
 } from "@/types"
 
 // ============================================
-// Вспомогательные функции
+// Helper functions
 // ============================================
 
 function now(): string {
@@ -75,7 +79,7 @@ function randomBetween(min: number, max: number): number {
 }
 
 // ============================================
-// Генерация справочных данных
+// Seed reference data
 // ============================================
 
 async function seedCategories() {
@@ -86,61 +90,95 @@ async function seedCategories() {
   }
 
   const categories = [
-    // Food categories
-    { id: generateId(), type: LogType.FOOD, name: "Завтрак", created_at: now(), updated_at: now() },
-    { id: generateId(), type: LogType.FOOD, name: "Обед", created_at: now(), updated_at: now() },
-    { id: generateId(), type: LogType.FOOD, name: "Ужин", created_at: now(), updated_at: now() },
-    { id: generateId(), type: LogType.FOOD, name: "Перекус", created_at: now(), updated_at: now() },
-    { id: generateId(), type: LogType.FOOD, name: "Напиток", created_at: now(), updated_at: now() },
-    // Workout categories
+    // Food categories (using keys from entities.json)
+    {
+      id: generateId(),
+      type: LogType.FOOD,
+      name: "breakfast",
+      created_at: now(),
+      updated_at: now(),
+    },
+    { id: generateId(), type: LogType.FOOD, name: "lunch", created_at: now(), updated_at: now() },
+    { id: generateId(), type: LogType.FOOD, name: "dinner", created_at: now(), updated_at: now() },
+    { id: generateId(), type: LogType.FOOD, name: "snack", created_at: now(), updated_at: now() },
+    { id: generateId(), type: LogType.FOOD, name: "drink", created_at: now(), updated_at: now() },
+    // Workout categories (using keys from entities.json)
     {
       id: generateId(),
       type: LogType.WORKOUT,
-      name: "Силовая",
+      name: "strength",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: LogType.WORKOUT,
-      name: "Кардио",
+      name: "cardio",
       created_at: now(),
       updated_at: now(),
     },
-    { id: generateId(), type: LogType.WORKOUT, name: "Йога", created_at: now(), updated_at: now() },
+    { id: generateId(), type: LogType.WORKOUT, name: "yoga", created_at: now(), updated_at: now() },
     {
       id: generateId(),
       type: LogType.WORKOUT,
-      name: "Растяжка",
+      name: "stretching",
       created_at: now(),
       updated_at: now(),
     },
-    // Finance categories
+    // Finance categories (using keys from financeCategoriesStructure)
     {
       id: generateId(),
       type: LogType.FINANCE,
-      name: "Продукты",
-      created_at: now(),
-      updated_at: now(),
-    },
-    {
-      id: generateId(),
-      type: LogType.FINANCE,
-      name: "Транспорт",
+      name: "product",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: LogType.FINANCE,
-      name: "Развлечения",
+      name: "transport",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: LogType.FINANCE,
-      name: "Здоровье",
+      name: "entertainment",
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: generateId(),
+      type: LogType.FINANCE,
+      name: "health",
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: generateId(),
+      type: LogType.FINANCE,
+      name: "education",
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: generateId(),
+      type: LogType.FINANCE,
+      name: "housing",
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: generateId(),
+      type: LogType.FINANCE,
+      name: "communication",
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: generateId(),
+      type: LogType.FINANCE,
+      name: "clothing",
       created_at: now(),
       updated_at: now(),
     },
@@ -148,29 +186,29 @@ async function seedCategories() {
     {
       id: generateId(),
       type: ItemType.VITAMIN,
-      name: "Витамины",
+      name: "vitamins",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.MEDICINE,
-      name: "Лекарства",
+      name: "medicines",
       created_at: now(),
       updated_at: now(),
     },
-    { id: generateId(), type: ItemType.HERB, name: "Травы", created_at: now(), updated_at: now() },
+    { id: generateId(), type: ItemType.HERB, name: "herbs", created_at: now(), updated_at: now() },
     {
       id: generateId(),
       type: ItemType.COSMETIC,
-      name: "Косметика",
+      name: "cosmetics",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.PRODUCT,
-      name: "Продукты",
+      name: "products",
       created_at: now(),
       updated_at: now(),
     },
@@ -178,14 +216,14 @@ async function seedCategories() {
     {
       id: generateId(),
       type: ContentType.BOOK,
-      name: "Книги",
+      name: "books",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ContentType.RECIPE,
-      name: "Рецепты",
+      name: "recipes",
       created_at: now(),
       updated_at: now(),
     },
@@ -203,14 +241,14 @@ async function seedTags() {
   }
 
   const tags: Tag[] = [
-    { id: generateId(), name: "здоровое", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "быстро", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "вкусно", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "важно", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "план", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "любимое", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "новое", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "повседневное", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "healthy", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "quick", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "tasty", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "important", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "plan", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "favorite", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "new", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "daily", created_at: now(), updated_at: now() },
   ]
 
   await db.tags.bulkAdd(tags)
@@ -228,63 +266,63 @@ async function seedUnits() {
     {
       id: generateId(),
       type: "weight" as const,
-      name: "кг",
-      abbreviation: "кг",
+      name: "kg",
+      abbreviation: "kg",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: "weight" as const,
-      name: "г",
-      abbreviation: "г",
+      name: "g",
+      abbreviation: "g",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: "volume" as const,
-      name: "мл",
-      abbreviation: "мл",
+      name: "ml",
+      abbreviation: "ml",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: "volume" as const,
-      name: "л",
-      abbreviation: "л",
+      name: "l",
+      abbreviation: "l",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: "count" as const,
-      name: "шт",
-      abbreviation: "шт",
+      name: "pcs",
+      abbreviation: "pcs",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: "time" as const,
-      name: "мин",
-      abbreviation: "мин",
+      name: "min",
+      abbreviation: "min",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: "time" as const,
-      name: "ч",
-      abbreviation: "ч",
+      name: "h",
+      abbreviation: "h",
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: "money" as const,
-      name: "руб",
+      name: "rub",
       abbreviation: "₽",
       created_at: now(),
       updated_at: now(),
@@ -305,7 +343,7 @@ async function seedAccounts() {
   const accounts: Account[] = [
     {
       id: generateId(),
-      name: "Наличные",
+      name: "cash",
       type: "cash",
       balance: 0,
       currency: "RUB",
@@ -314,7 +352,7 @@ async function seedAccounts() {
     },
     {
       id: generateId(),
-      name: "Дебетовая карта",
+      name: "card",
       type: "card",
       balance: 0,
       currency: "RUB",
@@ -323,7 +361,7 @@ async function seedAccounts() {
     },
     {
       id: generateId(),
-      name: "Банковский счёт",
+      name: "bank",
       type: "bank",
       balance: 0,
       currency: "RUB",
@@ -332,7 +370,7 @@ async function seedAccounts() {
     },
     {
       id: generateId(),
-      name: "Брокерский счёт",
+      name: "investment",
       type: "investment",
       balance: 0,
       currency: "RUB",
@@ -356,65 +394,65 @@ async function seedExercises() {
   const exercises: Exercise[] = [
     {
       id: generateId(),
-      name: "Жим лёжа",
+      name: "Bench Press",
       category: "strength",
-      muscle_groups: ["грудь", "трицепс"],
+      muscle_groups: ["chest", "triceps"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Приседания",
+      name: "Squats",
       category: "strength",
-      muscle_groups: ["ноги", "ягодицы"],
+      muscle_groups: ["legs", "glutes"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Становая тяга",
+      name: "Deadlift",
       category: "strength",
-      muscle_groups: ["спина", "ноги"],
+      muscle_groups: ["back", "legs"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Бег на дорожке",
+      name: "Treadmill Running",
       category: "cardio",
-      muscle_groups: ["сердце"],
+      muscle_groups: ["cardio"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Велосипед",
+      name: "Cycling",
       category: "cardio",
-      muscle_groups: ["сердце", "ноги"],
+      muscle_groups: ["cardio", "legs"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Прыжки на скакалке",
+      name: "Jump Rope",
       category: "cardio",
-      muscle_groups: ["сердце"],
+      muscle_groups: ["cardio"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Йога-терапия",
+      name: "Yoga Therapy",
       category: "yoga",
-      muscle_groups: ["всё тело"],
+      muscle_groups: ["full body"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Утренняя йога",
+      name: "Morning Yoga",
       category: "yoga",
-      muscle_groups: ["всё тело"],
+      muscle_groups: ["full body"],
       created_at: now(),
       updated_at: now(),
     },
@@ -426,7 +464,7 @@ async function seedExercises() {
 }
 
 // ============================================
-// Генерация логов (записей)
+// Seed logs
 // ============================================
 
 async function seedLogs() {
@@ -434,10 +472,17 @@ async function seedLogs() {
   const accounts = await db.accounts.toArray()
   const exercises = await db.exercises.toArray()
   const tags = await db.tags.toArray()
+  const units = await db.units.toArray()
 
   const foodCategories = categories.filter((c) => c.type === LogType.FOOD)
   const workoutCategories = categories.filter((c) => c.type === LogType.WORKOUT)
   const financeCategories = categories.filter((c) => c.type === LogType.FINANCE)
+
+  // Units
+  const gramUnit = units.find((u) => u.abbreviation === "g") || units[0]
+  const kgUnit = units.find((u) => u.abbreviation === "kg") || units[0]
+  const kmUnit = units.find((u) => u.abbreviation === "km") || units[0]
+  const minUnit = units.find((u) => u.abbreviation === "min") || units[0]
 
   const logs: Log[] = []
 
@@ -449,17 +494,17 @@ async function seedLogs() {
       type: LogType.FOOD,
       date,
       title: randomElement([
-        "Завтрак с омлетом",
-        "Обед с курицей",
-        "Ужин с рыбой",
-        "Салат Цезарь",
-        "Овсянка с фруктами",
-        "Сэндвич с индейкой",
-        "Йогурт с мюсли",
+        "Omelet Breakfast",
+        "Chicken Lunch",
+        "Fish Dinner",
+        "Caesar Salad",
+        "Oatmeal with Fruits",
+        "Turkey Sandwich",
+        "Yogurt with Muesli",
       ]),
       category_id: foodCategories.length > 0 ? randomElement(foodCategories).id : undefined,
       quantity: randomBetween(100, 500),
-      unit: "г",
+      unit: gramUnit?.abbreviation || "g",
       value: randomBetween(200, 800),
       tags: [randomElement(tags).name],
       metadata: {
@@ -477,27 +522,50 @@ async function seedLogs() {
   for (let i = 0; i < randomBetween(5, 7); i++) {
     const date = randomISODateOnlyInLastWeek()
     const intensity = randomElement(["low", "medium", "high"] as const)
+    const workoutCategory = randomElement(["strength", "cardio", "yoga"])
+
+    let subcategory: StrengthSubcategory | CardioSubcategory | YogaSubcategory | undefined
+    if (workoutCategory === "strength") {
+      subcategory = randomElement([
+        "chest",
+        "back",
+        "legs",
+        "shoulders",
+        "arms",
+      ] as StrengthSubcategory[])
+    } else if (workoutCategory === "cardio") {
+      subcategory = randomElement([
+        "running",
+        "cycling",
+        "swimming",
+        "walking",
+      ] as CardioSubcategory[])
+    } else {
+      subcategory = randomElement(["hatha", "vinyasa", "yin", "restorative"] as YogaSubcategory[])
+    }
+
     logs.push({
       id: generateId(),
       type: LogType.WORKOUT,
       date,
       title: randomElement([
-        "Тренировка в зале",
-        "Утренняя пробежка",
-        "Велопрогулка",
-        "Йога",
-        "Растяжка",
-        "Интервальная тренировка",
-        "Силовая тренировка",
+        "Gym Workout",
+        "Morning Run",
+        "Cycling",
+        "Yoga",
+        "Stretching",
+        "Interval Training",
+        "Strength Training",
       ]),
       category_id: workoutCategories.length > 0 ? randomElement(workoutCategories).id : undefined,
       quantity: randomBetween(30, 90),
-      unit: "мин",
+      unit: minUnit?.abbreviation || "min",
       value: randomBetween(200, 600),
       tags: [randomElement(tags).name],
       metadata: {
         duration: randomBetween(30, 90),
         intensity,
+        subcategory,
         exercise_id: exercises.length > 0 ? randomElement(exercises).id : undefined,
         calories_burned: randomBetween(200, 600),
       },
@@ -506,33 +574,121 @@ async function seedLogs() {
     })
   }
 
-  // Finance logs (5-7 entries)
-  for (let i = 0; i < randomBetween(5, 7); i++) {
-    const date = randomISODateOnlyInLastWeek()
-    const isIncome = Math.random() > 0.7
-    const financeType = isIncome ? FinanceType.INCOME : FinanceType.EXPENSE
+  // Finance logs - create for all types (income, expense, transfer)
+  // 2-3 entries for each category from financeCategoriesStructure
+
+  // Income logs (2 entries per category)
+  const incomeCategories = Object.keys(financeCategoriesStructure.income || {})
+  for (const categoryKey of incomeCategories) {
+    const categoryData = (financeCategoriesStructure.income || {})[categoryKey]
+    const subcategories = Object.keys(categoryData?.subcategories || {})
+
+    // Create 2 entries with different subcategories
+    for (let i = 0; i < 2; i++) {
+      const subcategoryKey =
+        subcategories.length > 0 ? subcategories[i % subcategories.length] : undefined
+      const suppliers = subcategoryKey ? categoryData?.subcategories?.[subcategoryKey] || [] : []
+      const supplierKey = suppliers.length > 0 ? randomElement(suppliers) : undefined
+
+      // Find category in DB by name (key)
+      const dbCategory = financeCategories.find((c) => c.name === categoryKey)
+
+      logs.push({
+        id: generateId(),
+        type: LogType.FINANCE,
+        date: randomISODateOnlyInLastWeek(),
+        title: `Income: ${categoryKey} #${i + 1}`,
+        category_id: dbCategory?.id,
+        quantity: 1,
+        unit: "pcs",
+        value: randomBetween(30000, 100000),
+        tags: [],
+        metadata: {
+          finance_type: FinanceType.INCOME,
+          account_id: accounts.length > 0 ? randomElement(accounts).id : undefined,
+          category_key: categoryKey,
+          subcategory_key: subcategoryKey,
+          item_key: supplierKey,
+          supplier_key: supplierKey,
+        },
+        created_at: randomISODateInLastWeek(),
+        updated_at: now(),
+      })
+    }
+  }
+
+  // Expense logs (3 entries per category)
+  const expenseCategories = Object.keys(financeCategoriesStructure.expense || {})
+  for (const categoryKey of expenseCategories) {
+    const categoryData = (financeCategoriesStructure.expense || {})[categoryKey]
+    const subcategories = Object.keys(categoryData?.subcategories || {})
+
+    // Create 3 entries with different subcategories
+    for (let i = 0; i < 3; i++) {
+      const subcategoryKey =
+        subcategories.length > 0 ? subcategories[i % subcategories.length] : undefined
+      const suppliers = subcategoryKey ? categoryData?.subcategories?.[subcategoryKey] || [] : []
+      const supplierKey = suppliers.length > 0 ? randomElement(suppliers) : undefined
+
+      // Find category in DB by name (key)
+      const dbCategory = financeCategories.find((c) => c.name === categoryKey)
+
+      logs.push({
+        id: generateId(),
+        type: LogType.FINANCE,
+        date: randomISODateOnlyInLastWeek(),
+        title: `Expense: ${categoryKey} #${i + 1}`,
+        category_id: dbCategory?.id,
+        quantity: 1,
+        unit: "pcs",
+        value: randomBetween(500, 5000),
+        tags: [],
+        metadata: {
+          finance_type: FinanceType.EXPENSE,
+          account_id: accounts.length > 0 ? randomElement(accounts).id : undefined,
+          category_key: categoryKey,
+          subcategory_key: subcategoryKey,
+          item_key: supplierKey,
+          supplier_key: supplierKey,
+        },
+        created_at: randomISODateInLastWeek(),
+        updated_at: now(),
+      })
+    }
+  }
+
+  // Transfer logs (1 entry per category)
+  const transferCategories = Object.keys(financeCategoriesStructure.transfer || {})
+  for (const categoryKey of transferCategories) {
+    const categoryData = (financeCategoriesStructure.transfer || {})[categoryKey]
+    const subcategories = Object.keys(categoryData?.subcategories || {})
+    const subcategoryKey = subcategories.length > 0 ? randomElement(subcategories) : undefined
+    const suppliers = subcategoryKey ? categoryData?.subcategories?.[subcategoryKey] || [] : []
+    const supplierKey = suppliers.length > 0 ? randomElement(suppliers) : undefined
+
+    // For transfers, category is not that important, use the first financial category
+    const dbCategory = financeCategories.length > 0 ? financeCategories[0] : undefined
+
     logs.push({
       id: generateId(),
       type: LogType.FINANCE,
-      date,
-      title: randomElement([
-        "Покупка продуктов",
-        "Проезд на транспорте",
-        "Кино",
-        "Аптека",
-        "Зарплата",
-        "Фриланс",
-        "Подарок",
-      ]),
-      category_id: financeCategories.length > 0 ? randomElement(financeCategories).id : undefined,
+      date: randomISODateOnlyInLastWeek(),
+      title: `Transfer: ${categoryKey}`,
+      category_id: dbCategory?.id,
       quantity: 1,
-      unit: "шт",
-      value: isIncome ? randomBetween(30000, 100000) : randomBetween(500, 5000),
+      unit: "pcs",
+      value: randomBetween(1000, 50000),
       tags: [],
       metadata: {
-        finance_type: financeType,
+        finance_type: FinanceType.TRANSFER,
         account_id: accounts.length > 0 ? randomElement(accounts).id : undefined,
-        category: isIncome ? "Доход" : "Расход",
+        target_account_id:
+          accounts.length > 1
+            ? randomElement(accounts.filter((a) => a.id !== accounts[0].id)).id
+            : undefined,
+        category_key: categoryKey,
+        subcategory_key: subcategoryKey,
+        supplier_key: supplierKey,
       },
       created_at: randomISODateInLastWeek(),
       updated_at: now(),
@@ -544,7 +700,7 @@ async function seedLogs() {
 }
 
 // ============================================
-// Генерация items (каталог)
+// Seed items (catalog)
 // ============================================
 
 async function seedItems() {
@@ -553,33 +709,33 @@ async function seedItems() {
     {
       id: generateId(),
       type: ItemType.VITAMIN,
-      name: "Витамин D3",
-      category: "Витамины",
+      name: "Vitamin D3",
+      category: "vitamins",
       dosage: "5000 IU",
       manufacturer: "Now Foods",
-      tags: ["здоровое", "важно"],
+      tags: ["healthy", "important"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.VITAMIN,
-      name: "Омега-3",
-      category: "Витамины",
+      name: "Omega-3",
+      category: "vitamins",
       dosage: "1000mg",
       manufacturer: "Nordic Naturals",
-      tags: ["здоровое"],
+      tags: ["healthy"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.VITAMIN,
-      name: "Магний",
-      category: "Витамины",
+      name: "Magnesium",
+      category: "vitamins",
       dosage: "400mg",
       manufacturer: "Doctor's Best",
-      tags: ["здоровое", "важно"],
+      tags: ["healthy", "important"],
       created_at: now(),
       updated_at: now(),
     },
@@ -587,22 +743,22 @@ async function seedItems() {
     {
       id: generateId(),
       type: ItemType.MEDICINE,
-      name: "Ибупрофен",
-      category: "Лекарства",
+      name: "Ibuprofen",
+      category: "medicines",
       dosage: "200mg",
-      usage: "Обезболивающее",
-      tags: ["важно"],
+      usage: "Pain reliever",
+      tags: ["important"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.MEDICINE,
-      name: "Парацетамол",
-      category: "Лекарства",
+      name: "Paracetamol",
+      category: "medicines",
       dosage: "500mg",
-      usage: "Жаропонижающее",
-      tags: ["важно"],
+      usage: "Antipyretic",
+      tags: ["important"],
       created_at: now(),
       updated_at: now(),
     },
@@ -610,22 +766,22 @@ async function seedItems() {
     {
       id: generateId(),
       type: ItemType.HERB,
-      name: "Ромашка",
-      category: "Травы",
-      usage: "Успокаивающий чай",
-      benefits: "Снятие стресса",
-      tags: ["здоровое"],
+      name: "Chamomile",
+      category: "Herbs",
+      usage: "Calming tea",
+      benefits: "Stress relief",
+      tags: ["healthy"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.HERB,
-      name: "Мята",
-      category: "Травы",
-      usage: "Чай",
-      benefits: "Пищеварение",
-      tags: ["здоровое", "быстро"],
+      name: "Mint",
+      category: "Herbs",
+      usage: "Tea",
+      benefits: "Digestion",
+      tags: ["healthy", "quick"],
       created_at: now(),
       updated_at: now(),
     },
@@ -633,22 +789,22 @@ async function seedItems() {
     {
       id: generateId(),
       type: ItemType.COSMETIC,
-      name: "Увлажняющий крем",
-      category: "Косметика",
-      usage: "Для лица",
+      name: "Moisturizing Cream",
+      category: "Cosmetics",
+      usage: "For face",
       manufacturer: "CeraVe",
-      tags: ["любимое"],
+      tags: ["favorite"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.COSMETIC,
-      name: "Сыворотка с витамином C",
-      category: "Косметика",
-      usage: "Для лица",
+      name: "Vitamin C Serum",
+      category: "Cosmetics",
+      usage: "For face",
       manufacturer: "The Ordinary",
-      tags: ["здоровое", "новое"],
+      tags: ["healthy", "new"],
       created_at: now(),
       updated_at: now(),
     },
@@ -656,42 +812,42 @@ async function seedItems() {
     {
       id: generateId(),
       type: ItemType.PRODUCT,
-      name: "Куриная грудка",
-      category: "Продукты",
+      name: "Chicken Breast",
+      category: "Products",
       calories: 165,
       protein: 31,
       fat: 3.6,
       carbs: 0,
       serving_size: 100,
-      tags: ["здоровое", "вкусно"],
+      tags: ["healthy", "tasty"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.PRODUCT,
-      name: "Рис",
-      category: "Продукты",
+      name: "Rice",
+      category: "Products",
       calories: 130,
       protein: 2.7,
       fat: 0.3,
       carbs: 28,
       serving_size: 100,
-      tags: ["быстро", "повседневное"],
+      tags: ["quick", "daily"],
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
       type: ItemType.PRODUCT,
-      name: "Банан",
-      category: "Продукты",
+      name: "Banana",
+      category: "Products",
       calories: 89,
       protein: 1.1,
       fat: 0.3,
       carbs: 22.8,
       serving_size: 100,
-      tags: ["здоровое", "быстро"],
+      tags: ["healthy", "quick"],
       created_at: now(),
       updated_at: now(),
     },
@@ -702,7 +858,7 @@ async function seedItems() {
 }
 
 // ============================================
-// Генерация контента (книги, рецепты)
+// Seed content (books, recipes)
 // ============================================
 
 async function seedContent() {
@@ -712,15 +868,15 @@ async function seedContent() {
   const books = [
     {
       id: generateId(),
-      title: "Атомные привычки",
-      subtitle: "Как приобрести хорошие привычки и избавиться от плохих",
+      title: "Atomic Habits",
+      subtitle: "An Easy & Proven Way to Build Good Habits & Break Bad Ones",
       description:
-        "Книга о том, как формировать полезные привычки и избавляться от вредных. Практическое руководство по изменению поведения.",
+        "A book about forming good habits and breaking bad ones. A practical guide to behavior change.",
       isbn10: "0735211299",
       isbn13: "9780735211292",
       published_year: 2018,
       publisher: "Penguin Random House",
-      language: "ru",
+      language: "en",
       page_count: 320,
       format: "paperback" as const,
       rating_avg: 4.5,
@@ -729,15 +885,15 @@ async function seedContent() {
     },
     {
       id: generateId(),
-      title: "Глубокий покой",
-      subtitle: "Научное объяснение силы сна и как его улучшить",
+      title: "Why We Sleep",
+      subtitle: "Unlocking the Power of Sleep and Dreams",
       description:
-        "О важности сна и его влиянии на жизнь. Книга профессора нейробиологии о том, как недостаток сна влияет на здоровье.",
+        "About the importance of sleep and its impact on life. A book by a neuroscience professor about how lack of sleep affects health.",
       isbn10: "1501144315",
       isbn13: "9781501144318",
       published_year: 2017,
       publisher: "Scribner",
-      language: "ru",
+      language: "en",
       page_count: 368,
       format: "hardcover" as const,
       rating_avg: 4.8,
@@ -746,15 +902,14 @@ async function seedContent() {
     },
     {
       id: generateId(),
-      title: "Как завоёвывать друзей и оказывать влияние на людей",
-      subtitle: "Классическая книга общения и лидерства",
-      description:
-        "Легендарная книга Дейла Карнеги о том, как находить друзей и оказывать влияние на людей.",
+      title: "How to Win Friends and Influence People",
+      subtitle: "The Classic Book on Communication and Leadership",
+      description: "Dale Carnegie's legendary book about making friends and influencing people.",
       isbn10: "0671027034",
       isbn13: "9780671027032",
       published_year: 1936,
       publisher: "Simon & Schuster",
-      language: "ru",
+      language: "en",
       page_count: 288,
       format: "paperback" as const,
       rating_avg: 4.7,
@@ -763,14 +918,15 @@ async function seedContent() {
     },
     {
       id: generateId(),
-      title: "Думай и богатей",
-      subtitle: "Классика финансового успеха",
-      description: "Классическая книга о мышлении богатых людей и достижении финансового успеха.",
+      title: "Think and Grow Rich",
+      subtitle: "The Classic on Financial Success",
+      description:
+        "A classic book about the mindset of wealthy people and achieving financial success.",
       isbn10: "1585424337",
       isbn13: "9781585424337",
       published_year: 1937,
       publisher: "TarcherPerigee",
-      language: "ru",
+      language: "en",
       page_count: 320,
       format: "paperback" as const,
       rating_avg: 4.6,
@@ -779,14 +935,14 @@ async function seedContent() {
     },
     {
       id: generateId(),
-      title: "7 навыков высокоэффективных людей",
-      subtitle: "Мощные инструменты развития личности",
-      description: "Книга Стивена Кови о принципах эффективности и личностном росте.",
+      title: "The 7 Habits of Highly Effective People",
+      subtitle: "Powerful Tools for Personal Development",
+      description: "Stephen Covey's book on principles of effectiveness and personal growth.",
       isbn10: "1451639619",
       isbn13: "9781451639612",
       published_year: 1989,
       publisher: "Simon & Schuster",
-      language: "ru",
+      language: "en",
       page_count: 432,
       format: "hardcover" as const,
       rating_avg: 4.9,
@@ -807,7 +963,7 @@ async function seedContent() {
   const bookAuthors: BookAuthor[] = []
   const bookGenres: BookGenre[] = []
 
-  // "Атомные привычки" - Джеймс Клир, Саморазвитие
+  // "Atomic Habits" - James Clear, Self-improvement
   bookAuthors.push({
     id: generateId(),
     book_id: books[0].id,
@@ -820,12 +976,12 @@ async function seedContent() {
   bookGenres.push({
     id: generateId(),
     book_id: books[0].id,
-    genre_id: genres[0].id, // Саморазвитие
+    genre_id: genres[0].id, // Self-improvement
     created_at: now(),
     updated_at: now(),
   })
 
-  // "Глубокий покой" - Мэттью Уокер, Наука
+  // "Why We Sleep" - Matthew Walker, Science
   bookAuthors.push({
     id: generateId(),
     book_id: books[1].id,
@@ -838,12 +994,12 @@ async function seedContent() {
   bookGenres.push({
     id: generateId(),
     book_id: books[1].id,
-    genre_id: genres[1].id, // Наука
+    genre_id: genres[1].id, // Science
     created_at: now(),
     updated_at: now(),
   })
 
-  // "Как завоёвывать друзей" - Дэвид Флинн, Саморазвитие
+  // "How to Win Friends" - David Flynn, Self-improvement
   bookAuthors.push({
     id: generateId(),
     book_id: books[2].id,
@@ -856,32 +1012,32 @@ async function seedContent() {
   bookGenres.push({
     id: generateId(),
     book_id: books[2].id,
-    genre_id: genres[0].id, // Саморазвитие
+    genre_id: genres[0].id, // Self-improvement
     created_at: now(),
     updated_at: now(),
   })
 
-  // "Думай и богатей" - Саморазвитие
+  // "Think and Grow Rich" - Self-improvement
   bookGenres.push({
     id: generateId(),
     book_id: books[3].id,
-    genre_id: genres[0].id, // Саморазвитие
+    genre_id: genres[0].id, // Self-improvement
     created_at: now(),
     updated_at: now(),
   })
 
-  // "7 навыков" - Саморазвитие, Здоровье
+  // "7 Habits" - Self-improvement, Health
   bookGenres.push({
     id: generateId(),
     book_id: books[4].id,
-    genre_id: genres[0].id, // Саморазвитие
+    genre_id: genres[0].id, // Self-improvement
     created_at: now(),
     updated_at: now(),
   })
   bookGenres.push({
     id: generateId(),
     book_id: books[4].id,
-    genre_id: genres[2].id, // Здоровье
+    genre_id: genres[2].id, // Health
     created_at: now(),
     updated_at: now(),
   })
@@ -918,10 +1074,10 @@ async function seedContent() {
       id: generateId(),
       type: ContentType.RECIPE,
       recipe_type: "food",
-      title: "Салат с курицей и овощами",
-      description: "Лёгкий и полезный салат",
+      title: "Chicken and Vegetable Salad",
+      description: "Light and healthy salad",
       rating: 4.2,
-      tags: ["здоровое", "быстро", "вкусно"],
+      tags: ["healthy", "quick", "tasty"],
       cover: "",
       prep_time_min: 15,
       cook_time_min: 20,
@@ -949,10 +1105,10 @@ async function seedContent() {
       id: generateId(),
       type: ContentType.RECIPE,
       recipe_type: "food",
-      title: "Овсянка с ягодами",
-      description: "Идеальный завтрак",
+      title: "Oatmeal with Berries",
+      description: "Perfect breakfast",
       rating: 4.5,
-      tags: ["здоровое", "быстро", "любимое"],
+      tags: ["healthy", "quick", "favorite"],
       cover: "",
       prep_time_min: 5,
       cook_time_min: 10,
@@ -981,10 +1137,10 @@ async function seedContent() {
       id: generateId(),
       type: ContentType.RECIPE,
       recipe_type: "drink",
-      title: "Зелёный чай с жасмином",
-      description: "Ароматный зелёный чай с цветами жасмина",
+      title: "Green Tea with Jasmine",
+      description: "Fragrant green tea with jasmine flowers",
       rating: 4.7,
-      tags: ["здоровое", "расслабление", "вкусно"],
+      tags: ["healthy", "relaxation", "tasty"],
       cover: "",
       prep_time_min: 2,
       cook_time_min: 5,
@@ -1006,10 +1162,10 @@ async function seedContent() {
       id: generateId(),
       type: ContentType.RECIPE,
       recipe_type: "drink",
-      title: "Клубничный смузи",
-      description: "Освежающий смузи из клубники с молоком",
+      title: "Strawberry Smoothie",
+      description: "Refreshing strawberry smoothie with milk",
       rating: 4.8,
-      tags: ["здоровое", "быстро", "любимое"],
+      tags: ["healthy", "quick", "favorite"],
       cover: "",
       prep_time_min: 5,
       cook_time_min: 0,
@@ -1038,10 +1194,10 @@ async function seedContent() {
       id: generateId(),
       type: ContentType.RECIPE,
       recipe_type: "cocktail",
-      title: "Мохито",
-      description: "Классический кубинский коктейль с ромом и мятой",
+      title: "Mojito",
+      description: "Classic Cuban cocktail with rum and mint",
       rating: 4.9,
-      tags: ["коктейль", "освежающий", "классика"],
+      tags: ["cocktail", "refreshing", "classic"],
       cover: "",
       prep_time_min: 5,
       cook_time_min: 0,
@@ -1067,10 +1223,10 @@ async function seedContent() {
       id: generateId(),
       type: ContentType.RECIPE,
       recipe_type: "cocktail",
-      title: "Маргарита",
-      description: "Классическая мексиканская маргарита с текилой",
+      title: "Margarita",
+      description: "Classic Mexican margarita with tequila",
       rating: 4.8,
-      tags: ["коктейль", "классика", "мексика"],
+      tags: ["cocktail", "classic", "mexico"],
       cover: "",
       prep_time_min: 3,
       cook_time_min: 0,
@@ -1102,13 +1258,13 @@ async function seedContent() {
   const recipeIngredientItems: RecipeIngredientItem[] = []
   const recipeSteps: RecipeStep[] = []
 
-  // For "Салат с курицей и овощами"
+  // For "Chicken and Vegetable Salad"
   const salad = recipes[0]
-  const chickenIngredient = allIngredients.find((i) => i.name === "Куриная грудка")
-  const lettuceIngredient = allIngredients.find((i) => i.name === "Листья салата")
-  const tomatoIngredient = allIngredients.find((i) => i.name === "Помидоры")
-  const cucumberIngredient = allIngredients.find((i) => i.name === "Огурцы")
-  const oilIngredient = allIngredients.find((i) => i.name === "Оливковое масло")
+  const chickenIngredient = allIngredients.find((i) => i.name === "Chicken Breast")
+  const lettuceIngredient = allIngredients.find((i) => i.name === "Lettuce")
+  const tomatoIngredient = allIngredients.find((i) => i.name === "Tomatoes")
+  const cucumberIngredient = allIngredients.find((i) => i.name === "Cucumbers")
+  const oilIngredient = allIngredients.find((i) => i.name === "Olive Oil")
 
   if (salad && chickenIngredient) {
     recipeIngredientItems.push({
@@ -1117,7 +1273,7 @@ async function seedContent() {
       ingredient_id: chickenIngredient.id,
       ingredient_name: chickenIngredient.name,
       amount: 200,
-      unit: "г",
+      unit: "g",
       order: 1,
       created_at: now(),
       updated_at: now(),
@@ -1130,7 +1286,7 @@ async function seedContent() {
       ingredient_id: lettuceIngredient.id,
       ingredient_name: lettuceIngredient.name,
       amount: 100,
-      unit: "г",
+      unit: "g",
       order: 2,
       created_at: now(),
       updated_at: now(),
@@ -1143,7 +1299,7 @@ async function seedContent() {
       ingredient_id: tomatoIngredient.id,
       ingredient_name: tomatoIngredient.name,
       amount: 2,
-      unit: "шт",
+      unit: "pcs",
       order: 3,
       created_at: now(),
       updated_at: now(),
@@ -1156,7 +1312,7 @@ async function seedContent() {
       ingredient_id: cucumberIngredient.id,
       ingredient_name: cucumberIngredient.name,
       amount: 1,
-      unit: "шт",
+      unit: "pcs",
       order: 4,
       created_at: now(),
       updated_at: now(),
@@ -1169,7 +1325,7 @@ async function seedContent() {
       ingredient_id: oilIngredient.id,
       ingredient_name: oilIngredient.name,
       amount: 2,
-      unit: "ст.л.",
+      unit: "tbsp",
       order: 5,
       created_at: now(),
       updated_at: now(),
@@ -1182,7 +1338,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: salad.id,
       order: 1,
-      text: "Отварить куриную грудку до готовности (около 20 минут)",
+      text: "Boil chicken breast until cooked (about 20 minutes)",
       timer_min: 20,
       created_at: now(),
       updated_at: now(),
@@ -1191,7 +1347,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: salad.id,
       order: 2,
-      text: "Нарезать овощи и листья салата",
+      text: "Chop vegetables and lettuce leaves",
       created_at: now(),
       updated_at: now(),
     })
@@ -1199,7 +1355,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: salad.id,
       order: 3,
-      text: "Нарезать курицу и добавить к овощам",
+      text: "Cut chicken and add to vegetables",
       created_at: now(),
       updated_at: now(),
     })
@@ -1207,17 +1363,17 @@ async function seedContent() {
       id: generateId(),
       recipe_id: salad.id,
       order: 4,
-      text: "Заправить оливковым маслом и перемешать",
+      text: "Dress with olive oil and mix",
       created_at: now(),
       updated_at: now(),
     })
   }
 
-  // For "Овсянка с ягодами"
+  // For "Oatmeal with Berries"
   const porridge = recipes[1]
-  const oatsIngredient = allIngredients.find((i) => i.name === "Овсяные хлопья")
-  const milkIngredient = allIngredients.find((i) => i.name === "Молоко")
-  const berriesIngredient = allIngredients.find((i) => i.name === "Ягоды")
+  const oatsIngredient = allIngredients.find((i) => i.name === "Oatmeal")
+  const milkIngredient = allIngredients.find((i) => i.name === "Milk")
+  const berriesIngredient = allIngredients.find((i) => i.name === "Berries")
 
   if (porridge && oatsIngredient) {
     recipeIngredientItems.push({
@@ -1226,7 +1382,7 @@ async function seedContent() {
       ingredient_id: oatsIngredient.id,
       ingredient_name: oatsIngredient.name,
       amount: 100,
-      unit: "г",
+      unit: "g",
       order: 1,
       created_at: now(),
       updated_at: now(),
@@ -1239,7 +1395,7 @@ async function seedContent() {
       ingredient_id: milkIngredient.id,
       ingredient_name: milkIngredient.name,
       amount: 250,
-      unit: "мл",
+      unit: "ml",
       order: 2,
       created_at: now(),
       updated_at: now(),
@@ -1252,10 +1408,10 @@ async function seedContent() {
       ingredient_id: berriesIngredient.id,
       ingredient_name: berriesIngredient.name,
       amount: 50,
-      unit: "г",
+      unit: "g",
       optional: true,
       order: 3,
-      note: "по вкусу",
+      note: "to taste",
       created_at: now(),
       updated_at: now(),
     })
@@ -1267,7 +1423,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: porridge.id,
       order: 1,
-      text: "Вскипятить молоко в кастрюле",
+      text: "Boil milk in a saucepan",
       timer_min: 3,
       created_at: now(),
       updated_at: now(),
@@ -1276,7 +1432,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: porridge.id,
       order: 2,
-      text: "Добавить овсяные хлопья и варить на медленном огне 5 минут",
+      text: "Add oatmeal and simmer for 5 minutes",
       timer_min: 5,
       created_at: now(),
       updated_at: now(),
@@ -1285,7 +1441,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: porridge.id,
       order: 3,
-      text: "Снять с огня и дать постоять 2 минуты",
+      text: "Remove from heat and let stand for 2 minutes",
       timer_min: 2,
       created_at: now(),
       updated_at: now(),
@@ -1294,20 +1450,20 @@ async function seedContent() {
       id: generateId(),
       recipe_id: porridge.id,
       order: 4,
-      text: "Добавить ягоды и подавать",
+      text: "Add berries and serve",
       created_at: now(),
       updated_at: now(),
     })
   }
 
-  // For "Зелёный чай с жасмином"
+  // For "Green Tea with Jasmine"
   const tea = recipes[2]
   if (tea) {
     recipeSteps.push({
       id: generateId(),
       recipe_id: tea.id,
       order: 1,
-      text: "Вскипятить воду до 80°C",
+      text: "Boil water to 80°C",
       timer_min: 3,
       created_at: now(),
       updated_at: now(),
@@ -1316,7 +1472,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: tea.id,
       order: 2,
-      text: "Залить чайные листья горячей водой",
+      text: "Pour hot water over tea leaves",
       created_at: now(),
       updated_at: now(),
     })
@@ -1324,21 +1480,21 @@ async function seedContent() {
       id: generateId(),
       recipe_id: tea.id,
       order: 3,
-      text: "Настаивать 3-5 минут",
+      text: "Steep for 3-5 minutes",
       timer_min: 5,
       created_at: now(),
       updated_at: now(),
     })
   }
 
-  // For "Клубничный смузи"
+  // For "Strawberry Smoothie"
   const smoothie = recipes[3]
   if (smoothie) {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: smoothie.id,
       ingredient_id: berriesIngredient?.id,
-      ingredient_name: "Клубника",
+      ingredient_name: "Strawberry",
       amount: 150,
       unit: "g",
       order: 1,
@@ -1349,7 +1505,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: smoothie.id,
       ingredient_id: milkIngredient?.id,
-      ingredient_name: "Молоко",
+      ingredient_name: "Milk",
       amount: 200,
       unit: "ml",
       order: 2,
@@ -1360,7 +1516,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: smoothie.id,
       order: 1,
-      text: "Поместить клубнику в блендер",
+      text: "Place strawberries in blender",
       created_at: now(),
       updated_at: now(),
     })
@@ -1368,7 +1524,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: smoothie.id,
       order: 2,
-      text: "Добавить молоко",
+      text: "Add milk",
       created_at: now(),
       updated_at: now(),
     })
@@ -1376,20 +1532,20 @@ async function seedContent() {
       id: generateId(),
       recipe_id: smoothie.id,
       order: 3,
-      text: "Взбивать до однородной консистенции",
+      text: "Blend until smooth",
       timer_min: 2,
       created_at: now(),
       updated_at: now(),
     })
   }
 
-  // For "Мохито"
+  // For "Mojito"
   const mojito = recipes[4]
   if (mojito) {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: mojito.id,
-      ingredient_name: "Белый ром",
+      ingredient_name: "White Rum",
       amount: 50,
       unit: "ml",
       order: 1,
@@ -1399,7 +1555,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: mojito.id,
-      ingredient_name: "Свежая мята",
+      ingredient_name: "Fresh Mint",
       amount: 10,
       unit: "g",
       order: 2,
@@ -1409,7 +1565,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: mojito.id,
-      ingredient_name: "Лайм",
+      ingredient_name: "Lime",
       amount: 1,
       unit: "pcs",
       order: 3,
@@ -1419,7 +1575,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: mojito.id,
-      ingredient_name: "Сахар",
+      ingredient_name: "Sugar",
       amount: 2,
       unit: "tsp",
       order: 4,
@@ -1429,7 +1585,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: mojito.id,
-      ingredient_name: "Содовая",
+      ingredient_name: "Soda Water",
       amount: 100,
       unit: "ml",
       order: 5,
@@ -1439,7 +1595,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: mojito.id,
-      ingredient_name: "Дроблёный лёд",
+      ingredient_name: "Crushed Ice",
       amount: 1,
       unit: "cup",
       order: 6,
@@ -1450,7 +1606,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: mojito.id,
       order: 1,
-      text: "Положить мяту и лайм в бокал",
+      text: "Place mint and lime in glass",
       created_at: now(),
       updated_at: now(),
     })
@@ -1458,7 +1614,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: mojito.id,
       order: 2,
-      text: "Добавить сахар и подавить мадлером",
+      text: "Add sugar and muddle",
       created_at: now(),
       updated_at: now(),
     })
@@ -1466,7 +1622,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: mojito.id,
       order: 3,
-      text: "Добавить ром и наполнить бокал дроблёным льдом",
+      text: "Add rum and fill glass with crushed ice",
       created_at: now(),
       updated_at: now(),
     })
@@ -1474,7 +1630,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: mojito.id,
       order: 4,
-      text: "Долить содовую и аккуратно перемешать",
+      text: "Top with soda water and stir gently",
       created_at: now(),
       updated_at: now(),
     })
@@ -1482,19 +1638,19 @@ async function seedContent() {
       id: generateId(),
       recipe_id: mojito.id,
       order: 5,
-      text: "Украсить веточкой мяты и долькой лайма",
+      text: "Garnish with mint sprig and lime wedge",
       created_at: now(),
       updated_at: now(),
     })
   }
 
-  // For "Маргарита"
+  // For "Margarita"
   const margarita = recipes[5]
   if (margarita) {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: margarita.id,
-      ingredient_name: "Текила",
+      ingredient_name: "Tequila",
       amount: 50,
       unit: "ml",
       order: 1,
@@ -1504,7 +1660,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: margarita.id,
-      ingredient_name: "Апельсиновый ликёр",
+      ingredient_name: "Orange Liqueur",
       amount: 30,
       unit: "ml",
       order: 2,
@@ -1514,7 +1670,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: margarita.id,
-      ingredient_name: "Сок лайма",
+      ingredient_name: "Lime Juice",
       amount: 30,
       unit: "ml",
       order: 3,
@@ -1524,7 +1680,7 @@ async function seedContent() {
     recipeIngredientItems.push({
       id: generateId(),
       recipe_id: margarita.id,
-      ingredient_name: "Соль",
+      ingredient_name: "Salt",
       amount: 1,
       unit: "pinch",
       order: 4,
@@ -1535,7 +1691,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: margarita.id,
       order: 1,
-      text: "Смочить край бокала лаймом и обмакнуть в соль",
+      text: "Moisten glass rim with lime and dip in salt",
       created_at: now(),
       updated_at: now(),
     })
@@ -1543,7 +1699,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: margarita.id,
       order: 2,
-      text: "Смешать текилу, ликёр и сок лайма в шейкере со льдом",
+      text: "Mix tequila, liqueur and lime juice in shaker with ice",
       created_at: now(),
       updated_at: now(),
     })
@@ -1551,7 +1707,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: margarita.id,
       order: 3,
-      text: "Энергично встряхивать 15 секунд",
+      text: "Shake vigorously for 15 seconds",
       timer_min: 1,
       created_at: now(),
       updated_at: now(),
@@ -1560,7 +1716,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: margarita.id,
       order: 4,
-      text: "Процедить в бокал со льдом",
+      text: "Strain into glass with ice",
       created_at: now(),
       updated_at: now(),
     })
@@ -1568,7 +1724,7 @@ async function seedContent() {
       id: generateId(),
       recipe_id: margarita.id,
       order: 5,
-      text: "Украсить долькой лайма",
+      text: "Garnish with lime wedge",
       created_at: now(),
       updated_at: now(),
     })
@@ -1588,7 +1744,7 @@ async function seedContent() {
 }
 
 // ============================================
-// Генерация рецептов (ingredients)
+// Seed recipes (ingredients)
 // ============================================
 
 async function seedRecipeDetails() {
@@ -1601,56 +1757,56 @@ async function seedRecipeDetails() {
   const recipeIngredients: RecipeIngredient[] = [
     {
       id: generateId(),
-      name: "Куриная грудка",
+      name: "Chicken Breast",
       category: "meat" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Листья салата",
+      name: "Lettuce",
       category: "vegetable" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Помидоры",
+      name: "Tomatoes",
       category: "vegetable" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Огурцы",
+      name: "Cucumbers",
       category: "vegetable" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Оливковое масло",
+      name: "Olive Oil",
       category: "oil" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Овсяные хлопья",
+      name: "Oatmeal",
       category: "grain" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Молоко",
+      name: "Milk",
       category: "dairy" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
     },
     {
       id: generateId(),
-      name: "Ягоды",
+      name: "Berries",
       category: "fruit" as IngredientCategory,
       created_at: now(),
       updated_at: now(),
@@ -1662,7 +1818,7 @@ async function seedRecipeDetails() {
 }
 
 // ============================================
-// Генерация книг (authors, genres)
+// Seed books (authors, genres)
 // ============================================
 
 async function seedBookDetails() {
@@ -1673,18 +1829,18 @@ async function seedBookDetails() {
   }
 
   const authorsData = [
-    { id: generateId(), name: "Джеймс Клир", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "Мэттью Уокер", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "Дэвид Флинн", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "James Clear", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "Matthew Walker", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "David Flynn", created_at: now(), updated_at: now() },
   ]
 
   await db.authors.bulkAdd(authorsData)
   console.log(`Added ${authorsData.length} authors`)
 
   const genres = [
-    { id: generateId(), name: "Саморазвитие", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "Наука", created_at: now(), updated_at: now() },
-    { id: generateId(), name: "Здоровье", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "Self-improvement", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "Science", created_at: now(), updated_at: now() },
+    { id: generateId(), name: "Health", created_at: now(), updated_at: now() },
   ]
 
   await db.genres.bulkAdd(genres)
@@ -1692,7 +1848,7 @@ async function seedBookDetails() {
 }
 
 // ============================================
-// Генерация целей и привычек
+// Seed goals and habits
 // ============================================
 
 async function seedGoalsAndHabits() {
@@ -1703,7 +1859,7 @@ async function seedGoalsAndHabits() {
       {
         id: generateId(),
         type: "water" as GoalType,
-        name: "Пить воду",
+        name: "Drink Water",
         target_value: 2000,
         period: "daily" as GoalPeriod,
         is_active: true,
@@ -1714,7 +1870,7 @@ async function seedGoalsAndHabits() {
       {
         id: generateId(),
         type: "steps" as GoalType,
-        name: "Ходить",
+        name: "Walk",
         target_value: 10000,
         period: "daily" as GoalPeriod,
         is_active: true,
@@ -1725,7 +1881,7 @@ async function seedGoalsAndHabits() {
       {
         id: generateId(),
         type: "calories" as GoalType,
-        name: "Калории",
+        name: "Calories",
         target_value: 2000,
         period: "daily" as GoalPeriod,
         is_active: true,
@@ -1745,7 +1901,7 @@ async function seedGoalsAndHabits() {
     const habits: Habit[] = [
       {
         id: generateId(),
-        name: "Утренняя йога",
+        name: "Morning Yoga",
         habit_type: "positive",
         frequency: "daily",
         is_active: true,
@@ -1755,7 +1911,7 @@ async function seedGoalsAndHabits() {
       },
       {
         id: generateId(),
-        name: "Пить воду",
+        name: "Drink Water",
         habit_type: "positive",
         frequency: "daily",
         is_active: true,
@@ -1765,7 +1921,7 @@ async function seedGoalsAndHabits() {
       },
       {
         id: generateId(),
-        name: "Читать перед сном",
+        name: "Read Before Sleep",
         habit_type: "positive",
         frequency: "daily",
         is_active: true,
@@ -1775,7 +1931,7 @@ async function seedGoalsAndHabits() {
       },
       {
         id: generateId(),
-        name: "Медитация",
+        name: "Meditation",
         habit_type: "positive",
         frequency: "daily",
         is_active: true,
@@ -1807,7 +1963,7 @@ async function seedGoalsAndHabits() {
 }
 
 // ============================================
-// Генерация трекеров (sleep, water, mood, body)
+// Seed trackers (sleep, water, mood, body)
 // ============================================
 
 async function seedTrackers() {
@@ -1918,7 +2074,7 @@ async function seedTrackers() {
 }
 
 // ============================================
-// Генерация напоминаний
+// Seed reminders
 // ============================================
 
 async function seedReminders() {
@@ -1927,8 +2083,8 @@ async function seedReminders() {
     const reminders: Reminder[] = [
       {
         id: generateId(),
-        title: "Утренняя йога",
-        message: "30 минут йоги",
+        title: "Morning Yoga",
+        message: "30 minutes of yoga",
         type: "habit" as ReminderType,
         time: "07:00",
         days: [1, 3, 5],
@@ -1942,8 +2098,8 @@ async function seedReminders() {
       },
       {
         id: generateId(),
-        title: "Пить воду",
-        message: "Стакан воды",
+        title: "Drink Water",
+        message: "Glass of water",
         type: "water" as ReminderType,
         time: "09:00",
         days: [0, 1, 2, 3, 4, 5, 6],
@@ -1957,8 +2113,8 @@ async function seedReminders() {
       },
       {
         id: generateId(),
-        title: "Принять витамины",
-        message: "Витамин D3",
+        title: "Take Vitamins",
+        message: "Vitamin D3",
         type: "medicine" as ReminderType,
         time: "08:00",
         days: [0, 1, 2, 3, 4, 5, 6],
@@ -1977,7 +2133,7 @@ async function seedReminders() {
 }
 
 // ============================================
-// Генерация шаблонов
+// Seed templates
 // ============================================
 
 async function seedTemplates() {
@@ -1986,28 +2142,28 @@ async function seedTemplates() {
     const templates: Template[] = [
       {
         id: generateId(),
-        name: "Утренняя рутина",
+        name: "Morning Routine",
         type: "mood",
         is_favorite: true,
-        data: { habits: ["йога", "вода", "завтрак"] },
+        data: { habits: ["yoga", "water", "breakfast"] },
         created_at: now(),
         updated_at: now(),
       },
       {
         id: generateId(),
-        name: "Тренировка",
+        name: "Workout",
         type: "workout",
         is_favorite: false,
-        data: { exercises: ["разминка", "силовая", "растяжка"] },
+        data: { exercises: ["warmup", "strength", "stretching"] },
         created_at: now(),
         updated_at: now(),
       },
       {
         id: generateId(),
-        name: "Завтрак",
+        name: "Breakfast",
         type: "food",
         is_favorite: true,
-        data: { meals: ["овсянка", "фрукты", "йогурт"] },
+        data: { meals: ["oatmeal", "fruits", "yogurt"] },
         created_at: now(),
         updated_at: now(),
       },
@@ -2018,7 +2174,7 @@ async function seedTemplates() {
 }
 
 // ============================================
-// Главная функция заполнения
+// Main seed function
 // ============================================
 
 export async function seedDatabase() {

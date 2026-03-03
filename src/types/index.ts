@@ -403,10 +403,11 @@ export interface FinanceMetadata {
   account_id?: UUID
   finance_type: FinanceType
   target_account_id?: UUID
-  category?: string
-  subcategory?: string
-  item?: string
-  supplier?: string
+  // Ключи для локализации (не ID из БД)
+  category_key?: string // "product", "transport", "entertainment"
+  subcategory_key?: string // "dairy", "taxi", "cinema"
+  item_key?: string // "milk", "yandexTaxi", "netflix"
+  supplier_key?: string // "magnit", "lukoil", "netflix"
 }
 
 // Полные типы логов

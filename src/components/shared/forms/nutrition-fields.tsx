@@ -48,36 +48,72 @@ export function NutritionFields({ register, errors, labels, prefixes }: Nutritio
       <FormField label={defaultLabels.calories} error={errors.calories?.message}>
         <Input
           type="number"
+          min="0"
           step="1"
           placeholder="0"
-          {...register("calories", { valueAsNumber: true })}
+          {...register("calories", {
+            valueAsNumber: true,
+            min: { value: 0, message: "Не может быть отрицательным" },
+          })}
+          onKeyPress={(e) => {
+            if (!/[0-9]/.test(e.key)) {
+              e.preventDefault()
+            }
+          }}
         />
       </FormField>
 
       <FormField label={defaultLabels.protein} error={errors.protein?.message}>
         <Input
           type="number"
+          min="0"
           step="0.1"
           placeholder="0"
-          {...register("protein", { valueAsNumber: true })}
+          {...register("protein", {
+            valueAsNumber: true,
+            min: { value: 0, message: "Не может быть отрицательным" },
+          })}
+          onKeyPress={(e) => {
+            if (!/[0-9.]/.test(e.key)) {
+              e.preventDefault()
+            }
+          }}
         />
       </FormField>
 
       <FormField label={defaultLabels.fat} error={errors.fat?.message}>
         <Input
           type="number"
+          min="0"
           step="0.1"
           placeholder="0"
-          {...register("fat", { valueAsNumber: true })}
+          {...register("fat", {
+            valueAsNumber: true,
+            min: { value: 0, message: "Не может быть отрицательным" },
+          })}
+          onKeyPress={(e) => {
+            if (!/[0-9.]/.test(e.key)) {
+              e.preventDefault()
+            }
+          }}
         />
       </FormField>
 
       <FormField label={defaultLabels.carbs} error={errors.carbs?.message}>
         <Input
           type="number"
+          min="0"
           step="0.1"
           placeholder="0"
-          {...register("carbs", { valueAsNumber: true })}
+          {...register("carbs", {
+            valueAsNumber: true,
+            min: { value: 0, message: "Не может быть отрицательным" },
+          })}
+          onKeyPress={(e) => {
+            if (!/[0-9.]/.test(e.key)) {
+              e.preventDefault()
+            }
+          }}
         />
       </FormField>
     </div>

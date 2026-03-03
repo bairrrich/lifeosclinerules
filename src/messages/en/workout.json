@@ -1,0 +1,8 @@
+{
+  "types": {
+    "strength": "Strength",
+    "cardio": "Cardio",
+    "yoga": "Yoga",
+    "stretching": "Stretching"
+  }
+}

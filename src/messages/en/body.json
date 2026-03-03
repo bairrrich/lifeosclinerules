@@ -1,0 +1,70 @@
+{
+  "title": "Body",
+  "add": "Add",
+  "addMeasurement": "Add Measurement",
+  "editMeasurement": "Edit Measurement",
+  "fields": {
+    "date": "Date",
+    "type": "Type",
+    "value": "Value",
+    "unit": "Unit",
+    "notes": "Notes"
+  },
+  "measurementTypes": {
+    "weight": "Weight",
+    "height": "Height",
+    "bmi": "BMI",
+    "chest": "Chest",
+    "waist": "Waist",
+    "hips": "Hips",
+    "neck": "Neck",
+    "biceps": "Biceps",
+    "forearm": "Forearm",
+    "thigh": "Thigh",
+    "calf": "Calf",
+    "bodyFat": "Body Fat",
+    "muscleMass": "Muscle Mass"
+  },
+  "bmi": {
+    "title": "BMI",
+    "underweight": "Underweight",
+    "normal": "Normal Weight",
+    "overweight": "Overweight",
+    "obese": "Obese",
+    "addHint": "Add height and weight to calculate BMI"
+  },
+  "stats": {
+    "max": "Max",
+    "avg": "Avg",
+    "min": "Min",
+    "recordsCount": "records"
+  },
+  "weightChart": "Weight - Last Month",
+  "history": "History",
+  "dialogs": {
+    "addTitle": "Add Measurement",
+    "editTitle": "Edit Measurement",
+    "deleteTitle": "Delete Measurement?",
+    "deleteConfirm": "Are you sure you want to delete this measurement? This action cannot be undone.",
+    "typeLabel": "Measurement Type",
+    "valueLabel": "Value",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Optional"
+  },
+  "empty": {
+    "loading": "Loading...",
+    "noRecords": "No records. Add the first measurement!"
+  },
+  "edit": "Edit measurement",
+  "units": {
+    "kg": "kg",
+    "g": "g",
+    "cm": "cm",
+    "m": "m",
+    "percent": "%",
+    "ml": "ml",
+    "l": "l",
+    "kcal": "kcal",
+    "bpm": "bpm"
+  }
+}

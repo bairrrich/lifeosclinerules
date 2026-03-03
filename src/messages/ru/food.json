@@ -1,0 +1,150 @@
+{
+  "productCategories": {
+    "dairy": "Молочные продукты",
+    "meat": "Мясо",
+    "fish": "Рыба",
+    "vegetables": "Овощи",
+    "fruits": "Фрукты",
+    "berries": "Ягоды",
+    "grainsAndLegumes": "Крупы и бобовые",
+    "breadAndBakery": "Хлеб и выпечка",
+    "eggs": "Яйца",
+    "nutsAndSeeds": "Орехи и семена",
+    "oilsAndFats": "Масла и жиры",
+    "drinks": "Напитки",
+    "sweets": "Сладости",
+    "groceries": "Бакалея"
+  },
+  "products": {
+    "dairy": {
+      "milk32": "Молоко 3.2%",
+      "milk25": "Молоко 2.5%",
+      "milk15": "Молоко 1.5%",
+      "hardCheese": "Твёрдый сыр",
+      "softCheese": "Мягкий сыр",
+      "cottageCheese0": "Творог 0%",
+      "cottageCheese5": "Творог 5%",
+      "cottageCheese9": "Творог 9%",
+      "sourCream15": "Сметана 15%",
+      "sourCream20": "Сметана 20%",
+      "kefir25": "Кефир 2.5%",
+      "kefir32": "Кефир 3.2%",
+      "naturalYogurt": "Натуральный йогурт",
+      "greekYogurt": "Греческий йогурт",
+      "butter825": "Масло сливочное 82.5%"
+    },
+    "meat": {
+      "beefFillet": "Говяжья вырезка",
+      "beefBrisket": "Говяжья грудинка",
+      "beefMince": "Говяжий фарш",
+      "porkNeck": "Свиная шея",
+      "porkLoin": "Свиная корейка",
+      "chickenBreast": "Куриная грудка",
+      "chickenThigh": "Куриное бедро",
+      "chickenMince": "Куриный фарш",
+      "turkeyBreast": "Индейка грудка",
+      "turkeyThigh": "Индейка бедро"
+    },
+    "fish": {
+      "troutFresh": "Форель свежая",
+      "troutLightlySalted": "Форель слабосолёная",
+      "salmonFresh": "Лосось свежий",
+      "salmonLightlySalted": "Лосось слабосолёный",
+      "codFresh": "Треска свежая",
+      "herringSalted": "Сельдь солёная",
+      "mackerelFresh": "Скумбрия свежая",
+      "mackerelSmoked": "Скумбрия копчёная",
+      "tunaCanned": "Тунец консервированный"
+    },
+    "vegetables": {
+      "potato": "Картофель",
+      "carrot": "Морковь",
+      "onion": "Лук репчатый",
+      "cucumber": "Огурец",
+      "tomato": "Помидор",
+      "whiteCabbage": "Капуста белокочанная",
+      "pepper": "Перец болгарский",
+      "garlic": "Чеснок",
+      "zucchini": "Кабачок",
+      "eggplant": "Баклажан",
+      "beet": "Свёкла"
+    },
+    "fruits": {
+      "apple": "Яблоко",
+      "banana": "Банан",
+      "orange": "Апельсин",
+      "tangerine": "Мандарин",
+      "pear": "Груша",
+      "kiwi": "Киви",
+      "grape": "Виноград",
+      "pineapple": "Ананас"
+    },
+    "berries": {
+      "strawberry": "Клубника",
+      "raspberry": "Малина",
+      "blueberry": "Черника",
+      "blackcurrant": "Смородина чёрная",
+      "cherry": "Вишня",
+      "cranberry": "Клюква"
+    },
+    "grains": {
+      "riceWhiteDry": "Рис белый сухой",
+      "riceBrownDry": "Рис бурый сухой",
+      "buckwheatDry": "Гречка сухая",
+      "oatmealDry": "Овсянка сухая",
+      "semolinaDry": "Манка сухая",
+      "milletDry": "Пшено сухое",
+      "lentilsDry": "Чечевица сухая",
+      "beansDry": "Фасоль сухая",
+      "peasDry": "Горох сухой"
+    },
+    "bakery": {
+      "whiteBread": "Хлеб белый",
+      "blackBread": "Хлеб чёрный",
+      "slicedLoaf": "Хлеб нарезной",
+      "borodinskyBread": "Хлеб бородинский",
+      "armenianLavash": "Лаваш армянский"
+    },
+    "eggs": {
+      "chickenEggOnePiece": "Яйцо куриное 1 шт",
+      "eggWhite": "Яичный белок",
+      "eggYolk": "Яичный желток"
+    },
+    "nuts": {
+      "walnut": "Грецкий орех",
+      "almond": "Миндаль",
+      "hazelnut": "Фундук",
+      "cashew": "Кешью",
+      "peanut": "Арахис",
+      "sunflowerSeeds": "Семечки подсолнечника"
+    },
+    "fats": {
+      "sunflowerOil": "Масло подсолнечное",
+      "oliveOil": "Масло оливковое",
+      "coconutOil": "Масло кокосовое",
+      "mayonnaise": "Майонез"
+    },
+    "drinks": {
+      "teaWithoutSugar": "Чай без сахара",
+      "blackCoffee": "Кофе чёрный",
+      "orangeJuice": "Сок апельсиновый",
+      "appleJuice": "Сок яблочный",
+      "tomatoJuice": "Сок томатный",
+      "compote": "Компот"
+    },
+    "sweets": {
+      "sugar": "Сахар",
+      "honey": "Мёд",
+      "milkChocolate": "Шоколад молочный",
+      "darkChocolate": "Шоколад тёмный",
+      "cookies": "Печенье",
+      "candy": "Конфеты"
+    },
+    "groceries": {
+      "pastaDry": "Макароны сухие",
+      "wheatFlour": "Мука пшеничная",
+      "ryeFlour": "Мука ржаная",
+      "starch": "Крахмал"
+    }
+  }
+}

@@ -19,7 +19,6 @@ import {
   Flame,
   Bell,
   Copy,
-  TrendingUp,
 } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
@@ -116,12 +115,6 @@ const trackerLinks = [
     module: "settings" as ModuleType,
   },
 ]
-
-const typeLabels: Record<string, string> = {
-  food: "logs.types.food",
-  workout: "logs.types.workout",
-  finance: "logs.types.finance",
-}
 
 // Type colors mapping for recent activity
 const typeColors: Record<string, ModuleType> = {
@@ -261,6 +254,13 @@ export default function HomePage() {
     todayExpenses: 0,
   })
   const [recentLogs, setRecentLogs] = useState<Log[]>([])
+
+  // Type labels for recent activity - using static keys for next-intl
+  const typeLabels: Record<string, string> = {
+    food: tLog("types.food"),
+    workout: tLog("types.workout"),
+    finance: tLog("types.finance"),
+  }
 
   // Цели на сегодня
   const [goals, setGoals] = useState<{
@@ -470,14 +470,14 @@ export default function HomePage() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">{t("quickActions")}</h2>
+          <h2 className="text-lg font-semibold mb-3">{t("quickActionsTitle")}</h2>
           <div className="flex justify-center gap-3 sm:gap-4 flex-wrap">
             {quickActions.map((action) => (
               <Link
                 key={action.href}
                 href={action.href}
                 className="flex flex-col items-center gap-2 min-w-[60px] active:scale-95 transition-transform"
-                aria-label={`${t("quickActions")}: ${tNav(action.translationKey)}`}
+                aria-label={`${t("quickActionsTitle")}: ${tNav(action.translationKey)}`}
               >
                 <div
                   className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl ${moduleColors[action.module].light}`}
@@ -587,7 +587,7 @@ export default function HomePage() {
                         <div className="flex-1 min-w-0">
                           <h3 className="font-medium text-sm truncate">{log.title}</h3>
                           <p className="text-xs text-muted-foreground">
-                            {tLog("types." + log.type)} •{" "}
+                            {typeLabels[log.type] ?? log.type} •{" "}
                             {new Date(log.date).toLocaleDateString(locale, {
                               day: "numeric",
                               month: "short",

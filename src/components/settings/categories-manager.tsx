@@ -284,7 +284,7 @@ export function CategoriesManager() {
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
-            <span className="sr-only">Редактировать</span>
+            <span className="sr-only">{tCommon("edit")}</span>
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -300,7 +300,7 @@ export function CategoriesManager() {
             className="h-8 w-8 text-destructive"
             onClick={onDelete}
           >
-            <span className="sr-only">Удалить</span>
+            <span className="sr-only">{tCommon("delete")}</span>
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"

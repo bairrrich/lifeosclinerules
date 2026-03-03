@@ -1,0 +1,19 @@
+{
+  "placeholder": "Search... (Cmd+K)",
+  "noResults": "Nothing found",
+  "navigate": "↑↓ to navigate",
+  "select": "Enter to select",
+  "close": "Esc to close",
+  "quickActions": {
+    "addFood": "Add Food",
+    "addWorkout": "Add Workout",
+    "addExpense": "Add Expense",
+    "addBook": "Add Book",
+    "addRecipe": "Add Recipe",
+    "logWater": "Log Water",
+    "logSleep": "Log Sleep",
+    "logMood": "Log Mood",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  }
+}

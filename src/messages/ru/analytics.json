@@ -1,0 +1,47 @@
+{
+  "title": "Аналитика",
+  "loading": "Загрузка...",
+  "date": "Дата",
+  "common": {
+    "count": "Количество"
+  },
+  "period": {
+    "7days": "7 дн.",
+    "14days": "14 дн.",
+    "30days": "30 дн."
+  },
+  "summary": {
+    "calories": "Калории",
+    "workouts": "Тренировки",
+    "workoutDuration": "Длительность",
+    "income": "Доход",
+    "expense": "Расход",
+    "balance": "Баланс",
+    "avgPerDay": "ккал/день",
+    "avgPerWorkout": "мин/трен",
+    "vsPreviousPeriod": "vs прошлый период"
+  },
+  "food": {
+    "title": "Питание",
+    "caloriesByDay": "Калории по дням",
+    "macrosByDay": "БЖУ по дням",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "byCategory": "По категориям"
+  },
+  "workout": {
+    "title": "Тренировки",
+    "durationByDay": "Длительность тренировок (мин)",
+    "countByDay": "Количество тренировок",
+    "minutes": "Минуты",
+    "workouts": "Тренировки"
+  },
+  "finance": {
+    "title": "Финансы",
+    "incomeExpenseByDay": "Доход/Расход по дням",
+    "categoryDistribution": "Распределение по категориям",
+    "income": "Доход",
+    "expense": "Расход"
+  }
+}

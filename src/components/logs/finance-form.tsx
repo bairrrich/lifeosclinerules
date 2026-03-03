@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label"
 import { useTranslations } from "next-intl"
 import { DependentSelect } from "@/components/shared/forms"
 import type { FinanceType, Account } from "@/types"
-import { financeSuppliers } from "@/lib/finance-categories"
+import { financeSuppliers, financeCategoriesStructure } from "@/lib/finance-categories"
+import { getStaticEntityTranslation } from "@/lib/db"
+import { useLocale } from "next-intl"
 
 // ============================================
 // Схема валидации
@@ -97,7 +99,7 @@ export function FinanceForm({
   const t = useTranslations("logs")
   const tCommon = useTranslations("common")
   const tSettings = useTranslations("settings")
-  const tFinCat = useTranslations("financeCategories")
+  const locale = useLocale()
 
   // Get account type label with translation
   const getAccountTypeLabel = (type: string) => {
@@ -231,93 +233,8 @@ export function FinanceForm({
     return subcategoryEmojis[subcategory] || ""
   }
 
-  // Структура финансовых категорий с ключами переводов
-  const financeCategoriesStructure: Record<
-    string,
-    Record<string, { subcategories: Record<string, string[]> }>
-  > = {
-    income: {
-      salary: { subcategories: { main: [], bonus: [], allowance: [] } },
-      freelance: { subcategories: { development: [], design: [], consulting: [] } },
-      investments: { subcategories: { dividends: [], interest: [], coupons: [] } },
-      other: { subcategories: { gifts: [], refund: [], other: [] } },
-    },
-    expense: {
-      product: {
-        subcategories: {
-          dairy: ["milk", "cheese", "cottageCheese", "sourCream", "kefir", "yogurt", "butter"],
-          meat: ["beef", "pork", "lamb", "chicken", "turkey", "duck"],
-          fish: ["trout", "herring", "salmon", "cod", "carp", "pikeperch", "mackerel"],
-          vegetables: [
-            "potato",
-            "carrot",
-            "onion",
-            "beet",
-            "cucumber",
-            "tomato",
-            "cabbage",
-            "pepper",
-          ],
-          fruits: ["apples", "bananas", "oranges", "tangerines", "pears", "grape", "kiwi"],
-          berries: ["strawberry", "raspberry", "blueberry", "currant", "cherry", "cranberry"],
-          cereals: ["rice", "buckwheat", "oatmeal", "semolina", "millet", "barley"],
-          bread: ["whiteBread", "blackBread", "baton", "buns", "lavash"],
-          drinks: ["tea", "coffee", "juices", "water", "soda", "kvass"],
-          groceries: ["pasta", "sugar", "salt", "flour", "vegetableOil", "vinegar"],
-          confectionery: ["chocolate", "candy", "cookies", "cakes", "honey", "jam"],
-          frozen: ["dumplings", "vareniki", "vegetableMix", "frozenBerries", "iceCream"],
-        },
-      },
-      transport: {
-        subcategories: {
-          taxi: ["yandexTaxi", "uber", "sitimobil"],
-          public: ["metro", "bus", "tram"],
-          fuel: ["lukoil", "gazprom", "rosneft"],
-        },
-      },
-      entertainment: {
-        subcategories: {
-          cinema: [],
-          concerts: [],
-          cafe: [],
-          subscriptions: ["netflix", "yandexPlus", "youtubePremium"],
-        },
-      },
-      health: {
-        subcategories: {
-          pharmacy: ["aptekaRu", "rigla", "zivika", "gordrav"],
-          doctor: [],
-          gym: [],
-        },
-      },
-      clothing: { subcategories: { shoes: [], outerwear: [], casual: [] } },
-      housing: { subcategories: { rent: [], utilities: [], repair: [] } },
-      communication: {
-        subcategories: {
-          mobile: ["mts", "beeline", "megafon", "tele2"],
-          internet: ["rostelecom", "domRu"],
-          tv: [],
-        },
-      },
-      education: { subcategories: { courses: [], books: [], tutor: [] } },
-      other: { subcategories: { gifts: [], other: [] } },
-    },
-    transfer: {
-      transfer: {
-        subcategories: {
-          toCard: ["sberbank", "tinkoff", "alfa"],
-          toAccount: [],
-          toCash: [],
-        },
-      },
-      topUp: {
-        subcategories: {
-          fromCard: ["sberbank", "tinkoff", "alfa"],
-          inCash: [],
-        },
-      },
-    },
-  }
+  // Импорт из @/lib/finance-categories
+  // financeCategoriesStructure уже доступен через импорт
 
   // Маппинг категорий для suppliers
   const categoryToSupplierKey: Record<string, string> = {
@@ -332,7 +249,7 @@ export function FinanceForm({
   const currentFinanceCategoriesObj = financeCategoriesStructure[financeType] || {}
   const currentFinanceCategories = Object.keys(currentFinanceCategoriesObj).map((key) => ({
     value: key,
-    label: `${getCategoryEmoji(key)} ${tFinCat(key)}`,
+    label: `${getCategoryEmoji(key)} ${getStaticEntityTranslation("categories", key, locale, "finance")}`,
   }))
 
   // Получаем подкатегории для выбранной категории
@@ -341,7 +258,7 @@ export function FinanceForm({
     : {}
   const currentSubcategories = Object.keys(currentSubcategoriesObj).map((key) => ({
     value: key,
-    label: `${getSubcategoryEmoji(key)} ${tFinCat(`subcategories.${key}`)}`,
+    label: `${getSubcategoryEmoji(key)} ${getStaticEntityTranslation("financeSubcategories", key, locale)}`,
   }))
 
   // Получаем товары/услуги для выбранной подкатегории
@@ -349,7 +266,7 @@ export function FinanceForm({
     financeCategory && financeSubcategory ? currentSubcategoriesObj[financeSubcategory] || [] : []
   const currentItems = currentItemsObj.map((key) => ({
     value: key,
-    label: tFinCat(`items.${key}`),
+    label: getStaticEntityTranslation("financeSubcategories", key, locale),
   }))
 
   // Получаем поставщиков для категории
@@ -359,7 +276,7 @@ export function FinanceForm({
     : []
   const currentSuppliers = currentSuppliersObj.map((key) => ({
     value: key,
-    label: tFinCat(`suppliers.${key}`),
+    label: getStaticEntityTranslation("financeSuppliers", key, locale),
   }))
 
   return (
@@ -370,10 +287,23 @@ export function FinanceForm({
         <Input
           id="value"
           type="number"
+          min="0"
           step="0.01"
           placeholder="0 ₽"
           className="text-center text-lg font-medium"
-          {...register("value", { valueAsNumber: true })}
+          onKeyPress={(e) => {
+            // Разрешаем только цифры и точку/запятую
+            if (!/[0-9.,]/.test(e.key)) {
+              e.preventDefault()
+            }
+          }}
+          {...register("value", {
+            valueAsNumber: true,
+            min: {
+              value: 0,
+              message: "Сумма не может быть отрицательной",
+            },
+          })}
         />
         {errors.value && <p className="text-sm text-destructive">{errors.value.message}</p>}
       </div>

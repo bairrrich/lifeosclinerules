@@ -1010,11 +1010,17 @@ export function FoodForm({ register, watch, setValue, errors }: FoodFormProps) {
             <Input
               id="customPortion"
               type="number"
+              min="0"
               placeholder={t("common.grams")}
               value={customPortionSize ?? ""}
               onChange={(e) =>
-                setCustomPortionSize(e.target.value ? Number(e.target.value) : undefined)
+                setCustomPortionSize(Math.max(0, e.target.value ? Number(e.target.value) : 0))
               }
+              onKeyPress={(e) => {
+                if (!/[0-9.]/.test(e.key)) {
+                  e.preventDefault()
+                }
+              }}
             />
           </div>
         </div>

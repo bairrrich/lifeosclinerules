@@ -676,7 +676,21 @@ export function WorkoutForm({
               <Input
                 id="duration"
                 type="number"
-                {...register("duration", { valueAsNumber: true })}
+                min="0"
+                placeholder={t("workout.placeholders.minutes")}
+                {...register("duration", {
+                  valueAsNumber: true,
+                  min: {
+                    value: 0,
+                    message: "Длительность не может быть отрицательной",
+                  },
+                })}
+                onKeyPress={(e) => {
+                  // Разрешаем только цифры
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
               />
             </div>
             <div className="space-y-2">
@@ -765,11 +779,18 @@ export function WorkoutForm({
               <Input
                 id="caloriesBurned"
                 type="number"
+                min="0"
                 placeholder={t("workout.placeholders.calories")}
                 value={caloriesBurned ?? ""}
                 onChange={(e) =>
-                  setCaloriesBurned(e.target.value ? Number(e.target.value) : undefined)
+                  setCaloriesBurned(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                 }
+                onKeyPress={(e) => {
+                  // Разрешаем только цифры
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
               />
             </div>
             {/* Distance - cardio only */}
@@ -779,10 +800,19 @@ export function WorkoutForm({
                 <Input
                   id="distance"
                   type="number"
+                  min="0"
                   step="0.1"
                   placeholder={t("workout.placeholders.distance")}
                   value={distance ?? ""}
-                  onChange={(e) => setDistance(e.target.value ? Number(e.target.value) : undefined)}
+                  onChange={(e) =>
+                    setDistance(Math.max(0, e.target.value ? Number(e.target.value) : 0))
+                  }
+                  onKeyPress={(e) => {
+                    // Разрешаем только цифры и точку
+                    if (!/[0-9.]/.test(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
                 />
               </div>
             )}
@@ -795,11 +825,18 @@ export function WorkoutForm({
               <Input
                 id="heartRateAvg"
                 type="number"
+                min="0"
                 placeholder={t("workout.placeholders.avgPulse")}
                 value={heartRateAvg ?? ""}
                 onChange={(e) =>
-                  setHeartRateAvg(e.target.value ? Number(e.target.value) : undefined)
+                  setHeartRateAvg(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                 }
+                onKeyPress={(e) => {
+                  // Разрешаем только цифры
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
               />
             </div>
             <div className="space-y-2">
@@ -807,11 +844,18 @@ export function WorkoutForm({
               <Input
                 id="heartRateMax"
                 type="number"
+                min="0"
                 placeholder={t("workout.placeholders.maxPulse")}
                 value={heartRateMax ?? ""}
                 onChange={(e) =>
-                  setHeartRateMax(e.target.value ? Number(e.target.value) : undefined)
+                  setHeartRateMax(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                 }
+                onKeyPress={(e) => {
+                  // Разрешаем только цифры
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
               />
             </div>
           </div>
@@ -825,11 +869,18 @@ export function WorkoutForm({
                   <Input
                     id="exercisesCount"
                     type="number"
+                    min="0"
                     placeholder={t("workout.placeholders.count")}
                     value={exercisesCount ?? ""}
                     onChange={(e) =>
-                      setExercisesCount(e.target.value ? Number(e.target.value) : undefined)
+                      setExercisesCount(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                     }
+                    onKeyPress={(e) => {
+                      // Разрешаем только цифры
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -837,11 +888,18 @@ export function WorkoutForm({
                   <Input
                     id="setsCount"
                     type="number"
+                    min="0"
                     placeholder={t("workout.placeholders.count")}
                     value={setsCount ?? ""}
                     onChange={(e) =>
-                      setSetsCount(e.target.value ? Number(e.target.value) : undefined)
+                      setSetsCount(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                     }
+                    onKeyPress={(e) => {
+                      // Разрешаем только цифры
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -851,11 +909,18 @@ export function WorkoutForm({
                   <Input
                     id="repsCount"
                     type="number"
+                    min="0"
                     placeholder={t("workout.placeholders.count")}
                     value={repsCount ?? ""}
                     onChange={(e) =>
-                      setRepsCount(e.target.value ? Number(e.target.value) : undefined)
+                      setRepsCount(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                     }
+                    onKeyPress={(e) => {
+                      // Разрешаем только цифры
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -863,12 +928,19 @@ export function WorkoutForm({
                   <Input
                     id="totalWeight"
                     type="number"
+                    min="0"
                     step="0.1"
                     placeholder={t("workout.placeholders.weight")}
                     value={totalWeight ?? ""}
                     onChange={(e) =>
-                      setTotalWeight(e.target.value ? Number(e.target.value) : undefined)
+                      setTotalWeight(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                     }
+                    onKeyPress={(e) => {
+                      // Разрешаем только цифры и точку
+                      if (!/[0-9.]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -884,12 +956,19 @@ export function WorkoutForm({
                   <Input
                     id="averageSpeed"
                     type="number"
+                    min="0"
                     step="0.1"
                     placeholder={t("workout.placeholders.speed")}
                     value={averageSpeed ?? ""}
                     onChange={(e) =>
-                      setAverageSpeed(e.target.value ? Number(e.target.value) : undefined)
+                      setAverageSpeed(Math.max(0, e.target.value ? Number(e.target.value) : 0))
                     }
+                    onKeyPress={(e) => {
+                      // Разрешаем только цифры и точку
+                      if (!/[0-9.]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -909,9 +988,18 @@ export function WorkoutForm({
                   <Input
                     id="rounds"
                     type="number"
+                    min="0"
                     placeholder="шт"
                     value={rounds ?? ""}
-                    onChange={(e) => setRounds(e.target.value ? Number(e.target.value) : undefined)}
+                    onChange={(e) =>
+                      setRounds(Math.max(0, e.target.value ? Number(e.target.value) : 0))
+                    }
+                    onKeyPress={(e) => {
+                      // Разрешаем только цифры
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault()
+                      }
+                    }}
                   />
                 </div>
               </div>

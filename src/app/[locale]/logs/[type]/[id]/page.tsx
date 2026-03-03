@@ -32,7 +32,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { db, getEntityById, deleteEntity, createEntity } from "@/lib/db"
+import {
+  db,
+  getEntityById,
+  deleteEntity,
+  createEntity,
+  getStaticEntityTranslation,
+  getLocalizedEntityName,
+} from "@/lib/db"
 import { useTranslations, useLocale } from "next-intl"
 import type {
   Log,
@@ -42,8 +49,10 @@ import type {
   StrengthSubcategory,
   CardioSubcategory,
   YogaSubcategory,
+  FinanceMetadata,
 } from "@/types"
 import { logTypeColors, workoutColors, statusColors } from "@/lib/theme-colors"
+import { LogType as DbLogType } from "@/types"
 
 const typeLabels: Record<LogType, string> = {
   food: "Nutrition",
@@ -153,8 +162,152 @@ export default function LogDetailPage() {
 
   const [log, setLog] = useState<Log | null>(null)
   const [category, setCategory] = useState<Category | null>(null)
+  const [localizedCategoryName, setLocalizedCategoryName] = useState<string>("")
+  const [metadataItems, setMetadataItems] = useState<{ label: string; value: string }[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
+  // Get metadata based on type (defined before useEffect to avoid hoisting issues)
+  const getMetadataItems = async (logData: Log | null) => {
+    if (!logData?.metadata) return []
+
+    if (type === "food") {
+      const m = logData.metadata as {
+        calories?: number
+        protein?: number
+        fat?: number
+        carbs?: number
+      }
+      return [
+        { label: t("food.calories"), value: m.calories ? `${m.calories} ккал` : "-" },
+        { label: t("food.protein"), value: m.protein ? `${m.protein} г` : "-" },
+        { label: t("food.fat"), value: m.fat ? `${m.fat} г` : "-" },
+        { label: t("food.carbs"), value: m.carbs ? `${m.carbs} г` : "-" },
+      ]
+    }
+    if (type === "workout") {
+      const m = logData.metadata as WorkoutMetadata
+      const categoryName = category?.name || ""
+      const workoutType = getWorkoutType(categoryName)
+
+      // Базовые метрики
+      const items: { label: string; value: string }[] = []
+
+      if (m.duration) {
+        items.push({ label: t("workout.duration"), value: `${m.duration} мин` })
+      }
+      if (m.intensity) {
+        items.push({
+          label: t("workout.intensity"),
+          value: intensityLabels[m.intensity] || m.intensity,
+        })
+      }
+      if (m.subcategory) {
+        items.push({
+          label: t("workout.subcategory"),
+          value: getSubcategoryLabel(m.subcategory, categoryName),
+        })
+      }
+      if (m.equipment) {
+        const equipmentStr = Array.isArray(m.equipment) ? m.equipment.join(", ") : m.equipment
+        items.push({ label: t("workout.equipment"), value: equipmentStr })
+      }
+      if (m.goal) {
+        items.push({ label: t("workout.goal"), value: goalLabels[m.goal] || m.goal })
+      }
+      if (m.calories_burned) {
+        items.push({ label: t("workout.caloriesBurned"), value: `${m.calories_burned} ккал` })
+      }
+
+      // Специфические метрики для силовой
+      if (workoutType === "strength") {
+        if (m.exercises_count) {
+          items.push({ label: t("workout.exercisesCount"), value: `${m.exercises_count}` })
+        }
+        if (m.sets_count) {
+          items.push({ label: t("workout.setsCount"), value: `${m.sets_count}` })
+        }
+        if (m.reps_count) {
+          items.push({ label: t("workout.repsCount"), value: `${m.reps_count}` })
+        }
+        if (m.total_weight) {
+          items.push({ label: t("workout.totalWeight"), value: `${m.total_weight} кг` })
+        }
+      }
+
+      // Специфические метрики для кардио
+      if (workoutType === "cardio") {
+        if (m.distance) {
+          items.push({ label: t("workout.distance"), value: `${m.distance} км` })
+        }
+        if (m.average_speed) {
+          items.push({ label: t("workout.averageSpeed"), value: `${m.average_speed} км/ч` })
+        }
+        if (m.average_pace) {
+          items.push({ label: t("workout.averagePace"), value: m.average_pace })
+        }
+        if (m.rounds) {
+          items.push({ label: t("workout.rounds"), value: `${m.rounds}` })
+        }
+      }
+
+      // Для йоги
+      if (workoutType === "yoga") {
+        if (m.level) {
+          items.push({ label: t("workout.level"), value: levelLabels[m.level] || m.level })
+        }
+        if (m.focus) {
+          items.push({ label: t("workout.focus"), value: focusLabels[m.focus] || m.focus })
+        }
+      }
+
+      // Пульс
+      if (m.heart_rate_avg) {
+        items.push({ label: "Средний пульс", value: `${m.heart_rate_avg} уд/мин` })
+      }
+      if (m.heart_rate_max) {
+        items.push({ label: "Макс. пульс", value: `${m.heart_rate_max} уд/мин` })
+      }
+
+      return items
+    }
+    if (type === "finance") {
+      const m = logData.metadata as FinanceMetadata
+      const items: { label: string; value: string }[] = []
+
+      items.push({ label: t("finance.type"), value: t(`finance.types.${m.finance_type}`) })
+
+      // Для подкатегорий, товаров и поставщиков используем статические переводы
+      // т.к. это ключи из financeCategoriesStructure, а не ID из БД
+      if (m.category_key) {
+        items.push({
+          label: t("finance.category"),
+          value: getStaticEntityTranslation("categories", m.category_key, locale, "finance"),
+        })
+      }
+      if (m.subcategory_key) {
+        items.push({
+          label: t("finance.subcategory"),
+          value: getStaticEntityTranslation("financeSubcategories", m.subcategory_key, locale),
+        })
+      }
+      if (m.item_key) {
+        items.push({
+          label: t("finance.item"),
+          value: getStaticEntityTranslation("financeSubcategories", m.item_key, locale),
+        })
+      }
+      if (m.supplier_key) {
+        items.push({
+          label: t("finance.supplier"),
+          value: getStaticEntityTranslation("financeSuppliers", m.supplier_key, locale),
+        })
+      }
+
+      return items
+    }
+    return []
+  }
 
   useEffect(() => {
     async function loadData() {
@@ -165,6 +318,24 @@ export default function LogDetailPage() {
         if (logData?.category_id) {
           const cat = await getEntityById(db.categories, logData.category_id)
           setCategory(cat || null)
+
+          // Get localized category name
+          if (cat) {
+            const localizedName = await getLocalizedEntityName(
+              "category",
+              cat.id,
+              locale,
+              cat.name,
+              logData.type
+            )
+            setLocalizedCategoryName(localizedName)
+          }
+        }
+
+        // Load metadata items
+        if (logData?.metadata) {
+          const items = await getMetadataItems(logData)
+          setMetadataItems(items)
         }
       } catch (error) {
         console.error("Failed to load log:", error)
@@ -173,7 +344,7 @@ export default function LogDetailPage() {
       }
     }
     loadData()
-  }, [id])
+  }, [id, locale])
 
   const handleDelete = async () => {
     if (!log) return
@@ -267,117 +438,6 @@ export default function LogDetailPage() {
     if (categoryName === "Кардио") return "cardio"
     if (categoryName === "Йога") return "yoga"
     return "unknown"
-  }
-
-  // Get metadata based on type
-  const getMetadataItems = () => {
-    if (!log.metadata) return []
-
-    if (type === "food") {
-      const m = log.metadata as {
-        calories?: number
-        protein?: number
-        fat?: number
-        carbs?: number
-      }
-      return [
-        { label: t("food.calories"), value: m.calories ? `${m.calories} ккал` : "-" },
-        { label: t("food.protein"), value: m.protein ? `${m.protein} г` : "-" },
-        { label: t("food.fat"), value: m.fat ? `${m.fat} г` : "-" },
-        { label: t("food.carbs"), value: m.carbs ? `${m.carbs} г` : "-" },
-      ]
-    }
-    if (type === "workout") {
-      const m = log.metadata as WorkoutMetadata
-      const categoryName = category?.name || ""
-      const workoutType = getWorkoutType(categoryName)
-
-      // Базовые метрики
-      const items: { label: string; value: string }[] = []
-
-      if (m.duration) {
-        items.push({ label: t("workout.duration"), value: `${m.duration} мин` })
-      }
-      if (m.intensity) {
-        items.push({
-          label: t("workout.intensity"),
-          value: intensityLabels[m.intensity] || m.intensity,
-        })
-      }
-      if (m.subcategory) {
-        items.push({
-          label: t("workout.subcategory"),
-          value: getSubcategoryLabel(m.subcategory, categoryName),
-        })
-      }
-      if (m.equipment) {
-        const equipmentStr = Array.isArray(m.equipment) ? m.equipment.join(", ") : m.equipment
-        items.push({ label: t("workout.equipment"), value: equipmentStr })
-      }
-      if (m.goal) {
-        items.push({ label: t("workout.goal"), value: goalLabels[m.goal] || m.goal })
-      }
-      if (m.calories_burned) {
-        items.push({ label: t("workout.caloriesBurned"), value: `${m.calories_burned} ккал` })
-      }
-
-      // Специфические метрики для силовой
-      if (workoutType === "strength") {
-        if (m.exercises_count) {
-          items.push({ label: t("workout.exercisesCount"), value: `${m.exercises_count}` })
-        }
-        if (m.sets_count) {
-          items.push({ label: t("workout.setsCount"), value: `${m.sets_count}` })
-        }
-        if (m.reps_count) {
-          items.push({ label: t("workout.repsCount"), value: `${m.reps_count}` })
-        }
-        if (m.total_weight) {
-          items.push({ label: t("workout.totalWeight"), value: `${m.total_weight} кг` })
-        }
-      }
-
-      // Специфические метрики для кардио
-      if (workoutType === "cardio") {
-        if (m.distance) {
-          items.push({ label: t("workout.distance"), value: `${m.distance} км` })
-        }
-        if (m.average_speed) {
-          items.push({ label: t("workout.averageSpeed"), value: `${m.average_speed} км/ч` })
-        }
-        if (m.average_pace) {
-          items.push({ label: t("workout.averagePace"), value: `${m.average_pace} мин/км` })
-        }
-        if (m.rounds) {
-          items.push({ label: t("workout.rounds"), value: `${m.rounds}` })
-        }
-      }
-
-      // Специфические метрики для йоги
-      if (workoutType === "yoga") {
-        if (m.level) {
-          items.push({ label: "Уровень", value: levelLabels[m.level] || m.level })
-        }
-        if (m.focus) {
-          items.push({ label: "Фокус", value: focusLabels[m.focus] || m.focus })
-        }
-      }
-
-      // Пульс (общий для всех типов)
-      if (m.heart_rate_avg) {
-        items.push({ label: "Средний пульс", value: `${m.heart_rate_avg} уд/мин` })
-      }
-      if (m.heart_rate_max) {
-        items.push({ label: "Макс. пульс", value: `${m.heart_rate_max} уд/мин` })
-      }
-
-      return items
-    }
-    if (type === "finance") {
-      const m = log.metadata as { finance_type?: string }
-      return [{ label: "Тип", value: m.finance_type === "income" ? "Доход" : "Расход" }]
-    }
-    return []
   }
 
   // Компонент для отображения метрик с иконками
@@ -637,15 +697,15 @@ export default function LogDetailPage() {
               {category && (
                 <div>
                   <p className="text-sm text-muted-foreground">{t("fields.category")}</p>
-                  <p className="font-medium">{category.name}</p>
+                  <p className="font-medium">{localizedCategoryName || category.name}</p>
                 </div>
               )}
             </div>
 
             {/* Type-specific metadata */}
-            {getMetadataItems().length > 0 && (
+            {metadataItems.length > 0 && (
               <div className="grid grid-cols-2 gap-4 pt-2 border-t">
-                {getMetadataItems().map((item, i) => (
+                {metadataItems.map((item, i) => (
                   <div key={i}>
                     <p className="text-sm text-muted-foreground">{item.label}</p>
                     <p className="font-medium">{item.value}</p>

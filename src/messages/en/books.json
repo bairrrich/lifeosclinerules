@@ -1,0 +1,173 @@
+{
+  "title": "Books",
+  "addBook": "Add Book",
+  "editBook": "Edit Book",
+  "noBooks": "No books yet",
+  "totalBooks": "Total books",
+  "reading": "Reading",
+  "completed": "Completed",
+  "comingSoon": "Management of genres, authors and series will be available in the next version.",
+  "forms": {
+    "main": "Main",
+    "authorAndEdition": "Author & Edition",
+    "characteristics": "Characteristics",
+    "isbnAndExternalIds": "ISBN & External IDs",
+    "genresAndTags": "Genres & Tags",
+    "cover": "Cover",
+    "tags": "Tags"
+  },
+  "fields": {
+    "title": "Title",
+    "subtitle": "Subtitle",
+    "description": "Description",
+    "annotation": "Annotation or brief description...",
+    "authors": "Author(s)",
+    "publishedYear": "Publication Year",
+    "originalYear": "Original Year",
+    "publisher": "Publisher",
+    "format": "Format",
+    "language": "Language",
+    "pageCount": "Number of Pages",
+    "pages": "Pages",
+    "isbn10": "ISBN-10",
+    "isbn13": "ISBN-13",
+    "goodreadsId": "Goodreads ID",
+    "googleBooksId": "Google Books ID",
+    "genres": "Genres",
+    "tags": "Tags",
+    "coverUrl": "Cover URL",
+    "addTag": "Add Tag",
+    "newAuthor": "New author name...",
+    "newGenre": "New genre name..."
+  },
+  "formats": {
+    "paperback": "Paperback",
+    "hardcover": "Hardcover",
+    "ebook": "E-book",
+    "audiobook": "Audiobook"
+  },
+  "languages": {
+    "ru": "Russian",
+    "en": "English",
+    "de": "German",
+    "fr": "French",
+    "es": "Spanish",
+    "it": "Italian",
+    "ja": "Japanese",
+    "zh": "Chinese",
+    "other": "Other"
+  },
+  "status": {
+    "planned": "Planned",
+    "reading": "Reading",
+    "completed": "Completed",
+    "paused": "Paused",
+    "dropped": "Dropped"
+  },
+  "userBook": {
+    "status": "Status",
+    "rating": "Rating",
+    "progress": "Progress",
+    "pages": "Pages",
+    "percent": "Percent",
+    "startedAt": "Started At",
+    "finishedAt": "Finished At",
+    "notes": "Personal Notes",
+    "isOwned": "Owned",
+    "ownedFormat": "Owned Format",
+    "location": "Location",
+    "rereadCount": "Reread Count"
+  },
+  "quotes": {
+    "title": "Quotes",
+    "addQuote": "Add Quote",
+    "text": "Quote Text",
+    "page": "Page",
+    "location": "Location",
+    "noQuotes": "No saved quotes"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "addReview": "Add Review",
+    "reviewTitle": "Review Title",
+    "reviewText": "Review Text"
+  },
+  "common": {
+    "loading": "Loading...",
+    "back": "Back",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel"
+  },
+  "notFound": "Book not found",
+  "details": "Details",
+  "aboutBook": "About Book",
+  "categories": "Categories",
+  "inCollection": "In Collection",
+  "createdAt": "Added",
+  "noNotes": "No notes",
+  "deleteDialog": {
+    "title": "Delete book?",
+    "description": "This action cannot be undone. \"{title}\" will be deleted permanently."
+  },
+  "list": {
+    "title": "Books",
+    "stats": {
+      "total": "Total",
+      "reading": "Reading",
+      "completed": "Completed",
+      "planned": "Planned",
+      "paused": "Paused"
+    },
+    "filters": {
+      "all": "All",
+      "reading": "Reading",
+      "planned": "Planned",
+      "completed": "Completed",
+      "paused": "Paused"
+    },
+    "search": {
+      "placeholder": "Search by title or author..."
+    },
+    "empty": {
+      "library": "Library is empty. Add your first book!",
+      "noResults": "No books found"
+    },
+    "loading": "Loading...",
+    "progress": "Progress",
+    "pages": "pages"
+  },
+  "new": {
+    "title": "New Book",
+    "form": {
+      "bookDetails": "Book Details",
+      "userProgress": "User Progress",
+      "quotes": "Quotes"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "validation": {
+      "titleRequired": "Enter book title"
+    },
+    "error": {
+      "failedToCreate": "Failed to create book"
+    }
+  },
+  "edit": {
+    "title": "Edit Book",
+    "loading": "Loading...",
+    "validation": {
+      "titleRequired": "Enter book title"
+    },
+    "error": {
+      "failedToUpdate": "Failed to update book",
+      "failedToDelete": "Failed to delete book"
+    },
+    "delete": {
+      "confirm": "Are you sure you want to delete this book? This action cannot be undone."
+    }
+  }
+}

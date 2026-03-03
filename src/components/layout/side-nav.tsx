@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 export function SideNav() {
   const pathname = usePathname()
   const t = useTranslations("navigation")
+  const tCommon = useTranslations("common")
 
   return (
     <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 flex-col border-r border-border/40 bg-background/80 backdrop-blur-sm z-30">
@@ -26,7 +27,7 @@ export function SideNav() {
           onClick={() => document.dispatchEvent(new Event("open-global-search"))}
         >
           <Search className="h-5 w-5" />
-          <span className="sr-only">Поиск</span>
+          <span className="sr-only">{tCommon("search")}</span>
         </Button>
       </div>
 

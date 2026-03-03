@@ -1,0 +1,89 @@
+{
+  "title": "Mood",
+  "addMood": "Add Mood",
+  "editMood": "Edit Mood",
+  "fields": {
+    "date": "Date",
+    "mood": "Mood",
+    "energy": "Energy",
+    "stress": "Stress",
+    "activities": "Activities",
+    "notes": "Notes",
+    "factors": "Factors"
+  },
+  "moods": {
+    "great": "Great",
+    "good": "Good",
+    "okay": "Okay",
+    "bad": "Bad",
+    "terrible": "Terrible"
+  },
+  "levels": {
+    "veryLow": "Very Low",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "veryHigh": "Very High"
+  },
+  "activities": {
+    "work": "Work",
+    "exercise": "Exercise",
+    "social": "Social",
+    "hobby": "Hobby",
+    "rest": "Rest",
+    "shopping": "Shopping",
+    "reading": "Reading",
+    "gaming": "Gaming",
+    "cooking": "Cooking",
+    "walk": "Walk"
+  },
+  "factors": {
+    "sleep": "Sleep",
+    "weather": "Weather",
+    "health": "Health",
+    "work": "Work"
+  },
+  "today": "How are you feeling today?",
+  "last7Days": "Last 7 Days",
+  "weekAverage": "Week Average",
+  "recordsCount": "Records",
+  "history": "History",
+  "correlations": {
+    "title": "Correlations with Mood",
+    "description": "How different factors affect your mood (based on last 14 days)",
+    "sleep": "Sleep",
+    "water": "Water",
+    "workout": "Workouts",
+    "noCorrelation": "No connection",
+    "strongPositive": "Strong +",
+    "moderatePositive": "Moderate +",
+    "weakPositive": "Weak +",
+    "strongNegative": "Strong -",
+    "moderateNegative": "Moderate -",
+    "weakNegative": "Weak -",
+    "tip": "💡 Positive correlation means more/better = better mood"
+  },
+  "dialogs": {
+    "addTitle": "How are you feeling?",
+    "editTitle": "Edit Entry",
+    "deleteTitle": "Delete Entry?",
+    "deleteConfirm": "Are you sure you want to delete this mood entry? This action cannot be undone.",
+    "save": "Save",
+    "stressLabel": "Stress (1 - low, 5 - high)",
+    "notesPlaceholder": "What affected your mood?"
+  },
+  "dialog": {
+    "title": "How are you feeling?",
+    "mood": "Mood",
+    "energy": "Energy",
+    "stress": "Stress",
+    "activities": "Activities",
+    "notes": "Notes",
+    "notesPlaceholder": "What affected you?"
+  },
+  "empty": {
+    "loading": "Loading...",
+    "noRecords": "No records"
+  },
+  "edit": "Edit entry"
+}

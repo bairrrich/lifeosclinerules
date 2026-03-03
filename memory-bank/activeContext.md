@@ -212,6 +212,124 @@ export const ANIMATION_DURATION_MS = 200
 
 ---
 
+## Исправление отрицательных значений в формах (2026-03-03)
+
+### Проблема
+
+Пользователь мог ввести отрицательные значения в числовые поля:
+
+- **Финансы**: при вводе `-100` для расхода, баланс _увеличивался_ (`balance - (-100) = +100`)
+- **Финансы**: при вводе `-100` для дохода, баланс _уменьшался_ (`balance + (-100) = -100`)
+- **Тренировки**: отрицательные калории, длительность, пульс
+- **Другие формы**: отрицательные количества, веса, дистанции
+
+### Решение
+
+**1. Валидация на уровне формы** — добавлены `min="0"` и Zod валидация:
+
+```typescript
+// src/components/logs/finance-form.tsx
+<Input
+  type="number"
+  min="0"
+  {...register("value", {
+    valueAsNumber: true,
+    min: { value: 0, message: "Сумма не может быть отрицательной" }
+  })}
+/>
+```
+
+**2. Защита на уровне данных** — `Math.abs()` для всех числовых значений:
+
+```typescript
+// src/app/[locale]/logs/[type]/new/page.tsx
+const amount = Math.abs(data.value) // Гарантирует положительное значение
+
+if (financeType === "income") {
+  balance: account.balance + amount // Всегда прибавляет
+} else if (financeType === "expense") {
+  balance: account.balance - amount // Всегда отнимает
+}
+```
+
+**3. Защита в onChange** — `Math.max(0, value)` для state:
+
+```typescript
+// src/components/logs/workout-form.tsx
+onChange={(e) =>
+  setCaloriesBurned(Math.max(0, e.target.value ? Number(e.target.value) : 0))
+}
+```
+
+**4. Блокировка ввода `-` и `+`** — onKeyPress фильтр:
+
+```typescript
+// Для финансов (разрешаем цифры и точку/запятую)
+onKeyPress={(e) => {
+  if (!/[0-9.,]/.test(e.key)) {
+    e.preventDefault()
+  }
+}}
+
+// Для целых чисел (разрешаем только цифры)
+onKeyPress={(e) => {
+  if (!/[0-9]/.test(e.key)) {
+    e.preventDefault()
+  }
+}}
+
+// Для дробных чисел (разрешаем цифры и точку)
+onKeyPress={(e) => {
+  if (!/[0-9.]/.test(e.key)) {
+    e.preventDefault()
+  }
+}}
+```
+
+### Изменённые файлы
+
+- `src/components/logs/finance-form.tsx` — валидация суммы + блокировка `-` и `+`
+- `src/app/[locale]/logs/[type]/new/page.tsx` — Math.abs() для финансов
+- `src/components/logs/workout-form.tsx` — валидация всех числовых полей + блокировка `-` и `+`
+
+### Поля с защитой (25 полей в 5 категориях)
+
+**Финансы (1 поле):**
+
+- `value` — сумма транзакции
+
+**Тренировки (11 полей):**
+
+- `duration` — длительность (мин)
+- `caloriesBurned` — сожжённые калории
+- `distance` — дистанция (км) _разрешена точка_
+- `heartRateAvg` — средний пульс
+- `heartRateMax` — максимальный пульс
+- `exercisesCount` — количество упражнений
+- `setsCount` — количество подходов
+- `repsCount` — количество повторений
+- `totalWeight` — общий вес (кг) _разрешена точка_
+- `averageSpeed` — средняя скорость (км/ч) _разрешена точка_
+- `rounds` — количество раундов
+
+**Еда (5 полей):**
+
+- `customPortionSize` — размер порции (г) _разрешена точка_
+- `calories` — калории (целое)
+- `protein`, `fat`, `carbs` — БЖУ (г) _разрешена точка_
+
+**Рецепты (6 полей):**
+
+- `amount` — количество ингредиента _разрешена точка_
+- `calories_per_100`, `protein_per_100`, `fat_per_100`, `carbs_per_100`, `fiber_per_100` — КБЖУ на 100г _разрешена точка_
+
+**Цели (2 поля):**
+
+- `target_value` — целевое значение (создание) _разрешена точка_
+- `target_value` — целевое значение (редактирование) _разрешена точка_
+
+---
+
 ## Предыдущие сессии
 
 ### 🎨 Полный рефакторинг цветовой системы (2026-03-02-03)

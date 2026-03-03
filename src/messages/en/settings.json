@@ -1,0 +1,194 @@
+{
+  "title": "Settings",
+  "tabs": {
+    "general": "General",
+    "logs": "Logs",
+    "items": "Catalog",
+    "books": "Books",
+    "recipes": "Recipes"
+  },
+  "addItem": "Add Item",
+  "editItem": "Edit Item",
+  "about": {
+    "title": "About Application",
+    "description": "Life OS is a unified application for tracking various aspects of life.",
+    "version": "Version",
+    "technologies": "Technologies"
+  },
+  "theme": {
+    "title": "Theme",
+    "description": "Application appearance settings",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "title": "Language",
+    "description": "Interface language settings"
+  },
+  "firstDayOfWeek": {
+    "title": "First Day of Week",
+    "description": "Calendar display settings",
+    "label": "Week Start",
+    "monday": "Monday",
+    "sunday": "Sunday"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "description": "Language, theme and calendar settings"
+  },
+  "dataStats": {
+    "title": "Data Statistics",
+    "description": "Overview of stored data",
+    "totalLogs": "Total Logs",
+    "totalItems": "Total Items",
+    "totalContent": "Total Content",
+    "foodLogs": "Food Logs",
+    "workoutLogs": "Workout Logs",
+    "financeLogs": "Finance Logs"
+  },
+  "sync": {
+    "title": "Sync",
+    "description": "Data synchronization settings",
+    "syncStatus": "Sync Status",
+    "lastSync": "Last Sync",
+    "syncNow": "Sync Now",
+    "autoSync": "Auto Sync",
+    "syncEnabled": "Sync Enabled",
+    "syncDisabled": "Sync Disabled",
+    "notConfigured": "Sync not configured. Add Supabase keys to .env.local file",
+    "loginHint": "Log in to sync data between devices",
+    "syncing": "Syncing...",
+    "synced": "Synced",
+    "syncError": "Sync Error",
+    "ready": "Ready to sync",
+    "never": "Never",
+    "pending": "Pending sync",
+    "records": "records",
+    "changes": "changes",
+    "autoSyncHint": "💡 Sync works in background when internet is available",
+    "signupSuccess": "Check your email to confirm registration"
+  },
+  "backup": {
+    "title": "Backup",
+    "description": "Data export and import",
+    "exportJson": "Export JSON",
+    "importJson": "Import JSON",
+    "exporting": "Exporting...",
+    "importing": "Importing...",
+    "autoBackup": "Auto Backup",
+    "backupIntervals": {
+      "hourly": "Every hour",
+      "every6Hours": "Every 6 hours",
+      "every12Hours": "Every 12 hours",
+      "daily": "Every day",
+      "weekly": "Every week"
+    },
+    "lastBackup": "Last backup",
+    "csvExport": "CSV Export (for Excel)",
+    "logs": "Logs",
+    "items": "Catalog",
+    "books": "Books",
+    "accounts": "Accounts",
+    "clearAllData": "Clear All Data",
+    "confirmImport": {
+      "title": "Confirm Import",
+      "description": "Importing data may overwrite existing records with the same IDs. Are you sure you want to continue?"
+    }
+  },
+  "dangerZone": {
+    "title": "Danger Zone",
+    "description": "Irreversible actions",
+    "seedData": "Seed Test Data",
+    "reseedData": "Reseed Test Data",
+    "seeding": "Seeding...",
+    "confirmSeed": "Are you sure you want to seed test data? Existing data will be preserved.",
+    "cleanupDuplicates": "Cleanup Duplicate Categories",
+    "clearAllData": "Clear All Data",
+    "confirmClear": "Are you sure? All data will be deleted without recovery!",
+    "confirmReseed": "Recreate database? All current data will be deleted and replaced with test data!"
+  },
+  "accounts": {
+    "title": "Financial Accounts",
+    "description": "Manage accounts and cards",
+    "noAccounts": "No accounts created",
+    "addAccount": "Add Account",
+    "name": "Name",
+    "type": "Type",
+    "balance": "Balance",
+    "currency": "Currency",
+    "initialBalance": "Initial Balance",
+    "accountTypes": {
+      "cash": "Cash",
+      "card": "Card",
+      "bank": "Bank Account",
+      "deposit": "Deposit",
+      "investment": "Investment",
+      "crypto": "Crypto"
+    }
+  },
+  "items": {
+    "title": "Substance Catalog",
+    "description": "Manage catalog reference books",
+    "comingSoon": "Management of categories and forms of release for the substance catalog will be available in the next version."
+  },
+  "books": {
+    "title": "Books",
+    "description": "Manage book library",
+    "totalBooks": "Total books",
+    "reading": "Reading",
+    "completed": "Completed",
+    "planned": "Planned",
+    "comingSoon": "Book management will be available in the next version."
+  },
+  "recipes": {
+    "title": "Recipes",
+    "description": "Manage reference books for recipes",
+    "totalRecipes": "Total recipes",
+    "otherContent": "Other content",
+    "comingSoon": "Management of ingredients and recipe categories will be available in the next version."
+  },
+  "categories": {
+    "title": "Categories",
+    "description": "Categories for log entries",
+    "noCategories": "No categories",
+    "addCategory": "Add Category",
+    "all": "All",
+    "icon": "Emoji",
+    "iconPlaceholder": "Select emoji from list",
+    "iconHelp": "Click the button to select emoji from preset list",
+    "name": "Name",
+    "type": "Type",
+    "financeType": "Finance Type",
+    "financeTypes": {
+      "income": "Income",
+      "expense": "Expense",
+      "transfer": "Transfer",
+      "select": "Select type"
+    },
+    "categoryTypes": {
+      "food": "Nutrition",
+      "workout": "Workouts",
+      "finance": "Finance"
+    }
+  },
+  "units": {
+    "title": "Units of Measurement",
+    "description": "Units of measurement reference",
+    "noUnits": "No units of measurement",
+    "addUnit": "Add Unit",
+    "name": "Name",
+    "abbreviation": "Abbreviation",
+    "type": "Type",
+    "unitTypes": {
+      "weight": "Weight",
+      "volume": "Volume",
+      "count": "Count",
+      "time": "Time",
+      "money": "Money"
+    }
+  },
+  "export": {
+    "description": "Export your data for backup or analysis in other applications."
+  }
+}

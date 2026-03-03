@@ -1,0 +1,173 @@
+{
+  "title": "Книги",
+  "addBook": "Добавить книгу",
+  "editBook": "Редактировать книгу",
+  "noBooks": "Пока нет книг",
+  "totalBooks": "Всего книг",
+  "reading": "Читаю",
+  "completed": "Прочитано",
+  "comingSoon": "Управление жанрами, авторами и сериями будет доступно в следующей версии.",
+  "forms": {
+    "main": "Основное",
+    "authorAndEdition": "Автор и издание",
+    "characteristics": "Характеристики",
+    "isbnAndExternalIds": "ISBN и внешние ID",
+    "genresAndTags": "Жанры и теги",
+    "cover": "Обложка",
+    "tags": "Теги"
+  },
+  "fields": {
+    "title": "Название",
+    "subtitle": "Подзаголовок",
+    "description": "Описание",
+    "annotation": "Аннотация или краткое описание...",
+    "authors": "Автор(ы)",
+    "publishedYear": "Год издания",
+    "originalYear": "Год оригинала",
+    "publisher": "Издательство",
+    "format": "Формат",
+    "language": "Язык",
+    "pageCount": "Количество страниц",
+    "pages": "Страницы",
+    "isbn10": "ISBN-10",
+    "isbn13": "ISBN-13",
+    "goodreadsId": "Goodreads ID",
+    "googleBooksId": "Google Books ID",
+    "genres": "Жанры",
+    "tags": "Теги",
+    "coverUrl": "URL обложки",
+    "addTag": "Добавить тег",
+    "newAuthor": "Имя нового автора...",
+    "newGenre": "Название нового жанра..."
+  },
+  "formats": {
+    "paperback": "Мягкая обложка",
+    "hardcover": "Твёрдая обложка",
+    "ebook": "Электронная книга",
+    "audiobook": "Аудиокнига"
+  },
+  "languages": {
+    "ru": "Русский",
+    "en": "Английский",
+    "de": "Немецкий",
+    "fr": "Французский",
+    "es": "Испанский",
+    "it": "Итальянский",
+    "ja": "Японский",
+    "zh": "Китайский",
+    "other": "Другой"
+  },
+  "status": {
+    "planned": "Запланировано",
+    "reading": "Читаю",
+    "completed": "Прочитано",
+    "paused": "Приостановлено",
+    "dropped": "Брошено"
+  },
+  "userBook": {
+    "status": "Статус",
+    "rating": "Оценка",
+    "progress": "Прогресс",
+    "pages": "Страницы",
+    "percent": "Проценты",
+    "startedAt": "Начато",
+    "finishedAt": "Завершено",
+    "notes": "Личные заметки",
+    "isOwned": "В собственности",
+    "ownedFormat": "Формат владения",
+    "location": "Расположение",
+    "rereadCount": "Кол-во перечитываний"
+  },
+  "quotes": {
+    "title": "Цитаты",
+    "addQuote": "Добавить цитату",
+    "text": "Текст цитаты",
+    "page": "Страница",
+    "location": "Расположение",
+    "noQuotes": "Нет сохранённых цитат"
+  },
+  "reviews": {
+    "title": "Рецензии",
+    "addReview": "Добавить рецензию",
+    "reviewTitle": "Заголовок рецензии",
+    "reviewText": "Текст рецензии"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "back": "Назад",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "cancel": "Отмена"
+  },
+  "notFound": "Книга не найдена",
+  "details": "Детали",
+  "aboutBook": "О книге",
+  "categories": "Категории",
+  "inCollection": "В коллекции",
+  "createdAt": "Добавлено",
+  "noNotes": "Нет заметок",
+  "deleteDialog": {
+    "title": "Удалить книгу?",
+    "description": "Это действие нельзя отменить. «{title}» будет удалено навсегда."
+  },
+  "list": {
+    "title": "Книги",
+    "stats": {
+      "total": "Всего",
+      "reading": "Читаю",
+      "completed": "Прочитано",
+      "planned": "В планах",
+      "paused": "Пауза"
+    },
+    "filters": {
+      "all": "Все",
+      "reading": "Читаю",
+      "planned": "Запланировано",
+      "completed": "Прочитано",
+      "paused": "Пауза"
+    },
+    "search": {
+      "placeholder": "Поиск по названию или автору..."
+    },
+    "empty": {
+      "library": "Библиотека пуста. Добавьте первую книгу!",
+      "noResults": "Книги не найдены"
+    },
+    "loading": "Загрузка...",
+    "progress": "Прогресс",
+    "pages": "стр."
+  },
+  "new": {
+    "title": "Новая книга",
+    "form": {
+      "bookDetails": "Метаданные книги",
+      "userProgress": "Пользовательские данные",
+      "quotes": "Цитаты"
+    },
+    "actions": {
+      "cancel": "Отмена",
+      "save": "Сохранить",
+      "saving": "Сохранение..."
+    },
+    "validation": {
+      "titleRequired": "Введите название книги"
+    },
+    "error": {
+      "failedToCreate": "Ошибка при создании книги"
+    }
+  },
+  "edit": {
+    "title": "Редактировать книгу",
+    "loading": "Загрузка...",
+    "validation": {
+      "titleRequired": "Введите название книги"
+    },
+    "error": {
+      "failedToUpdate": "Ошибка при сохранении книги",
+      "failedToDelete": "Ошибка при удалении книги"
+    },
+    "delete": {
+      "confirm": "Вы уверены, что хотите удалить эту книгу? Это действие нельзя отменить."
+    }
+  }
+}

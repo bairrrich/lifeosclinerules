@@ -93,6 +93,9 @@ export function CrudManager<T extends { id?: string | number }>({
       await onCreate(editingItemInternal)
       setEditingItemInternal(null)
       setIsCreating(false)
+    } catch (error) {
+      console.error("Create failed:", error)
+      alert(`Ошибка создания: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
       setIsLoading(false)
     }
@@ -115,6 +118,9 @@ export function CrudManager<T extends { id?: string | number }>({
         setEditingItemInternal(null)
         setIsCreating(false)
       }
+    } catch (error) {
+      console.error("Update failed:", error)
+      alert(`Ошибка обновления: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
       setIsLoading(false)
     }
@@ -130,6 +136,9 @@ export function CrudManager<T extends { id?: string | number }>({
       setIsLoading(true)
       try {
         await onDelete(id)
+      } catch (error) {
+        console.error("Delete failed:", error)
+        alert(`Ошибка удаления: ${error instanceof Error ? error.message : String(error)}`)
       } finally {
         setIsLoading(false)
       }

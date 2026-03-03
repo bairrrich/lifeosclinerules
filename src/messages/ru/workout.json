@@ -1,0 +1,8 @@
+{
+  "types": {
+    "strength": "Силовая",
+    "cardio": "Кардио",
+    "yoga": "Йога",
+    "stretching": "Растяжка"
+  }
+}

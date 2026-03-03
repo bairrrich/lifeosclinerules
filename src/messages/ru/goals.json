@@ -1,0 +1,56 @@
+{
+  "title": "Цели",
+  "addGoal": "Добавить цель",
+  "editGoal": "Редактировать цель",
+  "noGoals": "Пока нет целей",
+  "fields": {
+    "type": "Тип цели",
+    "name": "Название",
+    "targetValue": "Целевое значение",
+    "currentValue": "Текущее значение",
+    "period": "Период",
+    "startDate": "Дата начала",
+    "endDate": "Дата окончания",
+    "isActive": "Активна",
+    "unit": "Единица"
+  },
+  "types": {
+    "calories": "Калории",
+    "workout": "Тренировки",
+    "water": "Вода",
+    "sleep": "Сон",
+    "steps": "Шаги",
+    "weight": "Вес",
+    "finance": "Финансы"
+  },
+  "units": {
+    "kcal": "ккал",
+    "min": "мин",
+    "hour": "ч",
+    "count": "шт",
+    "ml": "мл",
+    "l": "л",
+    "kg": "кг",
+    "g": "г",
+    "currency": "₽"
+  },
+  "periods": {
+    "daily": "В день",
+    "weekly": "В неделю",
+    "monthly": "В месяц"
+  },
+  "progress": "Прогресс",
+  "completed": "Выполнено",
+  "completedToday": "Выполнено сегодня",
+  "common": {
+    "loading": "Загрузка...",
+    "add": "Добавить"
+  },
+  "deleteConfirm": {
+    "title": "Удалить цель?",
+    "message": "Вы уверены, что хотите удалить цель \"{name}\"? Это действие нельзя отменить."
+  },
+  "placeholders": {
+    "caloriesPerDay": "Например: Калории в день"
+  }
+}

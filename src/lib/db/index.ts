@@ -36,6 +36,7 @@ import type {
   Template,
   RecurringTransaction,
   EntityTranslation,
+  Budget,
 } from "@/types"
 import { LogType, ItemType, ContentType, FinanceType } from "@/types"
 
@@ -76,6 +77,9 @@ class LifeOSDatabase extends Dexie {
   habitLogs!: EntityTable<HabitLog, "id">
   streaks!: EntityTable<Streak, "id">
 
+  // Budgets
+  budgets!: EntityTable<Budget, "id">
+
   // New tables - trackers
   sleepLogs!: EntityTable<SleepLog, "id">
   waterLogs!: EntityTable<WaterLog, "id">
@@ -96,28 +100,31 @@ class LifeOSDatabase extends Dexie {
   constructor() {
     super("LifeOSDB")
 
-    this.version(7).stores({
+    // Version 14: Add Compound Indexes for Performance (MUST include ALL tables)
+    // ============================================
+    this.version(14).stores({
       // Main tables
-      logs: "id, type, date, title, category_id, created_at, updated_at",
-      items: "id, type, name, category, created_at, updated_at",
-      content: "id, type, title, created_at, updated_at",
+      logs: "id, type, [type+date], date, title, category_id, created_at, updated_at",
+      items: "id, type, [type+category], category, name, created_at, updated_at",
+      content: "id, type, [type+created_at], created_at, title, updated_at, fiber",
 
       // Reference data
-      categories: "id, type, name",
+      categories: "id, type, [type+name], name",
       tags: "id, name",
       units: "id, type",
       accounts: "id, type",
       exercises: "id, category",
 
       // Recipes
-      recipeIngredients: "id, name, category, subcategory",
-      recipeIngredientItems: "id, recipe_id, ingredient_id, order",
-      recipeSteps: "id, recipe_id, order",
+      recipeIngredients: "id, name, [name+category], category, subcategory",
+      recipeIngredientItems: "id, recipe_id, [recipe_id+order], ingredient_id, order",
+      recipeSteps: "id, recipe_id, [recipe_id+order], order",
 
       // Books
       books:
-        "id, title, isbn13, published_year, language, format, series_id, created_at, updated_at",
-      userBooks: "id, book_id, status, rating, started_at, finished_at, created_at, updated_at",
+        "id, title, [title+published_year], isbn13, published_year, language, format, series_id, created_at, updated_at",
+      userBooks:
+        "id, book_id, [book_id+status], status, rating, started_at, finished_at, created_at, updated_at",
       authors: "id, name, created_at, updated_at",
       bookAuthors: "id, book_id, author_id, role, order",
       series: "id, name, created_at, updated_at",
@@ -129,13 +136,13 @@ class LifeOSDatabase extends Dexie {
       // Goals and habits
       goals: "id, type, period, is_active, start_date, end_date",
       habits: "id, name, frequency, is_active",
-      habitLogs: "id, habit_id, date, completed",
+      habitLogs: "id, habit_id, [habit_id+date], date, completed",
       streaks: "id, habit_id, current_streak, longest_streak",
 
       // Trackers
       sleepLogs: "id, date, quality, created_at, updated_at",
-      waterLogs: "id, date, amount_ml, type",
-      moodLogs: "id, date, mood, energy, stress",
+      waterLogs: "id, date, [date+type], type, amount_ml",
+      moodLogs: "id, date, [date+mood], mood, energy, stress",
       bodyMeasurements: "id, date, type, value",
 
       // Reminders and templates
@@ -150,6 +157,22 @@ class LifeOSDatabase extends Dexie {
 
       // Sync
       syncQueue: "id, table_name, record_id, action, synced",
+
+      // Entity localization
+      entityTranslations: "id, entity_type, entity_id, [entity_type+entity_id+locale], locale",
+    })
+
+    // Version 15: Add budgets table
+    // ============================================
+    this.version(15).stores({
+      budgets: "id, category_id, amount, period, created_at, updated_at",
+    })
+
+    // Version 16: Update logs and categories indexes (must include all fields from v14)
+    // ============================================
+    this.version(16).stores({
+      logs: "id, type, [type+date], date, title, category_id, created_at, updated_at",
+      categories: "id, type, [type+name], name",
     })
 
     this.version(8).stores({
@@ -172,19 +195,19 @@ class LifeOSDatabase extends Dexie {
         const accounts = await tx.table("accounts").toArray()
         for (const acc of accounts) {
           if (!acc.type) {
-            // Determine type by name
+            // Determine type by name (English keys with Russian fallback for migration)
             let type = "card"
-            if (acc.name === "cash") type = "cash"
-            else if (acc.name === "card") type = "card"
-            else if (acc.name === "bank") type = "bank"
-            else if (acc.name === "Вклад" || acc.name === "deposit") type = "deposit"
+            if (acc.name === "cash" || acc.name === "Наличные") type = "cash"
+            else if (acc.name === "card" || acc.name === "Дебетовая карта") type = "card"
+            else if (acc.name === "bank" || acc.name === "Банковский счёт") type = "bank"
+            else if (acc.name === "deposit" || acc.name === "Вклад") type = "deposit"
             else if (
+              acc.name === "investment" ||
               acc.name === "Брокерский счёт" ||
-              acc.name === "ИИС" ||
-              acc.name === "investment"
+              acc.name === "ИИС"
             )
               type = "investment"
-            else if (acc.name === "Крипто-кошелёк" || acc.name === "crypto") type = "crypto"
+            else if (acc.name === "crypto" || acc.name === "Крипто-кошелёк") type = "crypto"
 
             await tx.table("accounts").update(acc.id, { type })
           }
@@ -239,51 +262,6 @@ class LifeOSDatabase extends Dexie {
           // Continue anyway - duplicates will be handled by seedAccounts
         }
       })
-
-    // ============================================
-    // Version 14: Add Compound Indexes for Performance
-    // ============================================
-    this.version(14).stores({
-      // Logs - add compound index for type + date range queries
-      // Note: date must be indexed separately for compound index to work
-      logs: "id, type, [type+date], date, title, category_id, created_at, updated_at",
-
-      // Items - add compound index for type + category
-      items: "id, type, [type+category], category, name, created_at, updated_at",
-
-      // Content - add compound index for type + created_at, and fiber field for recipes
-      content: "id, type, [type+created_at], created_at, title, updated_at, fiber",
-
-      // Habit logs - critical for streak calculations
-      habitLogs: "id, habit_id, [habit_id+date], date, completed",
-
-      // Mood logs - add date+mood compound index
-      moodLogs: "id, date, [date+mood], mood, energy, stress",
-
-      // Water logs - add date+type compound index
-      waterLogs: "id, date, [date+type], type, amount_ml",
-
-      // Reminders - add type+is_active compound index for active queries
-      reminders:
-        "id, type, title, message, time, days, date, is_active, related_id, related_type, priority, start_date, end_date, advance_minutes, repeat_type, repeat_interval, custom_unit, monthly_day, sound, vibration, persistent, last_triggered_at, last_completed_at, streak, longest_streak, total_completed, created_at, updated_at",
-
-      // Books - add compound indexes
-      books:
-        "id, title, [title+published_year], isbn13, published_year, language, format, series_id, created_at, updated_at",
-      userBooks:
-        "id, book_id, [book_id+status], status, rating, started_at, finished_at, created_at, updated_at",
-
-      // Recipe - add compound indexes for ingredient lookups
-      recipeIngredients: "id, name, [name+category], category, subcategory",
-      recipeIngredientItems: "id, recipe_id, [recipe_id+order], ingredient_id, order",
-      recipeSteps: "id, recipe_id, [recipe_id+order], order",
-
-      // Categories - add compound index
-      categories: "id, type, [type+name], name",
-
-      // Entity translations - add compound index
-      entityTranslations: "id, entity_type, entity_id, [entity_type+entity_id+locale], locale",
-    })
   }
 }
 
@@ -323,38 +301,113 @@ export function createBaseEntity(): { id: string; created_at: string; updated_at
 }
 
 // ============================================
-// Generic CRUD Operations
+// Generic CRUD Operations with Validation
 // ============================================
 
+/**
+ * Validate finance log data
+ */
+function validateFinanceLog(data: any): void {
+  if (data.value !== undefined && data.value < 0) {
+    throw new Error("Finance log value cannot be negative")
+  }
+  if (!data.metadata?.finance_type) {
+    throw new Error("Finance type is required")
+  }
+  if (!["income", "expense", "transfer"].includes(data.metadata.finance_type)) {
+    throw new Error("Invalid finance type")
+  }
+}
+
+/**
+ * Validate workout log data
+ */
+function validateWorkoutLog(data: any): void {
+  if (data.metadata?.duration !== undefined && data.metadata.duration < 0) {
+    throw new Error("Workout duration cannot be negative")
+  }
+  if (data.metadata?.calories_burned !== undefined && data.metadata.calories_burned < 0) {
+    throw new Error("Calories burned cannot be negative")
+  }
+}
+
+/**
+ * Validate food log data
+ */
+function validateFoodLog(data: any): void {
+  if (data.metadata?.calories !== undefined && data.metadata.calories < 0) {
+    throw new Error("Calories cannot be negative")
+  }
+  if (data.metadata?.protein !== undefined && data.metadata.protein < 0) {
+    throw new Error("Protein cannot be negative")
+  }
+  if (data.metadata?.fat !== undefined && data.metadata.fat < 0) {
+    throw new Error("Fat cannot be negative")
+  }
+  if (data.metadata?.carbs !== undefined && data.metadata.carbs < 0) {
+    throw new Error("Carbs cannot be negative")
+  }
+}
+
+/**
+ * Create entity with validation and transaction
+ */
 export async function createEntity<T extends { id: string; updated_at: string }>(
   table: EntityTable<T, "id">,
   data: Partial<T>
 ): Promise<string> {
-  const entity = {
-    ...data,
-    ...createBaseEntity(),
-  } as unknown as T
+  // Validate based on table type
+  if (table.name === "logs") {
+    const logData = data as any
+    if (logData.type === "finance") validateFinanceLog(logData)
+    if (logData.type === "workout") validateWorkoutLog(logData)
+    if (logData.type === "food") validateFoodLog(logData)
+  }
 
-  await table.add(entity)
-  return entity.id
+  // Use transaction for atomic operation
+  return await db.transaction("rw", table, async () => {
+    const entity = {
+      ...data,
+      ...createBaseEntity(),
+    } as unknown as T
+
+    await table.add(entity)
+    return entity.id
+  })
 }
 
+/**
+ * Update entity with validation and transaction
+ */
 export async function updateEntity<T extends { id: string; updated_at: string }>(
   table: EntityTable<T, "id">,
   id: string,
   data: Partial<T>
 ): Promise<void> {
+  // Validate based on table type
+  if (table.name === "logs") {
+    const logData = data as any
+    if (logData.type === "finance") validateFinanceLog(logData)
+    if (logData.type === "workout") validateWorkoutLog(logData)
+    if (logData.type === "food") validateFoodLog(logData)
+  }
+
   await (table as any).update(id, {
     ...data,
     updated_at: getTimestamp(),
   })
 }
 
+/**
+ * Delete entity with transaction
+ */
 export async function deleteEntity<T extends { id: string }>(
   table: EntityTable<T, "id">,
   id: string
 ): Promise<void> {
-  await (table as any).delete(id)
+  await db.transaction("rw", table, async () => {
+    await (table as any).delete(id)
+  })
 }
 
 export async function getEntityById<T extends { id: string }>(
@@ -385,7 +438,7 @@ const entityTranslations: Record<string, typeof enEntities> = {
 
 /**
  * Get entity translation from static files
- * @param entityType - entity type (categories, units, accounts, tags, itemCategories, bookGenres, recipeIngredients, financeSuppliers)
+ * @param entityType - entity type (categories, units, accounts, tags, itemCategories, bookGenres, recipeIngredients, financeSuppliers, financeSubcategories)
  * @param entityKey - entity key (e.g., "food", "salary")
  * @param locale - language (en, ru)
  * @param subKey - subcategory (e.g., "finance" for categories or "vegetable" for ingredients)
@@ -399,7 +452,8 @@ export function getStaticEntityTranslation(
     | "itemCategories"
     | "bookGenres"
     | "recipeIngredients"
-    | "financeSuppliers",
+    | "financeSuppliers"
+    | "financeSubcategories",
   entityKey: string,
   locale: string,
   subKey?: string
@@ -419,6 +473,12 @@ export function getStaticEntityTranslation(
     }
   }
 
+  // For financeSubcategories return translation by key
+  if (entityType === "financeSubcategories") {
+    const subData = entityData as Record<string, string>
+    return subData[entityKey] || entityKey
+  }
+
   // For recipeIngredients use subcategory (vegetable, meat, dairy, etc.)
   if (entityType === "recipeIngredients" && subKey) {
     const subData = entityData[subKey] as Record<string, string> | undefined
@@ -427,12 +487,16 @@ export function getStaticEntityTranslation(
     }
   }
 
-  // For financeSuppliers return list of suppliers by category
-  if (entityType === "financeSuppliers" && subKey) {
-    const subData = entityData[subKey] as string[] | undefined
-    if (subData) {
-      return subData.join(", ")
+  // For financeSuppliers return translation by key (from financeSubcategories)
+  if (entityType === "financeSuppliers") {
+    // Try to find translation in financeSubcategories
+    const financeSubcategoriesData = (translations as Record<string, Record<string, unknown>>)[
+      "financeSubcategories"
+    ]
+    if (financeSubcategoriesData && financeSubcategoriesData[entityKey]) {
+      return financeSubcategoriesData[entityKey] as string
     }
+    return entityKey
   }
 
   // For units, accounts, tags, itemCategories, bookGenres - direct translation by key
@@ -482,7 +546,8 @@ export async function getLocalizedEntityName(
     | "itemCategory"
     | "bookGenre"
     | "recipeIngredient"
-    | "financeSupplier",
+    | "financeSupplier"
+    | "financeSubcategory",
   entityId: string,
   locale: string,
   defaultName: string,
@@ -513,6 +578,9 @@ export async function getLocalizedEntityName(
   if (entityType === "category" && categoryType) {
     // For categories use subcategory (food, workout, finance)
     staticTranslation = getStaticEntityTranslation("categories", defaultName, locale, categoryType)
+  } else if (entityType === "financeSubcategory" && categoryType) {
+    // For finance subcategories use financeSubcategories
+    staticTranslation = getStaticEntityTranslation("financeSubcategories", defaultName, locale)
   } else if (entityType === "recipeIngredient" && categoryType) {
     // For recipe ingredients use subcategory (vegetable, meat, dairy, grains, spice, herb)
     staticTranslation = getStaticEntityTranslation(

@@ -1,0 +1,411 @@
+{
+  "title": "Логи",
+  "addLog": "Добавить запись",
+  "editLog": "Редактировать запись",
+  "searchPlaceholder": "Поиск записей...",
+  "types": {
+    "food": "Питание",
+    "workout": "Тренировка",
+    "finance": "Финансы"
+  },
+  "workout": {
+    "workoutType": "Тип тренировки",
+    "types": {
+      "strength": "Силовая",
+      "cardio": "Кардио",
+      "yoga": "Йога",
+      "stretching": "Растяжка"
+    },
+    "subcategory": "Подкатегория",
+    "duration": "Длительность (мин)",
+    "intensity": "Интенсивность",
+    "intensityLevels": {
+      "low": "Низкая",
+      "medium": "Средняя",
+      "high": "Высокая"
+    },
+    "equipment": "Оборудование",
+    "goal": "Цель",
+    "caloriesBurned": "Сожжено калорий",
+    "distance": "Дистанция (км)",
+    "heartRateAvg": "Средний пульс",
+    "heartRateMax": "Макс. пульс",
+    "exercisesCount": "Количество упражнений",
+    "setsCount": "Количество подходов",
+    "repsCount": "Количество повторений",
+    "totalWeight": "Общий вес (кг)",
+    "averageSpeed": "Средняя скорость (км/ч)",
+    "averagePace": "Средний темп (мин/км)",
+    "rounds": "Раунды",
+    "level": "Уровень",
+    "focus": "Фокус",
+    "strengthSubcategories": {
+      "anatomical": "По анатомии",
+      "equipment": "По оборудованию",
+      "chest": "Грудь",
+      "back": "Спина",
+      "legs": "Ноги",
+      "shoulders": "Плечи",
+      "arms": "Руки",
+      "core": "Кор",
+      "freeWeights": "Свободные веса",
+      "machines": "Тренажёры",
+      "bodyweight": "С весом тела",
+      "functional": "Функциональный"
+    },
+    "cardioSubcategories": {
+      "activity": "По активности",
+      "byIntensity": "По интенсивности",
+      "running": "Бег",
+      "walking": "Ходьба",
+      "cycling": "Велосипед",
+      "rowing": "Гребля",
+      "jumping": "Прыжки",
+      "liss": "LISS (низкая интенсивность)",
+      "hiit": "HIIT (интервальная)",
+      "tabata": "Табата"
+    },
+    "yogaSubcategories": {
+      "style": "По стилю",
+      "byGoal": "По цели",
+      "byLevel": "По уровню",
+      "hatha": "Хатха-йога",
+      "vinyasa": "Виньяса-йога",
+      "ashtanga": "Аштанга-йога",
+      "kundalini": "Кундалини-йога",
+      "iyengar": "Йога Айенгара",
+      "stretching": "Растяжка / Гибкость",
+      "power": "Силовая йога",
+      "relax": "Релакс / Восстановление",
+      "breathing": "Дыхание и медитация",
+      "meditation": "Медитация",
+      "beginner": "Для начинающих",
+      "intermediate": "Для продолжающих",
+      "advanced": "Для продвинутых"
+    },
+    "stretchingSubcategories": {
+      "byType": "По типу",
+      "byFocus": "По зоне воздействия",
+      "static": "Статическая растяжка",
+      "dynamic": "Динамическая растяжка",
+      "ballistic": "Баллистическая растяжка",
+      "pnf": "PNF-растяжка",
+      "fullBody": "Всё тело",
+      "upperBody": "Верхняя часть тела",
+      "lowerBody": "Нижняя часть тела",
+      "back": "Спина и позвоночник",
+      "hips": "Бёдра и ягодицы"
+    },
+    "goals": {
+      "mass": "Набор массы",
+      "relief": "Рельеф",
+      "strength": "Сила",
+      "endurance": "Выносливость",
+      "flexibility": "Гибкость",
+      "mobility": "Мобильность",
+      "relaxation": "Расслабление",
+      "balance": "Баланс",
+      "fatLoss": "Сжигание жира",
+      "recovery": "Восстановление"
+    },
+    "equipmentOptions": {
+      "Bench": "Скамья",
+      "PullUpBar": "Турник",
+      "ParallelBars": "Брусья",
+      "CableCrossover": "Кроссовер",
+      "SmithMachine": "Машина Смита",
+      "ResistanceBands": "Эспандеры",
+      "MedicineBall": "Медицинский мяч",
+      "TRX": "TRX петли",
+      "NoEquipment": "Без оборудования",
+      "Treadmill": "Беговая дорожка",
+      "Elliptical": "Эллипс",
+      "ExerciseBike": "Велотренажёр",
+      "RowingMachine": "Гребной тренажёр",
+      "JumpRope": "Скакалка",
+      "Stepper": "Степпер",
+      "Mat": "Коврик",
+      "Blocks": "Блоки для йоги",
+      "Strap": "Ремень для йоги",
+      "Bolster": "Валик",
+      "Blanket": "Плед",
+      "Chair": "Стул",
+      "Wall": "Стена",
+      "FoamRoller": "Пенный ролл",
+      "Ball": "Фитбол"
+    },
+    "placeholders": {
+      "calories": "ккал",
+      "distance": "км",
+      "avgPulse": "уд/мин",
+      "maxPulse": "уд/мин",
+      "count": "шт",
+      "weight": "кг",
+      "speed": "км/ч",
+      "pace": "5:30"
+    }
+  },
+  "stats": {
+    "total": "Всего"
+  },
+  "filters": {
+    "typeLabel": "Фильтры по типу записей",
+    "all": "Все"
+  },
+  "empty": {
+    "noLogs": "Нет записей. Начните вести учёт!"
+  },
+  "common": {
+    "optional": "Необязательно",
+    "grams": "граммы"
+  },
+  "recipes": {
+    "nutrition": {
+      "title": "Пищевая ценность",
+      "calories": "Калории",
+      "protein": "Белки",
+      "fat": "Жиры",
+      "carbs": "Углеводы",
+      "sugar": "Сахар"
+    }
+  },
+  "fields": {
+    "date": "Дата",
+    "time": "Время",
+    "title": "Название",
+    "category": "Категория",
+    "quantity": "Количество",
+    "unit": "Единица",
+    "value": "Значение",
+    "notes": "Заметки",
+    "tags": "Теги",
+    "type": "Тип"
+  },
+  "foodTypes": {
+    "breakfast": "Завтрак",
+    "lunch": "Обед",
+    "dinner": "Ужин",
+    "snack": "Перекус"
+  },
+  "workoutTypes": {
+    "strength": "Силовая",
+    "cardio": "Кардио",
+    "yoga": "Йога",
+    "stretching": "Растяжка"
+  },
+  "edit": {
+    "title": "Редактировать: {type}",
+    "loading": "Загрузка...",
+    "basic": "Основное",
+    "type": "Тип",
+    "additional": "Дополнительно",
+    "notesPlaceholder": "Ваши заметки...",
+    "tagsPlaceholder": "теги через запятую",
+    "cancel": "Отмена",
+    "saving": "Сохранение...",
+    "save": "Сохранить"
+  },
+  "food": {
+    "source": "Источник",
+    "sourceTypes": {
+      "custom": "Свой вариант",
+      "recipe": "Рецепты",
+      "product": "Продукты"
+    },
+    "dishName": "Название блюда",
+    "portionSize": "Размер порции (г)",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "selectRecipe": "Выбрать рецепт",
+    "selectProduct": "Выбрать продукт",
+    "productCategory": "Категория продукта",
+    "product": "Продукт",
+    "noRecipes": "Нет сохранённых рецептов",
+    "addRecipeToContent": "Добавьте рецепты в разделе Контент",
+    "productCategories": {
+      "dairy": "Молочные",
+      "meat": "Мясо",
+      "fish": "Рыба",
+      "vegetables": "Овощи",
+      "fruits": "Фрукты",
+      "berries": "Ягоды",
+      "grainsAndLegumes": "Крупы и бобовые",
+      "breadAndBakery": "Хлеб и выпечка",
+      "eggs": "Яйца",
+      "nutsAndSeeds": "Орехи и семена",
+      "oilsAndFats": "Масла и жиры",
+      "drinks": "Напитки",
+      "sweets": "Сладости",
+      "groceries": "Бакалея"
+    },
+    "products": {
+      "dairy": {
+        "milk32": "Молоко 3.2%",
+        "milk25": "Молоко 2.5%",
+        "milk15": "Молоко 1.5%",
+        "hardCheese": "Твёрдый сыр",
+        "softCheese": "Мягкий сыр",
+        "cottageCheese0": "Творог 0%",
+        "cottageCheese5": "Творог 5%",
+        "cottageCheese9": "Творог 9%",
+        "sourCream15": "Сметана 15%",
+        "sourCream20": "Сметана 20%",
+        "kefir25": "Кефир 2.5%",
+        "kefir32": "Кефир 3.2%",
+        "naturalYogurt": "Натуральный йогурт",
+        "greekYogurt": "Греческий йогурт",
+        "butter825": "Масло сливочное 82.5%"
+      },
+      "meat": {
+        "beefFillet": "Говяжья вырезка",
+        "beefBrisket": "Говяжья грудинка",
+        "beefMince": "Говяжий фарш",
+        "porkNeck": "Свиная шея",
+        "porkLoin": "Свиная корейка",
+        "chickenBreast": "Куриная грудка",
+        "chickenThigh": "Куриное бедро",
+        "chickenMince": "Куриный фарш",
+        "turkeyBreast": "Индейка грудка",
+        "turkeyThigh": "Индейка бедро"
+      },
+      "fish": {
+        "troutFresh": "Форель свежая",
+        "troutLightlySalted": "Форель слабосолёная",
+        "salmonFresh": "Лосось свежий",
+        "salmonLightlySalted": "Лосось слабосолёный",
+        "codFresh": "Треска свежая",
+        "herringSalted": "Сельдь солёная",
+        "mackerelFresh": "Скумбрия свежая",
+        "mackerelSmoked": "Скумбрия копчёная",
+        "tunaCanned": "Тунец консервированный"
+      },
+      "vegetables": {
+        "potato": "Картофель",
+        "carrot": "Морковь",
+        "onion": "Лук репчатый",
+        "cucumber": "Огурец",
+        "tomato": "Помидор",
+        "whiteCabbage": "Капуста белокочанная",
+        "pepper": "Перец болгарский",
+        "garlic": "Чеснок",
+        "zucchini": "Кабачок",
+        "eggplant": "Баклажан",
+        "beet": "Свёкла"
+      },
+      "fruits": {
+        "apple": "Яблоко",
+        "banana": "Банан",
+        "orange": "Апельсин",
+        "tangerine": "Мандарин",
+        "pear": "Груша",
+        "kiwi": "Киви",
+        "grape": "Виноград",
+        "pineapple": "Ананас"
+      },
+      "berries": {
+        "strawberry": "Клубника",
+        "raspberry": "Малина",
+        "blueberry": "Черника",
+        "blackcurrant": "Смородина чёрная",
+        "cherry": "Вишня",
+        "cranberry": "Клюква"
+      },
+      "grains": {
+        "riceWhiteDry": "Рис белый сухой",
+        "riceBrownDry": "Рис бурый сухой",
+        "buckwheatDry": "Гречка сухая",
+        "oatmealDry": "Овсянка сухая",
+        "semolinaDry": "Манка сухая",
+        "milletDry": "Пшено сухое",
+        "lentilsDry": "Чечевица сухая",
+        "beansDry": "Фасоль сухая",
+        "peasDry": "Горох сухой"
+      },
+      "bakery": {
+        "whiteBread": "Хлеб белый",
+        "blackBread": "Хлеб чёрный",
+        "slicedLoaf": "Хлеб нарезной",
+        "borodinskyBread": "Хлеб бородинский",
+        "armenianLavash": "Лаваш армянский"
+      },
+      "eggs": {
+        "chickenEggOnePiece": "Яйцо куриное 1 шт",
+        "eggWhite": "Яичный белок",
+        "eggYolk": "Яичный желток"
+      },
+      "nuts": {
+        "walnut": "Грецкий орех",
+        "almond": "Миндаль",
+        "hazelnut": "Фундук",
+        "cashew": "Кешью",
+        "peanut": "Арахис",
+        "sunflowerSeeds": "Семечки подсолнечника"
+      },
+      "fats": {
+        "sunflowerOil": "Масло подсолнечное",
+        "oliveOil": "Масло оливковое",
+        "coconutOil": "Масло кокосовое",
+        "mayonnaise": "Майонез"
+      },
+      "drinks": {
+        "teaWithoutSugar": "Чай без сахара",
+        "blackCoffee": "Кофе чёрный",
+        "orangeJuice": "Сок апельсиновый",
+        "appleJuice": "Сок яблочный",
+        "tomatoJuice": "Сок томатный",
+        "compote": "Компот"
+      },
+      "sweets": {
+        "sugar": "Сахар",
+        "honey": "Мёд",
+        "milkChocolate": "Шоколад молочный",
+        "darkChocolate": "Шоколад тёмный",
+        "cookies": "Печенье",
+        "candy": "Конфеты"
+      },
+      "groceries": {
+        "pastaDry": "Макароны сухие",
+        "wheatFlour": "Мука пшеничная",
+        "ryeFlour": "Мука ржаная",
+        "starch": "Крахмал"
+      }
+    }
+  },
+  "finance": {
+    "type": "Тип транзакции",
+    "types": {
+      "income": "Доход",
+      "expense": "Расход",
+      "transfer": "Перевод"
+    },
+    "amount": "Сумма",
+    "from": "Откуда",
+    "to": "Куда",
+    "account": "Счёт",
+    "noAccounts": "Нет доступных счетов",
+    "createAccountInSettings": "Создайте счёт в Настройках для учёта финансов",
+    "category": "Категория",
+    "subcategory": "Подкатегория",
+    "item": "Товар/услуга",
+    "supplier": "Поставщик",
+    "accountTypes": {
+      "cash": "Наличные",
+      "card": "Карта",
+      "bank": "Банковский счёт",
+      "deposit": "Вклад",
+      "investment": "Инвестиции",
+      "crypto": "Крипто"
+    }
+  },
+  "deleteDialog": {
+    "title": "Удалить запись?",
+    "description": "Это действие нельзя отменить. Запись «{title}» будет удалена навсегда."
+  },
+  "validation": {
+    "date": "Выберите дату",
+    "time": "Выберите время",
+    "title": "Введите название"
+  }
+}

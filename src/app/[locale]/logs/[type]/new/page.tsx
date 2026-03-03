@@ -371,7 +371,8 @@ export default function NewLogPage() {
 
       // Обновляем балансы аккаунтов
       if (type === "finance" && data.value) {
-        const amount = data.value
+        // Используем Math.abs() чтобы гарантировать положительное значение
+        const amount = Math.abs(data.value)
 
         if (financeType === "income" && selectedAccountId) {
           const account = accounts.find((a) => a.id === selectedAccountId)

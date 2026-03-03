@@ -1,0 +1,518 @@
+{
+  "title": "Рецепты",
+  "addRecipe": "Добавить рецепт",
+  "editRecipe": "Редактировать рецепт",
+  "newRecipe": "Новый рецепт",
+  "noRecipes": "Пока нет рецептов",
+  "types": {
+    "food": "Блюдо",
+    "drink": "Напиток",
+    "cocktail": "Коктейль"
+  },
+  "forms": {
+    "main": "Основное",
+    "additional": "Дополнительно",
+    "ingredients": "Ингредиенты",
+    "steps": {
+      "addStep": "Добавить",
+      "stepText": "Описание шага",
+      "timer": "Таймер (мин)",
+      "minutes": "минуты",
+      "empty": "Нет шагов. Нажмите «Добавить» для создания."
+    },
+    "recipeType": "Тип рецепта",
+    "dishParameters": "Параметры блюда",
+    "drinkParameters": "Параметры напитка",
+    "cocktailParameters": "Параметры коктейля",
+    "selectPlaceholder": "Выберите...",
+    "notSpecified": "Не указано"
+  },
+  "fields": {
+    "title": "Название рецепта",
+    "titlePlaceholder": "Название рецепта",
+    "description": "Описание",
+    "descriptionPlaceholder": "Краткое описание...",
+    "recipeType": "Тип рецепта",
+    "prepTime": "Время подготовки (мин)",
+    "cookTime": "Время приготовления (мин)",
+    "totalTime": "Общее время (мин)",
+    "servings": "Порции",
+    "servingUnit": "Единица",
+    "servingUnitPlaceholder": "порции",
+    "difficulty": "Сложность",
+    "cuisine": "Кухня",
+    "courseType": "Тип блюда",
+    "cookingMethod": "Способ приготовления",
+    "servingTemperature": "Температура подачи",
+    "spicyLevel": "Острота",
+    "dietary": "Диетические опции",
+    "drinkType": "Тип напитка",
+    "base": "Основа",
+    "isCarbonated": "Газированный",
+    "volumeMl": "Объём (мл)",
+    "caffeineMg": "Кофеин (мг)",
+    "volume": "Объём",
+    "caffeine": "Кофеин",
+    "isAlcoholic": "Алкогольный",
+    "alcoholPercent": "Процент алкоголя",
+    "baseSpirit": "Базовый спирт",
+    "ibaCategory": "Категория IBA",
+    "cocktailMethod": "Метод коктейля",
+    "glassType": "Тип бокала",
+    "iceType": "Тип льда",
+    "garnish": "Гарнир",
+    "color": "Цвет",
+    "tools": "Инструменты",
+    "nutrition": "Пищевая ценность",
+    "tags": "Теги",
+    "tagsPlaceholder": "теги через запятую",
+    "minutes": "мин",
+    "dishParameters": "Параметры блюда",
+    "fiber": "Клетчатка"
+  },
+  "edit": {
+    "title": "Редактировать рецепт",
+    "loading": "Загрузка...",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "saving": "Сохранение...",
+    "nutrition": {
+      "title": "Пищевая ценность",
+      "optional": "Все поля пищевой ценности необязательны"
+    }
+  },
+  "new": {
+    "title": "Новый рецепт",
+    "nutrition": "Пищевая ценность",
+    "nutritionOptional": "Все поля пищевой ценности необязательны",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "sugar": "Сахар",
+    "fiber": "Клетчатка",
+    "servings": "Порции",
+    "servingUnit": "Единица порции",
+    "servingUnitPlaceholder": "порции",
+    "prepTime": "Время подготовки (мин)",
+    "cookTime": "Время приготовления (мин)",
+    "difficulty": "Сложность",
+    "difficulties": {
+      "easy": "Лёгкий",
+      "medium": "Средний",
+      "hard": "Сложный",
+      "pro": "Профи"
+    },
+    "additional": "Дополнительно",
+    "tags": "Теги",
+    "tagsPlaceholder": "теги через запятую",
+    "actions": {
+      "cancel": "Отмена",
+      "save": "Сохранить",
+      "saving": "Сохранение..."
+    }
+  },
+  "courseTypes": {
+    "breakfast": "Завтрак",
+    "lunch": "Обед",
+    "dinner": "Ужин",
+    "soup": "Суп",
+    "salad": "Салат",
+    "dessert": "Десерт",
+    "snack": "Закуска",
+    "sauce": "Соус",
+    "appetizer": "Аппетайзер"
+  },
+  "cookingMethods": {
+    "bake": "Запекать",
+    "fry": "Жарить",
+    "boil": "Варить",
+    "steam": "На пару",
+    "grill": "Гриль",
+    "raw": "Сырой",
+    "stew": "Тушить",
+    "roast": "Жарить"
+  },
+  "servingTemperatures": {
+    "hot": "Горячий",
+    "warm": "Тёплый",
+    "room": "Комнатная температура",
+    "cold": "Холодный",
+    "iced": "Со льдом"
+  },
+  "spicyLevels": {
+    "1": "Нет",
+    "2": "Слабая",
+    "3": "Средняя",
+    "4": "Острая",
+    "5": "Очень острая",
+    "none": "Нет",
+    "mild": "Слабая",
+    "medium": "Средняя",
+    "hot": "Острая"
+  },
+  "cuisines": {
+    "russian": "Русская",
+    "italian": "Итальянская",
+    "french": "Французская",
+    "japanese": "Японская",
+    "chinese": "Китайская",
+    "korean": "Корейская",
+    "thai": "Тайская",
+    "indian": "Индийская",
+    "mexican": "Мексиканская",
+    "georgian": "Грузинская",
+    "uzbek": "Узбекская",
+    "arabic": "Арабская",
+    "mediterranean": "Средиземноморская",
+    "american": "Американская",
+    "other": "Другая"
+  },
+  "dietaryOptions": {
+    "vegan": "Веган",
+    "vegetarian": "Вегетарианский",
+    "glutenFree": "Без глютена",
+    "gluten-free": "Без глютена",
+    "keto": "Кето",
+    "lowCarb": "Низкоуглеводный",
+    "low-carb": "Низкоуглеводный",
+    "dairyFree": "Без молока",
+    "dairy-free": "Без молока",
+    "nutFree": "Без орехов",
+    "nut-free": "Без орехов",
+    "diabetic": "Диабетический"
+  },
+  "difficulties": {
+    "easy": "Лёгкий",
+    "medium": "Средний",
+    "hard": "Сложный",
+    "pro": "Профи"
+  },
+  "drinkTypes": {
+    "tea": "Чай",
+    "coffee": "Кофе",
+    "smoothie": "Смузи",
+    "juice": "Сок",
+    "lemonade": "Лимонад",
+    "milkshake": "Молочный коктейль",
+    "compote": "Компот",
+    "cocoa": "Какао"
+  },
+  "drinkBases": {
+    "water": "Вода",
+    "milk": "Молоко",
+    "cream": "Сливки",
+    "juice": "Сок",
+    "tea": "Чай",
+    "coffee": "Кофе",
+    "yogurt": "Йогурт",
+    "kefir": "Кефир",
+    "plantMilk": "Растительное молоко",
+    "other": "Другое"
+  },
+  "ingredients": {
+    "addIngredient": "Добавить ингредиент",
+    "ingredientName": "Название ингредиента",
+    "amount": "Количество",
+    "unit": "Единица",
+    "optional": "Необязательно",
+    "note": "Заметка",
+    "substitute": "Замена",
+    "fromCatalog": "Из каталога",
+    "custom": "Свой",
+    "removeIngredient": "Удалить ингредиент",
+    "nutritionPer100": "Пищевая ценность на 100г",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "empty": "Нет ингредиентов. Нажмите «Добавить» для создания.",
+    "calculate": "Рассчитать",
+    "units": {
+      "g": "г",
+      "kg": "кг",
+      "mg": "мг",
+      "ml": "мл",
+      "l": "л",
+      "tsp": "ч.л.",
+      "tbsp": "ст.л.",
+      "cup": "стакан",
+      "oz": "oz",
+      "drop": "капля",
+      "dash": "dash",
+      "pcs": "шт",
+      "clove": "зубч.",
+      "pinch": "щеп.",
+      "taste": "по вкусу",
+      "servings": "порц.",
+      "portions": "порц.",
+      "min": "мин",
+      "hour": "ч",
+      "h": "ч",
+      "sec": "сек",
+      "days": "дн",
+      "piece": "шт",
+      "RUB": "₽",
+      "USD": "$",
+      "EUR": "€"
+    },
+    "validation": {
+      "title": "Введите название"
+    }
+  },
+  "steps": {
+    "addStep": "Добавить",
+    "stepText": "Описание шага",
+    "timer": "Таймер (мин)",
+    "image": "Изображение",
+    "minutes": "минуты",
+    "removeStep": "Удалить шаг",
+    "empty": "Нет шагов. Нажмите «Добавить» для создания.",
+    "noInstructions": "Нет инструкций"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "back": "Назад",
+    "delete": "Удалить",
+    "edit": "Изменить",
+    "cancel": "Отмена",
+    "add": "Добавить"
+  },
+  "details": "Детали",
+  "notFound": "Рецепт не найден",
+  "nutrition": {
+    "title": "Пищевая ценность",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "sugar": "Сахар",
+    "fiber": "Клетчатка"
+  },
+  "cocktailDetails": {
+    "title": "Детали коктейля",
+    "base": "Основа",
+    "method": "Метод",
+    "glass": "Бокал",
+    "strength": "Крепость",
+    "alcoholic": "Алкогольный",
+    "nonAlcoholic": "Безалкогольный",
+    "methods": {
+      "shaken": "Шейк",
+      "stirred": "Стир",
+      "blended": "Бленд",
+      "built": "Билд",
+      "muddled": "Мадл",
+      "layered": "Слоистый"
+    },
+    "methodDescriptions": {
+      "shaken": "Взбить в шейкере со льдом",
+      "stirred": "Размешать в смесительном стакане",
+      "blended": "Смешать в блендере",
+      "built": "Собрать прямо в бокале",
+      "muddled": "Размять ингредиенты мадлером",
+      "layered": "Слоить ингредиенты"
+    },
+    "glassTypes": {
+      "highball": "Хайбол",
+      "lowball": "Лоубол (Рокс)",
+      "martini": "Мартини (Коктейльный бокал)",
+      "coupe": "Купе",
+      "margarita": "Маргарита",
+      "hurricane": "Ураган",
+      "shot": "Шот",
+      "wine": "Винный бокал",
+      "champagne": "Шампанское флюте",
+      "mug": "Кружка",
+      "collins": "Коллинз",
+      "rocks": "Рокс"
+    },
+    "iceTypes": {
+      "cubed": "Кубики",
+      "crushed": "Дроблёный",
+      "sphere": "Сфера",
+      "none": "Без льда"
+    },
+    "baseSpirits": {
+      "vodka": "Водка",
+      "gin": "Джин",
+      "rumWhite": "Белый ром",
+      "rumDark": "Тёмный ром",
+      "tequila": "Текила",
+      "whiskey": "Виски",
+      "bourbon": "Бурбон",
+      "cognac": "Коньяк",
+      "brandy": "Бренди",
+      "liqueur": "Ликёр",
+      "absinthe": "Абсент",
+      "other": "Другое"
+    },
+    "ibaCategories": {
+      "unforgettables": "The Unforgettables",
+      "contemporaryClassics": "Contemporary Classics",
+      "newEraDrinks": "New Era Drinks",
+      "tequila": "Текила",
+      "vodka": "Водка",
+      "gin": "Джин",
+      "rum": "Ром",
+      "whiskey": "Виски",
+      "brandy": "Бренди",
+      "liqueur": "Ликёр"
+    },
+    "tools": {
+      "shaker": "Шейкер",
+      "bostonShaker": "Бостонский шейкер",
+      "jigger": "Джиггер",
+      "muddler": "Мадлер",
+      "barSpoon": "Барная ложка",
+      "strainer": "Стрейнер",
+      "hawthorneStrainer": "Стрейнер Хоторна",
+      "julepStrainer": "Стрейнер Джулеп",
+      "pestle": "Пестик",
+      "cone": "Воронка",
+      "other": "Другое"
+    },
+    "garnish": {
+      "lemon": "Лимон",
+      "lime": "Лайм",
+      "orange": "Апельсин",
+      "grapefruit": "Грейпфрут",
+      "mint": "Мята",
+      "basil": "Базилик",
+      "olives": "Оливки",
+      "cherry": "Вишня",
+      "pineapple": "Ананас",
+      "strawberry": "Клубника",
+      "sugarRim": "Сахарный ободок",
+      "salt": "Соль",
+      "lemonZest": "Цедра лимона",
+      "orangeZest": "Цедра апельсина",
+      "cucumber": "Огурец",
+      "other": "Другое"
+    }
+  },
+  "createdAt": "Создано",
+  "updatedAt": "Обновлено",
+  "deleteDialog": {
+    "title": "Удалить рецепт?",
+    "description": "Это действие нельзя отменить. «{title}» будет удалён навсегда."
+  },
+  "list": {
+    "title": "Рецепты",
+    "stats": {
+      "total": "Всего",
+      "food": "Блюда",
+      "drink": "Напитки",
+      "cocktail": "Коктейли"
+    },
+    "filters": {
+      "all": "Все",
+      "food": "Блюда",
+      "drink": "Напитки",
+      "cocktail": "Коктейли"
+    },
+    "search": {
+      "placeholder": "Поиск по названию..."
+    },
+    "empty": {
+      "noRecipes": "Нет рецептов. Добавьте первый!",
+      "noResults": "Рецепты не найдены"
+    },
+    "loading": "Загрузка...",
+    "ingredients": "ингр.",
+    "minutes": "мин",
+    "calories": "ккал",
+    "servings": "порц."
+  },
+  "placeholders": {
+    "color": "например, Красный, Золотой, Янтарный"
+  },
+  "view": {
+    "nutrition": "Пищевая ценность",
+    "calories": "Калории",
+    "protein": "Белки",
+    "fat": "Жиры",
+    "carbs": "Углеводы",
+    "sugar": "Сахар",
+    "fiber": "Клетчатка",
+    "ingredients": "Ингредиенты",
+    "optional": "(опц.)",
+    "instructions": "Инструкции",
+    "noInstructions": "Нет инструкций",
+    "details": "Детали",
+    "additional": "Дополнительно",
+    "recipe": "Рецепт",
+    "cocktailDetails": {
+      "title": "Детали коктейля",
+      "alcoholic": "Алкогольный",
+      "nonAlcoholic": "Безалкогольный"
+    },
+    "methods": {
+      "shaken": "Встряхивание",
+      "stirred": "Размешивание",
+      "blended": "Взбивание",
+      "built": "Сборка",
+      "muddled": "Мадлинг",
+      "layered": "Слоистый"
+    },
+    "iceTypes": {
+      "cubed": "Кубики",
+      "crushed": "Дроблёный",
+      "sphere": "Сфера",
+      "none": "Без льда"
+    },
+    "glassTypes": {
+      "highball": "Хайбол",
+      "margarita": "Маргарита",
+      "martini": "Мартини",
+      "old-fashioned": "Олд фэшн",
+      "collins": "Коллинз",
+      "coupe": "Купе"
+    },
+    "garnishes": {
+      "mint": "Мята",
+      "lime": "Лайм",
+      "lemon": "Лимон",
+      "orange": "Апельсин",
+      "cherry": "Вишня",
+      "olive": "Оливка",
+      "salt": "Соль",
+      "sugar": "Сахар"
+    },
+    "tools": {
+      "muddler": "Мадлер",
+      "bar-spoon": "Барная ложка",
+      "shaker": "Шейкер",
+      "strainer": "Стрейнер",
+      "jigger": "Джиггер"
+    },
+    "bases": {
+      "tea": "Чай",
+      "coffee": "Кофе",
+      "milk": "Молоко",
+      "water": "Вода",
+      "juice": "Сок"
+    },
+    "baseSpirits": {
+      "rum": "Ром",
+      "tequila": "Текила",
+      "vodka": "Водка",
+      "gin": "Джин",
+      "whiskey": "Виски",
+      "brandy": "Бренди"
+    },
+    "carbonatedLabel": "Газированный",
+    "nonCarbonatedLabel": "Негазированный",
+    "drinkDetails": "Детали напитка",
+    "drinkTypes": {
+      "tea": "Чай",
+      "coffee": "Кофе",
+      "smoothie": "Смузи",
+      "juice": "Сок",
+      "lemonade": "Лимонад",
+      "milkshake": "Молочный коктейль",
+      "compote": "Компот",
+      "cocoa": "Какао"
+    }
+  }
+}

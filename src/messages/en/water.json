@@ -1,0 +1,51 @@
+{
+  "title": "Water",
+  "addWater": "Add Water",
+  "editWater": "Edit Water",
+  "todayIntake": "Today's Intake",
+  "dailyGoal": "Daily Goal",
+  "unit": "ml",
+  "fields": {
+    "amount": "Amount (ml)",
+    "time": "Time",
+    "type": "Type",
+    "note": "Note"
+  },
+  "types": {
+    "water": "Water",
+    "tea": "Tea",
+    "coffee": "Coffee",
+    "other": "Other"
+  },
+  "quickAdd": {
+    "glass": "Glass (250ml)",
+    "cup": "Cup (200ml)",
+    "bottle": "Bottle (500ml)",
+    "liter": "Liter (1000ml)"
+  },
+  "goal": "Goal: {target} ml",
+  "goalReached": "🎯 Goal reached!",
+  "today": "Today",
+  "add": "Add {amount} ml",
+  "delete": "Delete entry",
+  "empty": {
+    "loading": "Loading...",
+    "noRecords": "No records yet"
+  },
+  "reminder": {
+    "title": "Water Reminders",
+    "enabled": "Reminders enabled",
+    "disabled": "Reminders disabled",
+    "enable": "Enable",
+    "disable": "Disable",
+    "interval": "Interval (minutes)",
+    "from": "From",
+    "to": "To",
+    "reminders": "Reminders:",
+    "andMore": "and {count} more",
+    "permissionWarning": "Click \"Enable\" and allow notifications in your browser",
+    "permissionRequired": "Notifications must be enabled in your browser for reminders to work",
+    "waterReminderTitle": "Water Reminder",
+    "waterReminderMessage": "Time to drink water! (interval {interval} min)"
+  }
+}

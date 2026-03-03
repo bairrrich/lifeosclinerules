@@ -1,0 +1,518 @@
+{
+  "title": "Recipes",
+  "addRecipe": "Add Recipe",
+  "editRecipe": "Edit Recipe",
+  "newRecipe": "New Recipe",
+  "noRecipes": "No recipes yet",
+  "types": {
+    "food": "Food",
+    "drink": "Drink",
+    "cocktail": "Cocktail"
+  },
+  "forms": {
+    "main": "Main",
+    "additional": "Additional",
+    "ingredients": "Ingredients",
+    "steps": {
+      "addStep": "Add",
+      "stepText": "Step Description",
+      "timer": "Timer (min)",
+      "minutes": "minutes",
+      "empty": "No steps. Click \"Add\" to create."
+    },
+    "recipeType": "Recipe Type",
+    "dishParameters": "Dish Parameters",
+    "drinkParameters": "Drink Parameters",
+    "cocktailParameters": "Cocktail Parameters",
+    "selectPlaceholder": "Select...",
+    "notSpecified": "Not specified"
+  },
+  "fields": {
+    "title": "Recipe Title",
+    "titlePlaceholder": "Recipe Title",
+    "description": "Description",
+    "descriptionPlaceholder": "Brief description...",
+    "recipeType": "Recipe Type",
+    "prepTime": "Prep Time (min)",
+    "cookTime": "Cook Time (min)",
+    "totalTime": "Total Time (min)",
+    "servings": "Servings",
+    "servingUnit": "Unit",
+    "servingUnitPlaceholder": "servings",
+    "difficulty": "Difficulty",
+    "cuisine": "Cuisine",
+    "courseType": "Course Type",
+    "cookingMethod": "Cooking Method",
+    "servingTemperature": "Serving Temperature",
+    "spicyLevel": "Spicy Level",
+    "dietary": "Dietary Options",
+    "drinkType": "Drink Type",
+    "base": "Base",
+    "isCarbonated": "Carbonated",
+    "volumeMl": "Volume (ml)",
+    "caffeineMg": "Caffeine (mg)",
+    "volume": "Volume",
+    "caffeine": "Caffeine",
+    "isAlcoholic": "Alcoholic",
+    "alcoholPercent": "Alcohol %",
+    "baseSpirit": "Base Spirit",
+    "ibaCategory": "IBA Category",
+    "cocktailMethod": "Cocktail Method",
+    "glassType": "Glass Type",
+    "iceType": "Ice Type",
+    "garnish": "Garnish",
+    "color": "Color",
+    "tools": "Tools",
+    "nutrition": "Nutrition Facts",
+    "tags": "Tags",
+    "tagsPlaceholder": "tags separated by comma",
+    "minutes": "min",
+    "dishParameters": "Dish Parameters",
+    "fiber": "Fiber"
+  },
+  "edit": {
+    "title": "Edit Recipe",
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "nutrition": {
+      "title": "Nutrition Facts",
+      "optional": "All nutrition fields are optional"
+    }
+  },
+  "new": {
+    "title": "New Recipe",
+    "nutrition": "Nutrition Facts",
+    "nutritionOptional": "All nutrition fields are optional",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "sugar": "Sugar",
+    "fiber": "Fiber",
+    "servings": "Servings",
+    "servingUnit": "Serving Unit",
+    "servingUnitPlaceholder": "servings",
+    "prepTime": "Prep Time (min)",
+    "cookTime": "Cook Time (min)",
+    "difficulty": "Difficulty",
+    "difficulties": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "pro": "Pro"
+    },
+    "additional": "Additional",
+    "tags": "Tags",
+    "tagsPlaceholder": "tags separated by comma",
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    }
+  },
+  "courseTypes": {
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "soup": "Soup",
+    "salad": "Salad",
+    "dessert": "Dessert",
+    "snack": "Snack",
+    "sauce": "Sauce",
+    "appetizer": "Appetizer"
+  },
+  "cookingMethods": {
+    "bake": "Bake",
+    "fry": "Fry",
+    "boil": "Boil",
+    "steam": "Steam",
+    "grill": "Grill",
+    "raw": "Raw",
+    "stew": "Stew",
+    "roast": "Roast"
+  },
+  "servingTemperatures": {
+    "hot": "Hot",
+    "warm": "Warm",
+    "room": "Room Temperature",
+    "cold": "Cold",
+    "iced": "Iced"
+  },
+  "spicyLevels": {
+    "1": "None",
+    "2": "Mild",
+    "3": "Medium",
+    "4": "Hot",
+    "5": "Very Hot",
+    "none": "None",
+    "mild": "Mild",
+    "medium": "Medium",
+    "hot": "Hot"
+  },
+  "cuisines": {
+    "russian": "Russian",
+    "italian": "Italian",
+    "french": "French",
+    "japanese": "Japanese",
+    "chinese": "Chinese",
+    "korean": "Korean",
+    "thai": "Thai",
+    "indian": "Indian",
+    "mexican": "Mexican",
+    "georgian": "Georgian",
+    "uzbek": "Uzbek",
+    "arabic": "Arabic",
+    "mediterranean": "Mediterranean",
+    "american": "American",
+    "other": "Other"
+  },
+  "dietaryOptions": {
+    "vegan": "Vegan",
+    "vegetarian": "Vegetarian",
+    "glutenFree": "Gluten-Free",
+    "gluten-free": "Gluten-Free",
+    "keto": "Keto",
+    "lowCarb": "Low-Carb",
+    "low-carb": "Low-Carb",
+    "dairyFree": "Dairy-Free",
+    "dairy-free": "Dairy-Free",
+    "nutFree": "Nut-Free",
+    "nut-free": "Nut-Free",
+    "diabetic": "Diabetic"
+  },
+  "difficulties": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "pro": "Pro"
+  },
+  "drinkTypes": {
+    "tea": "Tea",
+    "coffee": "Coffee",
+    "smoothie": "Smoothie",
+    "juice": "Juice",
+    "lemonade": "Lemonade",
+    "milkshake": "Milkshake",
+    "compote": "Compote",
+    "cocoa": "Cocoa"
+  },
+  "drinkBases": {
+    "water": "Water",
+    "milk": "Milk",
+    "cream": "Cream",
+    "juice": "Juice",
+    "tea": "Tea",
+    "coffee": "Coffee",
+    "yogurt": "Yogurt",
+    "kefir": "Kefir",
+    "plantMilk": "Plant Milk",
+    "other": "Other"
+  },
+  "ingredients": {
+    "addIngredient": "Add Ingredient",
+    "ingredientName": "Ingredient Name",
+    "amount": "Amount",
+    "unit": "Unit",
+    "optional": "Optional",
+    "note": "Note",
+    "substitute": "Substitute",
+    "fromCatalog": "From Catalog",
+    "custom": "Custom",
+    "removeIngredient": "Remove ingredient",
+    "nutritionPer100": "Nutrition per 100g",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "empty": "No ingredients. Click \"Add\" to create.",
+    "calculate": "Calculate",
+    "units": {
+      "g": "g",
+      "kg": "kg",
+      "mg": "mg",
+      "ml": "ml",
+      "l": "l",
+      "tsp": "tsp",
+      "tbsp": "tbsp",
+      "cup": "cup",
+      "oz": "oz",
+      "drop": "drop",
+      "dash": "dash",
+      "pcs": "pcs",
+      "clove": "clove",
+      "pinch": "pinch",
+      "taste": "to taste",
+      "servings": "servings",
+      "portions": "portions",
+      "min": "min",
+      "hour": "hr",
+      "h": "hr",
+      "sec": "sec",
+      "days": "days",
+      "piece": "pcs",
+      "RUB": "₽",
+      "USD": "$",
+      "EUR": "€"
+    },
+    "validation": {
+      "title": "Enter title"
+    }
+  },
+  "steps": {
+    "addStep": "Add",
+    "stepText": "Step Description",
+    "timer": "Timer (min)",
+    "image": "Image",
+    "minutes": "minutes",
+    "removeStep": "Remove step",
+    "empty": "No steps. Click \"Add\" to create.",
+    "noInstructions": "No instructions"
+  },
+  "common": {
+    "loading": "Loading...",
+    "back": "Back",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "add": "Add"
+  },
+  "details": "Details",
+  "notFound": "Recipe not found",
+  "nutrition": {
+    "title": "Nutrition Facts",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "sugar": "Sugar",
+    "fiber": "Fiber"
+  },
+  "cocktailDetails": {
+    "title": "Cocktail Details",
+    "base": "Base",
+    "method": "Method",
+    "glass": "Glass",
+    "strength": "Strength",
+    "alcoholic": "Alcoholic",
+    "nonAlcoholic": "Non-Alcoholic",
+    "methods": {
+      "shaken": "Shaken",
+      "stirred": "Stirred",
+      "blended": "Blended",
+      "built": "Built",
+      "muddled": "Muddled",
+      "layered": "Layered"
+    },
+    "methodDescriptions": {
+      "shaken": "Shake in a shaker with ice",
+      "stirred": "Stir in a mixing glass",
+      "blended": "Blend in a blender",
+      "built": "Build directly in the glass",
+      "muddled": "Muddle ingredients with a muddler",
+      "layered": "Layer ingredients"
+    },
+    "glassTypes": {
+      "highball": "Highball",
+      "lowball": "Lowball (Rocks)",
+      "martini": "Martini (Cocktail glass)",
+      "coupe": "Coupe",
+      "margarita": "Margarita",
+      "hurricane": "Hurricane",
+      "shot": "Shot",
+      "wine": "Wine glass",
+      "champagne": "Champagne flute",
+      "mug": "Mug",
+      "collins": "Collins",
+      "rocks": "Rocks"
+    },
+    "iceTypes": {
+      "cubed": "Cubed",
+      "crushed": "Crushed",
+      "sphere": "Sphere",
+      "none": "No ice"
+    },
+    "baseSpirits": {
+      "vodka": "Vodka",
+      "gin": "Gin",
+      "rumWhite": "White rum",
+      "rumDark": "Dark rum",
+      "tequila": "Tequila",
+      "whiskey": "Whiskey",
+      "bourbon": "Bourbon",
+      "cognac": "Cognac",
+      "brandy": "Brandy",
+      "liqueur": "Liqueur",
+      "absinthe": "Absinthe",
+      "other": "Other"
+    },
+    "ibaCategories": {
+      "unforgettables": "The Unforgettables",
+      "contemporaryClassics": "Contemporary Classics",
+      "newEraDrinks": "New Era Drinks",
+      "tequila": "Tequila",
+      "vodka": "Vodka",
+      "gin": "Gin",
+      "rum": "Rum",
+      "whiskey": "Whiskey",
+      "brandy": "Brandy",
+      "liqueur": "Liqueur"
+    },
+    "tools": {
+      "shaker": "Shaker",
+      "bostonShaker": "Boston Shaker",
+      "jigger": "Jigger",
+      "muddler": "Muddler",
+      "barSpoon": "Bar spoon",
+      "strainer": "Strainer",
+      "hawthorneStrainer": "Hawthorne strainer",
+      "julepStrainer": "Julep strainer",
+      "pestle": "Pestle",
+      "cone": "Funnel",
+      "other": "Other"
+    },
+    "garnish": {
+      "lemon": "Lemon",
+      "lime": "Lime",
+      "orange": "Orange",
+      "grapefruit": "Grapefruit",
+      "mint": "Mint",
+      "basil": "Basil",
+      "olives": "Olives",
+      "cherry": "Cherry",
+      "pineapple": "Pineapple",
+      "strawberry": "Strawberry",
+      "sugarRim": "Sugar rim",
+      "salt": "Salt",
+      "lemonZest": "Lemon zest",
+      "orangeZest": "Orange zest",
+      "cucumber": "Cucumber",
+      "other": "Other"
+    }
+  },
+  "createdAt": "Created",
+  "updatedAt": "Updated",
+  "deleteDialog": {
+    "title": "Delete recipe?",
+    "description": "This action cannot be undone. \"{title}\" will be deleted permanently."
+  },
+  "list": {
+    "title": "Recipes",
+    "stats": {
+      "total": "Total",
+      "food": "Food",
+      "drink": "Drinks",
+      "cocktail": "Cocktails"
+    },
+    "filters": {
+      "all": "All",
+      "food": "Food",
+      "drink": "Drinks",
+      "cocktail": "Cocktails"
+    },
+    "search": {
+      "placeholder": "Search by title..."
+    },
+    "empty": {
+      "noRecipes": "No recipes. Add your first!",
+      "noResults": "No recipes found"
+    },
+    "loading": "Loading...",
+    "ingredients": "ingr.",
+    "minutes": "min",
+    "calories": "cal",
+    "servings": "servings"
+  },
+  "placeholders": {
+    "color": "e.g., Red, Golden, Amber"
+  },
+  "view": {
+    "nutrition": "Nutrition Facts",
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "sugar": "Sugar",
+    "fiber": "Fiber",
+    "ingredients": "Ingredients",
+    "optional": "(opt.)",
+    "instructions": "Instructions",
+    "noInstructions": "No instructions",
+    "details": "Details",
+    "additional": "Additional",
+    "recipe": "Recipe",
+    "cocktailDetails": {
+      "title": "Cocktail Details",
+      "alcoholic": "Alcoholic",
+      "nonAlcoholic": "Non-alcoholic"
+    },
+    "methods": {
+      "shaken": "Shaken",
+      "stirred": "Stirred",
+      "blended": "Blended",
+      "built": "Built",
+      "muddled": "Muddled",
+      "layered": "Layered"
+    },
+    "iceTypes": {
+      "cubed": "Cubed",
+      "crushed": "Crushed",
+      "sphere": "Sphere",
+      "none": "No ice"
+    },
+    "glassTypes": {
+      "highball": "Highball",
+      "margarita": "Margarita",
+      "martini": "Martini",
+      "old-fashioned": "Old Fashioned",
+      "collins": "Collins",
+      "coupe": "Coupe"
+    },
+    "garnishes": {
+      "mint": "Mint",
+      "lime": "Lime",
+      "lemon": "Lemon",
+      "orange": "Orange",
+      "cherry": "Cherry",
+      "olive": "Olive",
+      "salt": "Salt",
+      "sugar": "Sugar"
+    },
+    "tools": {
+      "muddler": "Muddler",
+      "bar-spoon": "Bar Spoon",
+      "shaker": "Shaker",
+      "strainer": "Strainer",
+      "jigger": "Jigger"
+    },
+    "bases": {
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "milk": "Milk",
+      "water": "Water",
+      "juice": "Juice"
+    },
+    "baseSpirits": {
+      "rum": "Rum",
+      "tequila": "Tequila",
+      "vodka": "Vodka",
+      "gin": "Gin",
+      "whiskey": "Whiskey",
+      "brandy": "Brandy"
+    },
+    "carbonatedLabel": "Carbonated",
+    "nonCarbonatedLabel": "Non-carbonated",
+    "drinkDetails": "Drink Details",
+    "drinkTypes": {
+      "tea": "Tea",
+      "coffee": "Coffee",
+      "smoothie": "Smoothie",
+      "juice": "Juice",
+      "lemonade": "Lemonade",
+      "milkshake": "Milkshake",
+      "compote": "Compote",
+      "cocoa": "Cocoa"
+    }
+  }
+}

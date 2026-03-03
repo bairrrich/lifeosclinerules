@@ -1,0 +1,23 @@
+{
+  "generic": "Что-то пошло не так",
+  "notFound": "Не найдено",
+  "unauthorized": "Не авторизован",
+  "forbidden": "Доступ запрещён",
+  "serverError": "Ошибка сервера",
+  "networkError": "Ошибка сети",
+  "validationError": "Ошибка валидации",
+  "required": "Это поле обязательно",
+  "invalidEmail": "Неверный email",
+  "invalidDate": "Неверная дата",
+  "invalidNumber": "Неверное число",
+  "tooShort": "Слишком коротко",
+  "tooLong": "Слишком длинно",
+  "minValue": "Значение слишком мало",
+  "maxValue": "Значение слишком велико",
+  "duplicate": "Уже существует",
+  "loadFailed": "Не удалось загрузить данные",
+  "saveFailed": "Не удалось сохранить данные",
+  "deleteFailed": "Не удалось удалить",
+  "importFailed": "Ошибка импорта. Проверьте формат файла.",
+  "exportFailed": "Ошибка экспорта"
+}

@@ -1,0 +1,150 @@
+{
+  "productCategories": {
+    "dairy": "Dairy",
+    "meat": "Meat",
+    "fish": "Fish",
+    "vegetables": "Vegetables",
+    "fruits": "Fruits",
+    "berries": "Berries",
+    "grainsAndLegumes": "Grains & Legumes",
+    "breadAndBakery": "Bread & Bakery",
+    "eggs": "Eggs",
+    "nutsAndSeeds": "Nuts & Seeds",
+    "oilsAndFats": "Oils & Fats",
+    "drinks": "Drinks",
+    "sweets": "Sweets",
+    "groceries": "Groceries"
+  },
+  "products": {
+    "dairy": {
+      "milk32": "Milk 3.2%",
+      "milk25": "Milk 2.5%",
+      "milk15": "Milk 1.5%",
+      "hardCheese": "Hard Cheese",
+      "softCheese": "Soft Cheese",
+      "cottageCheese0": "Cottage Cheese 0%",
+      "cottageCheese5": "Cottage Cheese 5%",
+      "cottageCheese9": "Cottage Cheese 9%",
+      "sourCream15": "Sour Cream 15%",
+      "sourCream20": "Sour Cream 20%",
+      "kefir25": "Kefir 2.5%",
+      "kefir32": "Kefir 3.2%",
+      "naturalYogurt": "Natural Yogurt",
+      "greekYogurt": "Greek Yogurt",
+      "butter825": "Butter 82.5%"
+    },
+    "meat": {
+      "beefFillet": "Beef Fillet",
+      "beefBrisket": "Beef Brisket",
+      "beefMince": "Beef Mince",
+      "porkNeck": "Pork Neck",
+      "porkLoin": "Pork Loin",
+      "chickenBreast": "Chicken Breast",
+      "chickenThigh": "Chicken Thigh",
+      "chickenMince": "Chicken Mince",
+      "turkeyBreast": "Turkey Breast",
+      "turkeyThigh": "Turkey Thigh"
+    },
+    "fish": {
+      "troutFresh": "Trout Fresh",
+      "troutLightlySalted": "Trout Lightly Salted",
+      "salmonFresh": "Salmon Fresh",
+      "salmonLightlySalted": "Salmon Lightly Salted",
+      "codFresh": "Cod Fresh",
+      "herringSalted": "Herring Salted",
+      "mackerelFresh": "Mackerel Fresh",
+      "mackerelSmoked": "Mackerel Smoked",
+      "tunaCanned": "Tuna Canned"
+    },
+    "vegetables": {
+      "potato": "Potato",
+      "carrot": "Carrot",
+      "onion": "Onion",
+      "cucumber": "Cucumber",
+      "tomato": "Tomato",
+      "whiteCabbage": "White Cabbage",
+      "pepper": "Bell Pepper",
+      "garlic": "Garlic",
+      "zucchini": "Zucchini",
+      "eggplant": "Eggplant",
+      "beet": "Beet"
+    },
+    "fruits": {
+      "apple": "Apple",
+      "banana": "Banana",
+      "orange": "Orange",
+      "tangerine": "Tangerine",
+      "pear": "Pear",
+      "kiwi": "Kiwi",
+      "grape": "Grape",
+      "pineapple": "Pineapple"
+    },
+    "berries": {
+      "strawberry": "Strawberry",
+      "raspberry": "Raspberry",
+      "blueberry": "Blueberry",
+      "blackcurrant": "Blackcurrant",
+      "cherry": "Cherry",
+      "cranberry": "Cranberry"
+    },
+    "grains": {
+      "riceWhiteDry": "White Rice Dry",
+      "riceBrownDry": "Brown Rice Dry",
+      "buckwheatDry": "Buckwheat Dry",
+      "oatmealDry": "Oatmeal Dry",
+      "semolinaDry": "Semolina Dry",
+      "milletDry": "Millet Dry",
+      "lentilsDry": "Lentils Dry",
+      "beansDry": "Beans Dry",
+      "peasDry": "Peas Dry"
+    },
+    "bakery": {
+      "whiteBread": "White Bread",
+      "blackBread": "Black Bread",
+      "slicedLoaf": "Sliced Loaf",
+      "borodinskyBread": "Borodinsky Bread",
+      "armenianLavash": "Armenian Lavash"
+    },
+    "eggs": {
+      "chickenEggOnePiece": "Chicken Egg 1 pc",
+      "eggWhite": "Egg White",
+      "eggYolk": "Egg Yolk"
+    },
+    "nuts": {
+      "walnut": "Walnut",
+      "almond": "Almond",
+      "hazelnut": "Hazelnut",
+      "cashew": "Cashew",
+      "peanut": "Peanut",
+      "sunflowerSeeds": "Sunflower Seeds"
+    },
+    "fats": {
+      "sunflowerOil": "Sunflower Oil",
+      "oliveOil": "Olive Oil",
+      "coconutOil": "Coconut Oil",
+      "mayonnaise": "Mayonnaise"
+    },
+    "drinks": {
+      "teaWithoutSugar": "Tea Without Sugar",
+      "blackCoffee": "Black Coffee",
+      "orangeJuice": "Orange Juice",
+      "appleJuice": "Apple Juice",
+      "tomatoJuice": "Tomato Juice",
+      "compote": "Compote"
+    },
+    "sweets": {
+      "sugar": "Sugar",
+      "honey": "Honey",
+      "milkChocolate": "Milk Chocolate",
+      "darkChocolate": "Dark Chocolate",
+      "cookies": "Cookies",
+      "candy": "Candy"
+    },
+    "groceries": {
+      "pastaDry": "Pasta Dry",
+      "wheatFlour": "Wheat Flour",
+      "ryeFlour": "Rye Flour",
+      "starch": "Starch"
+    }
+  }
+}

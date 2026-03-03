@@ -1,102 +1,126 @@
 "use client"
 
-import { useEffect, useState, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback } from "react"
+import { db } from "@/lib/db"
+
+// Cache TTL constants
+export const CACHE_SHORT_TTL = 60 * 1000 // 1 minute
+export const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+export const CACHE_LONG_TTL = 60 * 60 * 1000 // 1 hour
 
 interface CacheEntry<T> {
   data: T
   timestamp: number
+  ttl: number
 }
 
-// Глобальный кэш
-const cache = new Map<string, CacheEntry<unknown>>()
-
-// Время жизни кэша по умолчанию (5 минут)
-const DEFAULT_TTL = 5 * 60 * 1000
+// In-memory cache
+const cache = new Map<string, CacheEntry<any>>()
 
 /**
- * Хук для кэширования данных с автоматическим обновлением
+ * Get cached data or fetch from database
  */
 export function useCachedData<T>(
   key: string,
-  fetcher: () => Promise<T>,
-  ttl: number = DEFAULT_TTL
-): {
-  data: T | null
-  isLoading: boolean
-  error: Error | null
-  refetch: () => Promise<void>
-  invalidate: () => void
-} {
-  const [data, setData] = useState<T | null>(() => {
-    const cached = cache.get(key) as CacheEntry<T> | undefined
-    if (cached && Date.now() - cached.timestamp < ttl) {
-      return cached.data
-    }
-    return null
-  })
-  const [isLoading, setIsLoading] = useState(!data)
+  fetchFn: () => Promise<T>,
+  ttl: number = CACHE_TTL
+): { data: T | null; isLoading: boolean; error: Error | null; refetch: () => Promise<void> } {
+  const [data, setData] = useState<T | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
-  const isFetching = useRef(false)
 
   const fetchData = useCallback(async () => {
-    if (isFetching.current) return
-    isFetching.current = true
-    
-    setIsLoading(true)
-    setError(null)
-    
     try {
-      const result = await fetcher()
-      cache.set(key, { data: result, timestamp: Date.now() })
-      setData(result)
+      setIsLoading(true)
+
+      // Check cache first
+      const cached = cache.get(key)
+      if (cached && Date.now() - cached.timestamp < cached.ttl) {
+        setData(cached.data)
+        setIsLoading(false)
+        return
+      }
+
+      // Fetch from database
+      const newData = await fetchFn()
+      cache.set(key, { data: newData, timestamp: Date.now(), ttl })
+      setData(newData)
+      setError(null)
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)))
     } finally {
       setIsLoading(false)
-      isFetching.current = false
     }
-  }, [key, fetcher])
-
-  const invalidate = useCallback(() => {
-    cache.delete(key)
-  }, [key])
-
-  const refetch = useCallback(async () => {
-    invalidate()
-    await fetchData()
-  }, [fetchData, invalidate])
+  }, [key, fetchFn, ttl])
 
   useEffect(() => {
-    const cached = cache.get(key) as CacheEntry<T> | undefined
-    if (!cached || Date.now() - cached.timestamp >= ttl) {
-      fetchData()
-    }
-  }, [key, ttl, fetchData])
+    fetchData()
+  }, [fetchData])
 
-  return { data, isLoading, error, refetch, invalidate }
+  return { data, isLoading, error, refetch: fetchData }
 }
 
 /**
- * Очистить весь кэш
+ * Get cached categories by type
  */
-export function clearCache() {
-  cache.clear()
+export function useCategories(type?: string) {
+  const key = type ? `categories:${type}` : "categories:all"
+  const fetchFn = async () => {
+    const all = await db.categories.toArray()
+    return type ? all.filter((c) => c.type === type) : all
+  }
+
+  return useCachedData(key, fetchFn, CACHE_LONG_TTL)
 }
 
 /**
- * Очистить кэш по ключу
+ * Get cached units
  */
-export function invalidateCache(key: string) {
+export function useUnits() {
+  return useCachedData("units", () => db.units.toArray(), CACHE_LONG_TTL)
+}
+
+/**
+ * Get cached accounts
+ */
+export function useAccounts() {
+  return useCachedData("accounts", () => db.accounts.toArray(), CACHE_LONG_TTL)
+}
+
+/**
+ * Get cached tags
+ */
+export function useTags() {
+  return useCachedData("tags", () => db.tags.toArray(), CACHE_LONG_TTL)
+}
+
+/**
+ * Clear cache for specific key
+ */
+export function clearCache(key: string): void {
   cache.delete(key)
 }
 
 /**
- * Очистить кэш по паттерну
+ * Clear all cache
  */
-export function invalidateCachePattern(pattern: string) {
-  for (const key of cache.keys()) {
-    if (key.includes(pattern)) {
+export function clearAllCache(): void {
+  cache.clear()
+}
+
+/**
+ * Invalidate cache older than TTL
+ */
+export function cleanupCache(): void {
+  const now = Date.now()
+  for (const [key, entry] of cache.entries()) {
+    if (now - entry.timestamp > entry.ttl) {
       cache.delete(key)
     }
   }
+}
+
+// Auto cleanup every 5 minutes
+if (typeof window !== "undefined") {
+  setInterval(cleanupCache, 5 * 60 * 1000)
 }
