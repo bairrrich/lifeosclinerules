@@ -870,6 +870,7 @@ export interface Reminder extends BaseEntity {
   time: string // "08:00"
   times?: string[] // Дополнительные времена для нескольких напоминаний в день
   days: number[] // 0-6 для дней недели
+  date?: ISODate // Конкретная дата для разовых напоминаний
   start_date?: ISODate // Начало курса/периода
   end_date?: ISODate // Окончание курса/периода
 
@@ -879,6 +880,8 @@ export interface Reminder extends BaseEntity {
   // Повтор
   repeat_type?: ReminderRepeatType
   repeat_interval?: number // Каждые N дней
+  custom_unit?: "days" | "weeks" | "months" | "hours"
+  monthly_day?: number
 
   // Приоритет
   priority: ReminderPriority

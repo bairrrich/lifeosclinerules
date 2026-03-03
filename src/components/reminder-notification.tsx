@@ -124,6 +124,12 @@ export function ReminderNotification({
         if (!reminder.days.includes(currentDay)) {
           continue
         }
+
+        // Для разовых напоминаний проверяем конкретную дату
+        if (reminder.repeat_type === "none" && reminder.date && today !== reminder.date) {
+          continue
+        }
+
         // Проверяем даты курса
         if (reminder.start_date && today < reminder.start_date) {
           continue

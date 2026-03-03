@@ -139,9 +139,11 @@ class LifeOSDatabase extends Dexie {
       bodyMeasurements: "id, date, type, value",
 
       // Reminders and templates
-      reminders: "id, type, time, days, is_active, related_id, priority",
-      reminderLogs: "id, reminder_id, triggered_at, action",
-      templates: "id, name, type, is_favorite",
+      reminders:
+        "id, type, title, message, time, days, date, is_active, related_id, related_type, priority, start_date, end_date, advance_minutes, repeat_type, repeat_interval, custom_unit, monthly_day, sound, vibration, persistent, last_triggered_at, last_completed_at, streak, longest_streak, total_completed, created_at, updated_at",
+      reminderLogs:
+        "id, reminder_id, triggered_at, scheduled_at, action, snooze_duration, notes, created_at, updated_at",
+      templates: "id, name, type, is_favorite, created_at, updated_at",
 
       // Recurring transactions
       recurringTransactions: "id, type, frequency, is_active, next_due, account_id",
@@ -262,7 +264,8 @@ class LifeOSDatabase extends Dexie {
       waterLogs: "id, date, [date+type], type, amount_ml",
 
       // Reminders - add type+is_active compound index for active queries
-      reminders: "id, type, [type+is_active], is_active, time, days, related_id, priority",
+      reminders:
+        "id, type, title, message, time, days, date, is_active, related_id, related_type, priority, start_date, end_date, advance_minutes, repeat_type, repeat_interval, custom_unit, monthly_day, sound, vibration, persistent, last_triggered_at, last_completed_at, streak, longest_streak, total_completed, created_at, updated_at",
 
       // Books - add compound indexes
       books:

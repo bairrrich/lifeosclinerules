@@ -76,7 +76,8 @@
         "fr": "Fr",
         "sa": "Sa"
       },
-      "pageHint": "Reminder will appear on reminders page"
+      "pageHint": "Reminder will appear on reminders page",
+      "snooze": "Snooze"
     },
     "email": "Email",
     "password": "Password",
@@ -2745,6 +2746,7 @@
     "addItem": "Add Item",
     "editItem": "Edit Item",
     "noItems": "No items yet",
+    "name": "Name",
     "list": {
       "title": "Catalog",
       "stats": {
