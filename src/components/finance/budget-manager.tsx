@@ -12,7 +12,7 @@ import { CrudManager } from "@/components/shared"
 import { Progress } from "@/components/ui/progress"
 import { db, initializeDatabase, getAllEntities, getLocalizedEntityName } from "@/lib/db"
 import type { Category, Log, Budget } from "@/types"
-import { priorityColors } from "@/lib/theme-colors"
+import { priorityColors, statusColors } from "@/lib/theme-colors"
 
 // Ключ для localStorage бюджетов
 const BUDGETS_KEY = "life-os-budgets"
@@ -225,10 +225,12 @@ export function BudgetManager() {
             <span className="font-medium">
               {localizedCategoryNames[item.category_id] || item.category_name}
             </span>
-            {isOverBudget && <AlertTriangle className="h-4 w-4 text-red-500" />}
+            {isOverBudget && <AlertTriangle className={`h-4 w-4 ${statusColors.warning.icon}`} />}
           </div>
           <div className="flex items-center gap-2">
-            <span className={`text-sm ${isOverBudget ? "text-red-500" : "text-muted-foreground"}`}>
+            <span
+              className={`text-sm ${isOverBudget ? statusColors.warning.icon : "text-muted-foreground"}`}
+            >
               {spent.toLocaleString()} / {item.amount.toLocaleString()} {t("budgets.currency")}
             </span>
           </div>
@@ -241,7 +243,7 @@ export function BudgetManager() {
           <span>
             {percentage.toFixed(0)}% {t("budgets.used")}
           </span>
-          <span className={isOverBudget ? "text-red-500" : ""}>
+          <span className={isOverBudget ? statusColors.warning.icon : ""}>
             {isOverBudget
               ? `${t("budgets.overBudget")} ${Math.abs(remaining).toLocaleString()} ${t("budgets.currency")}`
               : `${t("budgets.remaining")} ${remaining.toLocaleString()} ${t("budgets.currency")}`}

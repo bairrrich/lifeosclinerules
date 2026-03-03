@@ -19,7 +19,7 @@ import {
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { moduleColors } from "@/lib/theme-colors"
+import { moduleColors, uiColors } from "@/lib/theme-colors"
 import {
   Dialog,
   DialogContent,
@@ -464,7 +464,9 @@ export default function TemplatesPage() {
               {groupedTemplates.favorite.length > 0 && (
                 <div>
                   <h2 className="text-lg font-semibold text-dark mb-3 flex items-center gap-2">
-                    <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                    <Star
+                      className={`h-5 w-5 ${uiColors.favorite.DEFAULT} ${uiColors.favorite.fill}`}
+                    />
                     {t("sections.favorite")}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -497,7 +499,9 @@ export default function TemplatesPage() {
                                     : t("actions.addToFavorite")
                                 }
                               >
-                                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                <Star
+                                  className={`h-4 w-4 ${uiColors.favorite.fill} ${uiColors.favorite.DEFAULT}`}
+                                />
                               </Button>
                             </div>
 
@@ -529,7 +533,7 @@ export default function TemplatesPage() {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8 text-dark-lighter hover:text-red-500"
+                                  className={`h-8 w-8 text-dark-lighter ${uiColors.delete.hover}`}
                                   onClick={() => openDeleteDialog(template)}
                                   aria-label={t("actions.delete")}
                                 >
@@ -594,7 +598,7 @@ export default function TemplatesPage() {
                                   }
                                 >
                                   <Star
-                                    className={`h-4 w-4 ${template.is_favorite ? "fill-yellow-500 text-yellow-500" : ""}`}
+                                    className={`h-4 w-4 ${template.is_favorite ? `${uiColors.favorite.fill} ${uiColors.favorite.DEFAULT}` : ""}`}
                                   />
                                 </Button>
                               </div>
@@ -627,7 +631,7 @@ export default function TemplatesPage() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 text-dark-lighter hover:text-red-500"
+                                    className={`h-8 w-8 text-dark-lighter ${uiColors.delete.hover}`}
                                     onClick={() => openDeleteDialog(template)}
                                     aria-label="Удалить шаблон"
                                   >
@@ -767,7 +771,7 @@ export default function TemplatesPage() {
       <Dialog open={showApplyDialog} onOpenChange={setShowApplyDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-green-600">
+            <DialogTitle className={`flex items-center gap-2 ${uiColors.success.DEFAULT}`}>
               <Check className="h-5 w-5" />
               {t("apply.success")}
             </DialogTitle>

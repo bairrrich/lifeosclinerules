@@ -463,7 +463,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.strength.DEFAULT} text-white border-[oklch(0.66_0.34_28)]`
+                            ? `${workoutColors.strength.DEFAULT} text-white ${workoutColors.strength.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -484,7 +484,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.strength.DEFAULT} text-white border-[oklch(0.66_0.34_28)]`
+                            ? `${workoutColors.strength.DEFAULT} text-white ${workoutColors.strength.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -511,7 +511,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.cardio.DEFAULT} text-white border-[oklch(0.70_0.32_215)]`
+                            ? `${workoutColors.cardio.DEFAULT} text-white ${workoutColors.cardio.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -532,7 +532,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.cardio.DEFAULT} text-white border-[oklch(0.70_0.32_215)]`
+                            ? `${workoutColors.cardio.DEFAULT} text-white ${workoutColors.cardio.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -559,7 +559,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.yoga.DEFAULT} text-white border-[oklch(0.72_0.30_122)]`
+                            ? `${workoutColors.yoga.DEFAULT} text-white ${workoutColors.yoga.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -580,7 +580,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.yoga.DEFAULT} text-white border-[oklch(0.72_0.30_122)]`
+                            ? `${workoutColors.yoga.DEFAULT} text-white ${workoutColors.yoga.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -601,7 +601,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.yoga.DEFAULT} text-white border-[oklch(0.72_0.30_122)]`
+                            ? `${workoutColors.yoga.DEFAULT} text-white ${workoutColors.yoga.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -628,7 +628,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.stretching.DEFAULT} text-white border-[oklch(0.76_0.28_198)]`
+                            ? `${workoutColors.stretching.DEFAULT} text-white ${workoutColors.stretching.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >
@@ -649,7 +649,7 @@ export function WorkoutForm({
                         onClick={() => setWorkoutSubcategory(opt.value)}
                         className={`px-3 py-2 text-sm rounded-xl border transition-colors ${
                           workoutSubcategory === opt.value
-                            ? `${workoutColors.stretching.DEFAULT} text-white border-[oklch(0.76_0.28_198)]`
+                            ? `${workoutColors.stretching.DEFAULT} text-white ${workoutColors.stretching.border}`
                             : "bg-background hover:bg-accent"
                         }`}
                       >

@@ -23,6 +23,8 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase } from "@/lib/db"
 import { statusColors } from "@/components/books"
+import { bookColors } from "@/lib/theme-colors"
+import { cn } from "@/lib/utils"
 import type { Book, UserBook, Author, BookAuthor, ReadingStatus } from "@/types"
 
 // Фильтры статуса с переводами и иконками
@@ -131,13 +133,17 @@ export default function BooksPage() {
             </div>
           </Card>
           <Card className="p-2 sm:p-3 text-center">
-            <div className="text-xl sm:text-2xl font-bold text-blue-500">{stats.reading}</div>
+            <div className={cn("text-xl sm:text-2xl font-bold", bookColors.reading)}>
+              {stats.reading}
+            </div>
             <div className="text-[10px] sm:text-xs text-muted-foreground">
               {t("list.stats.reading")}
             </div>
           </Card>
           <Card className="p-2 sm:p-3 text-center">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.completed}</div>
+            <div className={cn("text-xl sm:text-2xl font-bold", bookColors.completed)}>
+              {stats.completed}
+            </div>
             <div className="text-[10px] sm:text-xs text-muted-foreground">
               <span className="hidden sm:inline">{t("list.stats.completed")}</span>
               <span className="sm:hidden">{t("list.stats.completed")}</span>
@@ -151,7 +157,9 @@ export default function BooksPage() {
             </div>
           </Card>
           <Card className="p-2 sm:p-3 text-center">
-            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{stats.paused}</div>
+            <div className={cn("text-xl sm:text-2xl font-bold", bookColors.paused)}>
+              {stats.paused}
+            </div>
             <div className="text-[10px] sm:text-xs text-muted-foreground">
               {t("list.stats.paused")}
             </div>
@@ -252,7 +260,9 @@ export default function BooksPage() {
                           <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
                             {book.userBook?.rating && (
                               <div className="flex items-center gap-1 shrink-0">
-                                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                <Star
+                                  className={`h-4 w-4 ${bookColors.ratingFill} ${bookColors.rating}`}
+                                />
                                 <span className="text-sm">{book.userBook.rating}</span>
                               </div>
                             )}

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase } from "@/lib/db"
+import { cn } from "@/lib/utils"
 import { ItemType } from "@/types"
 import type { Item } from "@/types"
 import { itemColors } from "@/lib/theme-colors"
@@ -104,23 +105,27 @@ export default function ItemsPage() {
             <div className="text-xs text-muted-foreground">{t("list.stats.total")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-purple-500">{stats.vitamin}</div>
+            <div className={cn("text-2xl font-bold", itemColors.vitamin.text)}>{stats.vitamin}</div>
             <div className="text-xs text-muted-foreground">{t("list.types.vitamin")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-red-500">{stats.medicine}</div>
+            <div className={cn("text-2xl font-bold", itemColors.medicine.text)}>
+              {stats.medicine}
+            </div>
             <div className="text-xs text-muted-foreground">{t("list.types.medicine")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-green-500">{stats.herb}</div>
+            <div className={cn("text-2xl font-bold", itemColors.herb.text)}>{stats.herb}</div>
             <div className="text-xs text-muted-foreground">{t("list.types.herb")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-pink-500">{stats.cosmetic}</div>
+            <div className={cn("text-2xl font-bold", itemColors.cosmetic.text)}>
+              {stats.cosmetic}
+            </div>
             <div className="text-xs text-muted-foreground">{t("list.types.cosmetic")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-yellow-500">{stats.product}</div>
+            <div className={cn("text-2xl font-bold", itemColors.product.text)}>{stats.product}</div>
             <div className="text-xs text-muted-foreground">{t("list.types.product")}</div>
           </Card>
         </div>

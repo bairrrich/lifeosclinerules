@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dialog"
 import { db, initializeDatabase } from "@/lib/db"
 import { statusColors } from "@/components/books"
+import { bookColors } from "@/lib/theme-colors"
 import type { Book, UserBook, Author, BookQuote, Genre } from "@/types"
 
 interface BookDetails extends Book {
@@ -221,7 +222,7 @@ export default function BookDetailPage() {
                   )}
                   {book.userBook?.rating && (
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                      <Star className={`h-4 w-4 ${bookColors.ratingFill} ${bookColors.rating}`} />
                       <span className="text-sm">{book.userBook.rating}</span>
                     </div>
                   )}

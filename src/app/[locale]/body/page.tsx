@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
+import { cn } from "@/lib/utils"
+import { bodyColors } from "@/lib/theme-colors"
 import type { BodyMeasurement, BodyMeasurementType } from "@/types"
 
 const measurementTypes: {
@@ -188,16 +190,16 @@ function BodyContent() {
 
     if (bmi < 18.5) {
       category = "underweight"
-      color = "text-blue-500"
+      color = bodyColors.bmi.underweight.text
     } else if (bmi < 25) {
       category = "normal"
-      color = "text-green-500"
+      color = bodyColors.bmi.normal.text
     } else if (bmi < 30) {
       category = "overweight"
-      color = "text-yellow-500"
+      color = bodyColors.bmi.overweight.text
     } else {
       category = "obese"
-      color = "text-red-500"
+      color = bodyColors.bmi.obese.text
     }
 
     return { value: Math.round(bmi * 10) / 10, category, color }
@@ -273,11 +275,11 @@ function BodyContent() {
                         className={`flex items-center gap-1 text-xs ${
                           item.type === "bodyFat"
                             ? change.trend === "down"
-                              ? "text-green-500"
-                              : "text-red-500"
+                              ? bodyColors.trend.down
+                              : bodyColors.trend.up
                             : change.trend === "down"
-                              ? "text-red-500"
-                              : "text-green-500"
+                              ? bodyColors.trend.up
+                              : bodyColors.trend.down
                         }`}
                       >
                         {change.trend === "up" ? (
@@ -316,15 +318,15 @@ function BodyContent() {
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-lg font-bold text-red-500">{stats.max}</div>
+                    <div className={cn("text-lg font-bold", bodyColors.stats.max)}>{stats.max}</div>
                     <div className="text-xs text-muted-foreground">{t("stats.max")}</div>
                   </div>
                   <div>
-                    <div className="text-lg font-bold text-blue-500">{stats.avg}</div>
+                    <div className={cn("text-lg font-bold", bodyColors.stats.avg)}>{stats.avg}</div>
                     <div className="text-xs text-muted-foreground">{t("stats.avg")}</div>
                   </div>
                   <div>
-                    <div className="text-lg font-bold text-green-500">{stats.min}</div>
+                    <div className={cn("text-lg font-bold", bodyColors.stats.min)}>{stats.min}</div>
                     <div className="text-xs text-muted-foreground">{t("stats.min")}</div>
                   </div>
                 </div>
@@ -351,7 +353,7 @@ function BodyContent() {
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center">
                         <div
-                          className="w-full bg-blue-500 rounded-t transition-[height]"
+                          className="w-full rounded-t transition-[height] bg-[oklch(0.70_0.30_218)]"
                           style={{ height: `${height}%` }}
                         />
                       </div>

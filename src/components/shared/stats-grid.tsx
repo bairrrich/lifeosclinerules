@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { statusColors } from "@/lib/theme-colors"
 
 export interface StatItem {
   value: number | string
@@ -79,8 +80,8 @@ export function StatsGrid({
                   <div
                     className={cn(
                       "text-xs mt-1",
-                      stat.trend === "up" && "text-green-600",
-                      stat.trend === "down" && "text-red-600",
+                      stat.trend === "up" && statusColors.success.icon,
+                      stat.trend === "down" && statusColors.error.icon,
                       stat.trend === "neutral" && "text-muted-foreground"
                     )}
                   >

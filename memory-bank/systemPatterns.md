@@ -109,21 +109,60 @@ import { LazyLoad } from "@/components/shared/lazy-load"
 
 **Проблема**: Hardcoded цвета в компонентах нарушают консистентность UI
 
-**Решение**: Централизованная система цветов через CSS переменные
+**Решение**: Централизованная система цветов через OKLCH цветовое пространство
 
 ```typescript
 // src/lib/theme-colors.ts
-import { moduleColors } from "@/lib/theme-colors"
+import { moduleColors, statusColors, workoutColors } from "@/lib/theme-colors"
 
 // Использование в компоненте
 const colors = moduleColors.food
-// colors.light → bg-[--color-warm-light]
-// colors.DEFAULT → bg-[--color-warm]
-// colors.text → text-[--color-warm]
-// colors.border → border-[--color-warm]/30
+// colors.light → bg-[oklch(0.88_0.22_68)]
+// colors.DEFAULT → bg-[oklch(0.76_0.28_68)]
+// colors.text → text-[oklch(0.88_0.22_68)]
+// colors.border → border-[oklch(0.76_0.28_68)/0.45]
 ```
 
-**Доступные модули:** food, workout, finance, water, sleep, mood, books, recipes, habits, goals, logs, settings
+**Доступные цветовые группы:**
+
+| Группа                | Назначение                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| `moduleColors`        | 12 модулей (food, workout, finance, water, sleep, mood, books, recipes, habits, goals, logs, settings) |
+| `workoutColors`       | Типы тренировок (strength, cardio, yoga, stretching) + calories                                        |
+| `foodColors`          | Типы еды (breakfast, lunch, dinner, snack)                                                             |
+| `recipeColors`        | Типы рецептов + метаданные (rating, calories, protein, etc.)                                           |
+| `bookStatusColors`    | Статусы книг (reading, completed, planned, paused)                                                     |
+| `priorityColors`      | Приоритеты (low, medium, high, urgent)                                                                 |
+| `itemColors`          | Типы items (vitamin, medicine, herb, cosmetic, product)                                                |
+| `habitStatusColors`   | Статусы привычек (completed, skipped, active, weekend)                                                 |
+| `contentTypeColors`   | Типы контента                                                                                          |
+| `waterDrinkColors`    | Типы напитков (water, tea, coffee, other)                                                              |
+| `logTypeColors`       | Типы логов для иконок                                                                                  |
+| `templateTypeColors`  | Типы шаблонов                                                                                          |
+| `moodLevelColors`     | Уровни энергии и стресса                                                                               |
+| `progressColors`      | Стадии прогресса (not-started, in-progress, complete)                                                  |
+| `analyticsColors`     | Цвета для графиков                                                                                     |
+| `bmiColors`           | Категории BMI (underweight, normal, overweight, obese)                                                 |
+| `tagColors`           | 16 цветовых вариантов для тегов                                                                        |
+| `reminderTypeColors`  | Типы напоминаний                                                                                       |
+| `statusColors`        | Статусные цвета (success, error, warning, info, syncing)                                               |
+| `streakColors`        | Стрики (trophy, flame, ranking badges, gradient)                                                       |
+| `statColors`          | Статистика                                                                                             |
+| `uiColors`            | UI действия (favorite, delete, success)                                                                |
+| `bookColors`          | Статистика книг                                                                                        |
+| `bodyColors`          | Модуль тела/веса                                                                                       |
+| `reminderStatsColors` | Статистика напоминаний                                                                                 |
+| `sleepColors`         | Качество сна (5 уровней)                                                                               |
+| `moodColors`          | Настроения (5 уровней)                                                                                 |
+| `sleepQualityColors`  | Кнопки качества сна                                                                                    |
+
+**Преимущества:**
+
+- 100% OKLCH консистентность
+- TypeScript типы для безопасности
+- Легкая темизация и dark mode
+- DRY принцип
+- Централизованное управление цветами
 
 ## Паттерны проектирования
 
@@ -340,3 +379,38 @@ persist(store, { name: "life-os-settings" })
   overscan={5}
 />
 ```
+
+## Color Refactoring Pattern
+
+**Проблема:** Hardcoded цвета (`text-red-500`, `bg-blue-500`, `#ff0000`) в 151+ местах
+
+**Решение:** Централизованная система с OKLCH
+
+```typescript
+// До (hardcoded)
+<div className="text-red-500 bg-blue-500" />
+
+// После (theme colors)
+import { statusColors, moduleColors } from "@/lib/theme-colors"
+<div className={`${statusColors.error.icon} ${moduleColors.workout.DEFAULT}`} />
+```
+
+**Структура цветовой группы:**
+
+```typescript
+interface ColorScheme {
+  light: string // light variant (e.g., bg-[oklch(0.88_0.22_68)])
+  DEFAULT: string // main color (e.g., bg-[oklch(0.76_0.28_68)])
+  text: string // text color (e.g., text-[oklch(0.88_0.22_68)])
+  border: string // border color (e.g., border-[oklch(0.76_0.28_68)/0.45])
+  shadow?: string // optional shadow
+}
+```
+
+**Принципы:**
+
+- Все цвета в OKLCH пространстве
+- Единая структура для всех групп
+- TypeScript типы для безопасности
+- Импорт только нужных цветов
+- Сохранение визуальной идентичности

@@ -125,14 +125,16 @@ export default function WaterPage() {
                     strokeDasharray={440}
                     strokeDashoffset={440 - (440 * progress) / 100}
                     className={`transition-[stroke-dashoffset] duration-500 ${
-                      progress >= 100 ? "text-green-500" : "text-blue-500"
+                      progress >= 100
+                        ? "text-[oklch(0.74_0.30_138)]"
+                        : "text-[oklch(0.78_0.26_208)]"
                     }`}
                     strokeLinecap="round"
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <Droplet
-                    className={`h-8 w-8 mb-1 ${progress >= 100 ? "text-green-500" : "text-blue-500"}`}
+                    className={`h-8 w-8 mb-1 ${progress >= 100 ? "text-[oklch(0.74_0.30_138)]" : "text-[oklch(0.78_0.26_208)]"}`}
                   />
                   <span className="text-3xl font-bold">{totalMl}</span>
                   <span className="text-sm text-muted-foreground">{t("unit")}</span>
@@ -145,7 +147,9 @@ export default function WaterPage() {
                     {t("goal", { target: goal.target_value })}
                   </p>
                   {progress >= 100 && (
-                    <p className="text-green-500 font-medium mt-1">{t("goalReached")}</p>
+                    <p className="text-[oklch(0.74_0.30_138)] font-medium mt-1">
+                      {t("goalReached")}
+                    </p>
                   )}
                 </div>
               )}

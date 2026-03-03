@@ -222,10 +222,10 @@ function GoalProgressWidget({
         max={goal}
         size={70}
         strokeWidth={5}
-        color={isComplete ? "stroke-green-500" : color}
+        color={isComplete ? "stroke-[oklch(0.74_0.30_138)]" : color}
       >
         <Icon
-          className={`h-5 w-5 ${isComplete ? "text-green-500" : color.replace("stroke-", "text-")}`}
+          className={`h-5 w-5 ${isComplete ? "text-[oklch(0.74_0.30_138)]" : color.replace("stroke-", "text-")}`}
         />
       </CircularProgress>
       <div className="text-center">
@@ -234,7 +234,7 @@ function GoalProgressWidget({
         </div>
         <div className="text-xs text-muted-foreground">{unit}</div>
         <div
-          className={`text-xs font-medium ${isComplete ? "text-green-500" : "text-muted-foreground"}`}
+          className={`text-xs font-medium ${isComplete ? "text-[oklch(0.74_0.30_138)]" : "text-muted-foreground"}`}
         >
           {percentage}%
         </div>
@@ -395,7 +395,7 @@ export default function HomePage() {
                   goal={goals.calories.target}
                   current={goals.calories.current}
                   icon={Utensils}
-                  color="stroke-orange-500"
+                  color="stroke-[oklch(0.76_0.28_68)]"
                   unit={t("calories")}
                   aria-label={t("todayProgress")}
                 />
@@ -403,7 +403,7 @@ export default function HomePage() {
                   goal={goals.water.target}
                   current={goals.water.current}
                   icon={Droplet}
-                  color="stroke-blue-500"
+                  color="stroke-[oklch(0.78_0.26_208)]"
                   unit={t("ml")}
                   aria-label={t("todayProgress")}
                 />
@@ -411,7 +411,7 @@ export default function HomePage() {
                   goal={goals.workout.target}
                   current={goals.workout.current}
                   icon={Dumbbell}
-                  color="stroke-purple-500"
+                  color="stroke-[oklch(0.70_0.30_218)]"
                   unit={t("minutes")}
                   aria-label={t("todayProgress")}
                 />
@@ -433,7 +433,7 @@ export default function HomePage() {
               <Card>
                 <CardContent className="p-3 text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <Utensils className="h-4 w-4 text-orange-500" />
+                    <Utensils className="h-4 w-4 text-[oklch(0.76_0.28_68)]" />
                     <span className="text-xs text-muted-foreground">{t("calories")}</span>
                   </div>
                   <div className="text-xl font-bold">{stats.todayCalories || "-"}</div>
@@ -442,7 +442,7 @@ export default function HomePage() {
               <Card>
                 <CardContent className="p-3 text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <Timer className="h-4 w-4 text-blue-500" />
+                    <Timer className="h-4 w-4 text-[oklch(0.78_0.26_208)]" />
                     <span className="text-xs text-muted-foreground">{t("minutes")}</span>
                   </div>
                   <div className="text-xl font-bold">{stats.todayWorkoutMinutes || "-"}</div>
@@ -451,7 +451,7 @@ export default function HomePage() {
               <Card>
                 <CardContent className="p-3 text-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <DollarSign className="h-4 w-4 text-green-500" />
+                    <DollarSign className="h-4 w-4 text-[oklch(0.74_0.30_138)]" />
                     <span className="text-xs text-muted-foreground">{t("expense")}</span>
                   </div>
                   <div className="text-xl font-bold">

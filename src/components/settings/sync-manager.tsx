@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useSync, isSupabaseConfigured } from "@/lib/supabase/sync-service"
 import { getSupabaseClient } from "@/lib/supabase"
+import { moduleColors, statusColors } from "@/lib/theme-colors"
 
 export function SyncManager() {
   const t = useTranslations("settings")
@@ -207,11 +208,11 @@ export function SyncManager() {
         <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
           <div className="flex items-center gap-2">
             {isSyncing ? (
-              <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+              <Loader2 className={`h-4 w-4 animate-spin ${statusColors.syncing.icon}`} />
             ) : status === "success" ? (
-              <Check className="h-4 w-4 text-green-500" />
+              <Check className={`h-4 w-4 ${statusColors.success.icon}`} />
             ) : status === "error" ? (
-              <AlertCircle className="h-4 w-4 text-red-500" />
+              <AlertCircle className={`h-4 w-4 ${statusColors.error.icon}`} />
             ) : (
               <Cloud className="h-4 w-4 text-muted-foreground" />
             )}

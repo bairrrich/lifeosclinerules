@@ -26,6 +26,8 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
+import { cn } from "@/lib/utils"
+import { reminderStatsColors } from "@/lib/theme-colors"
 import {
   ReminderForm,
   ReminderCard,
@@ -366,7 +368,7 @@ function RemindersContent() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <Bell className="h-8 w-8 text-blue-500" />
+                <Bell className="h-8 w-8 text-[oklch(0.70_0.30_218)]" />
                 <div>
                   <div className="text-2xl font-bold">{stats.active}</div>
                   <div className="text-xs text-muted-foreground">{t("stats.active")}</div>
@@ -377,7 +379,7 @@ function RemindersContent() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <Clock className="h-8 w-8 text-orange-500" />
+                <Clock className="h-8 w-8 text-[oklch(0.80_0.28_90)]" />
                 <div>
                   <div className="text-2xl font-bold">{stats.today}</div>
                   <div className="text-xs text-muted-foreground">{t("stats.today")}</div>
@@ -388,7 +390,7 @@ function RemindersContent() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-8 w-8 text-green-500" />
+                <CheckCircle2 className="h-8 w-8 text-[oklch(0.74_0.30_138)]" />
                 <div>
                   <div className="text-2xl font-bold">{stats.completedToday}</div>
                   <div className="text-xs text-muted-foreground">{t("stats.completed")}</div>
@@ -402,9 +404,11 @@ function RemindersContent() {
           >
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <AlertTriangle className="h-8 w-8 text-red-500" />
+                <AlertTriangle className={`h-8 w-8 ${reminderStatsColors.overdue}`} />
                 <div>
-                  <div className="text-2xl font-bold text-red-500">{stats.overdue}</div>
+                  <div className={`text-2xl font-bold ${reminderStatsColors.overdue}`}>
+                    {stats.overdue}
+                  </div>
                   <div className="text-xs text-muted-foreground">{t("stats.overdue")}</div>
                 </div>
               </div>
@@ -413,7 +417,7 @@ function RemindersContent() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <BarChart3 className="h-8 w-8 text-purple-500" />
+                <BarChart3 className="h-8 w-8 text-[oklch(0.70_0.30_285)]" />
                 <div>
                   <div className="text-2xl font-bold">{stats.total}</div>
                   <div className="text-xs text-muted-foreground">{t("stats.total")}</div>
@@ -580,7 +584,7 @@ function RemindersContent() {
                 <div className="grid grid-cols-3 gap-4">
                   <Card>
                     <CardContent className="p-3 text-center">
-                      <div className="text-2xl font-bold text-orange-500">
+                      <div className={cn("text-2xl font-bold", reminderStatsColors.streak)}>
                         {selectedReminderForStats.streak || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">{t("statsLabels.streak")}</div>
@@ -588,7 +592,7 @@ function RemindersContent() {
                   </Card>
                   <Card>
                     <CardContent className="p-3 text-center">
-                      <div className="text-2xl font-bold text-green-500">
+                      <div className={cn("text-2xl font-bold", reminderStatsColors.longestStreak)}>
                         {selectedReminderForStats.longest_streak || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">{t("statsLabels.best")}</div>
@@ -596,7 +600,7 @@ function RemindersContent() {
                   </Card>
                   <Card>
                     <CardContent className="p-3 text-center">
-                      <div className="text-2xl font-bold text-blue-500">
+                      <div className={cn("text-2xl font-bold", reminderStatsColors.totalCompleted)}>
                         {selectedReminderForStats.total_completed || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">{t("statsLabels.total")}</div>

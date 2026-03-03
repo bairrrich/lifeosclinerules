@@ -11,6 +11,7 @@ import { db } from "@/lib/db"
 import type { Reminder } from "@/types"
 import { useNotifications } from "@/hooks/use-notifications"
 import { toast } from "@/components/ui/toast"
+import { moduleColors, statusColors } from "@/lib/theme-colors"
 
 interface WaterReminderSettingsProps {
   onReminderChange?: () => void
@@ -162,7 +163,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <Droplet className="h-4 w-4 text-blue-500" />
+          <Droplet className={`h-4 w-4 ${moduleColors.water.text}`} />
           {t("reminder.title")}
         </CardTitle>
       </CardHeader>
@@ -171,7 +172,7 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {isEnabled ? (
-              <Bell className="h-4 w-4 text-green-500" />
+              <Bell className={`h-4 w-4 ${statusColors.success.icon}`} />
             ) : (
               <BellOff className="h-4 w-4 text-muted-foreground" />
             )}
@@ -238,7 +239,9 @@ export function WaterReminderSettings({ onReminderChange }: WaterReminderSetting
 
         {/* Permission warning */}
         {!hasPermission && (
-          <div className="text-xs text-amber-500 bg-amber-50 dark:bg-amber-950/20 p-2 rounded">
+          <div
+            className={`text-xs ${statusColors.warning.icon} ${statusColors.warning.bg} dark:bg-amber-950/20 p-2 rounded`}
+          >
             {t("reminder.permissionWarning")}
           </div>
         )}

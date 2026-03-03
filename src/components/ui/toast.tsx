@@ -2,6 +2,7 @@
 
 import { create } from "zustand"
 import { X, CheckCircle, AlertCircle, Info } from "@/lib/icons"
+import { statusColors } from "@/lib/theme-colors"
 
 export type ToastType = "success" | "error" | "info"
 
@@ -73,16 +74,10 @@ export function ToastContainer({
 }
 
 function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
-  const iconColors = {
-    success: "text-green-500",
-    error: "text-red-500",
-    info: "text-blue-500",
-  }
-
   const icons = {
-    success: <CheckCircle className={`h-4 w-4 ${iconColors.success}`} />,
-    error: <AlertCircle className={`h-4 w-4 ${iconColors.error}`} />,
-    info: <Info className={`h-4 w-4 ${iconColors.info}`} />,
+    success: <CheckCircle className={`h-4 w-4 ${statusColors.success.icon}`} />,
+    error: <AlertCircle className={`h-4 w-4 ${statusColors.error.icon}`} />,
+    info: <Info className={`h-4 w-4 ${statusColors.info.icon}`} />,
   }
 
   return (

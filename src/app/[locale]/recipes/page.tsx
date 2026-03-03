@@ -131,15 +131,17 @@ export default function RecipesPage() {
             <div className="text-xs text-muted-foreground">{t("list.stats.total")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-orange-500">{stats.food}</div>
+            <div className={`text-2xl font-bold ${recipeColors.food.text}`}>{stats.food}</div>
             <div className="text-xs text-muted-foreground">{t("list.stats.food")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-blue-500">{stats.drink}</div>
+            <div className={`text-2xl font-bold ${recipeColors.drink.text}`}>{stats.drink}</div>
             <div className="text-xs text-muted-foreground">{t("list.stats.drink")}</div>
           </Card>
           <Card className="p-3 text-center">
-            <div className="text-2xl font-bold text-purple-500">{stats.cocktail}</div>
+            <div className={`text-2xl font-bold ${recipeColors.cocktail.text}`}>
+              {stats.cocktail}
+            </div>
             <div className="text-xs text-muted-foreground">{t("list.stats.cocktail")}</div>
           </Card>
         </div>
@@ -237,7 +239,9 @@ export default function RecipesPage() {
                             </div>
                             {recipe.rating && (
                               <div className="flex items-center gap-1 text-muted-foreground shrink-0">
-                                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                <Star
+                                  className={`h-4 w-4 ${recipeColors.rating.fill} ${recipeColors.rating.DEFAULT}`}
+                                />
                                 <span className="text-sm">{recipe.rating}</span>
                               </div>
                             )}

@@ -38,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { db, initializeDatabase, deleteEntity } from "@/lib/db"
+import { cn } from "@/lib/utils"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
 import { recipeColors } from "@/lib/theme-colors"
 
@@ -210,7 +211,9 @@ export default function RecipeDetailPage() {
               </div>
               {recipe.rating !== undefined && (
                 <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                  <Star
+                    className={`h-4 w-4 ${recipeColors.rating.fill} ${recipeColors.rating.DEFAULT}`}
+                  />
                   <span className="text-sm font-medium">{recipe.rating}</span>
                 </div>
               )}
@@ -256,7 +259,7 @@ export default function RecipeDetailPage() {
                   {recipe.food_metadata.cuisine && (
                     <Badge
                       variant="outline"
-                      className="bg-orange-50 text-orange-700 border-orange-200 text-xs"
+                      className={`text-xs ${recipeColors.cuisine.bg} ${recipeColors.cuisine.text} ${recipeColors.cuisine.border}`}
                     >
                       <Globe className="h-3 w-3 mr-1" />
                       {t(`cuisines.${recipe.food_metadata.cuisine.toLowerCase()}`) ||
@@ -266,7 +269,7 @@ export default function RecipeDetailPage() {
                   {recipe.food_metadata.course_type && (
                     <Badge
                       variant="outline"
-                      className="bg-green-50 text-green-700 border-green-200 text-xs"
+                      className={`text-xs ${recipeColors.courseType.bg} ${recipeColors.courseType.text} ${recipeColors.courseType.border}`}
                     >
                       <Utensils className="h-3 w-3 mr-1" />
                       {t(`courseTypes.${recipe.food_metadata.course_type.toLowerCase()}`) ||
@@ -277,7 +280,7 @@ export default function RecipeDetailPage() {
                     <Badge
                       key={method}
                       variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                      className={`text-xs ${recipeColors.cookingMethod.bg} ${recipeColors.cookingMethod.text} ${recipeColors.cookingMethod.border}`}
                     >
                       {t(`cookingMethods.${method.toLowerCase()}`) || method}
                     </Badge>
@@ -285,7 +288,7 @@ export default function RecipeDetailPage() {
                   {recipe.food_metadata.serving_temperature && (
                     <Badge
                       variant="outline"
-                      className="bg-red-50 text-red-700 border-red-200 text-xs"
+                      className={`text-xs ${recipeColors.servingTemperature.bg} ${recipeColors.servingTemperature.text} ${recipeColors.servingTemperature.border}`}
                     >
                       {t(
                         `servingTemperatures.${recipe.food_metadata.serving_temperature.toLowerCase()}`
@@ -306,8 +309,8 @@ export default function RecipeDetailPage() {
                             key={level}
                             className={`w-6 h-2 rounded-full ${
                               level <= (recipe.food_metadata?.spicy_level || 0)
-                                ? "bg-red-500"
-                                : "bg-gray-200"
+                                ? recipeColors.spicy.active
+                                : recipeColors.spicy.inactive
                             }`}
                           />
                         ))}
@@ -324,7 +327,7 @@ export default function RecipeDetailPage() {
                       <Badge
                         key={diet}
                         variant="outline"
-                        className="bg-green-50 text-green-700 border-green-200 text-xs"
+                        className={`text-xs ${recipeColors.dietary.bg} ${recipeColors.dietary.text} ${recipeColors.dietary.border}`}
                       >
                         {t(`dietaryOptions.${diet.toLowerCase()}`) || diet}
                       </Badge>
@@ -341,7 +344,7 @@ export default function RecipeDetailPage() {
                   {recipe.drink_metadata.drink_type && (
                     <Badge
                       variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                      className={`text-xs ${recipeColors.drinkType.bg} ${recipeColors.drinkType.text} ${recipeColors.drinkType.border}`}
                     >
                       <Coffee className="h-3 w-3 mr-1" />
                       {t(`drinkTypes.${recipe.drink_metadata.drink_type.toLowerCase()}`) ||
@@ -351,7 +354,7 @@ export default function RecipeDetailPage() {
                   {recipe.drink_metadata.base && (
                     <Badge
                       variant="outline"
-                      className="bg-cyan-50 text-cyan-700 border-cyan-200 text-xs"
+                      className={`text-xs ${recipeColors.base.bg} ${recipeColors.base.text} ${recipeColors.base.border}`}
                     >
                       <GlassWater className="h-3 w-3 mr-1" />
                       {recipe.drink_metadata.base}
@@ -360,7 +363,7 @@ export default function RecipeDetailPage() {
                   {recipe.drink_metadata.serving_temperature && (
                     <Badge
                       variant="outline"
-                      className="bg-red-50 text-red-700 border-red-200 text-xs"
+                      className={`text-xs ${recipeColors.servingTemperature.bg} ${recipeColors.servingTemperature.text} ${recipeColors.servingTemperature.border}`}
                     >
                       {t(
                         `servingTemperatures.${recipe.drink_metadata.serving_temperature.toLowerCase()}`
@@ -372,8 +375,8 @@ export default function RecipeDetailPage() {
                       variant="outline"
                       className={`text-xs ${
                         recipe.drink_metadata.is_carbonated
-                          ? "bg-purple-50 text-purple-700 border-purple-200"
-                          : "bg-gray-50 text-gray-700 border-gray-200"
+                          ? recipeColors.carbonated.yes
+                          : recipeColors.carbonated.no
                       }`}
                     >
                       {recipe.drink_metadata.is_carbonated
@@ -390,7 +393,7 @@ export default function RecipeDetailPage() {
                     recipe.drink_metadata.caffeine_mg > 0 && (
                       <Badge
                         variant="outline"
-                        className="bg-amber-50 text-amber-700 border-amber-200 text-xs"
+                        className={`text-xs ${recipeColors.caffeine.bg} ${recipeColors.caffeine.text} ${recipeColors.caffeine.border}`}
                       >
                         ☕ {recipe.drink_metadata.caffeine_mg} {tCommon("unit.mg")}
                       </Badge>
@@ -408,8 +411,8 @@ export default function RecipeDetailPage() {
                       variant="outline"
                       className={
                         recipe.cocktail_metadata.is_alcoholic
-                          ? "bg-purple-500/10 text-purple-500"
-                          : "bg-green-500/10 text-green-500"
+                          ? recipeColors.alcoholic.yes
+                          : recipeColors.alcoholic.no
                       }
                     >
                       {recipe.cocktail_metadata.is_alcoholic
@@ -425,7 +428,7 @@ export default function RecipeDetailPage() {
                   {recipe.cocktail_metadata.base_spirit && (
                     <Badge
                       variant="outline"
-                      className="bg-amber-50 text-amber-700 border-amber-200 text-xs"
+                      className={`text-xs ${recipeColors.baseSpirit.bg} ${recipeColors.baseSpirit.text} ${recipeColors.baseSpirit.border}`}
                     >
                       {recipe.cocktail_metadata.base_spirit}
                     </Badge>
@@ -433,7 +436,7 @@ export default function RecipeDetailPage() {
                   {recipe.cocktail_metadata.cocktail_method && (
                     <Badge
                       variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                      className={`text-xs ${recipeColors.cocktailMethod.bg} ${recipeColors.cocktailMethod.text} ${recipeColors.cocktailMethod.border}`}
                     >
                       {t(
                         `view.methods.${recipe.cocktail_metadata.cocktail_method.toLowerCase()}`
@@ -443,7 +446,7 @@ export default function RecipeDetailPage() {
                   {recipe.cocktail_metadata.glass_type && (
                     <Badge
                       variant="outline"
-                      className="bg-cyan-50 text-cyan-700 border-cyan-200 text-xs"
+                      className={`text-xs ${recipeColors.glassType.bg} ${recipeColors.glassType.text} ${recipeColors.glassType.border}`}
                     >
                       {t(`view.glassTypes.${recipe.cocktail_metadata.glass_type.toLowerCase()}`) ||
                         recipe.cocktail_metadata.glass_type}
@@ -452,7 +455,7 @@ export default function RecipeDetailPage() {
                   {recipe.cocktail_metadata.ice_type && (
                     <Badge
                       variant="outline"
-                      className="bg-sky-50 text-sky-700 border-sky-200 text-xs"
+                      className={`text-xs ${recipeColors.iceType.bg} ${recipeColors.iceType.text} ${recipeColors.iceType.border}`}
                     >
                       ❄️{" "}
                       {t(`view.iceTypes.${recipe.cocktail_metadata.ice_type.toLowerCase()}`) ||
@@ -462,7 +465,7 @@ export default function RecipeDetailPage() {
                   {recipe.cocktail_metadata.color && (
                     <Badge
                       variant="outline"
-                      className="bg-pink-50 text-pink-700 border-pink-200 text-xs"
+                      className={`text-xs ${recipeColors.color.bg} ${recipeColors.color.text} ${recipeColors.color.border}`}
                     >
                       {recipe.cocktail_metadata.color}
                     </Badge>
@@ -558,30 +561,44 @@ export default function RecipeDetailPage() {
                 {/* Первая строка: КБЖУ */}
                 <div className="grid grid-cols-4 gap-2 mb-3">
                   {/* Калории */}
-                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-orange-50">
+                  <div
+                    className={`flex flex-col items-center justify-center p-2 rounded-lg ${recipeColors.calories.bg}`}
+                  >
                     <div className="flex items-center gap-1 mb-1">
-                      <Flame className="h-3 w-3 text-orange-700" />
-                      <span className="text-xs text-orange-700">{t("view.calories")}</span>
+                      <Flame className={`h-3 w-3 ${recipeColors.calories.text}`} />
+                      <span className={`text-xs ${recipeColors.calories.text}`}>
+                        {t("view.calories")}
+                      </span>
                     </div>
                     <span className="font-semibold text-sm">{recipe.calories || "-"}</span>
                   </div>
                   {/* Белки */}
-                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-blue-50">
-                    <span className="text-xs text-blue-700 mb-1">{t("view.protein")}</span>
+                  <div
+                    className={`flex flex-col items-center justify-center p-2 rounded-lg ${recipeColors.protein.bg}`}
+                  >
+                    <span className={`text-xs ${recipeColors.protein.text} mb-1`}>
+                      {t("view.protein")}
+                    </span>
                     <span className="font-semibold text-sm">
                       {recipe.protein !== undefined ? `${recipe.protein}${tCommon("unit.g")}` : "-"}
                     </span>
                   </div>
                   {/* Жиры */}
-                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-yellow-50">
-                    <span className="text-xs text-yellow-700 mb-1">{t("view.fat")}</span>
+                  <div
+                    className={`flex flex-col items-center justify-center p-2 rounded-lg ${recipeColors.fat.bg}`}
+                  >
+                    <span className={`text-xs ${recipeColors.fat.text} mb-1`}>{t("view.fat")}</span>
                     <span className="font-semibold text-sm">
                       {recipe.fat !== undefined ? `${recipe.fat}${tCommon("unit.g")}` : "-"}
                     </span>
                   </div>
                   {/* Углеводы */}
-                  <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-green-50">
-                    <span className="text-xs text-green-700 mb-1">{t("view.carbs")}</span>
+                  <div
+                    className={`flex flex-col items-center justify-center p-2 rounded-lg ${recipeColors.carbs.bg}`}
+                  >
+                    <span className={`text-xs ${recipeColors.carbs.text} mb-1`}>
+                      {t("view.carbs")}
+                    </span>
                     <span className="font-semibold text-sm">
                       {recipe.carbs !== undefined ? `${recipe.carbs}${tCommon("unit.g")}` : "-"}
                     </span>
@@ -590,15 +607,19 @@ export default function RecipeDetailPage() {
                 {/* Вторая строка: Сахар и Клетчатка */}
                 <div className="grid grid-cols-2 gap-2">
                   {/* Сахар */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-pink-50">
-                    <span className="text-sm text-pink-700">{t("view.sugar")}</span>
+                  <div
+                    className={`flex items-center justify-between p-2 rounded-lg ${recipeColors.sugar.bg}`}
+                  >
+                    <span className={`text-sm ${recipeColors.sugar.text}`}>{t("view.sugar")}</span>
                     <span className="font-semibold text-sm">
                       {recipe.sugar !== undefined ? `${recipe.sugar}${tCommon("unit.g")}` : "-"}
                     </span>
                   </div>
                   {/* Клетчатка */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50">
-                    <span className="text-sm text-emerald-700">{t("view.fiber")}</span>
+                  <div
+                    className={`flex items-center justify-between p-2 rounded-lg ${recipeColors.fiber.bg}`}
+                  >
+                    <span className={`text-sm ${recipeColors.fiber.text}`}>{t("view.fiber")}</span>
                     <span className="font-semibold text-sm">
                       {recipe.fiber !== undefined ? `${recipe.fiber}${tCommon("unit.g")}` : "-"}
                     </span>
@@ -650,7 +671,7 @@ export default function RecipeDetailPage() {
                             <Badge
                               key={i}
                               variant="outline"
-                              className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                              className={`text-xs ${recipeColors.cookingMethod.bg} ${recipeColors.cookingMethod.text} ${recipeColors.cookingMethod.border}`}
                             >
                               {t(`cookingMethods.${method.toLowerCase()}`) || method}
                             </Badge>
@@ -684,8 +705,8 @@ export default function RecipeDetailPage() {
                               key={level}
                               className={`w-5 h-2 rounded-full ${
                                 level <= (recipe.food_metadata?.spicy_level || 0)
-                                  ? "bg-red-500"
-                                  : "bg-gray-200"
+                                  ? recipeColors.spicy.active
+                                  : recipeColors.spicy.inactive
                               }`}
                             />
                           ))}
@@ -702,7 +723,7 @@ export default function RecipeDetailPage() {
                           <Badge
                             key={i}
                             variant="outline"
-                            className="text-xs bg-green-50 text-green-700 border-green-200"
+                            className={`text-xs ${recipeColors.dietary.bg} ${recipeColors.dietary.text} ${recipeColors.dietary.border}`}
                           >
                             {t(`dietaryOptions.${diet.toLowerCase()}`) || diet}
                           </Badge>
@@ -803,8 +824,8 @@ export default function RecipeDetailPage() {
                     <Badge
                       className={
                         recipe.cocktail_metadata.is_alcoholic
-                          ? "bg-purple-500/10 text-purple-500"
-                          : "bg-green-500/10 text-green-500"
+                          ? recipeColors.alcoholic.yes
+                          : recipeColors.alcoholic.no
                       }
                     >
                       {recipe.cocktail_metadata.is_alcoholic
@@ -831,27 +852,36 @@ export default function RecipeDetailPage() {
                     {recipe.cocktail_metadata.base_spirit && (
                       <Badge
                         variant="outline"
-                        className="bg-amber-50 text-amber-700 border-amber-200"
+                        className={`${recipeColors.baseSpirit.bg} ${recipeColors.baseSpirit.text} ${recipeColors.baseSpirit.border}`}
                       >
                         {recipe.cocktail_metadata.base_spirit}
                       </Badge>
                     )}
                     {recipe.cocktail_metadata.cocktail_method && (
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      <Badge
+                        variant="outline"
+                        className={`${recipeColors.cocktailMethod.bg} ${recipeColors.cocktailMethod.text} ${recipeColors.cocktailMethod.border}`}
+                      >
                         {t(
                           `view.methods.${recipe.cocktail_metadata.cocktail_method.toLowerCase()}`
                         ) || recipe.cocktail_metadata.cocktail_method}
                       </Badge>
                     )}
                     {recipe.cocktail_metadata.glass_type && (
-                      <Badge variant="outline" className="bg-cyan-50 text-cyan-700 border-cyan-200">
+                      <Badge
+                        variant="outline"
+                        className={`${recipeColors.glassType.bg} ${recipeColors.glassType.text} ${recipeColors.glassType.border}`}
+                      >
                         {t(
                           `view.glassTypes.${recipe.cocktail_metadata.glass_type.toLowerCase()}`
                         ) || recipe.cocktail_metadata.glass_type}
                       </Badge>
                     )}
                     {recipe.cocktail_metadata.ice_type && (
-                      <Badge variant="outline" className="bg-sky-50 text-sky-700 border-sky-200">
+                      <Badge
+                        variant="outline"
+                        className={`${recipeColors.iceType.bg} ${recipeColors.iceType.text} ${recipeColors.iceType.border}`}
+                      >
                         ❄️{" "}
                         {t(`view.iceTypes.${recipe.cocktail_metadata.ice_type.toLowerCase()}`) ||
                           recipe.cocktail_metadata.ice_type}
@@ -879,7 +909,7 @@ export default function RecipeDetailPage() {
                             <Badge
                               key={i}
                               variant="outline"
-                              className="text-xs bg-pink-50 text-pink-700 border-pink-200"
+                              className={`text-xs ${recipeColors.garnish.bg} ${recipeColors.garnish.text} ${recipeColors.garnish.border}`}
                             >
                               🍒 {t(`view.garnishes.${g.toLowerCase()}`) || g}
                             </Badge>
@@ -897,7 +927,7 @@ export default function RecipeDetailPage() {
                           <Badge
                             key={i}
                             variant="outline"
-                            className="text-xs bg-slate-50 text-slate-700 border-slate-200"
+                            className={`text-xs ${recipeColors.tools.bg} ${recipeColors.tools.text} ${recipeColors.tools.border}`}
                           >
                             🔧 {t(`view.tools.${tool.toLowerCase()}`) || tool}
                           </Badge>

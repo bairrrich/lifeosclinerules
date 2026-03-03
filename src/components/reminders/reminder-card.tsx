@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge"
 import { db, updateEntity } from "@/lib/db"
 import { getReminderTypesConfig, getPriorityConfig, getDayNames } from "./reminder-form"
 import type { Reminder } from "@/types"
-import { priorityColors } from "@/lib/theme-colors"
+import { priorityColors, reminderTypeColors, streakColors, statusColors } from "@/lib/theme-colors"
 
 interface ReminderCardProps {
   reminder: Reminder
@@ -186,8 +186,8 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
             {/* Статистика */}
             {reminder.streak !== undefined && reminder.streak > 0 && (
               <div className="flex items-center gap-1 mt-2">
-                <Flame className="h-3 w-3 text-orange-500" />
-                <span className="text-xs font-medium text-orange-500">
+                <Flame className={`h-3 w-3 ${streakColors.flame.icon}`} />
+                <span className={`text-xs font-medium ${streakColors.flame.icon}`}>
                   {reminder.streak} дней подряд
                 </span>
               </div>
@@ -261,7 +261,7 @@ export function ReminderCard({ reminder, onEdit, onComplete, onRefresh }: Remind
               aria-label={reminder.is_active ? t("form.courseEnd") : t("form.courseStart")}
             >
               {reminder.is_active ? (
-                <Bell className="h-4 w-4 text-blue-500" />
+                <Bell className={`h-4 w-4 ${reminderTypeColors.reminder.icon}`} />
               ) : (
                 <BellOff className="h-4 w-4 text-muted-foreground" />
               )}

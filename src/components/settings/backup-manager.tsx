@@ -26,7 +26,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { db } from "@/lib/db"
-import { priorityColors } from "@/lib/theme-colors"
+import { priorityColors, statusColors } from "@/lib/theme-colors"
 
 type ExportFormat = "json" | "csv"
 
@@ -553,7 +553,7 @@ export function BackupManager() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              <AlertTriangle className={`h-5 w-5 ${statusColors.warning.icon}`} />
               {t("backup.confirmImport.title")}
             </DialogTitle>
             <DialogDescription>{t("backup.confirmImport.description")}</DialogDescription>

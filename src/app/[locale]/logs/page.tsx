@@ -14,7 +14,8 @@ import { db, initializeDatabase } from "@/lib/db"
 import { LogType } from "@/types"
 import type { Log } from "@/types"
 import { useLocale } from "next-intl"
-import { logTypeColors } from "@/lib/theme-colors"
+import { cn } from "@/lib/utils"
+import { logTypeColors, statColors } from "@/lib/theme-colors"
 
 export default function LogsPage() {
   const t = useTranslations("logs")
@@ -98,15 +99,19 @@ export default function LogsPage() {
             <div className="text-[10px] sm:text-xs text-muted-foreground">{t("stats.total")}</div>
           </Card>
           <Card className="p-2 sm:p-3 text-center">
-            <div className="text-xl sm:text-2xl font-bold text-orange-500">{stats.food}</div>
+            <div className={cn("text-xl sm:text-2xl font-bold", statColors.food)}>{stats.food}</div>
             <div className="text-[10px] sm:text-xs text-muted-foreground">{t("types.food")}</div>
           </Card>
           <Card className="p-2 sm:p-3 text-center">
-            <div className="text-xl sm:text-2xl font-bold text-blue-500">{stats.workout}</div>
+            <div className={cn("text-xl sm:text-2xl font-bold", statColors.workout)}>
+              {stats.workout}
+            </div>
             <div className="text-[10px] sm:text-xs text-muted-foreground">{t("types.workout")}</div>
           </Card>
           <Card className="p-2 sm:p-3 text-center">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.finance}</div>
+            <div className={cn("text-xl sm:text-2xl font-bold", statColors.finance)}>
+              {stats.finance}
+            </div>
             <div className="text-[10px] sm:text-xs text-muted-foreground">{t("types.finance")}</div>
           </Card>
         </div>

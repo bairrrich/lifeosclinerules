@@ -10,6 +10,7 @@ import type { Log, Book, Content } from "@/types"
 import { searchTypeConfig, quickActions } from "@/lib/navigation-config"
 import { BookOpen, ChefHat, Flame, Search } from "@/lib/icons"
 import { cn } from "@/lib/utils"
+import { moduleColors } from "@/lib/theme-colors"
 
 interface SearchResult {
   id: string
@@ -146,7 +147,7 @@ export function GlobalSearch() {
           type: "book",
           href: `/books/${book.id}`,
           icon: BookOpen,
-          color: "text-amber-500",
+          color: moduleColors.books.text,
           subtitle: tNav("books"),
         })
       })
@@ -166,7 +167,7 @@ export function GlobalSearch() {
           type: "recipe",
           href: `/recipes/${recipe.id}`,
           icon: ChefHat,
-          color: "text-rose-500",
+          color: moduleColors.food.text,
           subtitle: tNav("recipes"),
         })
       })
@@ -186,7 +187,7 @@ export function GlobalSearch() {
           type: "habit",
           href: `/habits`,
           icon: Flame,
-          color: "text-red-500",
+          color: moduleColors.habits.text,
           subtitle: tNav("habits"),
         })
       })

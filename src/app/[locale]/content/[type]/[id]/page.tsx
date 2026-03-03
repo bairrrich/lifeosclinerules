@@ -211,7 +211,9 @@ export default function ContentDetailPage() {
               <div className="flex items-center gap-2">
                 {content.rating !== undefined && (
                   <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                    <Star
+                      className={`h-4 w-4 ${recipeColors.rating.fill} ${recipeColors.rating.DEFAULT}`}
+                    />
                     <span className="text-sm font-medium">{content.rating}</span>
                   </div>
                 )}
@@ -372,7 +374,7 @@ export default function ContentDetailPage() {
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
                       <div className="text-lg font-semibold flex items-center justify-center gap-1">
-                        <Flame className="h-4 w-4 text-orange-500" />
+                        <Flame className={`h-4 w-4 ${recipeColors.calories.text}`} />
                         {recipe.calories || "-"}
                       </div>
                       <div className="text-xs text-muted-foreground">{t("view.calories")}</div>

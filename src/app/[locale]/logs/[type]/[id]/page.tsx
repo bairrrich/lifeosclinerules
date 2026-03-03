@@ -43,7 +43,7 @@ import type {
   CardioSubcategory,
   YogaSubcategory,
 } from "@/types"
-import { logTypeColors, workoutColors } from "@/lib/theme-colors"
+import { logTypeColors, workoutColors, statusColors } from "@/lib/theme-colors"
 
 const typeLabels: Record<LogType, string> = {
   food: "Nutrition",
@@ -420,7 +420,7 @@ export default function LogDetailPage() {
               )}
               {m.calories_burned && (
                 <div className="flex items-center gap-2">
-                  <Flame className="h-4 w-4 text-orange-500" />
+                  <Flame className={`h-4 w-4 ${workoutColors.calories}`} />
                   <div>
                     <p className="text-xs text-muted-foreground">Калории</p>
                     <p className="font-medium">{m.calories_burned} ккал</p>
@@ -451,7 +451,7 @@ export default function LogDetailPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {m.exercises_count && (
                     <div className="flex items-center gap-2">
-                      <Dumbbell className="h-4 w-4 text-red-500" />
+                      <Dumbbell className={`h-4 w-4 ${workoutColors.strength.text}`} />
                       <div>
                         <p className="text-xs text-muted-foreground">Упражнений</p>
                         <p className="font-medium text-lg">{m.exercises_count}</p>
@@ -460,7 +460,7 @@ export default function LogDetailPage() {
                   )}
                   {m.sets_count && (
                     <div className="flex items-center gap-2">
-                      <Repeat className="h-4 w-4 text-blue-500" />
+                      <Repeat className={`h-4 w-4 ${workoutColors.strength.text}`} />
                       <div>
                         <p className="text-xs text-muted-foreground">Подходов</p>
                         <p className="font-medium text-lg">{m.sets_count}</p>
@@ -469,7 +469,7 @@ export default function LogDetailPage() {
                   )}
                   {m.reps_count && (
                     <div className="flex items-center gap-2">
-                      <Repeat className="h-4 w-4 text-green-500" />
+                      <Repeat className={`h-4 w-4 ${workoutColors.strength.text}`} />
                       <div>
                         <p className="text-xs text-muted-foreground">Повторов</p>
                         <p className="font-medium text-lg">{m.reps_count}</p>
@@ -478,7 +478,7 @@ export default function LogDetailPage() {
                   )}
                   {m.total_weight && (
                     <div className="flex items-center gap-2">
-                      <Weight className="h-4 w-4 text-purple-500" />
+                      <Weight className={`h-4 w-4 ${workoutColors.strength.text}`} />
                       <div>
                         <p className="text-xs text-muted-foreground">Общий вес</p>
                         <p className="font-medium text-lg">{m.total_weight} кг</p>
@@ -504,7 +504,7 @@ export default function LogDetailPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {m.distance && (
                     <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-blue-500" />
+                      <MapPin className={`h-4 w-4 ${workoutColors.cardio.text}`} />
                       <div>
                         <p className="text-xs text-muted-foreground">Дистанция</p>
                         <p className="font-medium text-lg">{m.distance} км</p>
@@ -513,7 +513,7 @@ export default function LogDetailPage() {
                   )}
                   {m.average_speed && (
                     <div className="flex items-center gap-2">
-                      <Gauge className="h-4 w-4 text-green-500" />
+                      <Gauge className={`h-4 w-4 ${workoutColors.cardio.text}`} />
                       <div>
                         <p className="text-xs text-muted-foreground">Скорость</p>
                         <p className="font-medium text-lg">{m.average_speed} км/ч</p>
@@ -542,7 +542,7 @@ export default function LogDetailPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
-                <Heart className="h-4 w-4 text-red-500" />
+                <Heart className={`h-4 w-4 ${statusColors.error.icon}`} />
                 Пульс
               </CardTitle>
             </CardHeader>
@@ -550,7 +550,7 @@ export default function LogDetailPage() {
               <div className="grid grid-cols-2 gap-4">
                 {m.heart_rate_avg && (
                   <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-red-400" />
+                    <Heart className={`h-4 w-4 ${statusColors.error.icon}`} />
                     <div>
                       <p className="text-xs text-muted-foreground">Средний</p>
                       <p className="font-medium text-lg">{m.heart_rate_avg} уд/мин</p>
@@ -559,7 +559,7 @@ export default function LogDetailPage() {
                 )}
                 {m.heart_rate_max && (
                   <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-red-600" />
+                    <Heart className={`h-4 w-4 ${statusColors.error.icon}`} />
                     <div>
                       <p className="text-xs text-muted-foreground">Максимальный</p>
                       <p className="font-medium text-lg">{m.heart_rate_max} уд/мин</p>

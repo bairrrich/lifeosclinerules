@@ -675,12 +675,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           <Button
             type="button"
             variant="outline"
-            className="text-xs"
-            style={
-              formData.priority === "low"
-                ? { backgroundColor: "#6b7280", color: "white", borderColor: "#6b7280" }
-                : {}
-            }
+            className={cn(
+              "text-xs",
+              formData.priority === "low" &&
+                cn(priorityColors.low.DEFAULT, "text-white border-[oklch(0.70_0.23_242)]")
+            )}
             onClick={() => setFormData((prev) => ({ ...prev, priority: "low" }))}
           >
             {t("form.priorities.low")}
@@ -688,12 +687,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           <Button
             type="button"
             variant="outline"
-            className="text-xs"
-            style={
-              formData.priority === "medium"
-                ? { backgroundColor: "#3b82f6", color: "white", borderColor: "#3b82f6" }
-                : {}
-            }
+            className={cn(
+              "text-xs",
+              formData.priority === "medium" &&
+                cn(priorityColors.medium.DEFAULT, "text-white border-[oklch(0.70_0.30_208)]")
+            )}
             onClick={() => setFormData((prev) => ({ ...prev, priority: "medium" }))}
           >
             {t("form.priorities.medium")}
@@ -701,12 +699,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           <Button
             type="button"
             variant="outline"
-            className="text-xs"
-            style={
-              formData.priority === "high"
-                ? { backgroundColor: "#f97316", color: "white", borderColor: "#f97316" }
-                : {}
-            }
+            className={cn(
+              "text-xs",
+              formData.priority === "high" &&
+                cn(priorityColors.high.DEFAULT, "text-white border-[oklch(0.76_0.28_68)]")
+            )}
             onClick={() => setFormData((prev) => ({ ...prev, priority: "high" }))}
           >
             {t("form.priorities.high")}
@@ -714,12 +711,11 @@ export function ReminderForm({ formData, setFormData }: ReminderFormProps) {
           <Button
             type="button"
             variant="outline"
-            className="text-xs"
-            style={
-              formData.priority === "critical"
-                ? { backgroundColor: "#ef4444", color: "white", borderColor: "#ef4444" }
-                : {}
-            }
+            className={cn(
+              "text-xs",
+              formData.priority === "critical" &&
+                cn(priorityColors.critical.DEFAULT, "text-white border-[oklch(0.68_0.34_18)]")
+            )}
             onClick={() => setFormData((prev) => ({ ...prev, priority: "critical" }))}
           >
             {t("form.priorities.critical")}

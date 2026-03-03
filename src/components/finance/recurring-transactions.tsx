@@ -418,9 +418,9 @@ export function RecurringTransactions() {
                     )}
                   >
                     {item.type === "expense" ? (
-                      <TrendingDown className="h-5 w-5 text-red-500" />
+                      <TrendingDown className={`h-5 w-5 ${financeColors.expense.text}`} />
                     ) : (
-                      <TrendingUp className="h-5 w-5 text-green-500" />
+                      <TrendingUp className={`h-5 w-5 ${financeColors.income.text}`} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -434,7 +434,9 @@ export function RecurringTransactions() {
                     <div
                       className={cn(
                         "font-medium",
-                        item.type === "expense" ? "text-red-500" : "text-green-500"
+                        item.type === "expense"
+                          ? financeColors.expense.text
+                          : financeColors.income.text
                       )}
                     >
                       {item.type === "expense" ? "-" : "+"}

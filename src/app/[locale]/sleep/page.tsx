@@ -23,7 +23,7 @@ import {
 } from "@/components/shared/form-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { SleepLog } from "@/types"
-import { moduleColors, priorityColors } from "@/lib/theme-colors"
+import { moduleColors, priorityColors, sleepColors } from "@/lib/theme-colors"
 
 const qualityLabels: Record<number, string> = {
   1: "veryPoor",
@@ -34,11 +34,11 @@ const qualityLabels: Record<number, string> = {
 }
 
 const qualityColors: Record<number, string> = {
-  1: "text-red-500",
-  2: "text-orange-500",
-  3: "text-yellow-500",
-  4: "text-lime-500",
-  5: "text-green-500",
+  1: sleepColors.veryPoor,
+  2: sleepColors.poor,
+  3: sleepColors.okay,
+  4: sleepColors.good,
+  5: sleepColors.excellent,
 }
 
 export default function SleepPage() {

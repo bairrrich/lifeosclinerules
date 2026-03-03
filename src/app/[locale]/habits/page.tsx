@@ -28,7 +28,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
-import { habitColors, habitStatusColors } from "@/lib/theme-colors"
+import { habitColors, habitStatusColors, statusColors, uiColors } from "@/lib/theme-colors"
 import { cn } from "@/lib/utils"
 import {
   db,
@@ -373,7 +373,7 @@ function HabitsContent() {
                 <div className="text-sm text-muted-foreground">{t("fields.isActive")}</div>
               </div>
               <div className="flex items-center gap-2">
-                <Flame className="h-8 w-8 text-orange-500" />
+                <Flame className="h-8 w-8 text-[oklch(0.76_0.28_68)]" />
                 <div>
                   <div className="text-2xl font-bold">
                     {Math.max(...streaks.map((s) => s.current_streak), 0)}
@@ -411,7 +411,10 @@ function HabitsContent() {
               const isNegativeHabit = habit.habit_type === "negative"
 
               return (
-                <Card key={habit.id} className={isCompleted ? "border-green-500/30" : ""}>
+                <Card
+                  key={habit.id}
+                  className={isCompleted ? "border-[oklch(0.74_0.30_138)/0.30]" : ""}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3 mb-3">
                       <Button
@@ -426,7 +429,7 @@ function HabitsContent() {
                         {isCompleted ? (
                           <Check className="h-6 w-6" />
                         ) : todayLog?.skipped_reason ? (
-                          <AlertCircle className="h-6 w-6 text-orange-500" />
+                          <AlertCircle className="h-6 w-6 text-[oklch(0.80_0.28_18)]" />
                         ) : (
                           <X className="h-6 w-6 text-muted-foreground" />
                         )}
@@ -445,7 +448,7 @@ function HabitsContent() {
                         <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
                           {streak && streak.current_streak > 0 && (
                             <>
-                              <Flame className="h-4 w-4 text-orange-500" />
+                              <Flame className="h-4 w-4 text-[oklch(0.76_0.28_68)]" />
                               <span>
                                 {streak.current_streak} {t("days")}
                               </span>
@@ -461,14 +464,14 @@ function HabitsContent() {
                             </span>
                           )}
                           {todayLog?.skipped_reason && (
-                            <span className="text-xs text-orange-500">
+                            <span className={`text-xs ${habitStatusColors.skipped.text}`}>
                               {isNegativeHabit ? t("violation") : t("skipped")}:{" "}
                               {todayLog.skipped_reason}
                             </span>
                           )}
                           {daysUntilEnd !== null && (
                             <span
-                              className={`text-xs ${daysUntilEnd <= 7 ? "text-orange-500" : ""}`}
+                              className={`text-xs ${daysUntilEnd <= 7 ? statusColors.warning.icon : ""}`}
                             >
                               •{" "}
                               {daysUntilEnd > 0
@@ -505,7 +508,7 @@ function HabitsContent() {
                             }}
                             aria-label={t("actions.skipHabit")}
                           >
-                            <AlertCircle className="h-4 w-4 text-orange-500" />
+                            <AlertCircle className="h-4 w-4 text-[oklch(0.80_0.28_18)]" />
                           </Button>
                         )}
                         <Button
@@ -524,7 +527,7 @@ function HabitsContent() {
                       {weekCompletion.map((day, i) => (
                         <div key={i} className="flex flex-col items-center gap-1">
                           <span
-                            className={`text-xs ${day.isWeekend ? "text-orange-500/70" : "text-muted-foreground"}`}
+                            className={`text-xs ${day.isWeekend ? "text-[oklch(0.88_0.22_68)/0.70]" : "text-muted-foreground"}`}
                           >
                             {dayNames[i]}
                           </span>

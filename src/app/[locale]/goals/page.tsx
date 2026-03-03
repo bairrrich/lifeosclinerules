@@ -235,7 +235,7 @@ function GoalsContent() {
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-green-500">
+              <div className="text-3xl font-bold text-[oklch(0.74_0.30_138)]">
                 {goals.filter((g) => getProgress(g) >= 100).length}
               </div>
               <div className="text-sm text-muted-foreground">{t("completedToday")}</div>
@@ -264,7 +264,10 @@ function GoalsContent() {
               const config = goalConfig[goal.type]
 
               return (
-                <Card key={goal.id} className={isCompleted ? "border-green-500/30" : ""}>
+                <Card
+                  key={goal.id}
+                  className={isCompleted ? "border-[oklch(0.74_0.30_138)/0.30]" : ""}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -285,7 +288,7 @@ function GoalsContent() {
                         >
                           <Settings className="h-4 w-4" />
                         </Button>
-                        {isCompleted && <Check className="h-5 w-5 text-green-500" />}
+                        {isCompleted && <Check className="h-5 w-5 text-[oklch(0.74_0.30_138)]" />}
                       </div>
                     </div>
 

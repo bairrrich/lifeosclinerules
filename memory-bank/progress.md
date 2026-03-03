@@ -3,10 +3,37 @@
 ## Текущий статус
 
 **Стадия**: Расширенный прототип
-**Версия**: 0.6.0
-**Последнее обновление**: 2026-03-01
+**Версия**: 0.7.0 (Color Refactoring)
+**Последнее обновление**: 2026-03-02
 
 ## Что работает
+
+### ✅ Новые функции (v0.7.0) — Color Refactoring
+
+**Проблема**: 151+ hardcoded цветов в 25+ файлах нарушали консистентность UI.
+
+**Решение**: Полный рефакторинг на централизованную систему цветов.
+
+- [x] Расширен `theme-colors.ts` — добавлено 15+ новых цветовых групп:
+  - `analyticsColors`, `bmiColors`, `tagColors`, `reminderTypeColors`
+  - `statusColors`, `streakColors`, `statColors`, `uiColors`
+  - `bookColors`, `bodyColors`, `reminderStatsColors`
+  - `sleepColors`, `moodColors`, `sleepQualityColors`
+  - Добавлены `border` свойства в `workoutColors`, `waterDrinkColors`, `moodLevelColors`
+
+- [x] Рефакторинг 25+ файлов:
+  - **Components**: reminder-form, streak-widget, sync-manager, backup-manager, recurring-transactions, budget-manager, water-reminder-settings, stats-grid, global-search, toast, reminder-card, workout-form, template-forms
+  - **Pages**: analytics, layout, page, mood, water, habits, goals, logs, templates, books, body, items, reminders, recipes, sleep, content, log-details
+
+- [x] Полная консистентность OKLCH цветового пространства
+- [x] TypeScript типы и безопасность
+- [x] Сохранение визуальной идентичности
+
+**Метрики:**
+
+- Устранено 151+ hardcoded цветов
+- 25+ файлов рефакторинга
+- 100% OKLCH консистентность
 
 ### ✅ Новые функции (v0.6.0) — UI/UX Улучшения
 
@@ -177,15 +204,29 @@
 
 1. **Синхронизация**: Backend не создан
 
-## Недавние исправления (2026-02-27)
+## Недавние исправления (2026-03-02)
 
-1. **FAB кнопка** — добавлена с выпадающим меню на 8 действий
-2. **Негативные привычки** — тип habit_type с бейджем "Не делать"
-3. **Копирование приёма пищи** — кнопка "Копировать" на детальной странице
-4. **Бюджеты** — BudgetManager с лимитами по категориям
-5. **КБЖУ из ингредиентов** — автоматический расчёт с поддержкой единиц измерения
-6. **Поля КБЖУ** — в одну строку (Ккал, Белки, Жиры, Угл., Сахар)
-7. **Производительность** — виртуализация, кэширование, lazy loading
+### 🎨 Color Refactoring (v0.7.0)
+
+1. **Централизованная система цветов** — создан `theme-colors.ts` с 15+ цветовыми группами
+2. **Полный рефакторинг** — 25+ файлов обновлены для использования theme colors
+3. **OKLCH консистентность** — все цвета теперь используют OKLCH цветовое пространство
+4. **Border properties** — добавлены border варианты для полной консистентности
+5. **TypeScript безопасность** — все цветовые группы типизированы
+
+**Файлы изменены:**
+
+- `src/lib/theme-colors.ts` (расширен на 15+ групп)
+- 13 page components
+- 12 shared/components
+- 2 form components
+
+**Результат:**
+
+- 151+ hardcoded цветов устранено
+- 100% консистентность UI
+- Готовность к темному режиму
+- Легкая поддержка и темизация
 
 ## Эволюция решений проекта
 
@@ -203,6 +244,7 @@
 2. **Offline-first** — Dexie дает возможность работать без интернета
 3. **Type-safe** — TypeScript и Zod предотвращают ошибки
 4. **Оптимизация** — виртуализация и кэширование для больших данных
+5. **Централизованные цвета** — theme-colors.ts обеспечивает консистентность
 
 ## Метрики прогресса
 
@@ -217,6 +259,7 @@
 | Аналитика          | ████████████ 100% |
 | PWA                | ████████████ 100% |
 | Оптимизация        | ████████████ 100% |
+| Цветовая система   | ████████████ 100% |
 | Синхронизация      | ░░░░░░░░░░░░ 0%   |
 
 ## Улучшения (2026-02-27)
@@ -260,6 +303,11 @@
 - `src/lib/theme-colors.ts` — централизованная система цветов
 - `src/components/ui/module-card.tsx` — готовые UI компоненты для модулей
 - `plans/ui-analysis-report.md` — детальный отчет с рекомендациями
+
+### 📁 Новые файлы (Color Refactoring)
+
+- `plans/color-hardcoding-audit-report.md` — аудит hardcoded цветов
+- `plans/color-refactor-implementation-plan.md` — план рефакторинга
 
 ### Новые файлы
 

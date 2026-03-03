@@ -26,19 +26,7 @@ import {
   Pie,
   Cell,
 } from "recharts"
-
-// Цвета для графиков
-const COLORS = {
-  calories: "#f97316",
-  protein: "#3b82f6",
-  fat: "#eab308",
-  carbs: "#22c55e",
-  income: "#22c55e",
-  expense: "#ef4444",
-  workout: "#8b5cf6",
-}
-
-const PIE_COLORS = ["#f97316", "#3b82f6", "#eab308", "#22c55e", "#8b5cf6", "#ec4899"]
+import { analyticsColors } from "@/lib/theme-colors"
 
 export default function AnalyticsPage() {
   const t = useTranslations("analytics")
@@ -460,8 +448,8 @@ export default function AnalyticsPage() {
                       <Area
                         type="monotone"
                         dataKey="calories"
-                        stroke={COLORS.calories}
-                        fill={COLORS.calories}
+                        stroke={analyticsColors.calories}
+                        fill={analyticsColors.calories}
                         fillOpacity={0.2}
                         name={t("summary.calories")}
                       />
@@ -493,7 +481,7 @@ export default function AnalyticsPage() {
                       <Line
                         type="monotone"
                         dataKey="protein"
-                        stroke={COLORS.protein}
+                        stroke={analyticsColors.protein}
                         strokeWidth={2}
                         name={t("food.protein")}
                         dot={false}
@@ -501,7 +489,7 @@ export default function AnalyticsPage() {
                       <Line
                         type="monotone"
                         dataKey="fat"
-                        stroke={COLORS.fat}
+                        stroke={analyticsColors.fat}
                         strokeWidth={2}
                         name={t("food.fat")}
                         dot={false}
@@ -509,7 +497,7 @@ export default function AnalyticsPage() {
                       <Line
                         type="monotone"
                         dataKey="carbs"
-                        stroke={COLORS.carbs}
+                        stroke={analyticsColors.carbs}
                         strokeWidth={2}
                         name={t("food.carbs")}
                         dot={false}
@@ -542,7 +530,7 @@ export default function AnalyticsPage() {
                         {categoryData.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
-                            fill={PIE_COLORS[index % PIE_COLORS.length]}
+                            fill={analyticsColors.pie[index % analyticsColors.pie.length]}
                             aria-label={`${entry.name}: ${entry.value}`}
                           />
                         ))}
@@ -562,7 +550,9 @@ export default function AnalyticsPage() {
                     <div key={entry.name} className="flex items-center gap-1 text-sm">
                       <div
                         className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
+                        style={{
+                          backgroundColor: analyticsColors.pie[index % analyticsColors.pie.length],
+                        }}
                       />
                       <span>{entry.name}</span>
                     </div>
@@ -599,7 +589,7 @@ export default function AnalyticsPage() {
                       />
                       <Bar
                         dataKey="duration"
-                        fill={COLORS.workout}
+                        fill={analyticsColors.workout}
                         name={t("workout.minutes")}
                         radius={[4, 4, 0, 0]}
                       />
@@ -674,16 +664,16 @@ export default function AnalyticsPage() {
                       <Area
                         type="monotone"
                         dataKey="income"
-                        stroke={COLORS.income}
-                        fill={COLORS.income}
+                        stroke={analyticsColors.income}
+                        fill={analyticsColors.income}
                         fillOpacity={0.2}
                         name={t("finance.income")}
                       />
                       <Area
                         type="monotone"
                         dataKey="expense"
-                        stroke={COLORS.expense}
-                        fill={COLORS.expense}
+                        stroke={analyticsColors.expense}
+                        fill={analyticsColors.expense}
                         fillOpacity={0.2}
                         name={t("finance.expense")}
                       />

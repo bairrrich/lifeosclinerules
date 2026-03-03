@@ -51,15 +51,74 @@
 - Приоритеты
 - Повторяющиеся события
 
+## 🎨 Дизайн-система
+
+### Централизованная система цветов
+
+Приложение использует единую централизованную систему цветов на основе OKLCH цветового пространства:
+
+- **`theme-colors.ts`** — все цвета определены в одном месте
+- **15+ цветовых групп** для разных модулей и состояний:
+  - `moduleColors` — 12 модулей (food, workout, finance, water, sleep, mood, books, recipes, habits, goals, logs, settings)
+  - `workoutColors`, `foodColors`, `recipeColors`, `bookStatusColors`
+  - `priorityColors`, `itemColors`, `habitStatusColors`, `waterDrinkColors`
+  - `statusColors`, `streakColors`, `analyticsColors`, `bmiColors`
+  - `moodColors`, `sleepColors`, и другие
+
+**Преимущества:**
+
+- ✅ Полная консистентность UI
+- ✅ Легкая темизация и dark mode
+- ✅ TypeScript типы для безопасности
+- ✅ DRY принцип
+- ✅ Простота поддержки
+
+**Использование:**
+
+```typescript
+import { moduleColors, statusColors } from "@/lib/theme-colors"
+
+// Модульные цвета
+<div className={moduleColors.food.DEFAULT}>Еда</div>
+<div className={moduleColors.workout.text}>Тренировка</div>
+
+// Статусные цвета
+<div className={statusColors.success.icon}>Успех</div>
+<div className={statusColors.error.icon}>Ошибка</div>
+```
+
+**Структура цветовой группы:**
+
+```typescript
+interface ColorScheme {
+  light: string // light variant (e.g., bg-[oklch(0.88_0.22_68)])
+  DEFAULT: string // main color (e.g., bg-[oklch(0.76_0.28_68)])
+  text: string // text color (e.g., text-[oklch(0.88_0.22_68)])
+  border: string // border color (e.g., border-[oklch(0.76_0.28_68)/0.45])
+  shadow?: string // optional shadow
+}
+```
+
+### OKLCH цветовое пространство
+
+Все цвета используют современное OKLCH цветовое пространство для лучшего восприятия и консистентности:
+
+- **L (Lightness)**: 0-1 (светлота)
+- **C (Chroma)**: 0.18-0.36 (насыщенность)
+- **H (Hue)**: 0-360 (оттенок)
+
+Пример: `oklch(0.76_0.28_68)` — теплый оранжевый для еды
+
 ## 🛠 Технологии
 
 - **Framework**: Next.js 16 (App Router, Turbopack)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS 4
 - **UI Components**: Shadcn UI, Radix UI
 - **Database**: IndexedDB (Dexie.js)
-- **State**: React Hooks
+- **State**: React Hooks + Zustand
 - **PWA**: Progressive Web App
+- **Color System**: OKLCH color space with centralized theme
 
 ## 📦 Установка
 
@@ -98,6 +157,7 @@ src/
 │   ├── layout/            # Layout компоненты
 │   └── shared/            # Общие компоненты
 ├── lib/
+│   ├── theme-colors.ts    # 🎨 Централизованная система цветов
 │   └── db/                # IndexedDB (Dexie)
 ├── hooks/                 # React хуки
 ├── stores/                # State management

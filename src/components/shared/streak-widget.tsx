@@ -6,7 +6,7 @@ import { Flame, Trophy, Target, TrendingUp } from "@/lib/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Streak, Habit, HabitLog } from "@/types"
-import { moduleColors } from "@/lib/theme-colors"
+import { moduleColors, streakColors } from "@/lib/theme-colors"
 
 export function StreakWidget() {
   const t = useTranslations("home.streakWidget")
@@ -81,8 +81,8 @@ export function StreakWidget() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-amber-500/10">
-              <Trophy className="h-5 w-5 text-amber-500" />
+            <div className={`p-2 rounded-lg ${streakColors.trophy.bg}`}>
+              <Trophy className={`h-5 w-5 ${streakColors.trophy.icon}`} />
             </div>
             <div>
               <div className="text-2xl font-bold">{bestStreak}</div>
@@ -101,7 +101,7 @@ export function StreakWidget() {
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-[width] duration-500"
+              className={`h-full ${streakColors.gradient} transition-[width] duration-500`}
               style={{ width: `${activeHabits > 0 ? (completedToday / activeHabits) * 100 : 0}%` }}
             />
           </div>
@@ -115,17 +115,17 @@ export function StreakWidget() {
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                     index === 0
-                      ? "bg-amber-500 text-white"
+                      ? streakColors.first.bg
                       : index === 1
-                        ? "bg-gray-300 text-gray-700"
-                        : "bg-amber-700 text-white"
+                        ? streakColors.second.bg
+                        : streakColors.third.bg
                   }`}
                 >
                   {index + 1}
                 </div>
                 <span className="flex-1 text-sm truncate">{item.habit.name}</span>
                 <div className="flex items-center gap-1">
-                  <Flame className="h-3 w-3 text-orange-500" />
+                  <Flame className={`h-3 w-3 ${streakColors.flame.icon}`} />
                   <span className="text-sm font-medium">{item.streak}</span>
                 </div>
               </div>

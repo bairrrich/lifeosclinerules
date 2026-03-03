@@ -7,7 +7,12 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Combobox } from "@/components/ui/combobox"
 import type { Template } from "@/types"
-import { moduleColors, waterDrinkColors, moodLevelColors } from "@/lib/theme-colors"
+import {
+  moduleColors,
+  waterDrinkColors,
+  moodLevelColors,
+  sleepQualityColors,
+} from "@/lib/theme-colors"
 
 // ============================================
 // Типы данных для шаблонов
@@ -405,7 +410,7 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
               onClick={() => onChange({ ...data, amount_ml: amount })}
               className={`px-4 py-2 rounded-xl border transition-colors ${
                 data.amount_ml === amount
-                  ? waterDrinkColors.water.DEFAULT + " text-white border-[oklch(0.78_0.26_208)]"
+                  ? waterDrinkColors.water.DEFAULT + " " + waterDrinkColors.water.border
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -434,7 +439,7 @@ export function WaterTemplateForm({ data, onChange }: WaterTemplateFormProps) {
               onClick={() => onChange({ ...data, type: opt.value as WaterTemplateData["type"] })}
               className={`px-4 py-2 rounded-xl border transition-colors ${
                 (data.type || "water") === opt.value
-                  ? waterDrinkColors.water.DEFAULT + " text-white border-[oklch(0.78_0.26_208)]"
+                  ? waterDrinkColors.water.DEFAULT + " " + waterDrinkColors.water.border
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -491,7 +496,9 @@ export function SleepTemplateForm({ data, onChange }: SleepTemplateFormProps) {
               onClick={() => onChange({ ...data, quality: opt.value as 1 | 2 | 3 | 4 | 5 })}
               className={`flex-1 px-3 py-2 rounded-xl border transition-colors ${
                 (data.quality || 3) === opt.value
-                  ? "bg-indigo-500 text-white border-indigo-500"
+                  ? sleepQualityColors.DEFAULT.bg +
+                    " text-white " +
+                    sleepQualityColors.DEFAULT.border
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -572,7 +579,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
               onClick={() => onChange({ ...data, energy: e })}
               className={`flex-1 px-3 py-2 rounded-xl border transition-colors ${
                 (data.energy || 3) === e
-                  ? moodLevelColors.energy.DEFAULT + " text-white border-[oklch(0.74_0.27_135)]"
+                  ? moodLevelColors.energy.DEFAULT + " " + moodLevelColors.energy.border
                   : "bg-background hover:bg-accent"
               }`}
             >
@@ -592,7 +599,7 @@ export function MoodTemplateForm({ data, onChange }: MoodTemplateFormProps) {
               onClick={() => onChange({ ...data, stress: s })}
               className={`flex-1 px-3 py-2 rounded-xl border transition-colors ${
                 (data.stress || 3) === s
-                  ? moodLevelColors.stress.DEFAULT + " text-white border-[oklch(0.68_0.34_18)]"
+                  ? moodLevelColors.stress.DEFAULT + " " + moodLevelColors.stress.border
                   : "bg-background hover:bg-accent"
               }`}
             >
