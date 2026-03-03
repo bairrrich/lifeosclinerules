@@ -6,7 +6,8 @@
   "types": {
     "food": "Nutrition",
     "workout": "Workout",
-    "finance": "Finance"
+    "finance": "Finance",
+    "transfer": "Transfer"
   },
   "workout": {
     "workoutType": "Workout Type",

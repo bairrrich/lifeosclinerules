@@ -10,7 +10,7 @@ export const financeCategoriesStructure: Record<
     salary: { subcategories: { main: [], bonus: [], allowance: [] } },
     freelance: { subcategories: { development: [], design: [], consulting: [] } },
     investments: { subcategories: { dividends: [], interest: [], coupons: [] } },
-    other: { subcategories: { gifts: [], refund: [], other: [] } },
+    other: { subcategories: { income_gifts: [], refund: [], income_other: [] } },
   },
   expense: {
     product: {
@@ -66,7 +66,7 @@ export const financeCategoriesStructure: Record<
       },
     },
     education: { subcategories: { courses: [], books: [], tutor: [] } },
-    other: { subcategories: { gifts: [], other: [] } },
+    other: { subcategories: { expense_gifts: [], expense_other: [] } },
   },
   transfer: {
     transfer: {

@@ -190,6 +190,16 @@ export default function EditLogPage() {
   // Получаем текущую категорию тренировки
   const selectedWorkoutCategory = categories.find((c) => c.id === selectedCategoryId)?.name || ""
 
+  // Для финансов: находим category_id по ключу financeCategory
+  useEffect(() => {
+    if (type === "finance" && financeCategory && categories.length > 0) {
+      const category = categories.find((c) => c.name === financeCategory)
+      if (category) {
+        setValue("category_id", category.id)
+      }
+    }
+  }, [financeCategory, categories, type, setValue])
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -308,16 +318,15 @@ export default function EditLogPage() {
   const onSubmit = async (data: FormData) => {
     setIsSaving(true)
     try {
-      const dateTime = `${data.date}T${data.time}:00`
-
       // Формируем title
       let title = data.title || ""
       if (type === "finance") {
+        // Используем ключи для title (как при создании)
         const parts = [financeCategory, financeSubcategory, financeItem].filter(Boolean)
         if (parts.length > 0) {
-          title = parts.join(" → ")
+          title = parts.join(" - ")
         } else {
-          title = "Финансовая операция"
+          title = t("finance.type")
         }
       } else if (type === "workout") {
         const subcategoryLabel = getSubcategoryLabel(t, selectedWorkoutCategory, workoutSubcategory)
@@ -329,7 +338,7 @@ export default function EditLogPage() {
       }
 
       const baseData = {
-        date: dateTime,
+        date: `${data.date}T${data.time}:00`, // ISO 8601 format
         title: title,
         category_id: data.category_id || undefined,
         quantity: data.quantity,

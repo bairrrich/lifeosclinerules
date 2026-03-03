@@ -262,6 +262,7 @@ export interface Notable {
 export interface BaseLog extends BaseEntity, Taggable, Notable {
   type: LogType
   date: ISODate
+  time?: string
   title: string
   category_id?: UUID
   quantity?: number
@@ -404,10 +405,10 @@ export interface FinanceMetadata {
   finance_type: FinanceType
   target_account_id?: UUID
   // Ключи для локализации (не ID из БД)
-  category_key?: string // "product", "transport", "entertainment"
-  subcategory_key?: string // "dairy", "taxi", "cinema"
-  item_key?: string // "milk", "yandexTaxi", "netflix"
-  supplier_key?: string // "magnit", "lukoil", "netflix"
+  category?: string // "product", "transport", "entertainment"
+  subcategory?: string // "dairy", "taxi", "cinema"
+  item?: string // "milk", "yandexTaxi", "netflix"
+  supplier?: string // "magnit", "lukoil", "netflix"
 }
 
 // Полные типы логов
@@ -516,6 +517,26 @@ export interface Category extends BaseEntity {
   color?: string
   // Для финансовых категорий
   finance_type?: FinanceType
+}
+
+// Финансовые подкатегории, товары/услуги, поставщики
+export interface FinanceSubcategory extends BaseEntity {
+  category_key: string // "product", "transport", etc.
+  subcategory_key: string // "dairy", "taxi", etc.
+  name: string
+}
+
+export interface FinanceItem extends BaseEntity {
+  category_key: string // "product", "transport", etc.
+  subcategory_key: string // "dairy", "taxi", etc.
+  item_key: string // "milk", "yandexTaxi", etc.
+  name: string
+}
+
+export interface FinanceSupplier extends BaseEntity {
+  category_key: string // "product", "transport", etc.
+  supplier_key: string // "magnit", "lukoil", etc.
+  name: string
 }
 
 export interface Tag extends BaseEntity {

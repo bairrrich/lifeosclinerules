@@ -6,7 +6,8 @@
   "types": {
     "food": "Питание",
     "workout": "Тренировка",
-    "finance": "Финансы"
+    "finance": "Финансы",
+    "transfer": "Перевод"
   },
   "workout": {
     "workoutType": "Тип тренировки",

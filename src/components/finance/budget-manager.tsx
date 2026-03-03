@@ -155,8 +155,19 @@ export function BudgetManager() {
 
   // Рассчитать расходы по категории за месяц
   const getExpensesForCategory = (categoryId: string): number => {
+    // Находим ключ категории по ID
+    const category = categories.find((c) => c.id === categoryId)
+    const categoryKey = category?.name || categoryId
+
     return expenses
-      .filter((e) => e.category_id === categoryId)
+      .filter((e) => {
+        // Проверяем по category_id из БД
+        if (e.category_id === categoryId) return true
+        // Проверяем по metadata.category (ключ из структуры)
+        const metadataCategory = (e.metadata as any)?.category
+        if (metadataCategory === categoryKey) return true
+        return false
+      })
       .reduce((sum, e) => sum + (e.value || 0), 0)
   }
 

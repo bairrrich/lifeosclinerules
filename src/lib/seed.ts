@@ -15,7 +15,6 @@ import {
   ReadingStatus,
   Difficulty,
 } from "@/types"
-import { financeCategoriesStructure } from "./finance-categories"
 import type {
   Category,
   Tag,
@@ -42,6 +41,9 @@ import type {
   StrengthSubcategory,
   CardioSubcategory,
   YogaSubcategory,
+  FinanceSubcategory,
+  FinanceItem,
+  FinanceSupplier,
 } from "@/types"
 
 // ============================================
@@ -63,11 +65,6 @@ function randomDateInLastWeek(): Date {
 
 function randomISODateInLastWeek(): string {
   return randomDateInLastWeek().toISOString()
-}
-
-function randomISODateOnlyInLastWeek(): string {
-  const date = randomDateInLastWeek()
-  return format(date, "yyyy-MM-dd")
 }
 
 function randomElement<T>(arr: T[]): T {
@@ -488,7 +485,7 @@ async function seedLogs() {
 
   // Food logs (5-7 entries)
   for (let i = 0; i < randomBetween(5, 7); i++) {
-    const date = randomISODateOnlyInLastWeek()
+    const date = randomISODateInLastWeek()
     logs.push({
       id: generateId(),
       type: LogType.FOOD,
@@ -520,7 +517,7 @@ async function seedLogs() {
 
   // Workout logs (5-7 entries)
   for (let i = 0; i < randomBetween(5, 7); i++) {
-    const date = randomISODateOnlyInLastWeek()
+    const date = randomISODateInLastWeek()
     const intensity = randomElement(["low", "medium", "high"] as const)
     const workoutCategory = randomElement(["strength", "cardio", "yoga"])
 
@@ -575,20 +572,26 @@ async function seedLogs() {
   }
 
   // Finance logs - create for all types (income, expense, transfer)
-  // 2-3 entries for each category from financeCategoriesStructure
+  // Read data from database tables
+  const financeSubcategories = await db.financeSubcategories.toArray()
+  const financeItems = await db.financeItems.toArray()
+  const financeSuppliersList = await db.financeSuppliers.toArray()
 
-  // Income logs (2 entries per category)
-  const incomeCategories = Object.keys(financeCategoriesStructure.income || {})
-  for (const categoryKey of incomeCategories) {
-    const categoryData = (financeCategoriesStructure.income || {})[categoryKey]
-    const subcategories = Object.keys(categoryData?.subcategories || {})
+  // Income logs (2 entries per category with different subcategories)
+  const incomeSubcats = financeSubcategories.filter((s) => {
+    const category = financeCategories.find((c) => c.name === s.category_key)
+    return category && category.finance_type === FinanceType.INCOME
+  })
+
+  const uniqueIncomeCategories = Array.from(new Set(incomeSubcats.map((s) => s.category_key)))
+
+  for (const categoryKey of uniqueIncomeCategories) {
+    const categorySubcats = incomeSubcats.filter((s) => s.category_key === categoryKey)
 
     // Create 2 entries with different subcategories
-    for (let i = 0; i < 2; i++) {
-      const subcategoryKey =
-        subcategories.length > 0 ? subcategories[i % subcategories.length] : undefined
-      const suppliers = subcategoryKey ? categoryData?.subcategories?.[subcategoryKey] || [] : []
-      const supplierKey = suppliers.length > 0 ? randomElement(suppliers) : undefined
+    for (let i = 0; i < Math.min(2, categorySubcats.length); i++) {
+      const subcat = categorySubcats[i]
+      const subcategoryKey = subcat.subcategory_key
 
       // Find category in DB by name (key)
       const dbCategory = financeCategories.find((c) => c.name === categoryKey)
@@ -596,20 +599,17 @@ async function seedLogs() {
       logs.push({
         id: generateId(),
         type: LogType.FINANCE,
-        date: randomISODateOnlyInLastWeek(),
-        title: `Income: ${categoryKey} #${i + 1}`,
+        date: randomISODateInLastWeek(), // ISO 8601 format
+        title: `${categoryKey} - ${subcategoryKey}`,
         category_id: dbCategory?.id,
-        quantity: 1,
-        unit: "pcs",
         value: randomBetween(30000, 100000),
         tags: [],
         metadata: {
           finance_type: FinanceType.INCOME,
           account_id: accounts.length > 0 ? randomElement(accounts).id : undefined,
-          category_key: categoryKey,
-          subcategory_key: subcategoryKey,
-          item_key: supplierKey,
-          supplier_key: supplierKey,
+          category: categoryKey,
+          subcategory: subcategoryKey,
+          supplier: undefined,
         },
         created_at: randomISODateInLastWeek(),
         updated_at: now(),
@@ -617,39 +617,58 @@ async function seedLogs() {
     }
   }
 
-  // Expense logs (3 entries per category)
-  const expenseCategories = Object.keys(financeCategoriesStructure.expense || {})
-  for (const categoryKey of expenseCategories) {
-    const categoryData = (financeCategoriesStructure.expense || {})[categoryKey]
-    const subcategories = Object.keys(categoryData?.subcategories || {})
+  // Expense logs (3 entries per category with different subcategories and items)
+  const expenseSubcats = financeSubcategories.filter((s) => {
+    const category = financeCategories.find((c) => c.name === s.category_key)
+    return category && category.finance_type === FinanceType.EXPENSE
+  })
 
-    // Create 3 entries with different subcategories
-    for (let i = 0; i < 3; i++) {
-      const subcategoryKey =
-        subcategories.length > 0 ? subcategories[i % subcategories.length] : undefined
-      const suppliers = subcategoryKey ? categoryData?.subcategories?.[subcategoryKey] || [] : []
-      const supplierKey = suppliers.length > 0 ? randomElement(suppliers) : undefined
+  const uniqueExpenseCategories = Array.from(new Set(expenseSubcats.map((s) => s.category_key)))
+
+  for (const categoryKey of uniqueExpenseCategories) {
+    const categorySubcats = expenseSubcats.filter((s) => s.category_key === categoryKey)
+
+    // Create 3 entries with different subcategories and items
+    for (let i = 0; i < Math.min(3, categorySubcats.length); i++) {
+      const subcat = categorySubcats[i]
+      const subcategoryKey = subcat.subcategory_key
+
+      // Get items for this subcategory
+      const itemsForSubcat = financeItems.filter(
+        (item) => item.category_key === categoryKey && item.subcategory_key === subcategoryKey
+      )
+
+      // Get suppliers for this category
+      const suppliersForCategory = financeSuppliersList.filter(
+        (s) => s.category_key === categoryKey
+      )
+      const supplier =
+        suppliersForCategory.length > 0 ? randomElement(suppliersForCategory) : undefined
 
       // Find category in DB by name (key)
       const dbCategory = financeCategories.find((c) => c.name === categoryKey)
 
+      // Use item from DB if available
+      const item = itemsForSubcat.length > 0 ? randomElement(itemsForSubcat) : undefined
+      const itemKey = item?.item_key
+
       logs.push({
         id: generateId(),
         type: LogType.FINANCE,
-        date: randomISODateOnlyInLastWeek(),
-        title: `Expense: ${categoryKey} #${i + 1}`,
+        date: randomISODateInLastWeek(), // ISO 8601 format
+        title: itemKey
+          ? `${categoryKey} - ${subcategoryKey} - ${itemKey}`
+          : `${categoryKey} - ${subcategoryKey}`,
         category_id: dbCategory?.id,
-        quantity: 1,
-        unit: "pcs",
         value: randomBetween(500, 5000),
         tags: [],
         metadata: {
           finance_type: FinanceType.EXPENSE,
           account_id: accounts.length > 0 ? randomElement(accounts).id : undefined,
-          category_key: categoryKey,
-          subcategory_key: subcategoryKey,
-          item_key: supplierKey,
-          supplier_key: supplierKey,
+          category: categoryKey,
+          subcategory: subcategoryKey,
+          item: itemKey,
+          supplier: supplier?.supplier_key,
         },
         created_at: randomISODateInLastWeek(),
         updated_at: now(),
@@ -658,13 +677,17 @@ async function seedLogs() {
   }
 
   // Transfer logs (1 entry per category)
-  const transferCategories = Object.keys(financeCategoriesStructure.transfer || {})
-  for (const categoryKey of transferCategories) {
-    const categoryData = (financeCategoriesStructure.transfer || {})[categoryKey]
-    const subcategories = Object.keys(categoryData?.subcategories || {})
-    const subcategoryKey = subcategories.length > 0 ? randomElement(subcategories) : undefined
-    const suppliers = subcategoryKey ? categoryData?.subcategories?.[subcategoryKey] || [] : []
-    const supplierKey = suppliers.length > 0 ? randomElement(suppliers) : undefined
+  const transferSubcats = financeSubcategories.filter((s) => {
+    const category = financeCategories.find((c) => c.name === s.category_key)
+    return category && category.finance_type === FinanceType.TRANSFER
+  })
+
+  const uniqueTransferCategories = Array.from(new Set(transferSubcats.map((s) => s.category_key)))
+
+  for (const categoryKey of uniqueTransferCategories) {
+    const categorySubcats = transferSubcats.filter((s) => s.category_key === categoryKey)
+    const subcat = categorySubcats.length > 0 ? categorySubcats[0] : undefined
+    const subcategoryKey = subcat?.subcategory_key
 
     // For transfers, category is not that important, use the first financial category
     const dbCategory = financeCategories.length > 0 ? financeCategories[0] : undefined
@@ -672,11 +695,9 @@ async function seedLogs() {
     logs.push({
       id: generateId(),
       type: LogType.FINANCE,
-      date: randomISODateOnlyInLastWeek(),
-      title: `Transfer: ${categoryKey}`,
+      date: randomISODateInLastWeek(), // ISO 8601 format
+      title: `Transfer - ${categoryKey}${subcategoryKey ? ` - ${subcategoryKey}` : ""}`,
       category_id: dbCategory?.id,
-      quantity: 1,
-      unit: "pcs",
       value: randomBetween(1000, 50000),
       tags: [],
       metadata: {
@@ -686,9 +707,9 @@ async function seedLogs() {
           accounts.length > 1
             ? randomElement(accounts.filter((a) => a.id !== accounts[0].id)).id
             : undefined,
-        category_key: categoryKey,
-        subcategory_key: subcategoryKey,
-        supplier_key: supplierKey,
+        category: categoryKey,
+        subcategory: subcategoryKey,
+        supplier: undefined,
       },
       created_at: randomISODateInLastWeek(),
       updated_at: now(),
@@ -1059,8 +1080,8 @@ async function seedContent() {
     book_id: book.id,
     status: statuses[index],
     rating: ratings[index],
-    started_at: index < 3 ? randomISODateOnlyInLastWeek() : undefined,
-    finished_at: index >= 3 ? randomISODateOnlyInLastWeek() : undefined,
+    started_at: index < 3 ? randomISODateInLastWeek() : undefined,
+    finished_at: index >= 3 ? randomISODateInLastWeek() : undefined,
     created_at: now(),
     updated_at: now(),
   }))
@@ -1863,7 +1884,7 @@ async function seedGoalsAndHabits() {
         target_value: 2000,
         period: "daily" as GoalPeriod,
         is_active: true,
-        start_date: randomISODateOnlyInLastWeek(),
+        start_date: randomISODateInLastWeek(),
         created_at: now(),
         updated_at: now(),
       },
@@ -1874,7 +1895,7 @@ async function seedGoalsAndHabits() {
         target_value: 10000,
         period: "daily" as GoalPeriod,
         is_active: true,
-        start_date: randomISODateOnlyInLastWeek(),
+        start_date: randomISODateInLastWeek(),
         created_at: now(),
         updated_at: now(),
       },
@@ -1885,7 +1906,7 @@ async function seedGoalsAndHabits() {
         target_value: 2000,
         period: "daily" as GoalPeriod,
         is_active: true,
-        start_date: randomISODateOnlyInLastWeek(),
+        start_date: randomISODateInLastWeek(),
         created_at: now(),
         updated_at: now(),
       },
@@ -1950,7 +1971,7 @@ async function seedGoalsAndHabits() {
         habitLogs.push({
           id: generateId(),
           habit_id: habit.id,
-          date: randomISODateOnlyInLastWeek(),
+          date: randomISODateInLastWeek(),
           completed: true,
           created_at: now(),
           updated_at: now(),
@@ -2042,7 +2063,7 @@ async function seedTrackers() {
     const measurements: BodyMeasurement[] = [
       {
         id: generateId(),
-        date: randomISODateOnlyInLastWeek(),
+        date: randomISODateInLastWeek(),
         type: "weight" as BodyMeasurementType,
         value: randomBetween(60, 90),
         unit: "kg",
@@ -2051,7 +2072,7 @@ async function seedTrackers() {
       },
       {
         id: generateId(),
-        date: randomISODateOnlyInLastWeek(),
+        date: randomISODateInLastWeek(),
         type: "height" as BodyMeasurementType,
         value: randomBetween(160, 190),
         unit: "cm",
@@ -2060,7 +2081,7 @@ async function seedTrackers() {
       },
       {
         id: generateId(),
-        date: randomISODateOnlyInLastWeek(),
+        date: randomISODateInLastWeek(),
         type: "waist" as BodyMeasurementType,
         value: randomBetween(60, 100),
         unit: "cm",

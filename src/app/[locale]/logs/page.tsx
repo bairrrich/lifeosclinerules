@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BudgetManager } from "@/components/finance"
-import { db, initializeDatabase } from "@/lib/db"
+import { db, initializeDatabase, getStaticEntityTranslation } from "@/lib/db"
 import { LogType } from "@/types"
 import type { Log } from "@/types"
 import { useLocale } from "next-intl"
@@ -25,6 +25,22 @@ export default function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [activeType, setActiveType] = useState<LogType | "all">("all")
+
+  // Локализация заголовка финансовой операции
+  const localizeFinanceTitle = (title: string): string => {
+    const parts = title.split(" - ")
+    const translatedParts = parts.map((part, index) => {
+      if (part === "Transfer") return t("types.transfer")
+      if (index === 0) {
+        // Category
+        return getStaticEntityTranslation("categories", part, locale, "finance")
+      } else {
+        // Subcategory or item
+        return getStaticEntityTranslation("financeSubcategories", part, locale)
+      }
+    })
+    return translatedParts.join(" - ")
+  }
 
   const logTypes = [
     { type: LogType.FOOD, label: t("types.food"), icon: Utensils },
@@ -249,12 +265,19 @@ export default function LogsPage() {
                                 <TypeIcon className="h-4 w-4" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h3 className="font-medium text-sm truncate">{log.title}</h3>
+                                <h3 className="font-medium text-sm truncate">
+                                  {log.type === "finance"
+                                    ? localizeFinanceTitle(log.title)
+                                    : log.title}
+                                </h3>
                                 <p className="text-xs text-muted-foreground">
                                   {typeLabels[log.type] || log.type} •{" "}
                                   {new Date(log.date).toLocaleDateString(locale, {
                                     day: "numeric",
                                     month: "short",
+                                  })}
+                                  {" | "}
+                                  {new Date(log.date).toLocaleTimeString(locale, {
                                     hour: "2-digit",
                                     minute: "2-digit",
                                   })}

@@ -167,7 +167,29 @@ export default function LogDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
-  // Get metadata based on type (defined before useEffect to avoid hoisting issues)
+  // Определить тип тренировки по названию категории (объявляем раньше getMetadataItems)
+  const getWorkoutType = (categoryName: string): string => {
+    if (categoryName === "Силовая") return "strength"
+    if (categoryName === "Кардио") return "cardio"
+    if (categoryName === "Йога") return "yoga"
+    return "unknown"
+  }
+
+  // Получить название подкатегории по значению и типу категории
+  const getSubcategoryLabel = (subcategory: string, categoryName: string): string => {
+    if (categoryName === "Силовая") {
+      return strengthSubcategoryLabels[subcategory as StrengthSubcategory] || subcategory
+    }
+    if (categoryName === "Кардио") {
+      return cardioSubcategoryLabels[subcategory as CardioSubcategory] || subcategory
+    }
+    if (categoryName === "Йога") {
+      return yogaSubcategoryLabels[subcategory as YogaSubcategory] || subcategory
+    }
+    return subcategory
+  }
+
+  // Get metadata based on type
   const getMetadataItems = async (logData: Log | null) => {
     if (!logData?.metadata) return []
 
@@ -279,28 +301,28 @@ export default function LogDetailPage() {
 
       // Для подкатегорий, товаров и поставщиков используем статические переводы
       // т.к. это ключи из financeCategoriesStructure, а не ID из БД
-      if (m.category_key) {
+      if (m.category) {
         items.push({
           label: t("finance.category"),
-          value: getStaticEntityTranslation("categories", m.category_key, locale, "finance"),
+          value: getStaticEntityTranslation("categories", m.category, locale, "finance"),
         })
       }
-      if (m.subcategory_key) {
+      if (m.subcategory) {
         items.push({
           label: t("finance.subcategory"),
-          value: getStaticEntityTranslation("financeSubcategories", m.subcategory_key, locale),
+          value: getStaticEntityTranslation("financeSubcategories", m.subcategory, locale),
         })
       }
-      if (m.item_key) {
+      if (m.item) {
         items.push({
           label: t("finance.item"),
-          value: getStaticEntityTranslation("financeSubcategories", m.item_key, locale),
+          value: getStaticEntityTranslation("financeSubcategories", m.item, locale),
         })
       }
-      if (m.supplier_key) {
+      if (m.supplier) {
         items.push({
           label: t("finance.supplier"),
-          value: getStaticEntityTranslation("financeSuppliers", m.supplier_key, locale),
+          value: getStaticEntityTranslation("financeSuppliers", m.supplier, locale),
         })
       }
 
@@ -390,6 +412,32 @@ export default function LogDetailPage() {
     })
   }
 
+  const formatTime = (dateString?: string) => {
+    if (!dateString) return ""
+    return new Date(dateString).toLocaleTimeString(locale, {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  // Локализация заголовка финансовой операции
+  const localizeFinanceTitle = (title: string): string => {
+    if (type !== "finance") return title
+
+    const parts = title.split(" - ")
+    const translatedParts = parts.map((part, index) => {
+      if (part === "Transfer") return t("finance.types.transfer")
+      if (index === 0) {
+        // Category
+        return getStaticEntityTranslation("categories", part, locale, "finance")
+      } else {
+        // Subcategory or item
+        return getStaticEntityTranslation("financeSubcategories", part, locale)
+      }
+    })
+    return translatedParts.join(" - ")
+  }
+
   if (isLoading) {
     return (
       <AppLayout title={tCommon("loading")}>
@@ -416,28 +464,6 @@ export default function LogDetailPage() {
         </div>
       </AppLayout>
     )
-  }
-
-  // Получить название подкатегории по значению и типу категории
-  const getSubcategoryLabel = (subcategory: string, categoryName: string): string => {
-    if (categoryName === "Силовая") {
-      return strengthSubcategoryLabels[subcategory as StrengthSubcategory] || subcategory
-    }
-    if (categoryName === "Кардио") {
-      return cardioSubcategoryLabels[subcategory as CardioSubcategory] || subcategory
-    }
-    if (categoryName === "Йога") {
-      return yogaSubcategoryLabels[subcategory as YogaSubcategory] || subcategory
-    }
-    return subcategory
-  }
-
-  // Определить тип тренировки по названию категории
-  const getWorkoutType = (categoryName: string): string => {
-    if (categoryName === "Силовая") return "strength"
-    if (categoryName === "Кардио") return "cardio"
-    if (categoryName === "Йога") return "yoga"
-    return "unknown"
   }
 
   // Компонент для отображения метрик с иконками
@@ -666,10 +692,12 @@ export default function LogDetailPage() {
           <CardHeader className="pb-2">
             <div className="flex items-start justify-between">
               <div>
-                <CardTitle className="text-xl">{log.title}</CardTitle>
+                <CardTitle className="text-xl">{localizeFinanceTitle(log.title)}</CardTitle>
                 <div className="flex items-center gap-2 mt-1 text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   <span className="text-sm">{formatDate(log.date)}</span>
+                  <span>•</span>
+                  <span className="text-sm">{formatTime(log.date)}</span>
                 </div>
               </div>
               <Badge className={typeColors[type]}>{typeLabels[type]}</Badge>

@@ -20,7 +20,13 @@ import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "@/lib/icons"
-import { db, createEntity, initializeDatabase, getCategoriesByType } from "@/lib/db"
+import {
+  db,
+  createEntity,
+  initializeDatabase,
+  getCategoriesByType,
+  getStaticEntityTranslation,
+} from "@/lib/db"
 import { useTranslations, useLocale } from "next-intl"
 import {
   FoodForm,
@@ -182,6 +188,16 @@ export default function NewLogPage() {
   const selectedWorkoutCategory =
     selectedCategoryId.charAt(0).toUpperCase() + selectedCategoryId.slice(1)
 
+  // Для финансов: находим category_id по ключу financeCategory
+  useEffect(() => {
+    if (type === "finance" && financeCategory && categories.length > 0) {
+      const category = categories.find((c) => c.name === financeCategory)
+      if (category) {
+        setValue("category_id", category.id)
+      }
+    }
+  }, [financeCategory, categories, type, setValue])
+
   useEffect(() => {
     async function loadData() {
       await initializeDatabase()
@@ -248,12 +264,21 @@ export default function NewLogPage() {
 
     setIsLoading(true)
     try {
-      const dateTime = `${data.date}T${data.time}:00`
-
       // Формируем title
       let title = data.title || ""
       if (type === "finance") {
-        const parts = [financeCategory, financeSubcategory, financeItem].filter(Boolean)
+        // Используем переводы для категории, подкатегории и товара
+        const translatedCategory = financeCategory
+          ? getStaticEntityTranslation("categories", financeCategory, locale, "finance")
+          : ""
+        const translatedSubcategory = financeSubcategory
+          ? getStaticEntityTranslation("financeSubcategories", financeSubcategory, locale)
+          : ""
+        const translatedItem = financeItem
+          ? getStaticEntityTranslation("financeSubcategories", financeItem, locale)
+          : ""
+
+        const parts = [translatedCategory, translatedSubcategory, translatedItem].filter(Boolean)
         if (parts.length > 0) {
           title = parts.join(" → ")
         } else {
@@ -270,7 +295,7 @@ export default function NewLogPage() {
 
       const baseData = {
         type,
-        date: dateTime,
+        date: `${data.date}T${data.time}:00`, // ISO 8601 format
         title: title,
         category_id: data.category_id || undefined,
         quantity: data.quantity,

@@ -37,8 +37,12 @@ import type {
   RecurringTransaction,
   EntityTranslation,
   Budget,
+  FinanceSubcategory,
+  FinanceItem,
+  FinanceSupplier,
 } from "@/types"
 import { LogType, ItemType, ContentType, FinanceType } from "@/types"
+import { financeCategoriesStructure, financeSuppliers } from "@/lib/finance-categories"
 
 // ============================================
 // Database Schema
@@ -96,6 +100,11 @@ class LifeOSDatabase extends Dexie {
 
   // Entity localization
   entityTranslations!: EntityTable<EntityTranslation, "id">
+
+  // Finance reference data
+  financeSubcategories!: EntityTable<FinanceSubcategory, "id">
+  financeItems!: EntityTable<FinanceItem, "id">
+  financeSuppliers!: EntityTable<FinanceSupplier, "id">
 
   constructor() {
     super("LifeOSDB")
@@ -160,6 +169,12 @@ class LifeOSDatabase extends Dexie {
 
       // Entity localization
       entityTranslations: "id, entity_type, entity_id, [entity_type+entity_id+locale], locale",
+
+      // Finance reference data
+      financeSubcategories: "id, category_key, subcategory_key, [category_key+subcategory_key]",
+      financeItems:
+        "id, category_key, subcategory_key, item_key, [category_key+subcategory_key+item_key]",
+      financeSuppliers: "id, category_key, supplier_key, [category_key+supplier_key]",
     })
 
     // Version 15: Add budgets table
@@ -174,6 +189,109 @@ class LifeOSDatabase extends Dexie {
       logs: "id, type, [type+date], date, title, category_id, created_at, updated_at",
       categories: "id, type, [type+name], name",
     })
+
+    // Version 17: Add finance reference data tables
+    // ============================================
+    this.version(17)
+      .stores({
+        financeSubcategories: "id, category_key, subcategory_key, [category_key+subcategory_key]",
+        financeItems:
+          "id, category_key, subcategory_key, item_key, [category_key+subcategory_key+item_key]",
+        financeSuppliers: "id, category_key, supplier_key, [category_key+supplier_key]",
+      })
+      .upgrade(async () => {
+        // Seed finance subcategories, items, and suppliers from financeCategoriesStructure
+        const subcategories: FinanceSubcategory[] = []
+        const items: FinanceItem[] = []
+        const suppliers: FinanceSupplier[] = []
+        const now = getTimestamp()
+
+        // Process all finance types (income, expense, transfer)
+        for (const [financeType, categories] of Object.entries(financeCategoriesStructure)) {
+          for (const [categoryKey, categoryData] of Object.entries(
+            categories as Record<string, { subcategories: Record<string, string[]> }>
+          )) {
+            const subcats = categoryData.subcategories || {}
+
+            for (const [subcategoryKey, itemList] of Object.entries(subcats)) {
+              // Add subcategory
+              subcategories.push({
+                id: generateId(),
+                category_key: categoryKey,
+                subcategory_key: subcategoryKey,
+                name: subcategoryKey,
+                created_at: now,
+                updated_at: now,
+              })
+
+              // Add items from the subcategory list
+              if (itemList && itemList.length > 0) {
+                for (const itemKey of itemList) {
+                  items.push({
+                    id: generateId(),
+                    category_key: categoryKey,
+                    subcategory_key: subcategoryKey,
+                    item_key: itemKey,
+                    name: itemKey,
+                    created_at: now,
+                    updated_at: now,
+                  })
+                }
+              }
+            }
+          }
+        }
+
+        // Add suppliers from financeSuppliers
+        for (const [categoryKey, supplierList] of Object.entries(financeSuppliers)) {
+          if (supplierList && supplierList.length > 0) {
+            for (const supplierKey of supplierList) {
+              suppliers.push({
+                id: generateId(),
+                category_key: categoryKey,
+                supplier_key: supplierKey,
+                name: supplierKey,
+                created_at: now,
+                updated_at: now,
+              })
+            }
+          }
+        }
+
+        await db.financeSubcategories.bulkAdd(subcategories)
+        await db.financeItems.bulkAdd(items)
+        await db.financeSuppliers.bulkAdd(suppliers)
+        console.log(
+          `[DB v17] Added ${subcategories.length} finance subcategories, ${items.length} items, ${suppliers.length} suppliers`
+        )
+      })
+
+    // Version 18: Update finance categories to match financeCategoriesStructure
+    // ============================================
+    this.version(18)
+      .stores({
+        categories: "id, type, [type+name], name, finance_type",
+      })
+      .upgrade(async (tx) => {
+        // Update existing finance categories to use lowercase names matching financeCategoriesStructure
+        const categories = await tx.table("categories").toArray()
+
+        const categoryUpdates: Record<string, string> = {
+          Food: "product",
+          Shopping: "clothing",
+        }
+
+        for (const cat of categories) {
+          if (cat.type === "finance" && cat.name && categoryUpdates[cat.name]) {
+            await tx.table("categories").update(cat.id, {
+              name: categoryUpdates[cat.name],
+              updated_at: getTimestamp(),
+            })
+          }
+        }
+
+        console.log("[DB v18] Updated finance categories to match financeCategoriesStructure")
+      })
 
     this.version(8).stores({
       // Entity localization
@@ -1304,10 +1422,10 @@ export async function initializeDatabase(): Promise<void> {
     const categoriesCount = await db.categories.count()
     if (categoriesCount === 0) {
       await db.categories.bulkAdd([
-        // Income categories
+        // Income categories (matching financeCategoriesStructure)
         {
           id: "salary",
-          name: "Salary",
+          name: "salary",
           type: LogType.FINANCE,
           finance_type: FinanceType.INCOME,
           icon: "💵",
@@ -1316,7 +1434,7 @@ export async function initializeDatabase(): Promise<void> {
         },
         {
           id: "freelance",
-          name: "Freelance",
+          name: "freelance",
           type: LogType.FINANCE,
           finance_type: FinanceType.INCOME,
           icon: "💻",
@@ -1325,26 +1443,35 @@ export async function initializeDatabase(): Promise<void> {
         },
         {
           id: "investments",
-          name: "Investments",
+          name: "investments",
           type: LogType.FINANCE,
           finance_type: FinanceType.INCOME,
           icon: "📈",
           created_at: now,
           updated_at: now,
         },
-        // Expense categories
         {
-          id: "food",
-          name: "Food",
+          id: "other_income",
+          name: "other",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.INCOME,
+          icon: "📦",
+          created_at: now,
+          updated_at: now,
+        },
+        // Expense categories (matching financeCategoriesStructure)
+        {
+          id: "product",
+          name: "product",
           type: LogType.FINANCE,
           finance_type: FinanceType.EXPENSE,
-          icon: "🍔",
+          icon: "🛒",
           created_at: now,
           updated_at: now,
         },
         {
           id: "transport",
-          name: "Transport",
+          name: "transport",
           type: LogType.FINANCE,
           finance_type: FinanceType.EXPENSE,
           icon: "🚗",
@@ -1353,7 +1480,7 @@ export async function initializeDatabase(): Promise<void> {
         },
         {
           id: "entertainment",
-          name: "Entertainment",
+          name: "entertainment",
           type: LogType.FINANCE,
           finance_type: FinanceType.EXPENSE,
           icon: "🎬",
@@ -1362,7 +1489,7 @@ export async function initializeDatabase(): Promise<void> {
         },
         {
           id: "health",
-          name: "Health",
+          name: "health",
           type: LogType.FINANCE,
           finance_type: FinanceType.EXPENSE,
           icon: "💊",
@@ -1370,30 +1497,66 @@ export async function initializeDatabase(): Promise<void> {
           updated_at: now,
         },
         {
-          id: "shopping",
-          name: "Shopping",
+          id: "clothing",
+          name: "clothing",
           type: LogType.FINANCE,
           finance_type: FinanceType.EXPENSE,
-          icon: "🛒",
+          icon: "👕",
           created_at: now,
           updated_at: now,
         },
         {
           id: "housing",
-          name: "Housing",
+          name: "housing",
           type: LogType.FINANCE,
           finance_type: FinanceType.EXPENSE,
           icon: "🏠",
           created_at: now,
           updated_at: now,
         },
-        // Transfer categories
+        {
+          id: "communication",
+          name: "communication",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "📱",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "education",
+          name: "education",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "📚",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "other_expense",
+          name: "other",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.EXPENSE,
+          icon: "📦",
+          created_at: now,
+          updated_at: now,
+        },
+        // Transfer categories (matching financeCategoriesStructure)
         {
           id: "transfer",
-          name: "Transfer",
+          name: "transfer",
           type: LogType.FINANCE,
           finance_type: FinanceType.TRANSFER,
-          icon: "🔄",
+          icon: "💸",
+          created_at: now,
+          updated_at: now,
+        },
+        {
+          id: "topUp",
+          name: "topUp",
+          type: LogType.FINANCE,
+          finance_type: FinanceType.TRANSFER,
+          icon: "➕",
           created_at: now,
           updated_at: now,
         },
@@ -1482,6 +1645,9 @@ export async function getDatabaseStats(): Promise<DatabaseStats> {
     "templates",
     "recurringTransactions",
     "entityTranslations",
+    "financeSubcategories",
+    "financeItems",
+    "financeSuppliers",
   ]
 
   const stats: Record<string, number> = {}
@@ -1637,6 +1803,9 @@ export async function exportDatabase(): Promise<Record<string, unknown[]>> {
     "reminderLogs",
     "templates",
     "recurringTransactions",
+    "financeSubcategories",
+    "financeItems",
+    "financeSuppliers",
   ]
 
   const backup: Record<string, unknown[]> = {}

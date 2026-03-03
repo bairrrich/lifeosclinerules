@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form"
 import { z } from "zod"
 import { Combobox } from "@/components/ui/combobox"
@@ -7,9 +8,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useTranslations } from "next-intl"
 import { DependentSelect } from "@/components/shared/forms"
-import type { FinanceType, Account } from "@/types"
-import { financeSuppliers, financeCategoriesStructure } from "@/lib/finance-categories"
-import { getStaticEntityTranslation } from "@/lib/db"
+import type {
+  FinanceType,
+  Account,
+  FinanceSubcategory,
+  FinanceItem,
+  FinanceSupplier,
+} from "@/types"
+import { db, getStaticEntityTranslation } from "@/lib/db"
 import { useLocale } from "next-intl"
 
 // ============================================
@@ -30,6 +36,7 @@ const baseLogSchema = z.object({
 const financeSchema = baseLogSchema.extend({
   finance_type: z.enum(["income", "expense", "transfer"]),
   account_id: z.string().optional(),
+  target_account_id: z.string().optional(),
 })
 
 export type FinanceFormData = z.infer<typeof financeSchema>
@@ -101,6 +108,26 @@ export function FinanceForm({
   const tSettings = useTranslations("settings")
   const locale = useLocale()
 
+  // Данные из БД
+  const [financeSubcategories, setFinanceSubcategories] = useState<FinanceSubcategory[]>([])
+  const [financeItems, setFinanceItems] = useState<FinanceItem[]>([])
+  const [financeSuppliersList, setFinanceSuppliersList] = useState<FinanceSupplier[]>([])
+
+  // Загрузка данных из БД
+  useEffect(() => {
+    async function loadData() {
+      const [subcats, items, suppliers] = await Promise.all([
+        db.financeSubcategories.toArray(),
+        db.financeItems.toArray(),
+        db.financeSuppliers.toArray(),
+      ])
+      setFinanceSubcategories(subcats)
+      setFinanceItems(items)
+      setFinanceSuppliersList(suppliers)
+    }
+    loadData()
+  }, [])
+
   // Get account type label with translation
   const getAccountTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -123,7 +150,6 @@ export function FinanceForm({
     const label = labels[type]
     const icon = icons[type]
 
-    // Если перевод не найден, используем ключ типа
     if (!label) {
       return type
     }
@@ -223,60 +249,97 @@ export function FinanceForm({
     inCash: "💵",
   }
 
-  // Получение emoji для категории
   const getCategoryEmoji = (category: string) => {
     return categoryEmojis[category] || ""
   }
 
-  // Получение emoji для подкатегории
   const getSubcategoryEmoji = (subcategory: string) => {
     return subcategoryEmojis[subcategory] || ""
   }
 
-  // Импорт из @/lib/finance-categories
-  // financeCategoriesStructure уже доступен через импорт
+  // Получаем категории для текущего типа финансов из БД
+  const [dbCategories, setDbCategories] = useState<any[]>([])
 
-  // Маппинг категорий для suppliers
-  const categoryToSupplierKey: Record<string, string> = {
-    product: "product",
-    transport: "transport",
-    entertainment: "entertainment",
-    health: "health",
-    communication: "communication",
-  }
+  useEffect(() => {
+    async function loadCategories() {
+      const cats = await db.categories.toArray()
+      const financeCats = cats.filter(
+        (c) => c.type === "finance" && (!c.finance_type || c.finance_type === financeType)
+      )
+      setDbCategories(financeCats)
+    }
+    loadCategories()
+  }, [financeType])
 
-  // Получаем категории для текущего типа финансов
-  const currentFinanceCategoriesObj = financeCategoriesStructure[financeType] || {}
-  const currentFinanceCategories = Object.keys(currentFinanceCategoriesObj).map((key) => ({
+  // Получаем уникальные категории из подкатегорий, фильтруем по загруженным категориям из БД
+  const uniqueCategoryKeys = Array.from(
+    new Set(financeSubcategories.map((s) => s.category_key))
+  ).filter((key) => {
+    // Если категории загружены из БД, фильтруем по ним (сравниваем без учёта регистра)
+    if (dbCategories.length > 0) {
+      return dbCategories.some((c) => c.name.toLowerCase() === key.toLowerCase())
+    }
+    // Иначе показываем все категории
+    return true
+  })
+
+  const currentFinanceCategories = uniqueCategoryKeys.map((key) => ({
     value: key,
     label: `${getCategoryEmoji(key)} ${getStaticEntityTranslation("categories", key, locale, "finance")}`,
   }))
 
-  // Получаем подкатегории для выбранной категории
-  const currentSubcategoriesObj = financeCategory
-    ? currentFinanceCategoriesObj[financeCategory]?.subcategories || {}
-    : {}
-  const currentSubcategories = Object.keys(currentSubcategoriesObj).map((key) => ({
-    value: key,
-    label: `${getSubcategoryEmoji(key)} ${getStaticEntityTranslation("financeSubcategories", key, locale)}`,
+  // Устанавливаем первую категорию по умолчанию после загрузки данных
+  useEffect(() => {
+    if (
+      !financeCategory &&
+      currentFinanceCategories.length > 0 &&
+      financeSubcategories.length > 0 &&
+      dbCategories.length > 0
+    ) {
+      setFinanceCategory(currentFinanceCategories[0].value)
+    }
+  }, [
+    currentFinanceCategories.length,
+    financeSubcategories.length,
+    dbCategories.length,
+    financeCategory,
+  ])
+
+  // Получаем подкатегории для выбранной категории (фильтруем дубликаты)
+  const categorySubcats = financeSubcategories.filter((s) => s.category_key === financeCategory)
+  // Используем Set для уникальности subcategory_key
+  const seenSubcats = new Set<string>()
+  const uniqueSubcats = categorySubcats.filter((s) => {
+    if (seenSubcats.has(s.subcategory_key)) return false
+    seenSubcats.add(s.subcategory_key)
+    return true
+  })
+  const currentSubcategories = uniqueSubcats.map((s) => ({
+    value: s.subcategory_key,
+    label: `${getSubcategoryEmoji(s.subcategory_key)} ${getStaticEntityTranslation("financeSubcategories", s.subcategory_key, locale)}`,
   }))
 
-  // Получаем товары/услуги для выбранной подкатегории
-  const currentItemsObj =
-    financeCategory && financeSubcategory ? currentSubcategoriesObj[financeSubcategory] || [] : []
-  const currentItems = currentItemsObj.map((key) => ({
-    value: key,
-    label: getStaticEntityTranslation("financeSubcategories", key, locale),
+  // Получаем товары/услуги для выбранной подкатегории (фильтруем дубликаты)
+  const subcategoryItems = financeItems.filter(
+    (i) => i.category_key === financeCategory && i.subcategory_key === financeSubcategory
+  )
+  // Используем Set для уникальности item_key
+  const seenItems = new Set<string>()
+  const uniqueItems = subcategoryItems.filter((i) => {
+    if (seenItems.has(i.item_key)) return false
+    seenItems.add(i.item_key)
+    return true
+  })
+  const currentItems = uniqueItems.map((i) => ({
+    value: i.item_key,
+    label: getStaticEntityTranslation("financeSubcategories", i.item_key, locale),
   }))
 
   // Получаем поставщиков для категории
-  const supplierKey = financeCategory ? categoryToSupplierKey[financeCategory] : null
-  const currentSuppliersObj = supplierKey
-    ? financeSuppliers[supplierKey] || financeSuppliers["default"]
-    : []
-  const currentSuppliers = currentSuppliersObj.map((key) => ({
-    value: key,
-    label: getStaticEntityTranslation("financeSuppliers", key, locale),
+  const categorySuppliers = financeSuppliersList.filter((s) => s.category_key === financeCategory)
+  const currentSuppliers = categorySuppliers.map((s) => ({
+    value: s.supplier_key,
+    label: getStaticEntityTranslation("financeSuppliers", s.supplier_key, locale),
   }))
 
   return (
@@ -292,7 +355,6 @@ export function FinanceForm({
           placeholder="0 ₽"
           className="text-center text-lg font-medium"
           onKeyPress={(e) => {
-            // Разрешаем только цифры и точку/запятую
             if (!/[0-9.,]/.test(e.key)) {
               e.preventDefault()
             }
@@ -330,36 +392,25 @@ export function FinanceForm({
         </div>
       )}
 
-      {/* Сообщение если нет аккаунтов */}
-      {accounts.length === 0 && (
-        <div className="space-y-2">
-          <Label>{t("finance.account")} *</Label>
-          <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-4">
-            <p className="text-sm text-destructive font-medium">{t("finance.noAccounts")}</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {t("finance.createAccountInSettings")}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Выбор целевого аккаунта для переводов */}
-      {financeType === "transfer" && accounts.length > 1 && (
+      {/* Целевой аккаунт для переводов */}
+      {financeType === "transfer" && accounts.length > 0 && (
         <div className="space-y-2">
           <Label>{t("finance.to")}</Label>
           <Combobox
-            options={accounts
-              .filter((acc) => acc.id !== selectedAccountId)
-              .map((acc) => ({
-                id: acc.id,
-                label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${acc.balance.toLocaleString()} ${acc.currency}`,
-              }))}
+            options={accounts.map((acc) => ({
+              id: acc.id,
+              label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${acc.balance.toLocaleString()} ${acc.currency}`,
+            }))}
             value={targetAccountId}
-            onChange={(value) => setTargetAccountId(value as string)}
+            onChange={(value) => {
+              setTargetAccountId(value as string)
+              setValue("target_account_id", value as string)
+            }}
             placeholder={t("finance.account")}
             allowCustom={false}
             searchable={false}
             className="emoji"
+            disabled={accounts.length <= 1}
           />
         </div>
       )}

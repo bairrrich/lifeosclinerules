@@ -29,6 +29,7 @@ import { Onboarding } from "@/components/shared/onboarding"
 import { db, initializeDatabase } from "@/lib/db"
 import type { Log, Goal, WaterLog, HabitLog } from "@/types"
 import { moduleColors, type ModuleType } from "@/lib/theme-colors"
+import { getStaticEntityTranslation } from "@/lib/db"
 
 // Quick action cards data - labels will be translated in component
 const quickActions = [
@@ -243,6 +244,23 @@ export default function HomePage() {
   const tCommon = useTranslations("common")
   const locale = useLocale()
   const [isLoading, setIsLoading] = useState(true)
+
+  // Локализация заголовка финансовой операции
+  const localizeFinanceTitle = (title: string): string => {
+    const parts = title.split(" - ")
+    const translatedParts = parts.map((part, index) => {
+      if (part === "Transfer") return tLog("types.transfer")
+      if (index === 0) {
+        // Category
+        return getStaticEntityTranslation("categories", part, locale, "finance")
+      } else {
+        // Subcategory or item
+        return getStaticEntityTranslation("financeSubcategories", part, locale)
+      }
+    })
+    return translatedParts.join(" - ")
+  }
+
   const [stats, setStats] = useState({
     logs: 0,
     items: 0,
@@ -585,12 +603,17 @@ export default function HomePage() {
                           <TypeIcon className="h-4 w-4 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-sm truncate">{log.title}</h3>
+                          <h3 className="font-medium text-sm truncate">
+                            {log.type === "finance" ? localizeFinanceTitle(log.title) : log.title}
+                          </h3>
                           <p className="text-xs text-muted-foreground">
                             {typeLabels[log.type] ?? log.type} •{" "}
                             {new Date(log.date).toLocaleDateString(locale, {
                               day: "numeric",
                               month: "short",
+                            })}
+                            {" | "}
+                            {new Date(log.date).toLocaleTimeString(locale, {
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
