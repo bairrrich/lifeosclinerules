@@ -105,6 +105,8 @@
     "confirmSeed": "Are you sure you want to seed test data? Existing data will be preserved.",
     "cleanupDuplicates": "Cleanup Duplicate Categories",
     "clearAllData": "Clear All Data",
+    "clearDataTitle": "Clear All Data?",
+    "clearDataDescription": "This action cannot be undone. All data will be deleted without recovery!",
     "confirmClear": "Are you sure? All data will be deleted without recovery!",
     "confirmReseed": "Recreate database? All current data will be deleted and replaced with test data!"
   },

@@ -6,8 +6,10 @@ import { z } from "zod"
 import { Combobox } from "@/components/ui/combobox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTranslations } from "next-intl"
 import { DependentSelect } from "@/components/shared/forms"
+import { cn } from "@/lib/utils"
 import type {
   FinanceType,
   Account,
@@ -17,6 +19,7 @@ import type {
 } from "@/types"
 import { db, getStaticEntityTranslation } from "@/lib/db"
 import { useLocale } from "next-intl"
+import { financeTypeColors } from "@/lib/theme-colors"
 
 // ============================================
 // Схема валидации
@@ -344,6 +347,66 @@ export function FinanceForm({
 
   return (
     <>
+      {/* Название (опционально) */}
+      <div className="space-y-2">
+        <Label htmlFor="title">{t("finance.title")}</Label>
+        <Input id="title" placeholder={t("finance.titlePlaceholder")} {...register("title")} />
+      </div>
+
+      {/* Тип финансов */}
+      <div className="space-y-2">
+        <Label>{t("finance.type")}</Label>
+        <Tabs
+          value={financeType}
+          onValueChange={(value) => {
+            setFinanceType(value)
+            setValue("finance_type", value as "income" | "expense" | "transfer")
+
+            // При смене типа на transfer устанавливаем целевой аккаунт
+            if (value === "transfer" && accounts.length > 1) {
+              const cashAccount = accounts.find((acc) => acc.type === "cash")
+              const targetAcc = cashAccount || accounts[1]
+              setTargetAccountId(targetAcc.id)
+              setValue("target_account_id", targetAcc.id)
+            } else if (value !== "transfer") {
+              // Сбрасываем targetAccountId для income и expense
+              setTargetAccountId("")
+              setValue("target_account_id", "")
+            }
+          }}
+        >
+          <TabsList className="grid grid-cols-3">
+            <TabsTrigger
+              value="income"
+              className={cn(financeTypeColors["income"], "text-xs sm:text-sm min-w-0 px-1 sm:px-2")}
+            >
+              <span className="mr-1 flex-shrink-0">📈</span>
+              <span className="truncate">{t("finance.types.income")}</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="expense"
+              className={cn(
+                financeTypeColors["expense"],
+                "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
+              )}
+            >
+              <span className="mr-1 flex-shrink-0">📉</span>
+              <span className="truncate">{t("finance.types.expense")}</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="transfer"
+              className={cn(
+                financeTypeColors["transfer"],
+                "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
+              )}
+            >
+              <span className="mr-1 flex-shrink-0">🔄</span>
+              <span className="truncate">{t("finance.types.transfer")}</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       {/* Сумма */}
       <div className="space-y-2">
         <Label htmlFor="value">{t("finance.amount")}</Label>

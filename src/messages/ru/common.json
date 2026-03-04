@@ -90,6 +90,7 @@
   "select": "Выбрать",
   "notes": "Заметки",
   "reminders": {
+    "title": "Напоминания",
     "snooze": "Через 5 мин",
     "dismiss": "Отклонить",
     "complete": "Выполнено"
@@ -111,6 +112,14 @@
     "dish": "Блюдо",
     "drink": "Напиток",
     "cocktail": "Коктейль"
+  },
+  "workout": {
+    "types": {
+      "strength": "Силовая",
+      "cardio": "Кардио",
+      "yoga": "Йога",
+      "stretching": "Растяжка"
+    }
   },
   "items": "вещей",
   "noItems": "Нет вещей",

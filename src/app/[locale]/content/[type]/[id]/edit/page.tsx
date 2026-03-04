@@ -25,6 +25,7 @@ import {
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
+import { ImageUpload } from "@/components/shared/forms"
 import type {
   ContentType,
   BookMetadata,
@@ -203,6 +204,17 @@ export default function EditContentPage() {
             if (recipe.food_metadata) setFoodMetadata(recipe.food_metadata)
             if (recipe.drink_metadata) setDrinkMetadata(recipe.drink_metadata)
             if (recipe.cocktail_metadata) setCocktailMetadata(recipe.cocktail_metadata)
+
+            // Load image_url from recipe or metadata
+            if (recipe.image_url) {
+              if (recipe.recipe_type === "food") {
+                setFoodMetadata((prev) => ({ ...prev, image_url: recipe.image_url }))
+              } else if (recipe.recipe_type === "drink") {
+                setDrinkMetadata((prev) => ({ ...prev, image_url: recipe.image_url }))
+              } else if (recipe.recipe_type === "cocktail") {
+                setCocktailMetadata((prev) => ({ ...prev, image_url: recipe.image_url }))
+              }
+            }
           }
 
           reset(baseData as BookFormData | RecipeFormData)
@@ -241,9 +253,18 @@ export default function EditContentPage() {
       } else {
         const recipeData = data as RecipeFormData
 
+        // Определяем image_url из метаданных в зависимости от типа рецепта
+        const imageUrl =
+          recipeType === "food"
+            ? foodMetadata.image_url
+            : recipeType === "drink"
+              ? drinkMetadata.image_url
+              : cocktailMetadata.image_url
+
         // Update recipe content
         await updateEntity(db.content, id, {
           ...baseData,
+          image_url: imageUrl,
           recipe_type: recipeType,
           prep_time_min: recipeData.prep_time_min,
           cook_time_min: recipeData.cook_time_min,
@@ -479,6 +500,28 @@ export default function EditContentPage() {
                     />
                   </div>
 
+                  {/* Изображение */}
+                  <ImageUpload
+                    imageUrl={
+                      recipeType === "food"
+                        ? foodMetadata.image_url
+                        : recipeType === "drink"
+                          ? drinkMetadata.image_url
+                          : cocktailMetadata.image_url
+                    }
+                    onChange={(url) => {
+                      if (recipeType === "food") {
+                        setFoodMetadata((prev) => ({ ...prev, image_url: url }))
+                      } else if (recipeType === "drink") {
+                        setDrinkMetadata((prev) => ({ ...prev, image_url: url }))
+                      } else {
+                        setCocktailMetadata((prev) => ({ ...prev, image_url: url }))
+                      }
+                    }}
+                    label={t("fields.imageUrl")}
+                    placeholder={t("fields.imageUrlPlaceholder")}
+                  />
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="servings">{t("fields.servings")}</Label>
@@ -654,19 +697,26 @@ export default function EditContentPage() {
             </>
           )}
 
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"
+              size="icon"
               onClick={() => router.back()}
-              className="flex-1"
+              className="sm:w-[160px] sm:h-10 w-[44px] h-[44px]"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {tCommon("cancel")}
+              <ArrowLeft className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">{tCommon("cancel")}</span>
             </Button>
-            <Button type="submit" disabled={isSaving} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              {isSaving ? tCommon("loading") : tCommon("save")}
+            <Button
+              type="submit"
+              variant="outline"
+              size="icon"
+              disabled={isSaving}
+              className="w-[160px] h-10"
+            >
+              <Save className="h-4 w-4" />
+              <span className="ml-2">{isSaving ? tCommon("loading") : tCommon("save")}</span>
             </Button>
           </div>
         </form>

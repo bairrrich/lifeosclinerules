@@ -27,3 +27,6 @@ export type { DependentSelectProps, DependentLevel } from "./dependent-select"
 
 export { PrioritySelector } from "./priority-selector"
 export type { PrioritySelectorProps, PriorityOption } from "./priority-selector"
+
+export { ImageUpload } from "./image-upload"
+export type { ImageUploadProps } from "./image-upload"

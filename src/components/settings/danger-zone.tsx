@@ -5,6 +5,15 @@ import { useTranslations } from "next-intl"
 import { Trash2, Database } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { DeleteConfirmActions } from "@/components/shared/page-actions"
 import { db } from "@/lib/db"
 import { seedDatabase } from "@/lib/seed"
 
@@ -12,6 +21,8 @@ export function DangerZone() {
   const t = useTranslations("settings")
   const [isSeeding, setIsSeeding] = useState(false)
   const [hasData, setHasData] = useState(false)
+  const [showClearDialog, setShowClearDialog] = useState(false)
+  const [isClearing, setIsClearing] = useState(false)
 
   // Check if data already exists
   useEffect(() => {
@@ -36,7 +47,8 @@ export function DangerZone() {
   }
 
   const handleClearData = async () => {
-    if (confirm(t("dangerZone.confirmClear"))) {
+    setIsClearing(true)
+    try {
       await Promise.all([
         // Main tables
         db.logs.clear(),
@@ -85,6 +97,10 @@ export function DangerZone() {
         db.entityTranslations.clear(),
       ])
       window.location.reload()
+    } catch (error) {
+      console.error("Error clearing data:", error)
+    } finally {
+      setIsClearing(false)
     }
   }
 
@@ -103,11 +119,28 @@ export function DangerZone() {
               ? t("dangerZone.reseedData")
               : t("dangerZone.seedData")}
         </Button>
-        <Button variant="destructive" onClick={handleClearData} className="w-full">
+        <Button variant="destructive" onClick={() => setShowClearDialog(true)} className="w-full">
           <Trash2 className="h-4 w-4 mr-2" />
           {t("dangerZone.clearAllData")}
         </Button>
       </CardContent>
+
+      {/* Clear Data Confirmation Dialog */}
+      <Dialog open={showClearDialog} onOpenChange={setShowClearDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("dangerZone.clearDataTitle")}</DialogTitle>
+            <DialogDescription>{t("dangerZone.clearDataDescription")}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DeleteConfirmActions
+              onCancel={() => setShowClearDialog(false)}
+              onConfirm={handleClearData}
+              isLoading={isClearing}
+            />
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }

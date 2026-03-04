@@ -17,11 +17,7 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import {
-  FormActions,
-  CreateFormActions,
-  DeleteConfirmActions,
-} from "@/components/shared/form-actions"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
@@ -712,10 +708,10 @@ function HabitsContent() {
                 )}
               </div>
             </div>
-            <CreateFormActions
+            <PageActions
+              variant="dialog"
               onCancel={() => setIsAddDialogOpen(false)}
-              onSave={addHabit}
-              saveText={t("common.add")}
+              onSimpleSave={addHabit}
             />
           </DialogContent>
         </Dialog>
@@ -870,12 +866,12 @@ function HabitsContent() {
                 )}
               </div>
             </div>
-            <FormActions
-              type="dialog"
-              showDelete
-              onDelete={() => setIsDeleteDialogOpen(true)}
+            <PageActions
+              variant="dialog"
+              showDelete={true}
+              onSimpleDelete={() => setIsDeleteDialogOpen(true)}
               onCancel={() => setIsEditDialogOpen(false)}
-              onSave={updateHabit}
+              onSimpleSave={updateHabit}
             />
           </DialogContent>
         </Dialog>
@@ -902,10 +898,10 @@ function HabitsContent() {
                 </div>
               </div>
             </div>
-            <CreateFormActions
+            <PageActions
+              variant="dialog"
               onCancel={() => setIsSkipDialogOpen(false)}
-              onSave={skipHabit}
-              saveText={t("skip")}
+              onSimpleSave={skipHabit}
             />
           </DialogContent>
         </Dialog>

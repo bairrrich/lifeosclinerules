@@ -5,8 +5,8 @@ import { useRouter, useParams } from "@/lib/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Bell, Utensils, Wallet, Footprints, Wind, Activity } from "@/lib/icons"
-import { CreateFormActions } from "@/components/shared/form-actions"
+import { Bell, Utensils, Wallet, Footprints, Wind, Activity } from "@/lib/icons"
+import { PageActions } from "@/components/shared/page-actions"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -408,22 +408,24 @@ export default function NewLogPage() {
       // Формируем title
       let title = data.title || ""
       if (type === "finance") {
-        // Используем переводы для категории, подкатегории и товара
-        const translatedCategory = financeCategory
-          ? getStaticEntityTranslation("categories", financeCategory, locale, "finance")
-          : ""
-        const translatedSubcategory = financeSubcategory
-          ? getStaticEntityTranslation("financeSubcategories", financeSubcategory, locale)
-          : ""
-        const translatedItem = financeItem
-          ? getStaticEntityTranslation("financeSubcategories", financeItem, locale)
-          : ""
+        // Если title не заполнен, формируем автоматически
+        if (!title) {
+          const translatedCategory = financeCategory
+            ? getStaticEntityTranslation("categories", financeCategory, locale, "finance")
+            : ""
+          const translatedSubcategory = financeSubcategory
+            ? getStaticEntityTranslation("financeSubcategories", financeSubcategory, locale)
+            : ""
+          const translatedItem = financeItem
+            ? getStaticEntityTranslation("financeSubcategories", financeItem, locale)
+            : ""
 
-        const parts = [translatedCategory, translatedSubcategory, translatedItem].filter(Boolean)
-        if (parts.length > 0) {
-          title = parts.join(" → ")
-        } else {
-          title = t("finance.type")
+          const parts = [translatedCategory, translatedSubcategory, translatedItem].filter(Boolean)
+          if (parts.length > 0) {
+            title = parts.join(" → ")
+          } else {
+            title = t("finance.type")
+          }
         }
       } else if (type === "workout") {
         const subcategoryLabel = getSubcategoryLabel(t, selectedWorkoutCategory, workoutSubcategory)
@@ -705,71 +707,6 @@ export default function NewLogPage() {
                 </div>
               )}
 
-              {/* Tabs для типа финансов */}
-              {type === "finance" && (
-                <div className="space-y-2">
-                  <Label>{t("finance.type")}</Label>
-                  <Tabs
-                    value={financeType}
-                    onValueChange={(value) => {
-                      // Сохраняем текущую категорию для текущего типа перед переключением
-                      if (financeCategory) {
-                        saveLastUsedCategory(financeType, financeCategory)
-                      }
-
-                      setFinanceType(value)
-                      setValue("finance_type", value as "income" | "expense" | "transfer")
-
-                      // При смене типа на transfer устанавливаем целевой аккаунт
-                      if (value === "transfer" && accounts.length > 1) {
-                        const cashAccount = accounts.find((acc) => acc.type === "cash")
-                        const targetAcc = cashAccount || accounts[1]
-                        setTargetAccountId(targetAcc.id)
-                        setValue("target_account_id", targetAcc.id)
-                      } else if (value !== "transfer") {
-                        // Сбрасываем targetAccountId для income и expense
-                        setTargetAccountId("")
-                        setValue("target_account_id", "")
-                      }
-                      // Остальные значения сохраняются для каждого типа в financeValues
-                    }}
-                  >
-                    <TabsList className="grid grid-cols-3">
-                      <TabsTrigger
-                        value="income"
-                        className={cn(
-                          financeTypeColors["income"],
-                          "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
-                        )}
-                      >
-                        <span className="mr-1 flex-shrink-0">📈</span>
-                        <span className="truncate">{t("finance.types.income")}</span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="expense"
-                        className={cn(
-                          financeTypeColors["expense"],
-                          "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
-                        )}
-                      >
-                        <span className="mr-1 flex-shrink-0">📉</span>
-                        <span className="truncate">{t("finance.types.expense")}</span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="transfer"
-                        className={cn(
-                          financeTypeColors["transfer"],
-                          "text-xs sm:text-sm min-w-0 px-1 sm:px-2"
-                        )}
-                      >
-                        <span className="mr-1 flex-shrink-0">🔄</span>
-                        <span className="truncate">{t("finance.types.transfer")}</span>
-                      </TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </div>
-              )}
-
               {/* Food Form */}
               {type === "food" && (
                 <FoodForm
@@ -925,11 +862,12 @@ export default function NewLogPage() {
           )}
 
           {/* Actions */}
-          <CreateFormActions
+          <PageActions
+            variant="page"
             onCancel={() => router.back()}
-            onSave={handleSubmit(onSubmit)}
-            saveText={tCommon("save")}
+            onSimpleSave={handleSubmit(onSubmit)}
             isSaving={isLoading}
+            isInForm={true}
           />
         </form>
       </div>

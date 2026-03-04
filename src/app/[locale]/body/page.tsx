@@ -8,11 +8,7 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import {
-  FormActions,
-  CreateFormActions,
-  DeleteConfirmActions,
-} from "@/components/shared/form-actions"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
@@ -439,7 +435,7 @@ function BodyContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("dialogs.addTitle")}</DialogTitle>
             </DialogHeader>
@@ -489,10 +485,10 @@ function BodyContent() {
                 />
               </div>
             </div>
-            <CreateFormActions
+            <PageActions
+              variant="dialog"
               onCancel={() => setIsAddDialogOpen(false)}
-              onSave={addMeasurement}
-              saveText={t("add")}
+              onSimpleSave={addMeasurement}
             />
           </DialogContent>
         </Dialog>
@@ -548,12 +544,12 @@ function BodyContent() {
                 />
               </div>
             </div>
-            <FormActions
-              type="dialog"
-              showDelete
-              onDelete={() => setIsDeleteDialogOpen(true)}
+            <PageActions
+              variant="dialog"
+              showDelete={true}
+              onSimpleDelete={() => setIsDeleteDialogOpen(true)}
               onCancel={() => setIsEditDialogOpen(false)}
-              onSave={updateMeasurement}
+              onSimpleSave={updateMeasurement}
             />
           </DialogContent>
         </Dialog>

@@ -90,6 +90,7 @@
   "select": "Select",
   "notes": "Notes",
   "reminders": {
+    "title": "Reminders",
     "snooze": "In 5 min",
     "dismiss": "Dismiss",
     "complete": "Complete"
@@ -111,6 +112,14 @@
     "dish": "Dish",
     "drink": "Drink",
     "cocktail": "Cocktail"
+  },
+  "workout": {
+    "types": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "yoga": "Yoga",
+      "stretching": "Stretching"
+    }
   },
   "items": "items",
   "noItems": "No items",

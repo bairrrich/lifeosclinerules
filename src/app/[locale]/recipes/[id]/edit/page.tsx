@@ -8,7 +8,7 @@ import { z } from "zod"
 import { Calculator } from "@/lib/icons"
 import { useTranslations } from "next-intl"
 import { AppLayout } from "@/components/layout/app-layout"
-import { FormActions } from "@/components/shared/form-actions"
+import { PageActions } from "@/components/shared/page-actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -22,6 +22,7 @@ import {
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
+import { ImageUpload } from "@/components/shared/forms"
 import type {
   Difficulty,
   FoodRecipeMetadata,
@@ -201,6 +202,17 @@ export default function EditRecipePage() {
           if (recipe.food_metadata) setFoodMetadata(recipe.food_metadata)
           if (recipe.drink_metadata) setDrinkMetadata(recipe.drink_metadata)
           if (recipe.cocktail_metadata) setCocktailMetadata(recipe.cocktail_metadata)
+
+          // Load image_url from recipe or metadata
+          if (recipe.image_url) {
+            if (recipe.recipe_type === "food") {
+              setFoodMetadata((prev) => ({ ...prev, image_url: recipe.image_url }))
+            } else if (recipe.recipe_type === "drink") {
+              setDrinkMetadata((prev) => ({ ...prev, image_url: recipe.image_url }))
+            } else if (recipe.recipe_type === "cocktail") {
+              setCocktailMetadata((prev) => ({ ...prev, image_url: recipe.image_url }))
+            }
+          }
         }
       } catch (error) {
         console.error("Failed to load recipe:", error)
@@ -216,10 +228,19 @@ export default function EditRecipePage() {
     try {
       const now = getTimestamp()
 
+      // Определяем image_url из метаданных в зависимости от типа рецепта
+      const imageUrl =
+        recipeType === "food"
+          ? foodMetadata.image_url
+          : recipeType === "drink"
+            ? drinkMetadata.image_url
+            : cocktailMetadata.image_url
+
       // Update recipe content (using type assertion for RecipeContentExtended fields)
       await db.content.update(id, {
         title: data.title,
         description: data.description,
+        image_url: imageUrl,
         rating: data.rating,
         tags: data.tags ? data.tags.split(",").map((t) => t.trim()) : [],
         recipe_type: recipeType,
@@ -355,6 +376,28 @@ export default function EditRecipePage() {
                   {...register("description")}
                 />
               </div>
+
+              {/* Изображение */}
+              <ImageUpload
+                imageUrl={
+                  recipeType === "food"
+                    ? foodMetadata.image_url
+                    : recipeType === "drink"
+                      ? drinkMetadata.image_url
+                      : cocktailMetadata.image_url
+                }
+                onChange={(url) => {
+                  if (recipeType === "food") {
+                    setFoodMetadata((prev) => ({ ...prev, image_url: url }))
+                  } else if (recipeType === "drink") {
+                    setDrinkMetadata((prev) => ({ ...prev, image_url: url }))
+                  } else {
+                    setCocktailMetadata((prev) => ({ ...prev, image_url: url }))
+                  }
+                }}
+                label={t("fields.imageUrl")}
+                placeholder={t("fields.imageUrlPlaceholder")}
+              />
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -534,10 +577,10 @@ export default function EditRecipePage() {
             </CardContent>
           </Card>
 
-          <FormActions
-            type="page"
+          <PageActions
+            variant="page"
             onCancel={() => router.back()}
-            onSave={handleSubmit(onSubmit)}
+            onSimpleSave={handleSubmit(onSubmit)}
             isSaving={isSaving}
           />
         </form>

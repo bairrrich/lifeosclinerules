@@ -32,6 +32,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { DeleteConfirmActions } from "@/components/shared/page-actions"
 import {
   db,
   getEntityById,
@@ -387,16 +388,17 @@ export default function LogDetailPage() {
     }
   }
 
-  // Копирование записи на сегодня
+  // Копирование записи с созданием новой и переходом к редактированию
   const handleCopy = async () => {
     if (!log) return
     try {
       const today = new Date().toISOString().split("T")[0]
       const currentTime = new Date().toTimeString().slice(0, 5)
 
-      await createEntity(db.logs, {
+      // Создаём копию записи
+      const newLogId = await createEntity(db.logs, {
         type: log.type,
-        title: log.title,
+        title: `${log.title} (${t("copy")})`,
         date: `${today}T${currentTime}`,
         value: log.value,
         quantity: log.quantity,
@@ -407,7 +409,8 @@ export default function LogDetailPage() {
         tags: log.tags,
       } as Partial<Log>)
 
-      router.push("/logs")
+      // Перенаправляем на страницу редактирования новой записи
+      router.push(`/logs/${type}/${newLogId}/edit`)
     } catch (error) {
       console.error("Failed to copy log:", error)
     }
@@ -822,14 +825,19 @@ export default function LogDetailPage() {
           </Link>
           <Button
             variant="outline"
+            size="icon"
             onClick={handleCopy}
-            className="sm:w-[160px] w-[44px] hover:!bg-primary/10"
+            className="sm:w-[160px] sm:h-11 w-[44px] h-[44px] hover:!bg-primary/10"
           >
             <Copy className="h-4 w-4" />
             <span className="hidden sm:inline ml-2">{tCommon("copy")}</span>
           </Button>
-          <Link href={`/logs/${type}/${id}/edit`} className="sm:w-[160px] flex-1">
-            <Button variant="outline" className="w-full hover:!bg-primary/10">
+          <Link href={`/logs/${type}/${id}/edit`} className="w-[160px]">
+            <Button
+              variant="outline"
+              size="icon"
+              className="w-[160px] h-[44px] hover:!bg-primary/10"
+            >
               <Pencil className="h-4 w-4" />
               <span className="ml-2">{tCommon("edit")}</span>
             </Button>
@@ -846,12 +854,10 @@ export default function LogDetailPage() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-                {tCommon("cancel")}
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                {tCommon("delete")}
-              </Button>
+              <DeleteConfirmActions
+                onCancel={() => setShowDeleteDialog(false)}
+                onConfirm={handleDelete}
+              />
             </DialogFooter>
           </DialogContent>
         </Dialog>

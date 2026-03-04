@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "@/lib/navigation"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Save } from "@/lib/icons"
+import { PageActions } from "@/components/shared/page-actions"
 import { toast } from "@/components/ui/toast"
 import { AppLayout } from "@/components/layout/app-layout"
-import { Button } from "@/components/ui/button"
 import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
 import { BookForm, UserBookForm, BookQuotes } from "@/components/books"
 import type {
@@ -246,21 +245,13 @@ export default function NewBookPage() {
           <BookQuotes quotes={quotes} onChange={setQuotes} />
 
           {/* Действия */}
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              className="flex-1"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("new.actions.cancel")}
-            </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              {isLoading ? t("new.actions.saving") : t("new.actions.save")}
-            </Button>
-          </div>
+          <PageActions
+            variant="page"
+            onCancel={() => router.back()}
+            onSimpleSave={onSubmit}
+            isSaving={isLoading}
+            isInForm={true}
+          />
         </form>
       </div>
     </AppLayout>

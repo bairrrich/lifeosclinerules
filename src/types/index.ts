@@ -653,6 +653,7 @@ export interface FoodRecipeMetadata {
   dietary?: string[] // ["vegan", "gluten-free", "keto"]
   serving_temperature?: ServingTemperature
   spicy_level?: 0 | 1 | 2 | 3 // 0 = не острое
+  image_url?: string
 }
 
 // Метаданные для напитков
@@ -671,6 +672,7 @@ export interface DrinkRecipeMetadata {
   serving_temperature?: ServingTemperature
   caffeine_mg?: number
   volume_ml?: number
+  image_url?: string
 }
 
 // Метаданные для коктейлей
@@ -685,6 +687,7 @@ export interface CocktailRecipeMetadata {
   color?: string
   iba_category?: string // IBA Official Cocktails category
   tools?: string[] // ["шейкер", "джиггер", "мадлер"]
+  image_url?: string
 }
 
 // Полный интерфейс рецепта
@@ -692,6 +695,7 @@ export interface RecipeContentExtended extends BaseContent {
   type: ContentType.RECIPE
   recipe_type: RecipeType
   metadata?: RecipeMetadata // для обратной совместимости
+  image_url?: string
 
   // Время
   prep_time_min?: number

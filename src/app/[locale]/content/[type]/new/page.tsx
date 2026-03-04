@@ -24,6 +24,7 @@ import {
   recipeTypeColors,
   type IngredientItem,
 } from "@/components/recipes"
+import { ImageUpload } from "@/components/shared/forms"
 import type {
   RecipeType,
   Difficulty,
@@ -116,11 +117,20 @@ export default function NewRecipePage() {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true)
     try {
+      // Определяем image_url из метаданных в зависимости от типа рецепта
+      const imageUrl =
+        recipeType === "food"
+          ? foodMetadata.image_url
+          : recipeType === "drink"
+            ? drinkMetadata.image_url
+            : cocktailMetadata.image_url
+
       const recipeData: Omit<RecipeContentExtended, "id" | "created_at" | "updated_at"> = {
         type: ContentType.RECIPE,
         recipe_type: data.recipe_type as RecipeType,
         title: data.title,
         description: data.description,
+        image_url: imageUrl,
         rating: data.rating,
         tags: data.tags ? data.tags.split(",").map((t) => t.trim()) : [],
 
@@ -241,6 +251,28 @@ export default function NewRecipePage() {
                   {...register("description")}
                 />
               </div>
+
+              {/* Изображение */}
+              <ImageUpload
+                imageUrl={
+                  recipeType === "food"
+                    ? foodMetadata.image_url
+                    : recipeType === "drink"
+                      ? drinkMetadata.image_url
+                      : cocktailMetadata.image_url
+                }
+                onChange={(url) => {
+                  if (recipeType === "food") {
+                    setFoodMetadata((prev) => ({ ...prev, image_url: url }))
+                  } else if (recipeType === "drink") {
+                    setDrinkMetadata((prev) => ({ ...prev, image_url: url }))
+                  } else {
+                    setCocktailMetadata((prev) => ({ ...prev, image_url: url }))
+                  }
+                }}
+                label={t("fields.imageUrl")}
+                placeholder={t("fields.imageUrlPlaceholder")}
+              />
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -419,19 +451,28 @@ export default function NewRecipePage() {
           </Card>
 
           {/* Действия */}
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"
+              size="icon"
               onClick={() => router.back()}
-              className="flex-1"
+              className="sm:w-[160px] sm:h-10 w-[44px] h-[44px]"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("new.actions.cancel")}
+              <ArrowLeft className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">{t("new.actions.cancel")}</span>
             </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              {isLoading ? t("new.actions.saving") : t("new.actions.save")}
+            <Button
+              type="submit"
+              variant="outline"
+              size="icon"
+              disabled={isLoading}
+              className="w-[160px] h-10"
+            >
+              <Save className="h-4 w-4" />
+              <span className="ml-2">
+                {isLoading ? t("new.actions.saving") : t("new.actions.save")}
+              </span>
             </Button>
           </div>
         </form>

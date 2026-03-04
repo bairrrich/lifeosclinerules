@@ -68,7 +68,9 @@
     "tagsPlaceholder": "теги через запятую",
     "minutes": "мин",
     "dishParameters": "Параметры блюда",
-    "fiber": "Клетчатка"
+    "fiber": "Клетчатка",
+    "imageUrl": "Изображение",
+    "imageUrlPlaceholder": "https://example.com/image.jpg"
   },
   "edit": {
     "title": "Редактировать рецепт",

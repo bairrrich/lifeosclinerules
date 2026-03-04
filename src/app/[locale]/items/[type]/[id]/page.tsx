@@ -29,6 +29,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { DeleteConfirmActions } from "@/components/shared/page-actions"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
@@ -381,8 +382,12 @@ export default function ItemDetailPage() {
             <Copy className="h-4 w-4" />
             <span className="hidden sm:inline ml-2">{tCommon("copy")}</span>
           </Button>
-          <Link href={`/items/${type}/${id}/edit`} className="sm:w-[160px] flex-1">
-            <Button variant="outline" className="w-full hover:!bg-primary/10">
+          <Link href={`/items/${type}/${id}/edit`} className="w-[160px]">
+            <Button
+              variant="outline"
+              size="icon"
+              className="w-[160px] h-[44px] hover:!bg-primary/10"
+            >
               <Pencil className="h-4 w-4" />
               <span className="ml-2">{t("detail.edit")}</span>
             </Button>
@@ -399,19 +404,17 @@ export default function ItemDetailPage() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-                {t("detail.reminderCancel")}
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                {t("detail.delete")}
-              </Button>
+              <DeleteConfirmActions
+                onCancel={() => setShowDeleteDialog(false)}
+                onConfirm={handleDelete}
+              />
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
         {/* Create Reminder Dialog */}
         <Dialog open={showReminderDialog} onOpenChange={setShowReminderDialog}>
-          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("detail.reminderDialogTitle")}</DialogTitle>
               <DialogDescription>

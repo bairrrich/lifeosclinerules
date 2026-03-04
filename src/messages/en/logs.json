@@ -3,6 +3,7 @@
   "addLog": "Add Entry",
   "editLog": "Edit Entry",
   "searchPlaceholder": "Search logs...",
+  "copy": "copy",
   "types": {
     "food": "Nutrition",
     "workout": "Workout",
@@ -200,6 +201,8 @@
     "loading": "Loading...",
     "basic": "Basic",
     "type": "Type",
+    "title": "Title",
+    "titlePlaceholder": "e.g., Groceries, Salary (optional)",
     "additional": "Additional",
     "notesPlaceholder": "Your notes...",
     "tagsPlaceholder": "tags separated by comma",
@@ -377,6 +380,8 @@
   },
   "finance": {
     "type": "Transaction Type",
+    "title": "Title",
+    "titlePlaceholder": "e.g., Groceries, Salary (optional)",
     "types": {
       "income": "Income",
       "expense": "Expense",

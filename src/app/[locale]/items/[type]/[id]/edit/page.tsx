@@ -9,7 +9,7 @@ import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FormActions } from "@/components/shared/form-actions"
+import { PageActions } from "@/components/shared/page-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -595,10 +595,10 @@ export default function EditItemPage() {
             </CardContent>
           </Card>
 
-          <FormActions
-            type="page"
+          <PageActions
+            variant="page"
             onCancel={() => router.push(`/items/${type}/${id}`)}
-            onSave={handleSubmit(onSubmit)}
+            onSimpleSave={handleSubmit(onSubmit)}
             isSaving={isSaving}
           />
         </form>

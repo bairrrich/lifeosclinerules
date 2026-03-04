@@ -23,11 +23,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  FormActions,
-  CreateFormActions,
-  DeleteConfirmActions,
-} from "@/components/shared/form-actions"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { MoodLog, MoodType } from "@/types"
 import { moodColors, statusColors, moduleColors } from "@/lib/theme-colors"
@@ -574,7 +570,7 @@ export default function MoodPage() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent aria-label={t("dialogs.addTitle")}>
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("dialogs.addTitle")}</DialogTitle>
             </DialogHeader>
@@ -658,17 +654,17 @@ export default function MoodPage() {
                 />
               </div>
             </div>
-            <CreateFormActions
+            <PageActions
+              variant="dialog"
               onCancel={() => setIsAddDialogOpen(false)}
-              onSave={addMoodLog}
-              saveText={t("dialogs.save")}
+              onSimpleSave={addMoodLog}
             />
           </DialogContent>
         </Dialog>
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent aria-label={t("dialogs.editTitle")}>
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("dialogs.editTitle")}</DialogTitle>
             </DialogHeader>
@@ -752,19 +748,19 @@ export default function MoodPage() {
                 />
               </div>
             </div>
-            <FormActions
-              type="dialog"
-              showDelete
-              onDelete={() => setIsDeleteDialogOpen(true)}
+            <PageActions
+              variant="dialog"
+              showDelete={true}
+              onSimpleDelete={() => setIsDeleteDialogOpen(true)}
               onCancel={() => setIsEditDialogOpen(false)}
-              onSave={updateMoodLog}
+              onSimpleSave={updateMoodLog}
             />
           </DialogContent>
         </Dialog>
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogContent aria-label={t("dialogs.deleteTitle")}>
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("dialogs.deleteTitle")}</DialogTitle>
             </DialogHeader>

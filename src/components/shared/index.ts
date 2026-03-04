@@ -25,3 +25,7 @@ export { EntityTranslations } from "./entity-translations"
 export type { EntityTranslationsProps } from "./entity-translations"
 
 export { DisableRightClick } from "./disable-right-click"
+
+// Action components
+export { PageActions, DeleteConfirmActions } from "./page-actions"
+export type { PageActionsProps } from "./page-actions"

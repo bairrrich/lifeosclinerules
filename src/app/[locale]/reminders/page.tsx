@@ -18,11 +18,7 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import {
-  FormActions,
-  CreateFormActions,
-  DeleteConfirmActions,
-} from "@/components/shared/form-actions"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
@@ -527,36 +523,36 @@ function RemindersContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-base sm:text-lg">{t("dialogs.newTitle")}</DialogTitle>
             </DialogHeader>
             <div className="mt-4 overflow-x-hidden">
               <ReminderForm formData={formData} setFormData={setFormData} />
             </div>
-            <CreateFormActions
+            <PageActions
+              variant="dialog"
               onCancel={() => setIsAddDialogOpen(false)}
-              onSave={addReminder}
-              saveText={t("add")}
+              onSimpleSave={addReminder}
             />
           </DialogContent>
         </Dialog>
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-base sm:text-lg">{t("dialogs.editTitle")}</DialogTitle>
             </DialogHeader>
             <div className="mt-4 overflow-x-hidden">
               <ReminderForm formData={formData} setFormData={setFormData} />
             </div>
-            <FormActions
-              type="dialog"
-              showDelete
-              onDelete={() => setIsDeleteDialogOpen(true)}
+            <PageActions
+              variant="dialog"
+              showDelete={true}
+              onSimpleDelete={() => setIsDeleteDialogOpen(true)}
               onCancel={() => setIsEditDialogOpen(false)}
-              onSave={updateReminder}
+              onSimpleSave={updateReminder}
             />
           </DialogContent>
         </Dialog>
@@ -579,7 +575,7 @@ function RemindersContent() {
 
         {/* Stats Dialog */}
         <Dialog open={isStatsDialogOpen} onOpenChange={setIsStatsDialogOpen}>
-          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>
                 {t.rich("dialogs.statsTitle", { title: selectedReminderForStats?.title || "" })}

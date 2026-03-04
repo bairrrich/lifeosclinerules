@@ -7,11 +7,7 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import {
-  FormActions,
-  CreateFormActions,
-  DeleteConfirmActions,
-} from "@/components/shared/form-actions"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -416,10 +412,10 @@ function GoalsContent() {
                 </Tabs>
               </div>
             </div>
-            <CreateFormActions
+            <PageActions
+              variant="dialog"
               onCancel={() => setIsAddDialogOpen(false)}
-              onSave={saveGoal}
-              saveText={t("common.add")}
+              onSimpleSave={saveGoal}
             />
           </DialogContent>
         </Dialog>
@@ -525,12 +521,12 @@ function GoalsContent() {
                 </Tabs>
               </div>
             </div>
-            <FormActions
-              type="dialog"
-              showDelete
-              onDelete={() => setIsDeleteDialogOpen(true)}
+            <PageActions
+              variant="dialog"
+              showDelete={true}
+              onSimpleDelete={() => setIsDeleteDialogOpen(true)}
               onCancel={() => setIsEditDialogOpen(false)}
-              onSave={saveGoal}
+              onSimpleSave={saveGoal}
             />
           </DialogContent>
         </Dialog>

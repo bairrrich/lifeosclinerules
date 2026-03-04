@@ -37,6 +37,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { DeleteConfirmActions } from "@/components/shared/page-actions"
 import { db, initializeDatabase, deleteEntity } from "@/lib/db"
 import { cn } from "@/lib/utils"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
@@ -968,19 +969,24 @@ export default function RecipeDetailPage() {
         </Tabs>
 
         {/* Actions */}
-        <div className="flex gap-4">
-          <Button
-            variant="destructive"
-            className="flex-1"
-            onClick={() => setShowDeleteDialog(true)}
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            {t("common.delete")}
+        <div className="flex gap-2">
+          <Button variant="destructive" size="icon" onClick={() => setShowDeleteDialog(true)}>
+            <Trash2 className="h-4 w-4" />
           </Button>
-          <Link href={`/recipes/${id}/edit`} className="flex-1">
-            <Button className="w-full">
-              <Pencil className="h-4 w-4 mr-2" />
-              {t("common.edit")}
+          <Link href="/recipes" className="sm:w-[160px] w-[44px]">
+            <Button variant="outline" className="w-full hover:!bg-primary/10">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">{tCommon("back")}</span>
+            </Button>
+          </Link>
+          <Link href={`/recipes/${id}/edit`} className="w-[160px]">
+            <Button
+              variant="outline"
+              size="icon"
+              className="w-[160px] h-[44px] hover:!bg-primary/10"
+            >
+              <Pencil className="h-4 w-4" />
+              <span className="ml-2">{t("common.edit")}</span>
             </Button>
           </Link>
         </div>
@@ -994,12 +1000,10 @@ export default function RecipeDetailPage() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-                {t("common.cancel")}
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                {t("common.delete")}
-              </Button>
+              <DeleteConfirmActions
+                onCancel={() => setShowDeleteDialog(false)}
+                onConfirm={handleDelete}
+              />
             </DialogFooter>
           </DialogContent>
         </Dialog>

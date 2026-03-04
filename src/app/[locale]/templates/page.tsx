@@ -46,11 +46,7 @@ import {
   MoodTemplateData,
 } from "@/components/templates/template-forms"
 import { useRouter } from "@/lib/navigation"
-import {
-  FormActions,
-  CreateFormActions,
-  DeleteConfirmActions,
-} from "@/components/shared/form-actions"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 
 function getTemplateTypes(t: any) {
   return [
@@ -653,7 +649,7 @@ export default function TemplatesPage() {
 
       {/* Create Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>{t("dialogs.createTitle")}</DialogTitle>
           </DialogHeader>
@@ -696,17 +692,17 @@ export default function TemplatesPage() {
 
             {renderTemplateForm(newTemplateType, newTemplateData, setNewTemplateData)}
           </div>
-          <CreateFormActions
+          <PageActions
+            variant="dialog"
             onCancel={() => setShowCreateDialog(false)}
-            onSave={createTemplate}
-            saveText={t("actions.create")}
+            onSimpleSave={createTemplate}
           />
         </DialogContent>
       </Dialog>
 
       {/* Edit Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>{t("dialogs.editTitle")}</DialogTitle>
           </DialogHeader>
@@ -740,12 +736,12 @@ export default function TemplatesPage() {
               {renderTemplateForm(editingTemplate.type, editTemplateData, setEditTemplateData)}
             </div>
           )}
-          <FormActions
-            type="dialog"
-            showDelete
-            onDelete={() => setShowDeleteDialog(true)}
+          <PageActions
+            variant="dialog"
+            showDelete={true}
+            onSimpleDelete={() => setShowDeleteDialog(true)}
             onCancel={() => setShowEditDialog(false)}
-            onSave={updateTemplate}
+            onSimpleSave={updateTemplate}
           />
         </DialogContent>
       </Dialog>

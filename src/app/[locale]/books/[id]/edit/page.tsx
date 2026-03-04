@@ -7,7 +7,7 @@ import { toast } from "@/components/ui/toast"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { db, initializeDatabase, generateId, getTimestamp } from "@/lib/db"
-import { FormActions } from "@/components/shared/form-actions"
+import { PageActions } from "@/components/shared/page-actions"
 import { BookForm, UserBookForm, BookQuotes } from "@/components/books"
 import type {
   Book,
@@ -386,13 +386,13 @@ export default function EditBookPage() {
           <BookQuotes quotes={quotes} onChange={setQuotes} />
 
           {/* Действия */}
-          <FormActions
-            type="page"
-            showDelete
-            onDelete={onDelete}
+          <PageActions
+            variant="page"
+            showDelete={true}
+            onSimpleDelete={onDelete}
             isDeleting={isDeleting}
             onCancel={() => router.back()}
-            onSave={onSubmit}
+            onSimpleSave={onSubmit}
             isSaving={isSaving}
           />
         </form>

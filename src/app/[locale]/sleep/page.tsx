@@ -16,11 +16,7 @@ import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "@/lib/icons"
 import { cn } from "@/lib/utils"
-import {
-  FormActions,
-  CreateFormActions,
-  DeleteConfirmActions,
-} from "@/components/shared/form-actions"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { SleepLog } from "@/types"
 import { moduleColors, priorityColors, sleepColors } from "@/lib/theme-colors"
@@ -342,7 +338,7 @@ function SleepContent() {
 
         {/* Add Dialog */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("dialogs.addTitle")}</DialogTitle>
             </DialogHeader>
@@ -434,17 +430,17 @@ function SleepContent() {
                 {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
               </div>
             </div>
-            <CreateFormActions
+            <PageActions
+              variant="dialog"
               onCancel={() => setIsAddDialogOpen(false)}
-              onSave={addSleepLog}
-              saveText={t("dialogs.save")}
+              onSimpleSave={addSleepLog}
             />
           </DialogContent>
         </Dialog>
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("dialogs.editTitle")}</DialogTitle>
             </DialogHeader>
@@ -536,12 +532,12 @@ function SleepContent() {
                 {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
               </div>
             </div>
-            <FormActions
-              type="dialog"
-              showDelete
-              onDelete={() => setIsDeleteDialogOpen(true)}
+            <PageActions
+              variant="dialog"
+              showDelete={true}
+              onSimpleDelete={() => setIsDeleteDialogOpen(true)}
               onCancel={() => setIsEditDialogOpen(false)}
-              onSave={updateSleepLog}
+              onSimpleSave={updateSleepLog}
             />
           </DialogContent>
         </Dialog>

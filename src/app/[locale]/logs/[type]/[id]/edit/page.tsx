@@ -17,12 +17,19 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { EditActions } from "@/components/shared/edit-actions"
+import { PageActions } from "@/components/shared/page-actions"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "@/lib/icons"
 import { cn } from "@/lib/utils"
-import { db, getEntityById, updateEntity, getCategoriesByType, initializeDatabase } from "@/lib/db"
+import {
+  db,
+  getEntityById,
+  updateEntity,
+  getCategoriesByType,
+  initializeDatabase,
+  getStaticEntityTranslation,
+} from "@/lib/db"
 import {
   FoodForm,
   WorkoutForm,
@@ -359,12 +366,24 @@ export default function EditLogPage() {
       // Формируем title
       let title = data.title || ""
       if (type === "finance") {
-        // Используем ключи для title (как при создании)
-        const parts = [financeCategory, financeSubcategory, financeItem].filter(Boolean)
-        if (parts.length > 0) {
-          title = parts.join(" - ")
-        } else {
-          title = t("finance.type")
+        // Если title не заполнен, формируем автоматически
+        if (!title) {
+          const translatedCategory = financeCategory
+            ? getStaticEntityTranslation("categories", financeCategory, locale, "finance")
+            : ""
+          const translatedSubcategory = financeSubcategory
+            ? getStaticEntityTranslation("financeSubcategories", financeSubcategory, locale)
+            : ""
+          const translatedItem = financeItem
+            ? getStaticEntityTranslation("financeSubcategories", financeItem, locale)
+            : ""
+
+          const parts = [translatedCategory, translatedSubcategory, translatedItem].filter(Boolean)
+          if (parts.length > 0) {
+            title = parts.join(" → ")
+          } else {
+            title = t("finance.type")
+          }
         }
       } else if (type === "workout") {
         const subcategoryLabel = getSubcategoryLabel(t, selectedWorkoutCategory, workoutSubcategory)
@@ -574,37 +593,6 @@ export default function EditLogPage() {
                 </div>
               )}
 
-              {/* Tabs для типа финансов */}
-              {type === "finance" && (
-                <div className="space-y-2">
-                  <Label>{t("edit.type")}</Label>
-                  <Tabs
-                    value={financeType}
-                    onValueChange={(value) => {
-                      setFinanceType(value)
-                      setValue("finance_type", value as "income" | "expense" | "transfer")
-                      // При смене типа сбрасываем только targetAccountId для transfer
-                      if (value !== "transfer") {
-                        setTargetAccountId("")
-                      }
-                      // Остальные значения сохраняются для каждого типа в financeValues
-                    }}
-                  >
-                    <TabsList className="grid grid-cols-3">
-                      <TabsTrigger value="income" className={financeTypeColors["income"]}>
-                        {t("finance.types.income")}
-                      </TabsTrigger>
-                      <TabsTrigger value="expense" className={financeTypeColors["expense"]}>
-                        {t("finance.types.expense")}
-                      </TabsTrigger>
-                      <TabsTrigger value="transfer" className={financeTypeColors["transfer"]}>
-                        {t("finance.types.transfer")}
-                      </TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </div>
-              )}
-
               {/* Food Form */}
               {type === "food" && (
                 <FoodForm
@@ -708,15 +696,16 @@ export default function EditLogPage() {
           </Card>
 
           {/* Actions */}
-          <EditActions
+          <PageActions
             id={id}
             type={type}
             title={log?.title}
-            isSaving={isSaving}
             onSave={handleSubmit(onSubmit)}
             onDelete={handleDelete}
+            onCancel={() => router.back()}
             isInForm={true}
             pathPrefix="logs"
+            showDeleteDialog={true}
           />
         </form>
       </div>

@@ -68,7 +68,9 @@
     "tagsPlaceholder": "tags separated by comma",
     "minutes": "min",
     "dishParameters": "Dish Parameters",
-    "fiber": "Fiber"
+    "fiber": "Fiber",
+    "imageUrl": "Image",
+    "imageUrlPlaceholder": "https://example.com/image.jpg"
   },
   "edit": {
     "title": "Edit Recipe",
