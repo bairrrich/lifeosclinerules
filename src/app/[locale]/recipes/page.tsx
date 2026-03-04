@@ -14,6 +14,7 @@ import { db, initializeDatabase } from "@/lib/db"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
 import { RecipeType } from "@/types"
 import { recipeColors } from "@/lib/theme-colors"
+import { cn } from "@/lib/utils"
 
 // Типы фильтров - label будет получен через t()
 const recipeTypeFilters: {
@@ -121,6 +122,21 @@ export default function RecipesPage() {
     }
   }
 
+  const getTabsTriggerColor = (type: RecipeType | "all") => {
+    switch (type) {
+      case "all":
+        return ""
+      case RecipeType.FOOD:
+        return "data-[state=active]:bg-[oklch(0.76_0.28_68)] data-[state=active]:text-white"
+      case RecipeType.DRINK:
+        return "data-[state=active]:bg-[oklch(0.70_0.30_208)] data-[state=active]:text-white"
+      case RecipeType.COCKTAIL:
+        return "data-[state=active]:bg-[oklch(0.68_0.32_38)] data-[state=active]:text-white"
+      default:
+        return ""
+    }
+  }
+
   return (
     <AppLayout title={t("list.title")}>
       <div className="container mx-auto px-4 py-6 space-y-4">
@@ -163,7 +179,10 @@ export default function RecipesPage() {
                 <TabsTrigger
                   key={filter.value}
                   value={filter.value}
-                  className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+                  className={cn(
+                    "text-xs sm:text-sm px-2 sm:px-4 py-2",
+                    getTabsTriggerColor(filter.value)
+                  )}
                   role="tab"
                   aria-selected={activeType === filter.value}
                   aria-controls={`panel-${filter.value}`}

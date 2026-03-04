@@ -84,6 +84,21 @@ export default function LogsPage() {
     finance_transfer: logTypeColors.finance_transfer.DEFAULT,
   }
 
+  const getTabsListColor = (type: LogType | "all"): string => {
+    switch (type) {
+      case "all":
+        return ""
+      case "food":
+        return "data-[state=active]:bg-[oklch(0.76_0.28_68)] data-[state=active]:text-white"
+      case "workout":
+        return "data-[state=active]:bg-[oklch(0.70_0.30_218)] data-[state=active]:text-white"
+      case "finance":
+        return "data-[state=active]:bg-[oklch(0.73_0.28_145)] data-[state=active]:text-white"
+      default:
+        return ""
+    }
+  }
+
   const getTypeIcon = (type: LogType): LucideIcon => {
     switch (type) {
       case "food":
@@ -177,7 +192,7 @@ export default function LogsPage() {
               <TabsTrigger
                 key={lt.type}
                 value={lt.type}
-                className="text-xs sm:text-sm px-2 sm:px-4 py-2"
+                className={cn("text-xs sm:text-sm px-2 sm:px-4 py-2", getTabsListColor(lt.type))}
                 role="tab"
                 aria-selected={activeType === lt.type}
                 aria-controls={`panel-${lt.type}`}

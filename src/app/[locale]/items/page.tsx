@@ -85,6 +85,25 @@ export default function ItemsPage() {
     }
   }
 
+  const getTabsListColor = (type: ItemType | "all"): string => {
+    switch (type) {
+      case "all":
+        return ""
+      case "vitamin":
+        return "data-[state=active]:bg-[oklch(0.76_0.28_68)] data-[state=active]:text-white"
+      case "medicine":
+        return "data-[state=active]:bg-[oklch(0.68_0.34_18)] data-[state=active]:text-white"
+      case "herb":
+        return "data-[state=active]:bg-[oklch(0.72_0.30_122)] data-[state=active]:text-white"
+      case "cosmetic":
+        return "data-[state=active]:bg-[oklch(0.74_0.31_312)] data-[state=active]:text-white"
+      case "product":
+        return "data-[state=active]:bg-[oklch(0.78_0.26_208)] data-[state=active]:text-white"
+      default:
+        return ""
+    }
+  }
+
   // Статистика
   const stats = {
     total: items.length,
@@ -144,7 +163,7 @@ export default function ItemsPage() {
               <TabsTrigger
                 key={it.type}
                 value={it.type}
-                className="text-xs sm:text-sm px-1 sm:px-3 py-2"
+                className={cn("text-xs sm:text-sm px-1 sm:px-3 py-2", getTabsListColor(it.type))}
               >
                 <it.icon className="h-4 w-4" />
                 <span className="sr-only sm:not-sr-only sm:ml-1">{it.label}</span>
