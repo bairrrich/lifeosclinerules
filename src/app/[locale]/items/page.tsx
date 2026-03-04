@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
-import { Pill, Bandage, Leaf, Sparkles, Package, Search } from "@/lib/icons"
+import { Pill, PillBottle, Bandage, Leaf, Sparkles, ShoppingCart, Search } from "@/lib/icons"
 import type { LucideIcon } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
@@ -26,10 +26,10 @@ export default function ItemsPage() {
 
   const itemTypes = [
     { type: ItemType.VITAMIN, label: t("list.types.vitamin"), icon: Pill },
-    { type: ItemType.MEDICINE, label: t("list.types.medicine"), icon: Bandage },
+    { type: ItemType.MEDICINE, label: t("list.types.medicine"), icon: PillBottle },
     { type: ItemType.HERB, label: t("list.types.herb"), icon: Leaf },
     { type: ItemType.COSMETIC, label: t("list.types.cosmetic"), icon: Sparkles },
-    { type: ItemType.PRODUCT, label: t("list.types.product"), icon: Package },
+    { type: ItemType.PRODUCT, label: t("list.types.product"), icon: ShoppingCart },
   ]
 
   useEffect(() => {
@@ -58,15 +58,15 @@ export default function ItemsPage() {
       case "vitamin":
         return Pill
       case "medicine":
-        return Bandage
+        return PillBottle
       case "herb":
         return Leaf
       case "cosmetic":
         return Sparkles
       case "product":
-        return Package
+        return ShoppingCart
       default:
-        return Package
+        return ShoppingCart
     }
   }
 

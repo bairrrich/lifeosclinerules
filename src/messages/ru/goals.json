@@ -41,7 +41,9 @@
   },
   "dialogs": {
     "addTitle": "Новая цель",
-    "typeLabel": "Тип цели"
+    "typeLabel": "Тип цели",
+    "targetLabel": "Целевое значение",
+    "periodLabel": "Период"
   },
   "progress": "Прогресс",
   "completed": "Выполнено",

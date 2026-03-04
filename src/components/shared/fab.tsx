@@ -19,9 +19,10 @@ import {
   Bell,
   Flame,
   Pill,
+  PillBottle,
   Leaf,
   Sparkles,
-  ShoppingBag,
+  ShoppingCart,
   HeartPulse,
 } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
@@ -129,14 +130,14 @@ export function FAB() {
       action: "navigate" as const,
     },
     {
-      icon: <HeartPulse className="h-5 w-5" />,
+      icon: <Pill className="h-5 w-5" />,
       label: t("vitamins"),
       href: "/items/vitamin/new",
       module: "habits",
       action: "navigate" as const,
     },
     {
-      icon: <Pill className="h-5 w-5" />,
+      icon: <PillBottle className="h-5 w-5" />,
       label: t("medicine"),
       href: "/items/medicine/new",
       module: "mood",
@@ -157,7 +158,7 @@ export function FAB() {
       action: "navigate" as const,
     },
     {
-      icon: <ShoppingBag className="h-5 w-5" />,
+      icon: <ShoppingCart className="h-5 w-5" />,
       label: t("products"),
       href: "/items/product/new",
       module: "food",

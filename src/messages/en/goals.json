@@ -41,7 +41,9 @@
   },
   "dialogs": {
     "addTitle": "New Goal",
-    "typeLabel": "Goal Type"
+    "typeLabel": "Goal Type",
+    "targetLabel": "Target Value",
+    "periodLabel": "Period"
   },
   "progress": "Progress",
   "completed": "Completed",
