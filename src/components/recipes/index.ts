@@ -20,8 +20,4 @@ export {
   getGarnishOptions,
 } from "./cocktail-recipe-form"
 
-export const recipeTypeColors: Record<string, string> = {
-  food: "data-[state=active]:bg-orange-500 data-[state=active]:text-white",
-  drink: "data-[state=active]:bg-blue-500 data-[state=active]:text-white",
-  cocktail: "data-[state=active]:bg-purple-500 data-[state=active]:text-white",
-}
+export { recipeTypeColorsLegacy as recipeTypeColors } from "@/lib/theme-colors"

@@ -22,6 +22,7 @@ import {
   Settings,
 } from "@/lib/icons"
 import type { ElementType } from "react"
+import { navigationColors } from "@/lib/theme-colors"
 
 // ============================================
 // BOTTOM NAVIGATION
@@ -78,26 +79,36 @@ export interface SearchTypeConfig {
 }
 
 export const searchTypeConfig: Record<string, SearchTypeConfig> = {
-  food: { icon: Utensils, color: "text-orange-500", href: "/logs/food", translationKey: "food" },
+  food: {
+    icon: Utensils,
+    color: navigationColors.food,
+    href: "/logs/food",
+    translationKey: "food",
+  },
   workout: {
     icon: Dumbbell,
-    color: "text-blue-500",
+    color: navigationColors.workout,
     href: "/logs/workout",
     translationKey: "workout",
   },
   finance: {
     icon: Wallet,
-    color: "text-green-500",
+    color: navigationColors.finance,
     href: "/logs/finance",
     translationKey: "finance",
   },
-  book: { icon: BookOpen, color: "text-amber-500", href: "/books", translationKey: "books" },
-  recipe: { icon: ChefHat, color: "text-rose-500", href: "/recipes", translationKey: "recipes" },
-  water: { icon: Droplet, color: "text-cyan-500", href: "/water", translationKey: "water" },
-  sleep: { icon: Moon, color: "text-indigo-500", href: "/sleep", translationKey: "sleep" },
-  mood: { icon: Smile, color: "text-yellow-500", href: "/mood", translationKey: "mood" },
-  habit: { icon: Flame, color: "text-red-500", href: "/habits", translationKey: "habits" },
-  goal: { icon: Target, color: "text-emerald-500", href: "/goals", translationKey: "goals" },
+  book: { icon: BookOpen, color: navigationColors.book, href: "/books", translationKey: "books" },
+  recipe: {
+    icon: ChefHat,
+    color: navigationColors.recipe,
+    href: "/recipes",
+    translationKey: "recipes",
+  },
+  water: { icon: Droplet, color: navigationColors.water, href: "/water", translationKey: "water" },
+  sleep: { icon: Moon, color: navigationColors.sleep, href: "/sleep", translationKey: "sleep" },
+  mood: { icon: Smile, color: navigationColors.mood, href: "/mood", translationKey: "mood" },
+  habit: { icon: Flame, color: navigationColors.habit, href: "/habits", translationKey: "habits" },
+  goal: { icon: Target, color: navigationColors.goal, href: "/goals", translationKey: "goals" },
 }
 
 // ============================================
@@ -116,61 +127,61 @@ export const quickActions: QuickAction[] = [
     translationKey: "addFood",
     href: "/logs/food/new",
     icon: Utensils,
-    color: "text-orange-500",
+    color: navigationColors.food,
   },
   {
     translationKey: "addWorkout",
     href: "/logs/workout/new",
     icon: Dumbbell,
-    color: "text-blue-500",
+    color: navigationColors.workout,
   },
   {
     translationKey: "addExpense",
     href: "/logs/finance/new",
     icon: Wallet,
-    color: "text-green-500",
+    color: navigationColors.finance,
   },
   {
     translationKey: "addBook",
     href: "/books/new",
     icon: BookOpen,
-    color: "text-amber-500",
+    color: navigationColors.book,
   },
   {
     translationKey: "addRecipe",
     href: "/recipes/new",
     icon: ChefHat,
-    color: "text-rose-500",
+    color: navigationColors.recipe,
   },
   {
     translationKey: "logWater",
     href: "/water",
     icon: Droplet,
-    color: "text-cyan-500",
+    color: navigationColors.water,
   },
   {
     translationKey: "logSleep",
     href: "/sleep",
     icon: Moon,
-    color: "text-indigo-500",
+    color: navigationColors.sleep,
   },
   {
     translationKey: "logMood",
     href: "/mood",
     icon: Smile,
-    color: "text-yellow-500",
+    color: navigationColors.mood,
   },
   {
     translationKey: "analytics",
     href: "/analytics",
     icon: Search,
-    color: "text-purple-500",
+    color: navigationColors.analytics,
   },
   {
     translationKey: "settings",
     href: "/settings",
     icon: Settings,
-    color: "text-gray-500",
+    color: navigationColors.settings,
   },
 ]
 

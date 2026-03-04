@@ -15,6 +15,7 @@ import {
   Target,
   Flame,
 } from "@/lib/icons"
+import { reminderPriorityColors } from "@/lib/theme-colors"
 
 // ============================================
 // FOOD CONFIGURATIONS
@@ -185,9 +186,13 @@ export const reminderTypes = (t: (key: string) => string) => [
 ]
 
 export const reminderPriorities = (t: (key: string) => string) => [
-  { value: "low", label: t("reminders.priorities.low"), color: "bg-blue-500" },
-  { value: "medium", label: t("reminders.priorities.medium"), color: "bg-yellow-500" },
-  { value: "high", label: t("reminders.priorities.high"), color: "bg-red-500" },
+  { value: "low", label: t("reminders.priorities.low"), color: reminderPriorityColors.low },
+  {
+    value: "medium",
+    label: t("reminders.priorities.medium"),
+    color: reminderPriorityColors.medium,
+  },
+  { value: "high", label: t("reminders.priorities.high"), color: reminderPriorityColors.high },
 ]
 
 export const reminderAdvanceOptions = (t: (key: string) => string) => [

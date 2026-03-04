@@ -14,7 +14,7 @@ import { PageActions, DeleteConfirmActions } from "@/components/shared/page-acti
 import { AddMeasurementDialog } from "@/components/dialogs/add-measurement-dialog"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import { cn } from "@/lib/utils"
-import { bodyColors } from "@/lib/theme-colors"
+import { bodyColors, bmiColors } from "@/lib/theme-colors"
 import type { BodyMeasurement, BodyMeasurementType } from "@/types"
 
 const measurementTypes: {
@@ -229,7 +229,7 @@ function BodyContent() {
             {bmi ? (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/10">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[oklch(0.72_0.26_295)]/10">
                     <Activity className={`h-7 w-7 ${bmi.color}`} />
                   </div>
                   <div>

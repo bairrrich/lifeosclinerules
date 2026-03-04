@@ -118,7 +118,7 @@ export default function RecipesPage() {
       case RecipeType.COCKTAIL:
         return recipeColors.cocktail.light
       default:
-        return "bg-gray-500/10 text-gray-500"
+        return "bg-[oklch(0.72_0.14_255)]/10 text-[oklch(0.58_0.18_255)]"
     }
   }
 
@@ -129,9 +129,9 @@ export default function RecipesPage() {
       case RecipeType.FOOD:
         return "data-[state=active]:bg-[oklch(0.76_0.28_68)] data-[state=active]:text-white"
       case RecipeType.DRINK:
-        return "data-[state=active]:bg-[oklch(0.70_0.30_208)] data-[state=active]:text-white"
+        return "data-[state=active]:bg-[oklch(0.70_0.30_218)] data-[state=active]:text-white"
       case RecipeType.COCKTAIL:
-        return "data-[state=active]:bg-[oklch(0.68_0.32_38)] data-[state=active]:text-white"
+        return "data-[state=active]:bg-[oklch(0.72_0.26_295)] data-[state=active]:text-white"
       default:
         return ""
     }

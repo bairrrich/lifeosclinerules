@@ -1085,3 +1085,66 @@ export function cnModuleIcon(module: ModuleType, extraClasses?: string) {
 export function getModuleByLogType(logType: string): ModuleType {
   return logTypeToModule[logType] || "logs"
 }
+
+// ============================================
+// NAVIGATION COLORS
+// ============================================
+
+/** Цвета для навигации и поиска (searchTypeConfig, quickActions) */
+export const navigationColors = {
+  food: "text-[oklch(0.76_0.28_68)]",
+  workout: "text-[oklch(0.70_0.30_218)]",
+  finance: "text-[oklch(0.73_0.28_145)]",
+  book: "text-[oklch(0.70_0.24_48)]",
+  recipe: "text-[oklch(0.80_0.30_58)]",
+  water: "text-[oklch(0.78_0.26_208)]",
+  sleep: "text-[oklch(0.66_0.28_278)]",
+  mood: "text-[oklch(0.74_0.31_312)]",
+  habit: "text-[oklch(0.68_0.34_38)]",
+  goal: "text-[oklch(0.74_0.27_118)]",
+  analytics: "text-[oklch(0.72_0.26_295)]",
+  settings: "text-[oklch(0.58_0.18_255)]",
+}
+
+// ============================================
+// BOOK STATUS COLORS (legacy support)
+// ============================================
+
+/** Цвета статусов книг для компонентов (legacy формат) */
+export const bookStatusColorsLegacy: Record<string, string> = {
+  planned: "bg-[oklch(0.72_0.14_255)]/10 text-[oklch(0.58_0.18_255)]",
+  reading: "bg-[oklch(0.70_0.30_218)]/10 text-[oklch(0.70_0.30_218)]",
+  completed: "bg-[oklch(0.74_0.30_138)]/10 text-[oklch(0.74_0.30_138)]",
+  paused: "bg-[oklch(0.80_0.28_90)]/10 text-[oklch(0.80_0.28_90)]",
+  dropped: "bg-[oklch(0.68_0.34_18)]/10 text-[oklch(0.68_0.34_18)]",
+}
+
+/** Цвета форматов книг для компонентов */
+export const bookFormatColors: Record<string, string> = {
+  paperback: "bg-[oklch(0.72_0.26_295)]/10 text-[oklch(0.72_0.26_295)]",
+  hardcover: "bg-[oklch(0.70_0.30_218)]/10 text-[oklch(0.70_0.30_218)]",
+  ebook: "bg-[oklch(0.74_0.30_138)]/10 text-[oklch(0.74_0.30_138)]",
+  audiobook: "bg-[oklch(0.74_0.31_312)]/10 text-[oklch(0.74_0.31_312)]",
+}
+
+// ============================================
+// RECIPE TYPE COLORS (legacy support)
+// ============================================
+
+/** Цвета типов рецептов для табов (legacy формат) */
+export const recipeTypeColorsLegacy: Record<string, string> = {
+  food: "data-[state=active]:bg-[oklch(0.76_0.28_68)] data-[state=active]:text-white",
+  drink: "data-[state=active]:bg-[oklch(0.70_0.30_218)] data-[state=active]:text-white",
+  cocktail: "data-[state=active]:bg-[oklch(0.72_0.26_295)] data-[state=active]:text-white",
+}
+
+// ============================================
+// REMINDER PRIORITY COLORS
+// ============================================
+
+/** Цвета приоритетов напоминаний */
+export const reminderPriorityColors: Record<string, string> = {
+  low: "bg-[oklch(0.70_0.30_218)]",
+  medium: "bg-[oklch(0.80_0.28_90)]",
+  high: "bg-[oklch(0.68_0.34_18)]",
+}
