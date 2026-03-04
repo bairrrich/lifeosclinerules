@@ -9,7 +9,7 @@ import {
   Utensils,
   Dumbbell,
   Wallet,
-  Droplets,
+  Droplet,
   Moon,
   Smile,
   BookOpen,
@@ -68,7 +68,7 @@ export function FAB() {
       action: "navigate" as const,
     },
     {
-      icon: <Droplets className="h-5 w-5" />,
+      icon: <Droplet className="h-5 w-5" />,
       label: t("water"),
       href: "/water?add=true",
       module: "water",
