@@ -89,6 +89,11 @@
   },
   "select": "Выбрать",
   "notes": "Заметки",
+  "reminders": {
+    "snooze": "Через 5 мин",
+    "dismiss": "Отклонить",
+    "complete": "Выполнено"
+  },
   "addDialog": {
     "addLog": "Добавить запись",
     "addCatalog": "Добавить в каталог",

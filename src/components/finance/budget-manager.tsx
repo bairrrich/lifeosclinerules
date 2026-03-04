@@ -44,13 +44,24 @@ export function BudgetManager() {
         db.logs.where("type").equals("finance").toArray(),
       ])
 
-      // Фильтруем категории для финансов
-      const financeCategories = allCategories.filter((c) => c.type === "finance")
-      setCategories(financeCategories)
+      // Фильтруем категории для финансов (только расходы и переводы)
+      const financeCategories = allCategories.filter(
+        (c) =>
+          c.type === "finance" && (c.finance_type === "expense" || c.finance_type === "transfer")
+      )
+
+      // Сортируем категории по типу (сначала расходы, потом переводы)
+      const sortedCategories = financeCategories.sort((a, b) => {
+        if (a.finance_type === "expense" && b.finance_type === "transfer") return -1
+        if (a.finance_type === "transfer" && b.finance_type === "expense") return 1
+        return a.name.localeCompare(b.name)
+      })
+
+      setCategories(sortedCategories)
 
       // Загружаем локализованные названия категорий
       const localizedNames: Record<string, string> = {}
-      for (const category of financeCategories) {
+      for (const category of sortedCategories) {
         try {
           const localizedName = await getLocalizedEntityName(
             "category",

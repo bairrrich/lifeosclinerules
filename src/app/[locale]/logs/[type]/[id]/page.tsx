@@ -297,32 +297,41 @@ export default function LogDetailPage() {
       const m = logData.metadata as FinanceMetadata
       const items: { label: string; value: string }[] = []
 
-      items.push({ label: t("finance.type"), value: t(`finance.types.${m.finance_type}`) })
+      // Строка 1: Тип операции
+      items.push({
+        label: t("finance.type"),
+        value: t(`finance.types.${m.finance_type}`),
+      })
 
-      // Для подкатегорий, товаров и поставщиков используем статические переводы
-      // т.к. это ключи из financeCategoriesStructure, а не ID из БД
+      // Строка 2: Поставщик
+      if (m.supplier) {
+        items.push({
+          label: t("finance.supplier"),
+          value: getStaticEntityTranslation("financeSuppliers", m.supplier, locale),
+        })
+      }
+
+      // Строка 3: Категория
       if (m.category) {
         items.push({
           label: t("finance.category"),
           value: getStaticEntityTranslation("categories", m.category, locale, "finance"),
         })
       }
+
+      // Строка 4: Подкатегория
       if (m.subcategory) {
         items.push({
           label: t("finance.subcategory"),
           value: getStaticEntityTranslation("financeSubcategories", m.subcategory, locale),
         })
       }
+
+      // Строка 5: Товар/услуга
       if (m.item) {
         items.push({
           label: t("finance.item"),
           value: getStaticEntityTranslation("financeSubcategories", m.item, locale),
-        })
-      }
-      if (m.supplier) {
-        items.push({
-          label: t("finance.supplier"),
-          value: getStaticEntityTranslation("financeSuppliers", m.supplier, locale),
         })
       }
 
@@ -681,12 +690,6 @@ export default function LogDetailPage() {
   return (
     <AppLayout title={typeLabels[type]}>
       <div className="container mx-auto px-4 py-6 space-y-4">
-        {/* Back Button */}
-        <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {tCommon("back")}
-        </Button>
-
         {/* Summary Card */}
         <Card>
           <CardHeader className="pb-2">
@@ -715,17 +718,23 @@ export default function LogDetailPage() {
                 </div>
               )}
               {log.value !== undefined && (
-                <div>
+                <div className="col-span-2">
                   <p className="text-sm text-muted-foreground">
                     {type === "finance" ? t("finance.amount") : t("fields.value")}
                   </p>
-                  <p className="font-medium">{log.value}</p>
-                </div>
-              )}
-              {category && (
-                <div>
-                  <p className="text-sm text-muted-foreground">{t("fields.category")}</p>
-                  <p className="font-medium">{localizedCategoryName || category.name}</p>
+                  <p
+                    className={`font-bold text-center text-[32px] ${
+                      type === "finance" && log.metadata
+                        ? (log.metadata as any).finance_type === "income"
+                          ? "text-[oklch(0.74_0.30_138)]"
+                          : (log.metadata as any).finance_type === "expense"
+                            ? "text-destructive"
+                            : "text-[oklch(0.65_0.25_260)]" // Синий для переводов
+                        : ""
+                    }`}
+                  >
+                    {type === "finance" ? `${log.value.toLocaleString()} ₽` : log.value}
+                  </p>
                 </div>
               )}
             </div>
@@ -756,27 +765,15 @@ export default function LogDetailPage() {
 
           <TabsContent value="notes" className="mt-4">
             <Card>
-              <CardContent className="p-4">
+              <CardContent className="p-4 space-y-4">
                 {log.notes ? (
-                  <p className="whitespace-pre-wrap">{log.notes}</p>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">{t("fields.notes")}</p>
+                    <p className="whitespace-pre-wrap">{log.notes}</p>
+                  </div>
                 ) : (
                   <p className="text-muted-foreground">{tCommon("noData")}</p>
                 )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="info" className="mt-4">
-            <Card>
-              <CardContent className="p-4 space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">{tCommon("createdAt")}</p>
-                  <p>{formatDate(log.created_at)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{tCommon("updatedAt")}</p>
-                  <p>{formatDate(log.updated_at)}</p>
-                </div>
                 {log.tags && log.tags.length > 0 && (
                   <div>
                     <p className="text-sm text-muted-foreground mb-2">{t("fields.tags")}</p>
@@ -793,21 +790,48 @@ export default function LogDetailPage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="info" className="mt-4">
+            <Card>
+              <CardContent className="p-4 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{tCommon("createdAt")}</p>
+                    <p>{formatDate(log.created_at)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{tCommon("updatedAt")}</p>
+                    <p>{formatDate(log.updated_at)}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Actions */}
-        <div className="grid grid-cols-3 gap-2">
-          <Button variant="destructive" onClick={() => setShowDeleteDialog(true)}>
+        <div className="flex gap-2">
+          <Button variant="destructive" size="icon" onClick={() => setShowDeleteDialog(true)}>
             <Trash2 className="h-4 w-4" />
           </Button>
-          <Button variant="outline" onClick={handleCopy}>
-            <Copy className="h-4 w-4 mr-2" />
-            {tCommon("copy")}
+          <Link href="/logs" className="sm:w-[160px] w-[44px]">
+            <Button variant="outline" className="w-full hover:!bg-primary/10">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">{tCommon("back")}</span>
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            onClick={handleCopy}
+            className="sm:w-[160px] w-[44px] hover:!bg-primary/10"
+          >
+            <Copy className="h-4 w-4" />
+            <span className="hidden sm:inline ml-2">{tCommon("copy")}</span>
           </Button>
-          <Link href={`/logs/${type}/${id}/edit`}>
-            <Button className="w-full">
-              <Pencil className="h-4 w-4 mr-2" />
-              {tCommon("edit")}
+          <Link href={`/logs/${type}/${id}/edit`} className="sm:w-[160px] flex-1">
+            <Button variant="outline" className="w-full hover:!bg-primary/10">
+              <Pencil className="h-4 w-4" />
+              <span className="ml-2">{tCommon("edit")}</span>
             </Button>
           </Link>
         </div>

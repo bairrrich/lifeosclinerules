@@ -99,6 +99,7 @@ const workoutSchema = baseLogSchema.extend({
 const financeSchema = baseLogSchema.extend({
   finance_type: z.enum(["income", "expense", "transfer"]),
   account_id: z.string().optional(),
+  target_account_id: z.string().optional(),
 })
 
 type FormData =
@@ -124,11 +125,46 @@ export default function NewLogPage() {
   const [targetAccountId, setTargetAccountId] = useState<string>("")
   const [workoutIntensity, setWorkoutIntensity] = useState<string>("")
 
-  // Состояния для зависимых списков финансов
-  const [financeCategory, setFinanceCategory] = useState("")
-  const [financeSubcategory, setFinanceSubcategory] = useState("")
-  const [financeItem, setFinanceItem] = useState("")
-  const [financeSupplier, setFinanceSupplier] = useState("")
+  // Состояния для зависимых списков финансов (храним для каждого типа отдельно)
+  const [financeValues, setFinanceValues] = useState({
+    income: { category: "", subcategory: "", item: "", supplier: "" },
+    expense: { category: "", subcategory: "", item: "", supplier: "" },
+    transfer: { category: "", subcategory: "", item: "", supplier: "" },
+  })
+
+  const financeCategory = financeValues[financeType as "income" | "expense" | "transfer"].category
+  const financeSubcategory =
+    financeValues[financeType as "income" | "expense" | "transfer"].subcategory
+  const financeItem = financeValues[financeType as "income" | "expense" | "transfer"].item
+  const financeSupplier = financeValues[financeType as "income" | "expense" | "transfer"].supplier
+
+  const setFinanceCategory = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: { ...prev[financeType as "income" | "expense" | "transfer"], category: value },
+    }))
+  }
+  const setFinanceSubcategory = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: {
+        ...prev[financeType as "income" | "expense" | "transfer"],
+        subcategory: value,
+      },
+    }))
+  }
+  const setFinanceItem = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: { ...prev[financeType as "income" | "expense" | "transfer"], item: value },
+    }))
+  }
+  const setFinanceSupplier = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: { ...prev[financeType as "income" | "expense" | "transfer"], supplier: value },
+    }))
+  }
 
   // Ошибки валидации
   const [categoryError, setCategoryError] = useState("")
@@ -198,6 +234,18 @@ export default function NewLogPage() {
     }
   }, [financeCategory, categories, type, setValue])
 
+  // Функция для получения последней использованной категории
+  const getLastUsedCategory = (financeType: string): string => {
+    const key = `last_finance_category_${financeType}`
+    return localStorage.getItem(key) || ""
+  }
+
+  // Функция для сохранения последней использованной категории
+  const saveLastUsedCategory = (financeType: string, category: string) => {
+    const key = `last_finance_category_${financeType}`
+    localStorage.setItem(key, category)
+  }
+
   useEffect(() => {
     async function loadData() {
       await initializeDatabase()
@@ -220,8 +268,38 @@ export default function NewLogPage() {
       setCategories(cats)
 
       if (cats.length > 0) {
-        setSelectedCategoryId(cats[0].id)
-        setValue("category_id", cats[0].id)
+        // Определяем категорию по умолчанию
+        let defaultCategory = ""
+
+        // Проверяем последнюю использованную категорию для текущего типа
+        const lastCategory = getLastUsedCategory(financeType)
+        if (lastCategory && cats.some((c) => c.name === lastCategory)) {
+          defaultCategory = lastCategory
+        } else {
+          // Дефолтные категории для первого использования
+          if (financeType === "income") defaultCategory = "salary"
+          else if (financeType === "expense") defaultCategory = "product"
+          else if (financeType === "transfer") defaultCategory = "transfer"
+
+          // Проверяем, есть ли такая категория в списке
+          if (!cats.some((c) => c.name === defaultCategory)) {
+            defaultCategory = cats[0].name
+          }
+        }
+
+        const category = cats.find((c) => c.name === defaultCategory)
+        if (category) {
+          setSelectedCategoryId(category.id)
+          setValue("category_id", category.id)
+          // Обновляем financeValues для текущего типа
+          setFinanceValues((prev) => ({
+            ...prev,
+            [financeType]: {
+              ...prev[financeType as "income" | "expense" | "transfer"],
+              category: defaultCategory,
+            },
+          }))
+        }
       }
 
       // Загружаем аккаунты для финансов
@@ -231,11 +309,68 @@ export default function NewLogPage() {
         if (accs.length > 0) {
           setSelectedAccountId(accs[0].id)
           setValue("account_id", accs[0].id)
+
+          // Для переводов устанавливаем целевой аккаунт по умолчанию (второй аккаунт или cash)
+          if (financeType === "transfer" && accs.length > 1) {
+            // Ищем аккаунт "cash" или используем второй по списку
+            const cashAccount = accs.find((acc) => acc.type === "cash")
+            const targetAcc = cashAccount || accs[1]
+            setTargetAccountId(targetAcc.id)
+            setValue("target_account_id", targetAcc.id)
+          }
+
+          // Для переводов устанавливаем подкатегорию "toCash" по умолчанию
+          if (financeType === "transfer") {
+            setFinanceValues((prev) => ({
+              ...prev,
+              [financeType]: {
+                ...prev[financeType as "income" | "expense" | "transfer"],
+                subcategory: "toCash",
+              },
+            }))
+          }
         }
       }
     }
     loadData()
-  }, [type])
+  }, [type]) // Убираем financeType из зависимостей
+
+  // Обработка смены типа финансов - установка категории для нового типа
+  useEffect(() => {
+    if (type === "finance" && categories.length > 0) {
+      // Проверяем, есть ли сохранённая категория для этого типа в financeValues
+      const savedCategory = financeValues[financeType as "income" | "expense" | "transfer"].category
+
+      if (savedCategory) {
+        // Используем сохранённую категорию
+        const category = categories.find((c) => c.name === savedCategory)
+        if (category) {
+          setSelectedCategoryId(category.id)
+          setValue("category_id", category.id)
+        }
+      } else {
+        // Определяем дефолтную категорию для типа
+        let defaultCategory = ""
+        if (financeType === "income") defaultCategory = "salary"
+        else if (financeType === "expense") defaultCategory = "product"
+        else if (financeType === "transfer") defaultCategory = "transfer"
+
+        const category = categories.find((c) => c.name === defaultCategory)
+        if (category) {
+          setSelectedCategoryId(category.id)
+          setValue("category_id", category.id)
+          // Сохраняем в financeValues
+          setFinanceValues((prev) => ({
+            ...prev,
+            [financeType]: {
+              ...prev[financeType as "income" | "expense" | "transfer"],
+              category: defaultCategory,
+            },
+          }))
+        }
+      }
+    }
+  }, [financeType, type, categories])
 
   const onSubmit = async (data: FormData) => {
     // Для финансов проверяем обязательные поля
@@ -251,6 +386,12 @@ export default function NewLogPage() {
         return
       }
       setAccountError("")
+
+      // Для переводов проверяем, чтобы аккаунты не совпадали
+      if (financeType === "transfer" && targetAccountId && selectedAccountId === targetAccountId) {
+        setAccountError(t("finance.sameAccount"))
+        return
+      }
     }
 
     // Проверяем единицу измерения если указано количество
@@ -370,6 +511,11 @@ export default function NewLogPage() {
         ...baseData,
         metadata,
       } as Partial<Log>)
+
+      // Сохраняем последнюю использованную категорию для финансов
+      if (type === "finance" && financeCategory) {
+        saveLastUsedCategory(financeType, financeCategory)
+      }
 
       // Создаём напоминание если нужно
       if (createReminder && (type === "food" || type === "workout")) {
@@ -566,14 +712,26 @@ export default function NewLogPage() {
                   <Tabs
                     value={financeType}
                     onValueChange={(value) => {
+                      // Сохраняем текущую категорию для текущего типа перед переключением
+                      if (financeCategory) {
+                        saveLastUsedCategory(financeType, financeCategory)
+                      }
+
                       setFinanceType(value)
                       setValue("finance_type", value as "income" | "expense" | "transfer")
-                      // Сбрасываем все зависимые поля при смене типа
-                      setFinanceCategory("")
-                      setFinanceSubcategory("")
-                      setFinanceItem("")
-                      setFinanceSupplier("")
-                      setTargetAccountId("")
+
+                      // При смене типа на transfer устанавливаем целевой аккаунт
+                      if (value === "transfer" && accounts.length > 1) {
+                        const cashAccount = accounts.find((acc) => acc.type === "cash")
+                        const targetAcc = cashAccount || accounts[1]
+                        setTargetAccountId(targetAcc.id)
+                        setValue("target_account_id", targetAcc.id)
+                      } else if (value !== "transfer") {
+                        // Сбрасываем targetAccountId для income и expense
+                        setTargetAccountId("")
+                        setValue("target_account_id", "")
+                      }
+                      // Остальные значения сохраняются для каждого типа в financeValues
                     }}
                   >
                     <TabsList className="grid grid-cols-3">

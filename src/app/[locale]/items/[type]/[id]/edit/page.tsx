@@ -597,7 +597,7 @@ export default function EditItemPage() {
 
           <FormActions
             type="page"
-            onCancel={() => router.back()}
+            onCancel={() => router.push(`/items/${type}/${id}`)}
             onSave={handleSubmit(onSubmit)}
             isSaving={isSaving}
           />

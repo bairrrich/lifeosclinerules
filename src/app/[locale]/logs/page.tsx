@@ -284,7 +284,17 @@ export default function LogsPage() {
                                 </p>
                               </div>
                               {log.value !== undefined && (
-                                <div className="text-sm font-medium">
+                                <div
+                                  className={`text-sm font-medium ${
+                                    log.type === "finance" && log.metadata
+                                      ? (log.metadata as any).finance_type === "income"
+                                        ? "text-[oklch(0.74_0.30_138)]"
+                                        : (log.metadata as any).finance_type === "expense"
+                                          ? "text-destructive"
+                                          : "text-[oklch(0.65_0.25_260)]"
+                                      : ""
+                                  }`}
+                                >
                                   {log.type === "finance"
                                     ? `${log.value.toLocaleString()} ₽`
                                     : log.value}

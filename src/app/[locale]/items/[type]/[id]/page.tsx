@@ -13,6 +13,7 @@ import {
   AlertTriangle,
   Bell,
   Plus,
+  Copy,
 } from "@/lib/icons"
 import { useTranslations, useLocale } from "next-intl"
 import { AppLayout } from "@/components/layout/app-layout"
@@ -68,6 +69,7 @@ export default function ItemDetailPage() {
   const type = params.type as ItemType
   const id = params.id as string
   const t = useTranslations("items")
+  const tCommon = useTranslations("common")
   const locale = useLocale()
   const dateFnsLocale = locale === "ru" ? ru : enUS
 
@@ -101,6 +103,29 @@ export default function ItemDetailPage() {
       router.push("/items")
     } catch (error) {
       console.error("Failed to delete item:", error)
+    }
+  }
+
+  const handleCopy = async () => {
+    if (!item) return
+    try {
+      await navigator.clipboard.writeText(
+        JSON.stringify(
+          {
+            name: item.name,
+            category: item.category,
+            description: item.description,
+            dosage: item.dosage,
+            usage: item.usage,
+            manufacturer: item.manufacturer,
+            tags: item.tags,
+          },
+          null,
+          2
+        )
+      )
+    } catch (error) {
+      console.error("Failed to copy item:", error)
     }
   }
 
@@ -178,12 +203,6 @@ export default function ItemDetailPage() {
   return (
     <AppLayout title={typeLabels[type]}>
       <div className="container mx-auto px-4 py-6 space-y-4">
-        {/* Back Button */}
-        <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t("detail.back")}
-        </Button>
-
         {/* Summary Card */}
         <Card>
           <CardHeader className="pb-2">
@@ -344,19 +363,28 @@ export default function ItemDetailPage() {
         </Card>
 
         {/* Actions */}
-        <div className="flex gap-4">
-          <Button
-            variant="destructive"
-            className="flex-1"
-            onClick={() => setShowDeleteDialog(true)}
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            {t("detail.delete")}
+        <div className="flex gap-2">
+          <Button variant="destructive" size="icon" onClick={() => setShowDeleteDialog(true)}>
+            <Trash2 className="h-4 w-4" />
           </Button>
-          <Link href={`/items/${type}/${id}/edit`} className="flex-1">
-            <Button className="w-full">
-              <Pencil className="h-4 w-4 mr-2" />
-              {t("detail.edit")}
+          <Link href="/items" className="sm:w-[160px] w-[44px]">
+            <Button variant="outline" className="w-full hover:!bg-primary/10">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">{tCommon("back")}</span>
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            onClick={handleCopy}
+            className="sm:w-[160px] w-[44px] hover:!bg-primary/10"
+          >
+            <Copy className="h-4 w-4" />
+            <span className="hidden sm:inline ml-2">{tCommon("copy")}</span>
+          </Button>
+          <Link href={`/items/${type}/${id}/edit`} className="sm:w-[160px] flex-1">
+            <Button variant="outline" className="w-full hover:!bg-primary/10">
+              <Pencil className="h-4 w-4" />
+              <span className="ml-2">{t("detail.edit")}</span>
             </Button>
           </Link>
         </div>

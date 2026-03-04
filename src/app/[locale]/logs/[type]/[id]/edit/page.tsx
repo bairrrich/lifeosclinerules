@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { EditActions } from "@/components/shared/edit-actions"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "@/lib/icons"
@@ -137,16 +138,52 @@ export default function EditLogPage() {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [log, setLog] = useState<Log | null>(null)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("")
   const [financeType, setFinanceType] = useState<string>("expense")
   const [selectedAccountId, setSelectedAccountId] = useState<string>("")
   const [targetAccountId, setTargetAccountId] = useState<string>("")
 
-  // Состояния для зависимых списков финансов
-  const [financeCategory, setFinanceCategory] = useState("")
-  const [financeSubcategory, setFinanceSubcategory] = useState("")
-  const [financeItem, setFinanceItem] = useState("")
-  const [financeSupplier, setFinanceSupplier] = useState("")
+  // Состояния для зависимых списков финансов (храним для каждого типа отдельно)
+  const [financeValues, setFinanceValues] = useState({
+    income: { category: "", subcategory: "", item: "", supplier: "" },
+    expense: { category: "", subcategory: "", item: "", supplier: "" },
+    transfer: { category: "", subcategory: "", item: "", supplier: "" },
+  })
+
+  const financeCategory = financeValues[financeType as "income" | "expense" | "transfer"].category
+  const financeSubcategory =
+    financeValues[financeType as "income" | "expense" | "transfer"].subcategory
+  const financeItem = financeValues[financeType as "income" | "expense" | "transfer"].item
+  const financeSupplier = financeValues[financeType as "income" | "expense" | "transfer"].supplier
+
+  const setFinanceCategory = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: { ...prev[financeType as "income" | "expense" | "transfer"], category: value },
+    }))
+  }
+  const setFinanceSubcategory = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: {
+        ...prev[financeType as "income" | "expense" | "transfer"],
+        subcategory: value,
+      },
+    }))
+  }
+  const setFinanceItem = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: { ...prev[financeType as "income" | "expense" | "transfer"], item: value },
+    }))
+  }
+  const setFinanceSupplier = (value: string) => {
+    setFinanceValues((prev) => ({
+      ...prev,
+      [financeType]: { ...prev[financeType as "income" | "expense" | "transfer"], supplier: value },
+    }))
+  }
 
   // Состояния для тренировок
   const [workoutSubcategory, setWorkoutSubcategory] = useState<string>("")
@@ -229,6 +266,7 @@ export default function EditLogPage() {
 
         setCategories(sortedCats)
         setAccounts(accs)
+        setLog(log || null)
 
         if (log) {
           // Парсим дату и время из ISO-строки
@@ -422,11 +460,21 @@ export default function EditLogPage() {
         metadata,
       } as Partial<Log>)
 
-      router.push(`/logs/${type}/${id}`)
+      router.replace(`/logs/${type}/${id}`)
     } catch (error) {
       console.error("Failed to update log:", error)
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!log) return
+    try {
+      await db.logs.delete(log.id)
+      router.push(`/logs/${type}`)
+    } catch (error) {
+      console.error("Failed to delete log:", error)
     }
   }
 
@@ -535,11 +583,11 @@ export default function EditLogPage() {
                     onValueChange={(value) => {
                       setFinanceType(value)
                       setValue("finance_type", value as "income" | "expense" | "transfer")
-                      setFinanceCategory("")
-                      setFinanceSubcategory("")
-                      setFinanceItem("")
-                      setFinanceSupplier("")
-                      setTargetAccountId("")
+                      // При смене типа сбрасываем только targetAccountId для transfer
+                      if (value !== "transfer") {
+                        setTargetAccountId("")
+                      }
+                      // Остальные значения сохраняются для каждого типа в financeValues
                     }}
                   >
                     <TabsList className="grid grid-cols-3">
@@ -660,21 +708,16 @@ export default function EditLogPage() {
           </Card>
 
           {/* Actions */}
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              className="flex-1"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("edit.cancel")}
-            </Button>
-            <Button type="submit" disabled={isSaving} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              {isSaving ? t("edit.saving") : t("edit.save")}
-            </Button>
-          </div>
+          <EditActions
+            id={id}
+            type={type}
+            title={log?.title}
+            isSaving={isSaving}
+            onSave={handleSubmit(onSubmit)}
+            onDelete={handleDelete}
+            isInForm={true}
+            pathPrefix="logs"
+          />
         </form>
       </div>
     </AppLayout>

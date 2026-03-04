@@ -377,7 +377,7 @@ export function FinanceForm({
           <Combobox
             options={accounts.map((acc) => ({
               id: acc.id,
-              label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${acc.balance.toLocaleString()} ${acc.currency}`,
+              label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${(acc.balance || 0).toLocaleString()} ${acc.currency}`,
             }))}
             value={selectedAccountId}
             onChange={(value) => {
@@ -399,7 +399,7 @@ export function FinanceForm({
           <Combobox
             options={accounts.map((acc) => ({
               id: acc.id,
-              label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${acc.balance.toLocaleString()} ${acc.currency}`,
+              label: `${getAccountTypeIcon(acc.type)} ${acc.name} • ${(acc.balance || 0).toLocaleString()} ${acc.currency}`,
             }))}
             value={targetAccountId}
             onChange={(value) => {

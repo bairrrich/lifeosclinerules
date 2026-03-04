@@ -89,6 +89,11 @@
   },
   "select": "Select",
   "notes": "Notes",
+  "reminders": {
+    "snooze": "In 5 min",
+    "dismiss": "Dismiss",
+    "complete": "Complete"
+  },
   "addDialog": {
     "addLog": "Add log",
     "addCatalog": "Add to catalog",
