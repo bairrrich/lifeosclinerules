@@ -245,7 +245,7 @@ export function PageActions({
 
   // Режим диалога (dialog)
   return (
-    <div className="flex justify-start gap-2">
+    <div className="flex justify-center gap-2">
       {showDelete && (
         <Button
           type="button"
@@ -261,17 +261,18 @@ export function PageActions({
         <Button
           type="button"
           variant="outline"
-          size="icon"
           onClick={onCancel}
-          className="sm:w-[160px] w-[44px] h-[44px] hover:!bg-primary/10"
+          disabled={isSaving}
+          className="w-[160px] h-[44px] hover:!bg-primary/10"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span className="hidden sm:inline ml-2">{cancelLabel}</span>
+          <span className="ml-2">{cancelLabel}</span>
         </Button>
         {onSimpleSave || onSave ? (
           <Button
             type="button"
             variant="outline"
+            onClick={onSimpleSave || onSave}
             disabled={isSaving}
             className="w-[160px] h-[44px] hover:!bg-primary/10"
           >

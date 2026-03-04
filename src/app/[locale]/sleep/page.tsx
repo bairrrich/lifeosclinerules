@@ -7,16 +7,24 @@ import { Moon, Plus, Settings } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { format } from "date-fns"
 import { ru, enUS } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
+import { AddSleepDialog } from "@/components/dialogs/add-sleep-dialog"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import type { SleepLog } from "@/types"
 import { moduleColors, priorityColors, sleepColors } from "@/lib/theme-colors"
@@ -103,23 +111,6 @@ function SleepContent() {
     }
 
     return endMinutes - startMinutes
-  }
-
-  async function addSleepLog() {
-    const duration = calculateDuration(formData.start_time, formData.end_time)
-
-    await createEntity(db.sleepLogs, {
-      date: formData.date,
-      start_time: formData.start_time,
-      end_time: formData.end_time,
-      duration_min: duration,
-      quality: formData.quality,
-      notes: formData.notes || undefined,
-    })
-
-    setIsAddDialogOpen(false)
-    resetForm()
-    loadData()
   }
 
   async function updateSleepLog() {
@@ -337,106 +328,11 @@ function SleepContent() {
         </div>
 
         {/* Add Dialog */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t("dialogs.addTitle")}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="date">{t("dialogs.dateLabel")}</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !formData.date && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.date ? (
-                        format(new Date(formData.date), "LLL dd, y", { locale: dateFnsLocale })
-                      ) : (
-                        <span>{t("dialogs.dateLabel")}</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" side="bottom" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={formData.date ? new Date(formData.date) : undefined}
-                      onSelect={(date) =>
-                        setFormData({ ...formData, date: date ? format(date, "yyyy-MM-dd") : "" })
-                      }
-                      initialFocus
-                      locale={dateFnsLocale}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="start">{t("dialogs.bedtimeLabel")}</Label>
-                  <Input
-                    id="start"
-                    type="time"
-                    value={formData.start_time}
-                    onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="end">{t("dialogs.wakeTimeLabel")}</Label>
-                  <Input
-                    id="end"
-                    type="time"
-                    value={formData.end_time}
-                    onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>{t("dialogs.qualityLabel")}</Label>
-                <div className="flex gap-2">
-                  {([1, 2, 3, 4, 5] as const).map((q) => (
-                    <Button
-                      key={q}
-                      variant={formData.quality === q ? "default" : "outline"}
-                      onClick={() => setFormData({ ...formData, quality: q })}
-                      className="flex-1"
-                    >
-                      {q}
-                    </Button>
-                  ))}
-                </div>
-                <p className="text-sm text-muted-foreground text-center">
-                  {t(`quality.${qualityLabels[formData.quality]}`)}
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="notes">{t("dialogs.notesLabel")}</Label>
-                <Input
-                  id="notes"
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder={t("dialogs.notesPlaceholder")}
-                />
-              </div>
-
-              <div className="text-center text-muted-foreground">
-                {t("dialogs.duration")}:{" "}
-                {formatDuration(calculateDuration(formData.start_time, formData.end_time))}
-              </div>
-            </div>
-            <PageActions
-              variant="dialog"
-              onCancel={() => setIsAddDialogOpen(false)}
-              onSimpleSave={addSleepLog}
-            />
-          </DialogContent>
-        </Dialog>
+        <AddSleepDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+          onSuccess={() => {}}
+        />
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

@@ -93,7 +93,16 @@
     "title": "Reminders",
     "snooze": "In 5 min",
     "dismiss": "Dismiss",
-    "complete": "Complete"
+    "complete": "Complete",
+    "daysOfWeek": {
+      "su": "Sun",
+      "mo": "Mon",
+      "tu": "Tue",
+      "we": "Wed",
+      "th": "Thu",
+      "fr": "Fri",
+      "sa": "Sat"
+    }
   },
   "addDialog": {
     "addLog": "Add log",

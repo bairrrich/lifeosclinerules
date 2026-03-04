@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
+import { AddReminderDialog } from "@/components/dialogs/add-reminder-dialog"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
@@ -522,21 +523,11 @@ function RemindersContent() {
         )}
 
         {/* Add Dialog */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="text-base sm:text-lg">{t("dialogs.newTitle")}</DialogTitle>
-            </DialogHeader>
-            <div className="mt-4 overflow-x-hidden">
-              <ReminderForm formData={formData} setFormData={setFormData} />
-            </div>
-            <PageActions
-              variant="dialog"
-              onCancel={() => setIsAddDialogOpen(false)}
-              onSimpleSave={addReminder}
-            />
-          </DialogContent>
-        </Dialog>
+        <AddReminderDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+          onSuccess={() => {}}
+        />
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

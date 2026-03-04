@@ -82,7 +82,11 @@
     "editTitle": "Edit Reminder",
     "deleteTitle": "Delete Reminder?",
     "deleteConfirm": "Are you sure you want to delete reminder \"{title}\"? This action cannot be undone.",
-    "statsTitle": "Stats: {title}"
+    "statsTitle": "Stats: {title}",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g., Take vitamins",
+    "timeLabel": "Time",
+    "daysLabel": "Days of week"
   },
   "statsLabels": {
     "streak": "Streak",

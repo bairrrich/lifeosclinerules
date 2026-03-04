@@ -29,6 +29,13 @@
     "weekly": "Еженедельно",
     "custom": "Произвольная"
   },
+  "dialogs": {
+    "addTitle": "Новая привычка",
+    "nameLabel": "Название привычки",
+    "namePlaceholder": "Например, Утренняя зарядка",
+    "frequencyLabel": "Частота",
+    "startDateLabel": "Дата начала"
+  },
   "today": "Сегодня",
   "completed": "Выполнено",
   "skipped": "Пропущено",

@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
+import { AddGoalDialog } from "@/components/dialogs/add-goal-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -311,114 +312,11 @@ function GoalsContent() {
         )}
 
         {/* Add Dialog */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent
-            className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden"
-            aria-label={t("addGoal")}
-          >
-            <DialogHeader>
-              <DialogTitle>{t("addGoal")}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label>{t("fields.type")}</Label>
-                <Tabs value={formData.type} onValueChange={(v) => handleTypeChange(v as GoalType)}>
-                  <TabsList className="grid grid-cols-4 h-auto">
-                    {allGoalTypes.map((type) => (
-                      <TabsTrigger key={type} value={type} className="text-lg py-2">
-                        {goalConfig[type]?.icon}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                </Tabs>
-                <p className="text-sm text-muted-foreground text-center">
-                  {t(`types.${formData.type}`)}
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="name">{t("fields.name")}</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder={t("placeholders.caloriesPerDay")}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="target">{t("fields.targetValue")}</Label>
-                  <Input
-                    id="target"
-                    type="number"
-                    min="0"
-                    value={formData.target_value || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        target_value: Math.max(0, Number(e.target.value)),
-                      })
-                    }
-                    onKeyPress={(e) => {
-                      if (!/[0-9.]/.test(e.key)) {
-                        e.preventDefault()
-                      }
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t("fields.unit")}</Label>
-                  <div className="relative">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                      onClick={() => setIsUnitSelectOpen(!isUnitSelectOpen)}
-                    >
-                      {formData.unit}
-                      <ChevronDown className="h-4 w-4 ml-2" />
-                    </Button>
-                    {isUnitSelectOpen && (
-                      <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border rounded-md shadow-lg">
-                        {availableUnits.map((unit) => (
-                          <button
-                            key={unit}
-                            className="w-full px-3 py-2 text-left hover:bg-accent"
-                            onClick={() => {
-                              setFormData({ ...formData, unit })
-                              setIsUnitSelectOpen(false)
-                            }}
-                          >
-                            {unit}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>{t("fields.period")}</Label>
-                <Tabs
-                  value={formData.period}
-                  onValueChange={(v) => setFormData({ ...formData, period: v as GoalPeriod })}
-                >
-                  <TabsList className="grid grid-cols-3">
-                    <TabsTrigger value="daily">{t("periods.daily")}</TabsTrigger>
-                    <TabsTrigger value="weekly">{t("periods.weekly")}</TabsTrigger>
-                    <TabsTrigger value="monthly">{t("periods.monthly")}</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
-            </div>
-            <PageActions
-              variant="dialog"
-              onCancel={() => setIsAddDialogOpen(false)}
-              onSimpleSave={saveGoal}
-            />
-          </DialogContent>
-        </Dialog>
+        <AddGoalDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+          onSuccess={() => {}}
+        />
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

@@ -29,6 +29,13 @@
     "weekly": "Weekly",
     "custom": "Custom"
   },
+  "dialogs": {
+    "addTitle": "New Habit",
+    "nameLabel": "Habit Name",
+    "namePlaceholder": "e.g., Morning exercise",
+    "frequencyLabel": "Frequency",
+    "startDateLabel": "Start Date"
+  },
   "today": "Today",
   "completed": "Completed",
   "skipped": "Skipped",

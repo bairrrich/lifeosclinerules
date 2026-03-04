@@ -25,7 +25,7 @@ import {
   HeartPulse,
 } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
-import { QuickMoodDialog } from "./quick-mood-dialog"
+import { AddMoodDialog } from "../dialogs/add-mood-dialog"
 import { moduleColors, itemColors, fabColor, type ModuleType } from "@/lib/theme-colors"
 import { cn } from "@/lib/utils"
 import type { ItemType } from "@/types"
@@ -238,7 +238,7 @@ export function FAB() {
       </div>
 
       {/* Quick Mood Dialog */}
-      <QuickMoodDialog open={isMoodDialogOpen} onOpenChange={setIsMoodDialogOpen} />
+      <AddMoodDialog open={isMoodDialogOpen} onOpenChange={setIsMoodDialogOpen} />
     </>
   )
 }

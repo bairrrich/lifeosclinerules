@@ -39,6 +39,10 @@
     "weekly": "В неделю",
     "monthly": "В месяц"
   },
+  "dialogs": {
+    "addTitle": "Новая цель",
+    "typeLabel": "Тип цели"
+  },
   "progress": "Прогресс",
   "completed": "Выполнено",
   "completedToday": "Выполнено сегодня",

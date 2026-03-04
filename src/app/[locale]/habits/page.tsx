@@ -18,6 +18,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
+import { AddHabitDialog } from "@/components/dialogs/add-habit-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
@@ -554,167 +555,11 @@ function HabitsContent() {
         )}
 
         {/* Add Dialog */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent className="w-full sm:max-w-md max-h-[85vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
-            <DialogHeader>
-              <DialogTitle>{t("addHabit")}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4 overflow-x-hidden">
-              <div className="space-y-2">
-                <Label htmlFor="name">{t("fields.name")}</Label>
-                <Input
-                  id="name"
-                  placeholder={
-                    habitType === "positive"
-                      ? t("placeholders.positive")
-                      : t("placeholders.negative")
-                  }
-                  value={newHabitName}
-                  onChange={(e) => setNewHabitName(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{t("fields.type")}</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {getHabitTypes(t).map((type) => (
-                    <button
-                      key={type.value}
-                      type="button"
-                      onClick={() => setHabitType(type.value as "positive" | "negative")}
-                      className={`p-3 rounded-lg border-2 text-left transition-colors ${
-                        habitType === type.value
-                          ? "border-primary bg-primary/5"
-                          : "border-muted hover:border-muted-foreground/50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{type.icon}</span>
-                        <span className="font-medium">{t(`types.${type.value}`)}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {t(`typeDescriptions.${type.value}`)}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>{t("fields.color")}</Label>
-                <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 justify-items-center">
-                  {habitColors.map((color, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setSelectedColor(i)}
-                      className={`h-8 w-8 rounded-full ${color.bg} ${color.text} ${selectedColor === i ? "ring-2 ring-offset-2 ring-primary" : ""}`}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="start-date">{t("fields.startDate")}</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !startDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {startDate ? (
-                          format(new Date(startDate), "LLL dd, y", { locale: dateFnsLocale })
-                        ) : (
-                          <span>{t("fields.startDate")}</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={startDate ? new Date(startDate) : undefined}
-                        onSelect={(date) => setStartDate(date ? format(date, "yyyy-MM-dd") : "")}
-                        initialFocus
-                        locale={dateFnsLocale}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="end-date">{t("fields.endDate")}</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !endDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {endDate ? (
-                          format(new Date(endDate), "LLL dd, y", { locale: dateFnsLocale })
-                        ) : (
-                          <span>{t("fields.endDate")}</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" side="bottom" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={endDate ? new Date(endDate) : undefined}
-                        onSelect={(date) => setEndDate(date ? format(date, "yyyy-MM-dd") : "")}
-                        initialFocus
-                        locale={dateFnsLocale}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-
-              {/* Subtasks */}
-              <div className="space-y-2">
-                <Label>{t("fields.subtasks")}</Label>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder={t("placeholders.addStep")}
-                    value={newSubtaskTitle}
-                    onChange={(e) => setNewSubtaskTitle(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addSubtask()}
-                  />
-                  <Button type="button" onClick={addSubtask}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                {subtasks.length > 0 && (
-                  <div className="space-y-1 mt-2">
-                    {subtasks.map((st) => (
-                      <div key={st.id} className="flex items-center gap-2 p-2 bg-muted rounded">
-                        <span className="flex-1 text-sm">{st.title}</span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => removeSubtask(st.id)}
-                          aria-label={t("actions.removeSubtask")}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-            <PageActions
-              variant="dialog"
-              onCancel={() => setIsAddDialogOpen(false)}
-              onSimpleSave={addHabit}
-            />
-          </DialogContent>
-        </Dialog>
+        <AddHabitDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+          onSuccess={() => {}}
+        />
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

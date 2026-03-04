@@ -7,10 +7,11 @@ import { Plus, Scale, Ruler, TrendingDown, TrendingUp, Settings, Activity } from
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { PageActions, DeleteConfirmActions } from "@/components/shared/page-actions"
+import { AddMeasurementDialog } from "@/components/dialogs/add-measurement-dialog"
 import { db, initializeDatabase, createEntity, updateEntity, deleteEntity } from "@/lib/db"
 import { cn } from "@/lib/utils"
 import { bodyColors } from "@/lib/theme-colors"
@@ -434,64 +435,11 @@ function BodyContent() {
         </div>
 
         {/* Add Dialog */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t("dialogs.addTitle")}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label>{t("dialogs.typeLabel")}</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {measurementTypes.map((item) => (
-                    <Button
-                      key={item.type}
-                      variant={selectedType === item.type ? "default" : "outline"}
-                      className="flex flex-col items-center py-2 h-auto"
-                      onClick={() => setSelectedType(item.type)}
-                    >
-                      <item.icon className="h-4 w-4 mb-1" />
-                      <span className="text-xs">{t(`measurementTypes.${item.type}`)}</span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="value">{t("dialogs.valueLabel")}</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="value"
-                    type="number"
-                    step="0.1"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    placeholder="0"
-                    className="flex-1"
-                  />
-                  <span className="flex items-center text-muted-foreground">
-                    {t(`units.${measurementTypes.find((t) => t.type === selectedType)?.unit}`)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="notes">{t("dialogs.notesLabel")}</Label>
-                <Input
-                  id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder={t("dialogs.notesPlaceholder")}
-                />
-              </div>
-            </div>
-            <PageActions
-              variant="dialog"
-              onCancel={() => setIsAddDialogOpen(false)}
-              onSimpleSave={addMeasurement}
-            />
-          </DialogContent>
-        </Dialog>
+        <AddMeasurementDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+          onSuccess={() => {}}
+        />
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

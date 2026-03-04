@@ -17,13 +17,13 @@ import { PageActions } from "@/components/shared/page-actions"
 import { db, createEntity } from "@/lib/db"
 import type { MoodType } from "@/types"
 
-interface QuickMoodDialogProps {
+interface AddMoodDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: () => void
 }
 
-export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDialogProps) {
+export function AddMoodDialog({ open, onOpenChange, onSuccess }: AddMoodDialogProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({
     mood: "good" as MoodType,
@@ -64,7 +64,6 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
         notes: formData.notes || undefined,
       })
 
-      // Reset form
       setFormData({
         mood: "good",
         energy: 3,
@@ -93,7 +92,7 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm">
+      <DialogContent className="w-full sm:max-w-md" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle className="text-center">{t("dialog.title")}</DialogTitle>
         </DialogHeader>
@@ -188,11 +187,12 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
           </div>
         </div>
 
-        {/* Actions */}
-        <DialogFooter>
+        <DialogFooter className="flex justify-center sm:justify-center">
           <PageActions
             variant="dialog"
-            onCancel={() => onOpenChange(false)}
+            onCancel={() => {
+              onOpenChange(false)
+            }}
             onSimpleSave={handleSave}
             isSaving={isSaving}
           />

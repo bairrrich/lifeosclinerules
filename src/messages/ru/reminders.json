@@ -82,7 +82,11 @@
     "editTitle": "Редактировать напоминание",
     "deleteTitle": "Удалить напоминание?",
     "deleteConfirm": "Вы уверены, что хотите удалить напоминание \"{title}\"? Это действие нельзя отменить.",
-    "statsTitle": "Статистика: {title}"
+    "statsTitle": "Статистика: {title}",
+    "titleLabel": "Название",
+    "titlePlaceholder": "Например, Принять витамины",
+    "timeLabel": "Время",
+    "daysLabel": "Дни недели"
   },
   "statsLabels": {
     "streak": "Серия",
