@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl"
 import {
   Download,
   Upload,
-  Trash2,
   FileJson,
   FileSpreadsheet,
   Check,
@@ -387,40 +386,6 @@ export function BackupManager() {
     }
   }
 
-  // Очистка всех данных
-  const handleClearAll = async () => {
-    if (!confirm(t("dangerZone.confirmClear"))) return
-
-    try {
-      await Promise.all([
-        db.logs.clear(),
-        db.items.clear(),
-        db.content.clear(),
-        db.categories.clear(),
-        db.tags.clear(),
-        db.accounts.clear(),
-        db.units.clear(),
-        db.books.clear(),
-        db.userBooks.clear(),
-        db.authors.clear(),
-        db.bookAuthors.clear(),
-        db.genres.clear(),
-        db.bookGenres.clear(),
-        db.bookQuotes.clear(),
-        db.bookReviews.clear(),
-        db.recipeIngredients.clear(),
-        db.recipeIngredientItems.clear(),
-        db.recipeSteps.clear(),
-      ])
-
-      showToast("success", tCommon("success"))
-      window.location.reload()
-    } catch (error) {
-      console.error("Clear failed:", error)
-      showToast("error", tCommon("error"))
-    }
-  }
-
   return (
     <>
       <Card>
@@ -536,14 +501,6 @@ export function BackupManager() {
                 {t("backup.accounts")}
               </Button>
             </div>
-          </div>
-
-          {/* Опасная зона */}
-          <div className="pt-2 border-t">
-            <Button variant="destructive" size="sm" onClick={handleClearAll} className="w-full">
-              <Trash2 className="h-4 w-4 mr-2" />
-              {t("backup.clearAllData")}
-            </Button>
           </div>
         </CardContent>
       </Card>

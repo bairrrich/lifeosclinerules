@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
-import { Trash2, Database } from "@/lib/icons"
+import { Trash2, Database, Check, AlertTriangle } from "@/lib/icons"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,13 +16,16 @@ import {
 import { DeleteConfirmActions } from "@/components/shared/page-actions"
 import { db } from "@/lib/db"
 import { seedDatabase } from "@/lib/seed"
+import { priorityColors } from "@/lib/theme-colors"
 
 export function DangerZone() {
   const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
   const [isSeeding, setIsSeeding] = useState(false)
   const [hasData, setHasData] = useState(false)
   const [showClearDialog, setShowClearDialog] = useState(false)
   const [isClearing, setIsClearing] = useState(false)
+  const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null)
 
   // Check if data already exists
   useEffect(() => {
@@ -31,15 +34,21 @@ export function DangerZone() {
     })
   }, [])
 
+  const showToast = (type: "success" | "error", message: string) => {
+    setToast({ type, message })
+    setTimeout(() => setToast(null), 3000)
+  }
+
   const handleSeedData = async () => {
     if (confirm(t("dangerZone.confirmSeed"))) {
       setIsSeeding(true)
       try {
         await seedDatabase()
-        window.location.reload()
+        showToast("success", tCommon("success"))
+        setTimeout(() => window.location.reload(), 1000)
       } catch (error) {
         console.error("Error seeding data:", error)
-        alert("Error seeding data. Check console for details.")
+        showToast("error", tCommon("error"))
       } finally {
         setIsSeeding(false)
       }
@@ -96,34 +105,42 @@ export function DangerZone() {
         // Localization
         db.entityTranslations.clear(),
       ])
-      window.location.reload()
+      showToast("success", tCommon("success"))
+      setTimeout(() => window.location.reload(), 1000)
     } catch (error) {
       console.error("Error clearing data:", error)
-    } finally {
+      showToast("error", tCommon("error"))
       setIsClearing(false)
     }
   }
 
   return (
-    <Card className="border-destructive">
-      <CardHeader>
-        <CardTitle className="text-destructive">{t("dangerZone.title")}</CardTitle>
-        <CardDescription>{t("dangerZone.description")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <Button variant="outline" onClick={handleSeedData} disabled={isSeeding} className="w-full">
-          <Database className="h-4 w-4 mr-2" />
-          {isSeeding
-            ? t("dangerZone.seeding")
-            : hasData
-              ? t("dangerZone.reseedData")
-              : t("dangerZone.seedData")}
-        </Button>
-        <Button variant="destructive" onClick={() => setShowClearDialog(true)} className="w-full">
-          <Trash2 className="h-4 w-4 mr-2" />
-          {t("dangerZone.clearAllData")}
-        </Button>
-      </CardContent>
+    <>
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle className="text-destructive">{t("dangerZone.title")}</CardTitle>
+          <CardDescription>{t("dangerZone.description")}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <Button
+            variant="outline"
+            onClick={handleSeedData}
+            disabled={isSeeding}
+            className="w-full"
+          >
+            <Database className="h-4 w-4 mr-2" />
+            {isSeeding
+              ? t("dangerZone.seeding")
+              : hasData
+                ? t("dangerZone.reseedData")
+                : t("dangerZone.seedData")}
+          </Button>
+          <Button variant="destructive" onClick={() => setShowClearDialog(true)} className="w-full">
+            <Trash2 className="h-4 w-4 mr-2" />
+            {t("dangerZone.clearAllData")}
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Clear Data Confirmation Dialog */}
       <Dialog open={showClearDialog} onOpenChange={setShowClearDialog}>
@@ -141,6 +158,24 @@ export function DangerZone() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+
+      {/* Toast уведомление */}
+      {toast && (
+        <div
+          className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 ${
+            toast.type === "success"
+              ? priorityColors.high.DEFAULT + " text-white"
+              : priorityColors.critical.DEFAULT + " text-white"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <AlertTriangle className="h-4 w-4" />
+          )}
+          {toast.message}
+        </div>
+      )}
+    </>
   )
 }
