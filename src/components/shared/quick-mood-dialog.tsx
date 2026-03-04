@@ -3,10 +3,17 @@
 import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { Battery, Brain } from "@/lib/icons"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PageActions } from "@/components/shared/page-actions"
 import { db, createEntity } from "@/lib/db"
 import type { MoodType } from "@/types"
 
@@ -27,8 +34,6 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
   })
 
   const t = useTranslations("mood")
-  const tCommon = useTranslations("common")
-  const tLoading = useTranslations("loading")
 
   const moodConfig: Record<MoodType, { label: string; emoji: string }> = {
     great: { label: t("moods.great"), emoji: "😄" },
@@ -184,14 +189,14 @@ export function QuickMoodDialog({ open, onOpenChange, onSuccess }: QuickMoodDial
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
-            {tCommon("cancel")}
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving} className="flex-1">
-            {isSaving ? tLoading("saving") : tCommon("save")}
-          </Button>
-        </div>
+        <DialogFooter>
+          <PageActions
+            variant="dialog"
+            onCancel={() => onOpenChange(false)}
+            onSimpleSave={handleSave}
+            isSaving={isSaving}
+          />
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
