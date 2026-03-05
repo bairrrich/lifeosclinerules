@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Combobox } from "@/components/ui/combobox"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, createEntity, initializeDatabase } from "@/lib/db"
 import {
@@ -35,26 +36,38 @@ import type {
 } from "@/types"
 import { ContentType, RecipeType as RecipeTypeEnum } from "@/types"
 
+// Преобразование пустой строки в 0 для числовых полей
+const emptyStringToZero = z.preprocess((val) => {
+  if (val === "" || val === null || val === undefined) return 0
+  return Number(val)
+}, z.number())
+
 // Form schema - сообщение об ошибке будет установлено в компоненте
 const baseRecipeSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   recipe_type: z.enum(["food", "drink", "cocktail"]),
-  servings: z.number().optional(),
+  servings: emptyStringToZero,
   serving_unit: z.string().optional(),
-  prep_time_min: z.number().optional(),
-  cook_time_min: z.number().optional(),
+  prep_time_min: emptyStringToZero,
+  cook_time_min: emptyStringToZero,
   difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
-  rating: z.number().min(1).max(5).optional(),
+  rating: z.preprocess((val) => {
+    if (val === "" || val === null || val === undefined) return 0
+    const num = Number(val)
+    if (isNaN(num)) return 0
+    return num
+  }, z.number().min(0).max(5)),
   tags: z.string().optional(),
+  personal_notes: z.string().optional(),
 
-  // КБЖУ
-  calories: z.number().optional(),
-  protein: z.number().optional(),
-  fat: z.number().optional(),
-  carbs: z.number().optional(),
-  sugar: z.number().optional(),
-  fiber: z.number().optional(),
+  // КБЖУ - необязательные поля (0 по умолчанию)
+  calories: emptyStringToZero,
+  protein: emptyStringToZero,
+  fat: emptyStringToZero,
+  carbs: emptyStringToZero,
+  sugar: emptyStringToZero,
+  fiber: emptyStringToZero,
 })
 
 type FormData = z.infer<typeof baseRecipeSchema>
@@ -134,21 +147,39 @@ export default function NewRecipePage() {
     handleSubmit,
     setValue,
     watch,
+    trigger,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm({
     resolver: zodResolver(baseRecipeSchema),
     defaultValues: {
       recipe_type: "food",
       servings: 2,
       serving_unit: t("fields.servingUnitPlaceholder"),
+      prep_time_min: 0,
+      cook_time_min: 0,
+      rating: 0,
+      calories: 0,
+      protein: 0,
+      fat: 0,
+      carbs: 0,
+      sugar: 0,
+      fiber: 0,
     },
   })
+
+  // Логирование ошибок валидации
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log("Validation errors:", errors)
+    }
+  }, [errors])
 
   useEffect(() => {
     initializeDatabase()
   }, [])
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: any) => {
+    console.log("onSubmit called with data:", data)
     setIsLoading(true)
     try {
       // Определяем image_url из метаданных в зависимости от типа рецепта
@@ -159,6 +190,12 @@ export default function NewRecipePage() {
             ? drinkMetadata.image_url
             : cocktailMetadata.image_url
 
+      console.log("Creating recipe with:", {
+        recipe_type: recipeType,
+        title: data.title,
+        image_url: imageUrl,
+      })
+
       const recipeData: Omit<RecipeContentExtended, "id" | "created_at" | "updated_at"> = {
         type: ContentType.RECIPE,
         recipe_type: data.recipe_type as RecipeType,
@@ -166,7 +203,8 @@ export default function NewRecipePage() {
         description: data.description,
         image_url: imageUrl,
         rating: data.rating,
-        tags: data.tags ? data.tags.split(",").map((t) => t.trim()) : [],
+        personal_notes: data.personal_notes,
+        tags: data.tags ? data.tags.split(",").map((tag: string) => tag.trim()) : [],
 
         // Время
         prep_time_min: data.prep_time_min,
@@ -192,13 +230,18 @@ export default function NewRecipePage() {
         cocktail_metadata: recipeType === "cocktail" ? cocktailMetadata : undefined,
       }
 
+      console.log("Recipe data to save:", recipeData)
+
       const recipeId = await createEntity(
         db.content,
         recipeData as Omit<RecipeContentExtended, "id" | "created_at" | "updated_at">
       )
 
+      console.log("Recipe created with ID:", recipeId)
+
       // Сохраняем ингредиенты
       if (ingredients.length > 0) {
+        console.log("Saving ingredients:", ingredients.length)
         for (const ing of ingredients) {
           await createEntity(db.recipeIngredientItems, {
             recipe_id: recipeId,
@@ -214,6 +257,7 @@ export default function NewRecipePage() {
 
       // Сохраняем шаги
       if (steps.length > 0) {
+        console.log("Saving steps:", steps.length)
         for (const step of steps) {
           await createEntity(db.recipeSteps, {
             recipe_id: recipeId,
@@ -224,10 +268,13 @@ export default function NewRecipePage() {
         }
       }
 
+      console.log("Recipe saved successfully, redirecting...")
       router.push("/recipes")
     } catch (error) {
       console.error("Failed to create recipe:", error)
-    } finally {
+      alert(
+        `Ошибка при сохранении рецепта: ${error instanceof Error ? error.message : String(error)}`
+      )
       setIsLoading(false)
     }
   }
@@ -235,7 +282,26 @@ export default function NewRecipePage() {
   return (
     <AppLayout title={t("new.title")}>
       <div className="container mx-auto px-4 py-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={async (e) => {
+            e.preventDefault()
+            console.log("Form submit event triggered")
+
+            // Ручная валидация
+            const isValid = await trigger()
+            console.log("Validation result:", isValid)
+
+            if (isValid) {
+              // Получаем данные формы через watch
+              const formData = watch()
+              console.log("Form data from watch:", formData)
+              await onSubmit(formData)
+            } else {
+              console.log("Form validation failed")
+            }
+          }}
+        >
           {/* Выбор типа рецепта */}
           <Card>
             <CardHeader>
@@ -391,11 +457,11 @@ export default function NewRecipePage() {
                   size="sm"
                   onClick={() => {
                     const nutrition = calculateNutrition()
-                    setValue("calories", nutrition.calories || undefined)
-                    setValue("protein", nutrition.protein || undefined)
-                    setValue("fat", nutrition.fat || undefined)
-                    setValue("carbs", nutrition.carbs || undefined)
-                    setValue("fiber", nutrition.fiber || undefined)
+                    setValue("calories", nutrition.calories || 0)
+                    setValue("protein", nutrition.protein || 0)
+                    setValue("fat", nutrition.fat || 0)
+                    setValue("carbs", nutrition.carbs || 0)
+                    setValue("fiber", nutrition.fiber || 0)
                   }}
                   disabled={ingredients.length === 0}
                 >
@@ -413,6 +479,7 @@ export default function NewRecipePage() {
                   <Input
                     id="calories"
                     type="number"
+                    placeholder="0"
                     {...register("calories", { valueAsNumber: true })}
                     className="h-9"
                   />
@@ -425,6 +492,7 @@ export default function NewRecipePage() {
                     id="protein"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("protein", { valueAsNumber: true })}
                     className="h-9"
                   />
@@ -437,6 +505,7 @@ export default function NewRecipePage() {
                     id="fat"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("fat", { valueAsNumber: true })}
                     className="h-9"
                   />
@@ -449,6 +518,7 @@ export default function NewRecipePage() {
                     id="carbs"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("carbs", { valueAsNumber: true })}
                     className="h-9"
                   />
@@ -463,6 +533,7 @@ export default function NewRecipePage() {
                     id="sugar"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("sugar", { valueAsNumber: true })}
                     className="h-9"
                   />
@@ -475,6 +546,7 @@ export default function NewRecipePage() {
                     id="fiber"
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     {...register("fiber", { valueAsNumber: true })}
                     className="h-9"
                   />
@@ -496,12 +568,44 @@ export default function NewRecipePage() {
             <CocktailRecipeForm metadata={cocktailMetadata} onChange={setCocktailMetadata} />
           )}
 
-          {/* Теги */}
+          {/* Дополнительно */}
           <Card>
             <CardHeader>
               <CardTitle>{t("forms.additional")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Рейтинг */}
+              <div className="space-y-2">
+                <Label htmlFor="rating">{t("fields.rating")}</Label>
+                <Combobox
+                  options={[
+                    { id: "0", label: "–" },
+                    { id: "1", label: "1" },
+                    { id: "2", label: "2" },
+                    { id: "3", label: "3" },
+                    { id: "4", label: "4" },
+                    { id: "5", label: "5" },
+                  ]}
+                  value={watch("rating")?.toString() || ""}
+                  onChange={(value) => setValue("rating", value ? parseInt(value as string) : 0)}
+                  placeholder="5"
+                  allowCustom={false}
+                  searchable={false}
+                />
+              </div>
+
+              {/* Личные заметки */}
+              <div className="space-y-2">
+                <Label htmlFor="personal_notes">{t("fields.personalNotes")}</Label>
+                <textarea
+                  id="personal_notes"
+                  className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  placeholder={t("fields.personalNotesPlaceholder")}
+                  {...register("personal_notes")}
+                />
+              </div>
+
+              {/* Теги */}
               <div className="space-y-2">
                 <Label htmlFor="tags">{t("fields.tags")}</Label>
                 <Input id="tags" placeholder={t("fields.tagsPlaceholder")} {...register("tags")} />

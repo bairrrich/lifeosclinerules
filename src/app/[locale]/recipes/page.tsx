@@ -32,6 +32,15 @@ interface RecipeWithDetails extends RecipeContentExtended {
   stepsList?: RecipeStep[]
 }
 
+// Цвета для типов рецептов (как статусы у книг)
+const recipeTypeColors: Record<string, string> = {
+  food: "bg-[oklch(0.88_0.22_68)]/15 text-[oklch(0.88_0.22_68)] border-[oklch(0.76_0.28_68)/0.45]",
+  drink:
+    "bg-[oklch(0.82_0.24_208)]/15 text-[oklch(0.82_0.24_208)] border-[oklch(0.70_0.30_208)/0.45]",
+  cocktail:
+    "bg-[oklch(0.72_0.26_295)]/15 text-[oklch(0.72_0.26_295)] border-[oklch(0.72_0.26_295)/0.45]",
+}
+
 export default function RecipesPage() {
   const t = useTranslations("recipes")
   const [isLoading, setIsLoading] = useState(true)
@@ -237,18 +246,28 @@ export default function RecipesPage() {
                   <Card className="hover:bg-accent transition-colors">
                     <CardContent className="p-4">
                       <div className="flex gap-3">
-                        {/* Иконка типа */}
-                        <div
-                          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${typeColor}`}
-                          aria-hidden="true"
-                        >
-                          <TypeIcon className="h-6 w-6" />
+                        {/* Изображение рецепта */}
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-muted">
+                          {recipe.image_url ? (
+                            <img
+                              src={recipe.image_url}
+                              alt={recipe.title}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div
+                              className={`flex h-14 w-14 items-center justify-center rounded-xl ${typeColor}`}
+                              aria-hidden="true"
+                            >
+                              <TypeIcon className="h-6 w-6" />
+                            </div>
+                          )}
                         </div>
 
                         {/* Контент */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                               <h3 className="font-medium truncate">{recipe.title}</h3>
                               {recipe.description && (
                                 <p className="text-sm text-muted-foreground truncate">
@@ -256,19 +275,40 @@ export default function RecipesPage() {
                                 </p>
                               )}
                             </div>
-                            {recipe.rating && (
-                              <div className="flex items-center gap-1 text-muted-foreground shrink-0">
-                                <Star
-                                  className={`h-4 w-4 ${recipeColors.rating.fill} ${recipeColors.rating.DEFAULT}`}
-                                />
-                                <span className="text-sm">{recipe.rating}</span>
-                              </div>
-                            )}
+                            <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
+                              {recipe.rating !== undefined && recipe.rating > 0 && (
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <Star
+                                    className={`h-4 w-4 ${recipeColors.rating.fill} ${recipeColors.rating.DEFAULT}`}
+                                  />
+                                  <span className="text-sm">{recipe.rating}</span>
+                                </div>
+                              )}
+                              {/* Тип рецепта */}
+                              {recipe.recipe_type && (
+                                <Badge
+                                  className={`${recipeTypeColors[recipe.recipe_type]} whitespace-nowrap text-[10px] sm:text-xs`}
+                                >
+                                  <span className="hidden sm:inline">
+                                    {t(`types.${recipe.recipe_type}`)}
+                                  </span>
+                                  <span className="sm:hidden">
+                                    {recipe.recipe_type === "food"
+                                      ? t("list.food")
+                                      : recipe.recipe_type === "drink"
+                                        ? t("list.drink")
+                                        : recipe.recipe_type === "cocktail"
+                                          ? t("list.cocktail")
+                                          : recipe.recipe_type}
+                                  </span>
+                                </Badge>
+                              )}
+                            </div>
                           </div>
 
                           {/* Мета информация */}
                           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                            {recipe.total_time_min && (
+                            {recipe.total_time_min !== undefined && recipe.total_time_min > 0 && (
                               <div className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
                                 <span>
@@ -276,7 +316,7 @@ export default function RecipesPage() {
                                 </span>
                               </div>
                             )}
-                            {recipe.calories && (
+                            {recipe.calories !== undefined && recipe.calories > 0 && (
                               <div className="flex items-center gap-1">
                                 <Flame className="h-3 w-3" />
                                 <span>
@@ -284,7 +324,7 @@ export default function RecipesPage() {
                                 </span>
                               </div>
                             )}
-                            {recipe.servings && (
+                            {recipe.servings !== undefined && recipe.servings > 0 && (
                               <div className="flex items-center gap-1">
                                 <Users className="h-3 w-3" />
                                 <span>

@@ -66,6 +66,9 @@
     "nutrition": "Пищевая ценность",
     "tags": "Теги",
     "tagsPlaceholder": "теги через запятую",
+    "rating": "Рейтинг",
+    "personalNotes": "Личные заметки",
+    "personalNotesPlaceholder": "Ваши личные заметки о рецепте...",
     "minutes": "мин",
     "dishParameters": "Параметры блюда",
     "fiber": "Клетчатка",
@@ -424,7 +427,10 @@
     "ingredients": "ингр.",
     "minutes": "мин",
     "calories": "ккал",
-    "servings": "порц."
+    "servings": "порц.",
+    "food": "Еда",
+    "drink": "Напиток",
+    "cocktail": "Коктейль"
   },
   "placeholders": {
     "color": "например, Красный, Золотой, Янтарный"
@@ -444,6 +450,8 @@
     "details": "Детали",
     "additional": "Дополнительно",
     "recipe": "Рецепт",
+    "notes": "Личные заметки",
+    "noNotes": "Нет личных заметок",
     "cocktailDetails": {
       "title": "Детали коктейля",
       "alcoholic": "Алкогольный",

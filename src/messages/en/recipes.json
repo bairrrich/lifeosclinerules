@@ -66,6 +66,9 @@
     "nutrition": "Nutrition Facts",
     "tags": "Tags",
     "tagsPlaceholder": "tags separated by comma",
+    "rating": "Rating",
+    "personalNotes": "Personal Notes",
+    "personalNotesPlaceholder": "Your personal notes about this recipe...",
     "minutes": "min",
     "dishParameters": "Dish Parameters",
     "fiber": "Fiber",
@@ -424,7 +427,10 @@
     "ingredients": "ingr.",
     "minutes": "min",
     "calories": "cal",
-    "servings": "servings"
+    "servings": "servings",
+    "food": "Food",
+    "drink": "Drink",
+    "cocktail": "Cocktail"
   },
   "placeholders": {
     "color": "e.g., Red, Golden, Amber"
@@ -444,6 +450,8 @@
     "details": "Details",
     "additional": "Additional",
     "recipe": "Recipe",
+    "notes": "Personal Notes",
+    "noNotes": "No personal notes",
     "cocktailDetails": {
       "title": "Cocktail Details",
       "alcoholic": "Alcoholic",

@@ -217,6 +217,7 @@ export function UserBookForm({ data, pageCount, onChange }: UserBookFormProps) {
               <Label htmlFor="rating">{t("userBook.rating")}</Label>
               <Combobox
                 options={[
+                  { id: "0", label: "–" },
                   { id: "1", label: "1" },
                   { id: "2", label: "2" },
                   { id: "3", label: "3" },

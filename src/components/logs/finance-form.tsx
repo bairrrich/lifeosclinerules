@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTranslations } from "next-intl"
 import { DependentSelect } from "@/components/shared/forms"
 import { cn } from "@/lib/utils"
+import { financeColors } from "@/lib/theme-colors"
 import type {
   FinanceType,
   Account,
@@ -416,7 +417,13 @@ export function FinanceForm({
           min="0"
           step="0.01"
           placeholder="0 ₽"
-          className="text-center text-lg font-medium"
+          autoFocus
+          className={cn(
+            "text-center text-lg font-medium",
+            financeType === "income" && financeColors.income.text,
+            financeType === "expense" && financeColors.expense.text,
+            financeType === "transfer" && financeColors.transfer.text
+          )}
           onKeyPress={(e) => {
             if (!/[0-9.,]/.test(e.key)) {
               e.preventDefault()

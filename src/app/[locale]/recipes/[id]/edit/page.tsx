@@ -11,6 +11,7 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { PageActions } from "@/components/shared/page-actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Combobox } from "@/components/ui/combobox"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db, initializeDatabase, getTimestamp } from "@/lib/db"
 import {
@@ -40,6 +41,12 @@ const validationMessages = {
   title: "Введите название",
 }
 
+// Преобразование пустой строки в 0 для числовых полей
+const emptyStringToZero = z.preprocess((val) => {
+  if (val === "" || val === null || val === undefined) return 0
+  return Number(val)
+}, z.number())
+
 // Recipe schema factory function
 function createRecipeSchema(t: (key: string) => string) {
   const messages = {
@@ -49,23 +56,27 @@ function createRecipeSchema(t: (key: string) => string) {
   return z.object({
     title: z.string().min(1, messages.title),
     description: z.string().optional(),
-    rating: z.number().optional(),
+    rating: z.preprocess((val) => {
+      if (val === "" || val === null || val === undefined) return 0
+      const num = Number(val)
+      if (isNaN(num)) return 0
+      return num
+    }, z.number().min(0).max(5)),
     tags: z.string().optional(),
-    prep_time_min: z.number().optional(),
-    cook_time_min: z.number().optional(),
-    servings: z.number().optional(),
+    personal_notes: z.string().optional(),
+    prep_time_min: emptyStringToZero,
+    cook_time_min: emptyStringToZero,
+    servings: emptyStringToZero,
     serving_unit: z.string().optional(),
     difficulty: z.enum(["easy", "medium", "hard", "pro"]).optional(),
-    calories: z.number().optional(),
-    protein: z.number().optional(),
-    fat: z.number().optional(),
-    carbs: z.number().optional(),
-    sugar: z.number().optional(),
-    fiber: z.number().optional(),
+    calories: emptyStringToZero,
+    protein: emptyStringToZero,
+    fat: emptyStringToZero,
+    carbs: emptyStringToZero,
+    sugar: emptyStringToZero,
+    fiber: emptyStringToZero,
   })
 }
-
-type RecipeFormData = z.infer<ReturnType<typeof createRecipeSchema>>
 
 export default function EditRecipePage() {
   const router = useRouter()
@@ -129,8 +140,21 @@ export default function EditRecipePage() {
     watch,
     reset,
     formState: { errors },
-  } = useForm<RecipeFormData>({
+  } = useForm({
     resolver: zodResolver(createRecipeSchema(() => "")),
+    defaultValues: {
+      rating: 0,
+      prep_time_min: 0,
+      cook_time_min: 0,
+      servings: 0,
+      calories: 0,
+      protein: 0,
+      fat: 0,
+      carbs: 0,
+      sugar: 0,
+      fiber: 0,
+      personal_notes: "",
+    },
   })
 
   useEffect(() => {
@@ -149,21 +173,22 @@ export default function EditRecipePage() {
           const baseData: Record<string, unknown> = {
             title: recipe.title,
             description: recipe.description || "",
-            rating: recipe.rating,
+            rating: recipe.rating ?? 0,
             tags: recipe.tags?.join(", ") || "",
-            prep_time_min: recipe.prep_time_min,
-            cook_time_min: recipe.cook_time_min,
-            servings: recipe.servings,
+            personal_notes: recipe.personal_notes || "",
+            prep_time_min: recipe.prep_time_min ?? 0,
+            cook_time_min: recipe.cook_time_min ?? 0,
+            servings: recipe.servings ?? 0,
             serving_unit: recipe.serving_unit,
             difficulty: recipe.difficulty,
-            calories: recipe.calories,
-            protein: recipe.protein,
-            fat: recipe.fat,
-            carbs: recipe.carbs,
-            sugar: recipe.sugar,
-            fiber: recipe.fiber,
+            calories: recipe.calories ?? 0,
+            protein: recipe.protein ?? 0,
+            fat: recipe.fat ?? 0,
+            carbs: recipe.carbs ?? 0,
+            sugar: recipe.sugar ?? 0,
+            fiber: recipe.fiber ?? 0,
           }
-          reset(baseData as RecipeFormData)
+          reset(baseData)
 
           // Load ingredients
           const recipeIngredients = await db.recipeIngredientItems
@@ -223,7 +248,7 @@ export default function EditRecipePage() {
     loadData()
   }, [id, reset])
 
-  const onSubmit = async (data: RecipeFormData) => {
+  const onSubmit = async (data: any) => {
     setIsSaving(true)
     try {
       const now = getTimestamp()
@@ -242,7 +267,8 @@ export default function EditRecipePage() {
         description: data.description,
         image_url: imageUrl,
         rating: data.rating,
-        tags: data.tags ? data.tags.split(",").map((t) => t.trim()) : [],
+        personal_notes: data.personal_notes,
+        tags: data.tags ? data.tags.split(",").map((tag: string) => tag.trim()) : [],
         recipe_type: recipeType,
         prep_time_min: data.prep_time_min,
         cook_time_min: data.cook_time_min,
@@ -301,8 +327,22 @@ export default function EditRecipePage() {
       router.push(`/recipes/${id}`)
     } catch (error) {
       console.error("Failed to update recipe:", error)
+      alert(t("common.error"))
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const onError = (errors: any) => {
+    console.error("Form validation errors:", errors)
+    // Прокрутка к первой ошибке
+    const firstErrorField = Object.keys(errors)[0]
+    if (firstErrorField) {
+      const element = document.querySelector(`[name="${firstErrorField}"]`)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+        ;(element as HTMLElement).focus()
+      }
     }
   }
 
@@ -323,7 +363,13 @@ export default function EditRecipePage() {
   return (
     <AppLayout title={t("edit.title")}>
       <div className="container mx-auto px-4 py-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSubmit(onSubmit, onError)()
+          }}
+        >
           {/* Recipe Type Selector */}
           <Card>
             <CardContent className="p-4">
@@ -476,11 +522,11 @@ export default function EditRecipePage() {
                   size="sm"
                   onClick={() => {
                     const nutrition = calculateNutrition()
-                    setValue("calories", nutrition.calories || undefined)
-                    setValue("protein", nutrition.protein || undefined)
-                    setValue("fat", nutrition.fat || undefined)
-                    setValue("carbs", nutrition.carbs || undefined)
-                    setValue("fiber", nutrition.fiber || undefined)
+                    setValue("calories", nutrition.calories || 0)
+                    setValue("protein", nutrition.protein || 0)
+                    setValue("fat", nutrition.fat || 0)
+                    setValue("carbs", nutrition.carbs || 0)
+                    setValue("fiber", nutrition.fiber || 0)
                   }}
                   disabled={ingredients.length === 0}
                 >
@@ -497,6 +543,7 @@ export default function EditRecipePage() {
                   </label>
                   <input
                     type="number"
+                    placeholder="0"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("calories", { valueAsNumber: true })}
                   />
@@ -506,6 +553,7 @@ export default function EditRecipePage() {
                   <input
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("protein", { valueAsNumber: true })}
                   />
@@ -515,6 +563,7 @@ export default function EditRecipePage() {
                   <input
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("fat", { valueAsNumber: true })}
                   />
@@ -524,6 +573,7 @@ export default function EditRecipePage() {
                   <input
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("carbs", { valueAsNumber: true })}
                   />
@@ -535,6 +585,7 @@ export default function EditRecipePage() {
                   <input
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("sugar", { valueAsNumber: true })}
                   />
@@ -544,6 +595,7 @@ export default function EditRecipePage() {
                   <input
                     type="number"
                     step="0.1"
+                    placeholder="0"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     {...register("fiber", { valueAsNumber: true })}
                   />
@@ -563,9 +615,43 @@ export default function EditRecipePage() {
             <CocktailRecipeForm metadata={cocktailMetadata} onChange={setCocktailMetadata} />
           )}
 
-          {/* Tags */}
+          {/* Дополнительно */}
           <Card>
-            <CardContent className="p-4 space-y-4">
+            <CardHeader>
+              <CardTitle>{t("forms.additional")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Рейтинг */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("fields.rating")}</label>
+                <Combobox
+                  options={[
+                    { id: "0", label: "–" },
+                    { id: "1", label: "1" },
+                    { id: "2", label: "2" },
+                    { id: "3", label: "3" },
+                    { id: "4", label: "4" },
+                    { id: "5", label: "5" },
+                  ]}
+                  value={watch("rating")?.toString() || ""}
+                  onChange={(value) => setValue("rating", value ? parseInt(value as string) : 0)}
+                  placeholder="5"
+                  allowCustom={false}
+                  searchable={false}
+                />
+              </div>
+
+              {/* Личные заметки */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("fields.personalNotes")}</label>
+                <textarea
+                  className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  placeholder={t("fields.personalNotesPlaceholder")}
+                  {...register("personal_notes")}
+                />
+              </div>
+
+              {/* Теги */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t("fields.tags")}</label>
                 <input
@@ -579,8 +665,9 @@ export default function EditRecipePage() {
 
           <PageActions
             variant="page"
+            isInForm={true}
             onCancel={() => router.back()}
-            onSimpleSave={handleSubmit(onSubmit)}
+            onSimpleSave={handleSubmit(onSubmit, onError)}
             isSaving={isSaving}
           />
         </form>

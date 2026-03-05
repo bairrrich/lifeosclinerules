@@ -388,6 +388,7 @@ export default function EditBookPage() {
           {/* Действия */}
           <PageActions
             variant="page"
+            isInForm={true}
             showDelete={true}
             onSimpleDelete={onDelete}
             isDeleting={isDeleting}

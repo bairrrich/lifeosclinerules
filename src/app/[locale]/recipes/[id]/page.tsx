@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useTranslations, useLocale, useMessages } from "next-intl"
 import { useRouter, useParams } from "@/lib/navigation"
 import Link from "next/link"
@@ -23,6 +23,9 @@ import {
   Leaf,
   Droplets,
   GlassWater,
+  Crop,
+  RotateCcw,
+  ImageMinus,
 } from "@/lib/icons"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -42,6 +45,8 @@ import { db, initializeDatabase, deleteEntity } from "@/lib/db"
 import { cn } from "@/lib/utils"
 import type { RecipeContentExtended, RecipeIngredientItem, RecipeStep } from "@/types"
 import { recipeColors } from "@/lib/theme-colors"
+import { Cropper, CropperRef } from "react-advanced-cropper"
+import "react-advanced-cropper/dist/style.css"
 
 const recipeTypeColors: Record<string, string> = {
   food: recipeColors.food.light,
@@ -103,6 +108,30 @@ export default function RecipeDetailPage() {
   const [steps, setSteps] = useState<RecipeStep[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [isCropping, setIsCropping] = useState(false)
+  const [croppedImage, setCroppedImage] = useState<string | null>(null)
+  const cropperRef = useRef<CropperRef>(null)
+
+  // Загрузка сохранённого обрезанного изображения из localStorage
+  useEffect(() => {
+    if (id) {
+      const savedCroppedImage = localStorage.getItem(`recipe-${id}-cropped`)
+      if (savedCroppedImage) {
+        setCroppedImage(savedCroppedImage)
+      }
+    }
+  }, [id])
+
+  // Сохранение обрезанного изображения в localStorage
+  useEffect(() => {
+    if (croppedImage && id) {
+      try {
+        localStorage.setItem(`recipe-${id}-cropped`, croppedImage)
+      } catch (error) {
+        console.error("Failed to save cropped image to localStorage:", error)
+      }
+    }
+  }, [croppedImage, id])
 
   useEffect(() => {
     async function loadData() {
@@ -187,29 +216,140 @@ export default function RecipeDetailPage() {
   return (
     <AppLayout title={t("title")}>
       <div className="container mx-auto px-4 py-6 space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t("common.back")}
-        </Button>
-
         {/* Summary Card */}
         <Card>
           <CardHeader className="pb-2">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge className={recipeTypeColors[recipeType]}>
-                    {recipeType === "food" && <ChefHat className="h-3 w-3 mr-1" />}
-                    {recipeType === "drink" && <Coffee className="h-3 w-3 mr-1" />}
-                    {recipeType === "cocktail" && <Martini className="h-3 w-3 mr-1" />}
-                    {t(`types.${recipeType}`)}
-                  </Badge>
+            {/* Изображение рецепта */}
+            {recipe.image_url && (
+              <div className="mb-4 group relative">
+                <div className="rounded-lg overflow-hidden bg-muted">
+                  {isCropping ? (
+                    <div className="h-56">
+                      <Cropper
+                        ref={cropperRef}
+                        src={croppedImage || recipe.image_url}
+                        stencilProps={{
+                          aspectRatio: 16 / 9,
+                        }}
+                        className="h-full"
+                        crossOrigin="anonymous"
+                      />
+                    </div>
+                  ) : (
+                    <img
+                      src={croppedImage || recipe.image_url}
+                      alt={recipe.title}
+                      className="w-full aspect-video object-cover"
+                      crossOrigin="anonymous"
+                    />
+                  )}
                 </div>
-                <CardTitle className="text-xl">{recipe.title}</CardTitle>
-                {recipe.description && (
-                  <p className="text-sm text-muted-foreground mt-1">{recipe.description}</p>
+                {/* Контролы изображения - появляются при наведении */}
+                {!isCropping && (
+                  <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="h-8 w-8 shadow-lg"
+                      onClick={() => setIsCropping(true)}
+                      title="Обрезать изображение"
+                    >
+                      <Crop className="h-4 w-4" />
+                    </Button>
+                    {croppedImage && (
+                      <>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="h-8 w-8 shadow-lg"
+                          onClick={() => {
+                            setCroppedImage(null)
+                            setIsCropping(false)
+                            localStorage.removeItem(`recipe-${id}-cropped`)
+                          }}
+                          title="Сбросить обрезку"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="h-8 w-8 shadow-lg"
+                          onClick={() => {
+                            if (recipe.image_url) {
+                              setCroppedImage(recipe.image_url)
+                              localStorage.setItem(`recipe-${id}-cropped`, recipe.image_url)
+                            }
+                          }}
+                          title="Вернуть оригинал"
+                        >
+                          <ImageMinus className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                )}
+                {/* Контролы для режима обрезки */}
+                {isCropping && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="h-8 px-3 text-xs"
+                      onClick={() => {
+                        if (cropperRef.current) {
+                          try {
+                            const canvas = cropperRef.current.getCanvas()
+                            if (canvas) {
+                              const croppedDataUrl = canvas.toDataURL("image/jpeg", 0.9)
+                              setCroppedImage(croppedDataUrl)
+                              localStorage.setItem(`recipe-${id}-cropped`, croppedDataUrl)
+                              setIsCropping(false)
+                            } else {
+                              console.error("Canvas is null")
+                            }
+                          } catch (error) {
+                            console.error("Failed to crop image:", error)
+                            alert(
+                              "Не удалось обрезать изображение. Возможно, это внешнее изображение с ограничениями CORS."
+                            )
+                            setIsCropping(false)
+                          }
+                        }
+                      }}
+                    >
+                      Сохранить
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3 text-xs"
+                      onClick={() => setIsCropping(false)}
+                    >
+                      Отмена
+                    </Button>
+                  </div>
                 )}
               </div>
+            )}
+
+            {/* Заголовок */}
+            <CardTitle className="text-xl mb-2">{recipe.title}</CardTitle>
+
+            {/* Описание */}
+            {recipe.description && (
+              <p className="text-sm text-muted-foreground mb-3">{recipe.description}</p>
+            )}
+
+            {/* Тип рецепта и рейтинг в одной строке */}
+            <div className="flex items-center gap-2">
+              <Badge className={recipeTypeColors[recipeType]}>
+                {recipeType === "food" && <ChefHat className="h-3 w-3 mr-1" />}
+                {recipeType === "drink" && <Coffee className="h-3 w-3 mr-1" />}
+                {recipeType === "cocktail" && <Martini className="h-3 w-3 mr-1" />}
+                {t(`types.${recipeType}`)}
+              </Badge>
+
               {recipe.rating !== undefined && (
                 <div className="flex items-center gap-1">
                   <Star
@@ -223,24 +363,24 @@ export default function RecipeDetailPage() {
           <CardContent>
             {/* Время и порции - компактные бейджи */}
             <div className="flex flex-wrap gap-2 mt-2">
-              {recipe.prep_time_min && (
+              {recipe.prep_time_min !== undefined && recipe.prep_time_min > 0 && (
                 <Badge variant="outline" className="text-xs">
                   <Clock className="h-3 w-3 mr-1" />
                   {t("fields.prepTime")}: {recipe.prep_time_min} {t("fields.minutes")}
                 </Badge>
               )}
-              {recipe.cook_time_min && (
+              {recipe.cook_time_min !== undefined && recipe.cook_time_min > 0 && (
                 <Badge variant="outline" className="text-xs">
                   <Clock className="h-3 w-3 mr-1" />
                   {t("fields.cookTime")}: {recipe.cook_time_min} {t("fields.minutes")}
                 </Badge>
               )}
-              {recipe.total_time_min && (
+              {recipe.total_time_min !== undefined && recipe.total_time_min > 0 && (
                 <Badge variant="outline" className="text-xs">
                   Σ {recipe.total_time_min} {t("fields.minutes")}
                 </Badge>
               )}
-              {recipe.servings && (
+              {recipe.servings !== undefined && recipe.servings > 0 && (
                 <Badge variant="outline" className="text-xs">
                   <Users className="h-3 w-3 mr-1" />
                   {recipe.servings} {recipe.serving_unit || t("fields.servings")}
@@ -479,8 +619,9 @@ export default function RecipeDetailPage() {
 
         {/* Tabs */}
         <Tabs defaultValue="recipe">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="recipe">{t("view.recipe")}</TabsTrigger>
+            <TabsTrigger value="notes">{t("view.notes")}</TabsTrigger>
             <TabsTrigger value="details">{t("view.details")}</TabsTrigger>
           </TabsList>
 
@@ -571,7 +712,9 @@ export default function RecipeDetailPage() {
                         {t("view.calories")}
                       </span>
                     </div>
-                    <span className="font-semibold text-sm">{recipe.calories || "-"}</span>
+                    <span className="font-semibold text-sm">
+                      {recipe.calories !== undefined && recipe.calories > 0 ? recipe.calories : "-"}
+                    </span>
                   </div>
                   {/* Белки */}
                   <div
@@ -581,7 +724,9 @@ export default function RecipeDetailPage() {
                       {t("view.protein")}
                     </span>
                     <span className="font-semibold text-sm">
-                      {recipe.protein !== undefined ? `${recipe.protein}${tCommon("unit.g")}` : "-"}
+                      {recipe.protein !== undefined && recipe.protein > 0
+                        ? `${recipe.protein}${tCommon("unit.g")}`
+                        : "-"}
                     </span>
                   </div>
                   {/* Жиры */}
@@ -590,7 +735,9 @@ export default function RecipeDetailPage() {
                   >
                     <span className={`text-xs ${recipeColors.fat.text} mb-1`}>{t("view.fat")}</span>
                     <span className="font-semibold text-sm">
-                      {recipe.fat !== undefined ? `${recipe.fat}${tCommon("unit.g")}` : "-"}
+                      {recipe.fat !== undefined && recipe.fat > 0
+                        ? `${recipe.fat}${tCommon("unit.g")}`
+                        : "-"}
                     </span>
                   </div>
                   {/* Углеводы */}
@@ -601,7 +748,9 @@ export default function RecipeDetailPage() {
                       {t("view.carbs")}
                     </span>
                     <span className="font-semibold text-sm">
-                      {recipe.carbs !== undefined ? `${recipe.carbs}${tCommon("unit.g")}` : "-"}
+                      {recipe.carbs !== undefined && recipe.carbs > 0
+                        ? `${recipe.carbs}${tCommon("unit.g")}`
+                        : "-"}
                     </span>
                   </div>
                 </div>
@@ -613,7 +762,9 @@ export default function RecipeDetailPage() {
                   >
                     <span className={`text-sm ${recipeColors.sugar.text}`}>{t("view.sugar")}</span>
                     <span className="font-semibold text-sm">
-                      {recipe.sugar !== undefined ? `${recipe.sugar}${tCommon("unit.g")}` : "-"}
+                      {recipe.sugar !== undefined && recipe.sugar > 0
+                        ? `${recipe.sugar}${tCommon("unit.g")}`
+                        : "-"}
                     </span>
                   </div>
                   {/* Клетчатка */}
@@ -622,10 +773,28 @@ export default function RecipeDetailPage() {
                   >
                     <span className={`text-sm ${recipeColors.fiber.text}`}>{t("view.fiber")}</span>
                     <span className="font-semibold text-sm">
-                      {recipe.fiber !== undefined ? `${recipe.fiber}${tCommon("unit.g")}` : "-"}
+                      {recipe.fiber !== undefined && recipe.fiber > 0
+                        ? `${recipe.fiber}${tCommon("unit.g")}`
+                        : "-"}
                     </span>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Вкладка личных заметок */}
+          <TabsContent value="notes" className="mt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("view.notes")}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {recipe.personal_notes ? (
+                  <p className="text-sm whitespace-pre-wrap">{recipe.personal_notes}</p>
+                ) : (
+                  <p className="text-muted-foreground">{t("view.noNotes")}</p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

@@ -716,6 +716,9 @@ export interface RecipeContentExtended extends BaseContent {
   sugar?: number
   fiber?: number
 
+  // Личные заметки
+  personal_notes?: string
+
   // Специфичные данные по типу
   food_metadata?: FoodRecipeMetadata
   drink_metadata?: DrinkRecipeMetadata

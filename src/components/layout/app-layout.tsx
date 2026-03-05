@@ -23,7 +23,7 @@ export function AppLayout({ children, title, showNav = true }: AppLayoutProps) {
       <Header title={title} />
 
       {/* Main Content */}
-      <main className="flex-1 md:pl-64 pb-20 md:pb-0 w-full max-w-[960px] md:max-w-none mx-auto px-2 md:px-8 pt-14 md:pt-4 overflow-x-hidden">
+      <main className="flex-1 md:pl-64 pb-20 md:pb-0 w-full max-w-[960px] mx-auto px-2 md:px-4 pt-14 md:pt-4 overflow-x-hidden">
         {children}
       </main>
 

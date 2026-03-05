@@ -40,6 +40,9 @@ export { default as RefreshCw } from "lucide-react/dist/esm/icons/refresh-cw"
 export { default as Download } from "lucide-react/dist/esm/icons/download"
 export { default as Upload } from "lucide-react/dist/esm/icons/upload"
 export { default as Search } from "lucide-react/dist/esm/icons/search"
+export { default as Crop } from "lucide-react/dist/esm/icons/crop"
+export { default as RotateCcw } from "lucide-react/dist/esm/icons/rotate-ccw"
+export { default as ImageMinus } from "lucide-react/dist/esm/icons/image-minus"
 
 // Health & Fitness
 export { default as Utensils } from "lucide-react/dist/esm/icons/utensils"

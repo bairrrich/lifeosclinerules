@@ -179,11 +179,6 @@ export default function BookDetailPage() {
   return (
     <AppLayout title={book.title}>
       <div className="container mx-auto px-4 py-6 space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t("common.back")}
-        </Button>
-
         {/* Заголовок */}
         <Card>
           <CardContent className="p-4">

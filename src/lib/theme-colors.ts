@@ -130,19 +130,19 @@ export const moduleColors: Record<ModuleType, ModuleColorScheme> = {
 /** Цвета для финансовых операций */
 export const financeColors = {
   income: {
-    light: "bg-[oklch(0.86_0.26_138)]", // ↑ chroma до 0.26
-    DEFAULT: "bg-[oklch(0.74_0.32_138)]", // 0.32 — как у goals/expense
-    text: "text-[oklch(0.86_0.26_138)]",
+    light: "bg-[oklch(0.86_0.26_138)]",
+    DEFAULT: "bg-[oklch(0.74_0.30_138)]",
+    text: "text-[oklch(0.74_0.30_138)]", // --chart-3
   },
   expense: {
-    light: "bg-[oklch(0.80_0.30_18)]", // было 0.28 → 0.30
-    DEFAULT: "bg-[oklch(0.68_0.36_18)]", // было 0.34 → 0.36 для максимального акцента
-    text: "text-[oklch(0.80_0.30_18)]",
+    light: "bg-[oklch(0.80_0.30_18)]",
+    DEFAULT: "bg-[oklch(0.68_0.36_18)]",
+    text: "text-[oklch(0.68_0.36_18)]", // --destructive
   },
   transfer: {
-    light: "bg-[oklch(0.82_0.26_208)]", // ↑ до 0.26
-    DEFAULT: "bg-[oklch(0.70_0.32_208)]", // ↑ до 0.32
-    text: "text-[oklch(0.82_0.26_208)]",
+    light: "bg-[oklch(0.82_0.26_208)]",
+    DEFAULT: "bg-[oklch(0.70_0.32_208)]",
+    text: "text-[oklch(0.70_0.32_208)]", // --chart-2
   },
 }
 
